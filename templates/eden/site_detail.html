@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ site.nom }} — EDEN GROUP</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+{% load humanize %}
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g400:#9CA3AF;--g600:#4B5563;--g800:#1F2937;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#fff;color:var(--g800);}
+h1,h2,h3{font-family:Georgia,serif;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;background:rgba(255,255,255,0.95);border-bottom:1.5px solid var(--g200);backdrop-filter:blur(20px);}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-em{width:40px;height:40px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-weight:700;font-size:18px;color:#fff;}
+.logo-name{font-family:Georgia,serif;font-size:19px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.nav-lnk{padding:8px 16px;font-size:13px;font-weight:500;color:var(--g600);text-decoration:none;border-radius:8px;transition:all 0.2s;}
+.nav-lnk:hover{color:var(--blue);background:var(--bpale);}
+.btn-cta{background:var(--grad);color:#fff;padding:9px 20px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;text-decoration:none;}
+
+.hero{margin-top:70px;height:500px;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--bpale),#F0F4FF);}
+.hero img{width:100%;height:100%;object-fit:cover;}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,22,40,0.8) 0%,rgba(10,22,40,0.3) 60%,transparent 100%);}
+.hero-content{position:absolute;bottom:0;left:0;right:0;padding:2.5rem 3rem;}
+.hero-breadcrumb{font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:0.8rem;}
+.hero-breadcrumb a{color:rgba(255,255,255,0.7);text-decoration:none;}
+.hero-breadcrumb a:hover{color:#fff;}
+.hero-status{display:inline-flex;padding:4px 14px;border-radius:100px;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:0.8rem;}
+.st-a{background:rgba(22,163,74,0.9);color:#fff;}.st-p{background:rgba(27,79,219,0.9);color:#fff;}.st-c{background:rgba(200,16,46,0.9);color:#fff;}
+.hero-title{font-family:Georgia,serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:700;color:#fff;margin-bottom:0.5rem;}
+.hero-loc{font-size:14px;color:rgba(255,255,255,0.8);display:flex;align-items:center;gap:6px;}
+
+.container{max-width:1200px;margin:0 auto;padding:0 2rem;}
+.main-grid{display:grid;grid-template-columns:1fr 380px;gap:3rem;padding:3rem 0;}
+
+.section-title{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.5rem;}
+.block-title{font-family:Georgia,serif;font-size:1.6rem;font-weight:700;color:var(--g800);margin-bottom:1rem;}
+
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:0;background:var(--g50);border:1.5px solid var(--g200);border-radius:16px;overflow:hidden;margin-bottom:2rem;}
+.stat-item{padding:1.2rem;text-align:center;border-right:1px solid var(--g200);}
+.stat-item:last-child{border-right:none;}
+.stat-n{font-family:Georgia,serif;font-size:1.8rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-l{font-size:11px;color:var(--g400);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;}
+
+.prog-wrap{margin-bottom:2rem;}
+.prog-hd{display:flex;justify-content:space-between;margin-bottom:6px;}
+.prog-lbl{font-size:13px;font-weight:600;color:var(--g800);}
+.prog-pct{font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.prog-bar{height:8px;background:var(--g200);border-radius:100px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--grad-h);border-radius:100px;}
+
+.description{font-size:14px;color:var(--g600);line-height:1.8;margin-bottom:2rem;}
+
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:2rem;}
+.gallery-img{height:150px;border-radius:12px;overflow:hidden;background:var(--bpale);cursor:pointer;}
+.gallery-img img{width:100%;height:100%;object-fit:cover;transition:transform 0.3s;}
+.gallery-img:hover img{transform:scale(1.05);}
+
+.map-wrap{height:350px;border-radius:16px;overflow:hidden;border:1.5px solid var(--g200);margin-bottom:2rem;}
+
+.parcelles-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-bottom:2rem;}
+.parcel-card{background:#fff;border:1.5px solid var(--g200);border-radius:12px;padding:1.2rem;transition:all 0.2s;}
+.parcel-card:hover{border-color:rgba(27,79,219,0.3);box-shadow:0 4px 16px rgba(27,79,219,0.1);}
+.parcel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.8rem;}
+.parcel-num{font-weight:700;font-size:14px;color:var(--g800);}
+.parcel-status{padding:3px 10px;border-radius:100px;font-size:10px;font-weight:700;text-transform:uppercase;}
+.ps-a{background:#dcfce7;color:#16a34a;}.ps-r{background:var(--bpale);color:var(--blue);}.ps-v{background:#fee2e2;color:#dc2626;}
+.parcel-info{display:flex;gap:1rem;font-size:12px;color:var(--g400);margin-bottom:0.8rem;}
+.parcel-price{font-family:Georgia,serif;font-size:1.2rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.8rem;}
+.parcel-btn{width:100%;background:var(--grad);border:none;color:#fff;padding:8px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;}
+.parcel-btn:hover{opacity:0.88;}
+.parcel-btn-dis{width:100%;background:var(--g100);border:none;color:var(--g400);padding:8px;border-radius:8px;font-size:12px;font-weight:600;cursor:not-allowed;}
+
+/* Sidebar */
+.sidebar{position:sticky;top:90px;}
+.contact-card{background:#fff;border:1.5px solid var(--g200);border-radius:20px;padding:1.5rem;margin-bottom:1.5rem;box-shadow:0 4px 16px rgba(0,0,0,0.06);}
+.cc-title{font-family:Georgia,serif;font-size:1.2rem;font-weight:700;color:var(--g800);margin-bottom:0.3rem;}
+.cc-sub{font-size:13px;color:var(--g400);margin-bottom:1.2rem;}
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
+.fg label{font-size:11px;font-weight:600;color:var(--g400);}
+.fi{width:100%;background:#fff;border:1.5px solid var(--g200);border-radius:10px;padding:10px 13px;color:var(--g800);font-size:13px;outline:none;transition:border-color 0.2s;}
+.fi:focus{border-color:var(--blue);}
+.fi::placeholder{color:var(--g400);}
+.btn-submit{width:100%;background:var(--grad);border:none;color:#fff;padding:12px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-top:6px;}
+.btn-submit:hover{opacity:0.88;}
+.btn-wa{width:100%;background:#25D366;color:#fff;border:none;padding:11px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;}
+.btn-wa:hover{background:#1daa52;}
+.btn-map{width:100%;background:var(--bpale);border:1.5px solid rgba(27,79,219,0.25);color:var(--blue);padding:10px;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;margin-top:8px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-map:hover{background:rgba(27,79,219,0.12);}
+
+.info-card{background:var(--g50);border:1.5px solid var(--g200);border-radius:16px;padding:1.2rem;}
+.info-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--g200);font-size:13px;}
+.info-row:last-child{border-bottom:none;}
+.info-lbl{color:var(--g400);}
+.info-val{font-weight:600;color:var(--g800);}
+
+.toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1.5px solid var(--g200);border-radius:12px;padding:14px 20px;font-size:13px;z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(80px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 8px 32px rgba(0,0,0,0.1);}
+.toast.show{transform:none;opacity:1;}
+
+.similaires{padding:3rem 0;}
+.sim-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.2rem;}
+.sim-card{background:#fff;border:1.5px solid var(--g200);border-radius:16px;overflow:hidden;text-decoration:none;color:inherit;display:block;transition:all 0.2s;}
+.sim-card:hover{transform:translateY(-3px);border-color:rgba(27,79,219,0.3);box-shadow:0 8px 24px rgba(27,79,219,0.1);}
+.sim-img{height:160px;background:var(--bpale);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.sim-img img{width:100%;height:100%;object-fit:cover;}
+.sim-body{padding:1rem;}
+.sim-name{font-family:Georgia,serif;font-size:1rem;font-weight:700;color:var(--g800);margin-bottom:0.3rem;}
+.sim-loc{font-size:12px;color:var(--g400);}
+
+footer{background:var(--g800);color:#fff;padding:2rem;text-align:center;margin-top:2rem;}
+.footer-copy{font-size:12px;color:#6b7280;}
+.footer-copy span{background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700;}
+@media(max-width:1024px){.main-grid{grid-template-columns:1fr;}.sidebar{position:static;}}
+@media(max-width:768px){nav{padding:0 1rem;}.container{padding:0 1rem;}.hero{height:350px;}.hero-content{padding:1.5rem;}.hero-title{font-size:1.6rem;}.stats-bar{grid-template-columns:1fr 1fr;}.parcelles-list{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="{% url 'home' %}">
+    <div class="logo-em">E</div>
+    <div><div class="logo-name">EDEN GROUP</div><div style="font-size:9px;font-weight:600;color:var(--g400);letter-spacing:2px;text-transform:uppercase;">Immobilier & Foncier</div></div>
+  </a>
+  <div style="display:flex;align-items:center;gap:4px;">
+    <a class="nav-lnk" href="{% url 'home' %}">Accueil</a>
+    <a class="nav-lnk" href="{% url 'sites_list' %}">Nos Sites</a>
+    <a class="nav-lnk" href="{% url 'carte' %}">Carte</a>
+    <a class="nav-lnk" href="{% url 'promotions' %}">Promotions</a>
+    {% if user.is_staff %}<a class="nav-lnk" href="{% url 'dashboard_home' %}">Dashboard</a>{% endif %}
+  </div>
+  <button class="btn-cta" onclick="document.getElementById('cc-form').scrollIntoView({behavior:'smooth'})">Reserver →</button>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  {% if site.image_principale %}
+  <img src="{{ site.image_principale.url }}" alt="{{ site.nom }}">
+  {% endif %}
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-breadcrumb"><a href="{% url 'home' %}">Accueil</a> / <a href="{% url 'sites_list' %}">Sites</a> / {{ site.nom }}</div>
+    <div class="hero-status {% if site.statut == 'disponible' %}st-a{% elif site.statut == 'en_cours' %}st-p{% else %}st-c{% endif %}">{{ site.get_statut_display }}</div>
+    <h1 class="hero-title">{{ site.nom }}</h1>
+    <div class="hero-loc">📍 {{ site.localisation }}{% if site.ville %}, {{ site.ville }}{% endif %}</div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="main-grid">
+    <!-- LEFT CONTENT -->
+    <div>
+      <!-- Stats -->
+      <div class="stats-bar" style="margin-top:0;">
+        <div class="stat-item"><div class="stat-n">{{ site.nb_parcelles_total }}</div><div class="stat-l">Total parcelles</div></div>
+        <div class="stat-item"><div class="stat-n" style="color:#16a34a;">{{ site.nb_disponibles }}</div><div class="stat-l">Disponibles</div></div>
+        <div class="stat-item"><div class="stat-n">{{ site.nb_vendues }}</div><div class="stat-l">Vendues</div></div>
+        <div class="stat-item"><div class="stat-n">{{ site.pourcentage_vendu }}%</div><div class="stat-l">% Vendu</div></div>
+      </div>
+
+      <!-- Progress -->
+      <div class="prog-wrap">
+        <div class="prog-hd"><span class="prog-lbl">Avancement des ventes</span><span class="prog-pct">{{ site.pourcentage_vendu }}%</span></div>
+        <div class="prog-bar"><div class="prog-fill" style="width:{{ site.pourcentage_vendu }}%"></div></div>
+      </div>
+
+      <!-- Description -->
+      <div class="section-title">Description du site</div>
+      <h2 class="block-title">{{ site.nom }}</h2>
+      <div class="description">{{ site.description }}</div>
+
+      {% if site.prix_min %}
+      <div style="background:linear-gradient(135deg,rgba(27,79,219,0.06),rgba(200,16,46,0.04));border:1.5px solid var(--g200);border-radius:16px;padding:1.2rem;margin-bottom:2rem;display:flex;gap:2rem;flex-wrap:wrap;">
+        {% if site.prix_min %}<div><div style="font-family:Georgia,serif;font-size:1.3rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">{{ site.prix_min|intcomma }} FCFA</div><div style="font-size:11px;color:var(--g400);text-transform:uppercase;letter-spacing:0.5px;">Prix a partir de</div></div>{% endif %}
+        {% if site.superficie_totale %}<div><div style="font-family:Georgia,serif;font-size:1.3rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">{{ site.superficie_totale|floatformat:0 }} m²</div><div style="font-size:11px;color:var(--g400);text-transform:uppercase;letter-spacing:0.5px;">Superficie totale</div></div>{% endif %}
+      </div>
+      {% endif %}
+
+      <!-- Galerie -->
+      {% if site.images.all %}
+      <div class="section-title">Galerie photos</div>
+      <h3 style="font-family:Georgia,serif;font-size:1.3rem;font-weight:700;color:var(--g800);margin-bottom:1rem;">Photos du site</h3>
+      <div class="gallery-grid">
+        {% for img in site.images.all %}
+        <div class="gallery-img"><img src="{{ img.url }}" alt="{{ img.legende|default:site.nom }}" loading="lazy"></div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <!-- Carte -->
+      {% if site.latitude %}
+      <div class="section-title">Localisation</div>
+      <h3 style="font-family:Georgia,serif;font-size:1.3rem;font-weight:700;color:var(--g800);margin-bottom:1rem;">Voir sur la carte</h3>
+      <div class="map-wrap" id="site-map"></div>
+      {% endif %}
+
+      <!-- Parcelles disponibles -->
+      {% if parcelles %}
+      <div class="section-title">Parcelles disponibles</div>
+      <h3 style="font-family:Georgia,serif;font-size:1.3rem;font-weight:700;color:var(--g800);margin-bottom:1rem;">{{ site.nb_disponibles }} parcelle(s) disponible(s)</h3>
+      <div class="parcelles-list">
+        {% for p in parcelles %}
+        <div class="parcel-card">
+          <div class="parcel-head">
+            <span class="parcel-num">Parcelle {{ p.numero }}</span>
+            <span class="parcel-status {% if p.statut == 'disponible' %}ps-a{% elif p.statut == 'reservee' %}ps-r{% else %}ps-v{% endif %}">{{ p.get_statut_display }}</span>
+          </div>
+          <div class="parcel-info">
+            <span>📐 {{ p.superficie|floatformat:0 }} m²</span>
+            {% if p.prix_m2 %}<span>{{ p.prix_m2|intcomma }} FCFA/m²</span>{% endif %}
+          </div>
+          <div class="parcel-price">{{ p.prix_affiche|intcomma }} FCFA</div>
+          {% if p.statut == 'disponible' %}
+          <button class="parcel-btn" onclick="document.getElementById('cc-form').scrollIntoView({behavior:'smooth'});document.getElementById('msg-field').value='Je suis interesse par la Parcelle {{ p.numero }} - {{ site.nom }}'">Reserver cette parcelle →</button>
+          {% else %}
+          <button class="parcel-btn-dis">Non disponible</button>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="contact-card" id="cc-form">
+        <div class="cc-title">Reserver une parcelle</div>
+        <div class="cc-sub">Notre equipe vous contacte sous 24h</div>
+        <form id="contact-form">
+          {% csrf_token %}
+          <input type="hidden" name="type_demande" value="reservation">
+          <input type="hidden" name="site" value="{{ site.id }}">
+          <div class="fg"><label>Nom complet *</label><input class="fi" type="text" name="nom" placeholder="Votre nom" required></div>
+          <div class="fg"><label>Telephone *</label><input class="fi" type="tel" name="telephone" placeholder="+237 6XX XXX XXX" required></div>
+          <div class="fg"><label>Email</label><input class="fi" type="email" name="email" placeholder="votre@email.com" required></div>
+          <div class="fg"><label>Message</label><textarea class="fi" name="message" id="msg-field" rows="3" placeholder="Vos questions ou la parcelle souhaitee..."></textarea></div>
+          <button type="button" class="btn-submit" onclick="submitContact()">Envoyer la demande →</button>
+          <button type="button" class="btn-wa" onclick="window.open('https://wa.me/237600000000?text=Bonjour+EDEN+GROUP%2C+je+suis+interesse+par+{{ site.nom }}','_blank')">💬 Contacter sur WhatsApp</button>
+          <a class="btn-map" href="{% url 'carte' %}">🗺 Voir sur la carte interactive</a>
+        </form>
+      </div>
+
+      <div class="info-card">
+        <div style="font-size:12px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.8rem;">Informations</div>
+        <div class="info-row"><span class="info-lbl">Ville</span><span class="info-val">{{ site.ville }}</span></div>
+        <div class="info-row"><span class="info-lbl">Localisation</span><span class="info-val">{{ site.localisation }}</span></div>
+        {% if site.superficie_totale %}<div class="info-row"><span class="info-lbl">Superficie totale</span><span class="info-val">{{ site.superficie_totale|floatformat:0 }} m²</span></div>{% endif %}
+        {% if site.prix_min %}<div class="info-row"><span class="info-lbl">Prix a partir de</span><span class="info-val">{{ site.prix_min|intcomma }} FCFA</span></div>{% endif %}
+        <div class="info-row"><span class="info-lbl">Total parcelles</span><span class="info-val">{{ site.nb_parcelles_total }}</span></div>
+        <div class="info-row"><span class="info-lbl">Disponibles</span><span class="info-val" style="color:#16a34a;">{{ site.nb_disponibles }}</span></div>
+        <div class="info-row"><span class="info-lbl">Avancement</span><span class="info-val">{{ site.pourcentage_vendu }}% vendu</span></div>
+        {% if site.latitude %}<div class="info-row"><span class="info-lbl">Coordonnees GPS</span><span class="info-val" style="font-size:11px;">{{ site.latitude }}, {{ site.longitude }}</span></div>{% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- SITES SIMILAIRES -->
+  {% if similaires %}
+  <div class="similaires">
+    <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.5rem;">✦ Autres sites</div>
+    <h2 style="font-family:Georgia,serif;font-size:1.8rem;font-weight:700;color:var(--g800);margin-bottom:1.5rem;">Sites <em style="font-style:italic;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">similaires</em></h2>
+    <div class="sim-grid">
+      {% for s in similaires %}
+      <a class="sim-card" href="{% url 'site_detail' s.slug %}">
+        <div class="sim-img">
+          {% if s.image_principale %}<img src="{{ s.image_principale.url }}" alt="{{ s.nom }}">{% endif %}
+        </div>
+        <div class="sim-body">
+          <div class="sim-name">{{ s.nom }}</div>
+          <div class="sim-loc">📍 {{ s.localisation }} · {{ s.nb_disponibles }} disponibles</div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<div class="toast" id="toast"><span>✅</span><span id="tmsg"></span></div>
+
+<footer><div class="footer-copy">© 2025 <span>EDEN GROUP</span>. Tous droits reserves.</div></footer>
+
+{% if site.latitude %}
+<script>
+const map = L.map('site-map').setView([{{ site.latitude }}, {{ site.longitude }}], {{ site.zoom_carte }});
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:'© OpenStreetMap', maxZoom:19}).addTo(map);
+const icon = L.divIcon({
+  html: '<div style="background:linear-gradient(135deg,#1B4FDB,#C8102E);color:#fff;padding:6px 12px;border-radius:18px;font-size:11px;font-weight:800;font-family:Segoe UI,Arial,sans-serif;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.2);">📍 {{ site.nom }}</div>',
+  className:'', iconAnchor:[0,0]
+});
+L.marker([{{ site.latitude }}, {{ site.longitude }}], {icon}).addTo(map);
+{% for p in parcelles %}
+{% if p.latitude and p.longitude %}
+const pIcon{{ forloop.counter }} = L.divIcon({
+  html: '<div style="background:{{ p.couleur_statut }};color:#fff;padding:3px 8px;border-radius:10px;font-size:9px;font-weight:800;font-family:Segoe UI,sans-serif;">{{ p.numero }}</div>',
+  className:'', iconAnchor:[0,0]
+});
+L.marker([{{ p.latitude }}, {{ p.longitude }}], {icon:pIcon{{ forloop.counter }}}).addTo(map).bindPopup('<b>Parcelle {{ p.numero }}</b><br>{{ p.superficie }}m² · {{ p.get_statut_display }}<br><b>{{ p.prix_affiche|intcomma }} FCFA</b>');
+{% endif %}
+{% endfor %}
+</script>
+{% endif %}
+
+<script>
+function submitContact() {
+  const form = document.getElementById('contact-form');
+  const data = new FormData(form);
+  fetch('{% url "contact" %}', {
+    method: 'POST', headers: {'X-Requested-With': 'XMLHttpRequest'}, body: data
+  }).then(r => r.json()).then(d => {
+    if (d.success) {
+      const t = document.getElementById('toast');
+      document.getElementById('tmsg').textContent = 'Demande envoyee ! Nous vous contacterons sous 24h.';
+      t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 4000);
+      form.reset();
+    }
+  });
+}
+</script>
+</body>
+</html>

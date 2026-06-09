@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reservation {{ reservation.reference }} — EDEN GROUP</title>
+{% load humanize %}
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g400:#9CA3AF;--g600:#4B5563;--g800:#1F2937;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--g50);color:var(--g800);}
+.topnav{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;border-bottom:1.5px solid var(--g200);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
+.tnem{width:36px;height:36px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-weight:700;font-size:15px;color:#fff;}
+.tnname{font-family:Georgia,serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tnbtn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--g200);background:#fff;color:var(--g600);}
+.tnbtn:hover{border-color:var(--blue);color:var(--blue);background:var(--bpale);}
+.wrap{padding-top:84px;max-width:800px;margin:0 auto;padding-left:2rem;padding-right:2rem;padding-bottom:4rem;}
+.ref-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;}
+.ref-num{font-family:monospace;font-size:1.2rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.ref-date{font-size:13px;color:var(--g400);}
+.card{background:#fff;border:1.5px solid var(--g200);border-radius:20px;padding:1.5rem;margin-bottom:1.5rem;}
+.card-tit{font-size:13px;font-weight:700;color:var(--g800);margin-bottom:1rem;padding-bottom:0.8rem;border-bottom:1.5px solid var(--g100);}
+.info-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--g100);font-size:13px;}
+.info-row:last-child{border-bottom:none;}
+.info-lbl{color:var(--g400);}
+.info-val{font-weight:600;color:var(--g800);}
+.td-b{padding:4px 14px;border-radius:100px;font-size:11px;font-weight:700;text-transform:uppercase;}
+.td-w{background:#fff7ed;color:#ea580c;}
+.td-c{background:var(--bpale);color:var(--blue);}
+.td-p{background:#dcfce7;color:#16a34a;}
+.td-a{background:#fee2e2;color:#dc2626;}
+.actions{display:flex;gap:12px;flex-wrap:wrap;}
+.btn-p{background:var(--grad);color:#fff;padding:11px 22px;border-radius:10px;font-size:13px;font-weight:700;border:none;cursor:pointer;}
+.btn-wa{background:#25D366;color:#fff;padding:11px 22px;border-radius:10px;font-size:13px;font-weight:700;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;}
+.btn-o{background:#fff;color:var(--g600);padding:11px 22px;border-radius:10px;font-size:13px;font-weight:500;border:1.5px solid var(--g200);text-decoration:none;display:inline-flex;}
+.status-form{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.fi{background:#fff;border:1.5px solid var(--g200);border-radius:10px;padding:10px 14px;color:var(--g800);font-size:13px;outline:none;transition:border-color 0.2s;}
+.fi:focus{border-color:var(--blue);}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="tnem">E</div>
+    <div class="tnname">EDEN GROUP</div>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <a class="tnbtn" href="{% url 'dashboard_reservations' %}">← Reservations</a>
+    <a class="tnbtn" href="{% url 'dashboard_home' %}">📊 Dashboard</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="ref-header">
+    <div>
+      <div style="font-size:11px;color:var(--g400);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Reference de reservation</div>
+      <div class="ref-num">{{ reservation.reference }}</div>
+    </div>
+    <div style="text-align:right;">
+      <div class="ref-date">{{ reservation.created_at|date:"d/m/Y à H:i" }}</div>
+      <span class="td-b {% if reservation.statut == 'en_attente' %}td-w{% elif reservation.statut == 'confirmee' or reservation.statut == 'acompte_verse' %}td-c{% elif reservation.statut == 'payee' %}td-p{% else %}td-a{% endif %}">{{ reservation.get_statut_display }}</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-tit">👤 Informations client</div>
+    <div class="info-row"><span class="info-lbl">Nom</span><span class="info-val">{{ reservation.nom_client }}</span></div>
+    <div class="info-row"><span class="info-lbl">Email</span><span class="info-val">{{ reservation.email_client }}</span></div>
+    <div class="info-row"><span class="info-lbl">Telephone</span><span class="info-val">{{ reservation.telephone_client }}</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-tit">📐 Parcelle reservee</div>
+    <div class="info-row"><span class="info-lbl">Site</span><span class="info-val">{{ reservation.parcelle.site.nom }}</span></div>
+    <div class="info-row"><span class="info-lbl">Parcelle</span><span class="info-val">Parcelle {{ reservation.parcelle.numero }}</span></div>
+    <div class="info-row"><span class="info-lbl">Superficie</span><span class="info-val">{{ reservation.parcelle.superficie|floatformat:0 }} m²</span></div>
+    <div class="info-row"><span class="info-lbl">Statut parcelle</span><span class="info-val">{{ reservation.parcelle.get_statut_display }}</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-tit">💰 Finances</div>
+    <div class="info-row"><span class="info-lbl">Montant total</span><span class="info-val" style="font-size:1.1rem;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">{{ reservation.montant_total|intcomma }} FCFA</span></div>
+    <div class="info-row"><span class="info-lbl">Acompte verse</span><span class="info-val">{{ reservation.montant_acompte|intcomma }} FCFA</span></div>
+    <div class="info-row"><span class="info-lbl">Reste a payer</span><span class="info-val">{% widthratio reservation.montant_acompte 1 1 as ap %}{{ reservation.montant_total|add:"-0"|floatformat:0|intcomma }} FCFA</span></div>
+  </div>
+
+  {% if reservation.notes %}
+  <div class="card">
+    <div class="card-tit">📝 Notes</div>
+    <p style="font-size:13px;color:var(--g600);line-height:1.7;">{{ reservation.notes }}</p>
+  </div>
+  {% endif %}
+
+  <div class="card">
+    <div class="card-tit">⚙ Mettre a jour le statut</div>
+    <form method="post" class="status-form">
+      {% csrf_token %}
+      <select name="statut" class="fi">
+        <option value="en_attente" {% if reservation.statut == 'en_attente' %}selected{% endif %}>En attente</option>
+        <option value="confirmee" {% if reservation.statut == 'confirmee' %}selected{% endif %}>Confirmee</option>
+        <option value="acompte_verse" {% if reservation.statut == 'acompte_verse' %}selected{% endif %}>Acompte verse</option>
+        <option value="payee" {% if reservation.statut == 'payee' %}selected{% endif %}>Entierement payee</option>
+        <option value="annulee" {% if reservation.statut == 'annulee' %}selected{% endif %}>Annulee</option>
+      </select>
+      <button type="submit" class="btn-p">Sauvegarder le statut</button>
+    </form>
+  </div>
+
+  <div class="actions">
+    <button class="btn-wa" onclick="window.open('https://wa.me/{{ reservation.telephone_client|cut:' '|cut:'+'|cut:'-' }}?text=Bonjour+{{ reservation.nom_client }}%2C+concernant+votre+reservation+{{ reservation.reference }}+EDEN+GROUP','_blank')">💬 WhatsApp client</button>
+    <a class="btn-o" href="{% url 'dashboard_reservations' %}">← Retour aux reservations</a>
+  </div>
+</div>
+</body>
+</html>

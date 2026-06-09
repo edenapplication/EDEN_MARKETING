@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paramètres — Dashboard EDEN GROUP</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g800:#1F2937;--r:12px;--rl:20px;}
+body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
+.topnav{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;border-bottom:1.5px solid var(--g200);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
+.tn-em{width:36px;height:36px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:#fff;}
+.tn-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tn-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1.5px solid var(--g200);background:#fff;color:var(--g500);font-family:'Outfit',sans-serif;}
+.wrap{display:flex;padding-top:64px;}
+.sidebar{width:240px;background:#fff;border-right:1.5px solid var(--g200);position:fixed;top:64px;left:0;bottom:0;overflow-y:auto;}
+.sb-sec{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g400);padding:1.2rem 1.5rem 0.4rem;}
+.sb-lnk{display:flex;align-items:center;gap:10px;padding:10px 1.5rem;font-size:13px;font-weight:500;color:var(--g500);border-left:2px solid transparent;text-decoration:none;}
+.sb-lnk:hover,.sb-lnk.active{color:var(--blue);background:var(--bpale);border-left-color:var(--blue);}
+.main{flex:1;padding:2rem;margin-left:240px;max-width:900px;}
+.page-tit{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--g800);margin-bottom:1.5rem;}
+.card{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);padding:1.5rem;margin-bottom:1.5rem;}
+.card-tit{font-size:14px;font-weight:700;color:var(--g800);margin-bottom:1.2rem;padding-bottom:0.8rem;border-bottom:1px solid var(--g200);display:flex;align-items:center;gap:8px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:0.8rem;}
+.fg label{font-size:11px;font-weight:600;color:var(--g500);}
+input,textarea{width:100%;background:#fff;border:1.5px solid var(--g200);border-radius:10px;padding:11px 14px;color:var(--g800);font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s;}
+input:focus,textarea:focus{border-color:var(--blue);}
+input::placeholder,textarea::placeholder{color:var(--g400);}
+.btn-grad{background:var(--grad);color:#fff;padding:12px 24px;border-radius:var(--r);font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;}
+.btn-grad:hover{opacity:0.88;}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--g100);}
+.info-row:last-child{border-bottom:none;}
+.ik{font-size:12px;color:var(--g500);}
+.iv{font-size:13px;font-weight:600;color:var(--g800);}
+.link-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.quick-link{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--g50);border:1.5px solid var(--g200);border-radius:var(--r);text-decoration:none;color:var(--g700);font-size:13px;font-weight:500;transition:all 0.2s;}
+.quick-link:hover{border-color:var(--blue);color:var(--blue);background:var(--bpale);}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
+.stat-mini{background:#fff;border:1.5px solid var(--g200);border-radius:var(--r);padding:1rem;text-align:center;position:relative;overflow:hidden;}
+.stat-mini::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--grad);}
+.sm-n{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.sm-l{font-size:11px;color:var(--g400);margin-top:2px;}
+.toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1.5px solid var(--g200);border-radius:var(--r);padding:14px 20px;font-size:13px;color:var(--g800);z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(100px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.1);}
+.toast.show{transform:none;opacity:1;}
+@media(max-width:1024px){.sidebar{display:none;}.main{margin-left:0;}}
+@media(max-width:640px){.form-grid,.stat-row,.link-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"><span id="t-ico">✅</span>&nbsp;<span id="t-msg"></span></div>
+
+<nav class="topnav">
+  <div style="display:flex;align-items:center;gap:8px;"><div class="tn-em">E</div><div class="tn-name">EDEN GROUP</div></div>
+  <div style="display:flex;gap:8px;">
+    <a class="tn-btn" href="{% url 'home' %}" target="_blank">🌐 Site</a>
+    <a class="tn-btn" href="{% url 'logout' %}" style="background:#fee2e2;border-color:#fca5a5;color:#dc2626;">Deconnexion</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="sidebar">
+    <div class="sb-sec">Principal</div>
+    <a class="sb-lnk" href="{% url 'dashboard_home' %}">📊 Tableau de bord</a>
+    <a class="sb-lnk" href="{% url 'dashboard_sites' %}">🏡 Sites fonciers</a>
+    <a class="sb-lnk" href="{% url 'dashboard_parcelles' %}">📐 Parcelles</a>
+    <a class="sb-lnk" href="{% url 'dashboard_reservations' %}">📋 Reservations</a>
+    <a class="sb-lnk" href="{% url 'dashboard_contacts' %}">📩 Contacts</a>
+    <div class="sb-sec">Gestion</div>
+    <a class="sb-lnk" href="{% url 'dashboard_visites' %}">📅 Visites</a>
+    <a class="sb-lnk" href="{% url 'dashboard_promotions' %}">🔥 Promotions</a>
+    <a class="sb-lnk" href="{% url 'dashboard_temoignages' %}">💬 Temoignages</a>
+    {% if user.is_superuser %}<a class="sb-lnk" href="{% url 'dashboard_utilisateurs' %}">👥 Utilisateurs</a>{% endif %}
+    <a class="sb-lnk active" href="{% url 'dashboard_parametres' %}">⚙ Parametres</a>
+  </div>
+
+  <div class="main">
+    <div class="page-tit">Paramètres</div>
+
+    {% if messages %}{% for msg in messages %}<div style="background:{% if msg.tags == 'error' %}#fee2e2{% else %}#dcfce7{% endif %};border:1.5px solid {% if msg.tags == 'error' %}#fca5a5{% else %}#86efac{% endif %};border-radius:var(--r);padding:12px 16px;margin-bottom:1.5rem;font-size:13px;color:{% if msg.tags == 'error' %}#dc2626{% else %}#16a34a{% endif %};">{{ msg }}</div>{% endfor %}{% endif %}
+
+    <!-- STATS RAPIDES -->
+    <div class="stat-row">
+      <div class="stat-mini"><div class="sm-n">{{ user.username }}</div><div class="sm-l">Connecte en tant que</div></div>
+      <div class="stat-mini"><div class="sm-n">{% if user.is_superuser %}Super Admin{% elif user.is_staff %}Admin{% else %}User{% endif %}</div><div class="sm-l">Role</div></div>
+      <div class="stat-mini"><div class="sm-n">{{ user.last_login|date:"d/m" }}</div><div class="sm-l">Derniere connexion</div></div>
+      <div class="stat-mini"><div class="sm-n">{{ user.date_joined|date:"Y" }}</div><div class="sm-l">Membre depuis</div></div>
+    </div>
+
+    <!-- INFOS ENTREPRISE -->
+    <div class="card">
+      <div class="card-tit">🏢 Informations entreprise</div>
+      <div class="form-grid">
+        <div class="fg"><label>Nom de l'entreprise</label><input type="text" id="p-nom" value="EDEN GROUP"></div>
+        <div class="fg"><label>Slogan</label><input type="text" id="p-slogan" value="Plateforme Fonciere Premium"></div>
+        <div class="fg"><label>Telephone principal</label><input type="tel" id="p-tel" value="+237 600 000 000"></div>
+        <div class="fg"><label>Numero WhatsApp</label><input type="tel" id="p-wa" value="+237 600 000 000"></div>
+        <div class="fg"><label>Email de contact</label><input type="email" id="p-email" value="info@edengroup.cm"></div>
+        <div class="fg"><label>Site web</label><input type="url" id="p-web" value="https://edengroup.cm"></div>
+      </div>
+      <div class="fg"><label>Adresse complete</label><input type="text" id="p-adresse" value="Immeuble EDEN, Avenue Kennedy, Yaounde, Cameroun"></div>
+      <div class="fg" style="margin-top:0.5rem;"><label>Horaires d'ouverture</label><input type="text" id="p-horaires" value="Lundi - Vendredi : 8h - 18h | Samedi : 9h - 13h"></div>
+      <button class="btn-grad" style="margin-top:1rem;" onclick="showToast('💾','Parametres sauvegardes !')">💾 Sauvegarder</button>
+    </div>
+
+    <!-- MON COMPTE -->
+    <div class="card">
+      <div class="card-tit">👤 Mon compte</div>
+      <div class="info-row"><span class="ik">Nom d'utilisateur</span><span class="iv">{{ user.username }}</span></div>
+      <div class="info-row"><span class="ik">Email</span><span class="iv">{{ user.email|default:"Non renseigne" }}</span></div>
+      <div class="info-row"><span class="ik">Nom complet</span><span class="iv">{{ user.get_full_name|default:"Non renseigne" }}</span></div>
+      <div class="info-row"><span class="ik">Role</span><span class="iv">{% if user.is_superuser %}Super Administrateur{% elif user.is_staff %}Administrateur{% else %}Utilisateur{% endif %}</span></div>
+      <div class="info-row"><span class="ik">Membre depuis</span><span class="iv">{{ user.date_joined|date:"d/m/Y" }}</span></div>
+      <div class="info-row"><span class="ik">Derniere connexion</span><span class="iv">{{ user.last_login|date:"d/m/Y H:i" }}</span></div>
+    </div>
+
+    <!-- CHANGER MOT DE PASSE -->
+    <div class="card">
+      <div class="card-tit">🔑 Changer le mot de passe</div>
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="change_password">
+        <div class="form-grid">
+          <div class="fg"><label>Ancien mot de passe *</label><input type="password" name="old_password" placeholder="••••••••" required></div>
+          <div></div>
+          <div class="fg"><label>Nouveau mot de passe *</label><input type="password" name="new_password" id="np1" placeholder="••••••••" required></div>
+          <div class="fg"><label>Confirmer le nouveau *</label><input type="password" id="np2" placeholder="••••••••"></div>
+        </div>
+        <button type="submit" class="btn-grad" onclick="return checkPw()">🔑 Changer le mot de passe</button>
+      </form>
+    </div>
+
+    <!-- LIENS RAPIDES -->
+    <div class="card">
+      <div class="card-tit">🔗 Raccourcis</div>
+      <div class="link-grid">
+        <a class="quick-link" href="{% url 'home' %}" target="_blank">🌐 Site public</a>
+        <a class="quick-link" href="{% url 'carte' %}" target="_blank">🗺 Carte interactive</a>
+        <a class="quick-link" href="{% url 'dashboard_site_ajouter' %}">🏡 Ajouter un site</a>
+        <a class="quick-link" href="{% url 'dashboard_parcelle_ajouter' %}">📐 Ajouter une parcelle</a>
+        <a class="quick-link" href="{% url 'dashboard_temoignage_ajouter' %}">💬 Ajouter temoignage</a>
+        <a class="quick-link" href="{% url 'dashboard_visite_ajouter' %}">📅 Programmer visite</a>
+        {% if user.is_superuser %}<a class="quick-link" href="{% url 'dashboard_utilisateur_ajouter' %}">👥 Nouvel utilisateur</a>{% endif %}
+        <a class="quick-link" href="{% url 'dashboard_contacts' %}?statut=nouveau">📩 Contacts non traites</a>
+      </div>
+    </div>
+
+    <!-- TECH INFO -->
+    <div class="card">
+      <div class="card-tit">⚙ Informations techniques</div>
+      <div class="info-row"><span class="ik">Framework</span><span class="iv">Django 5.x</span></div>
+      <div class="info-row"><span class="ik">Carte</span><span class="iv">Leaflet 1.9.4 + Esri Satellite</span></div>
+      <div class="info-row"><span class="ik">Base de donnees</span><span class="iv">SQLite (dev) / PostgreSQL (prod)</span></div>
+      <div class="info-row"><span class="ik">API Geo</span><span class="iv">/api/sites-geo/ · /api/parcelles-geo/</span></div>
+      <div class="info-row"><span class="ik">Version plateforme</span><span class="iv">EDEN GROUP v2.0</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showToast(ico, msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('t-ico').textContent = ico;
+  document.getElementById('t-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+function checkPw() {
+  const p1 = document.getElementById('np1').value;
+  const p2 = document.getElementById('np2').value;
+  if (p1 !== p2) { alert('Les mots de passe ne correspondent pas.'); return false; }
+  return true;
+}
+</script>
+</body>
+</html>

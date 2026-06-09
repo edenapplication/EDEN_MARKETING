@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% if qr %}Modifier{% else %}Ajouter{% endif %} Q&R — GROUPY</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1B4FDB;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g800:#1F2937;--r:12px;--rl:20px;}
+body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
+.topnav{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;border-bottom:1.5px solid var(--g200);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
+.tn-em{width:36px;height:36px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:#fff;}
+.tn-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tn-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1.5px solid var(--g200);background:#fff;color:var(--g500);font-family:'Outfit',sans-serif;}
+.wrap{padding:84px 2rem 3rem;max-width:860px;margin:0 auto;}
+.page-tit{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--g800);margin-bottom:1.5rem;}
+.card{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);padding:2rem;margin-bottom:1.5rem;}
+.card-tit{font-size:13px;font-weight:700;color:var(--g800);margin-bottom:1.2rem;padding-bottom:0.8rem;border-bottom:1px solid var(--g200);display:flex;align-items:center;gap:8px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:1rem;}
+.fg label{font-size:11px;font-weight:600;color:var(--g500);letter-spacing:0.3px;}
+.fg .hint{font-size:11px;color:var(--g400);margin-top:2px;}
+input,select,textarea{width:100%;background:#fff;border:1.5px solid var(--g200);border-radius:10px;padding:11px 14px;color:var(--g800);font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s;}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(27,79,219,0.08);}
+input::placeholder,textarea::placeholder{color:var(--g400);}
+select{appearance:none;}
+.checkbox-row{display:flex;align-items:center;gap:10px;padding:8px 0;}
+.checkbox-row input[type="checkbox"]{width:18px;height:18px;cursor:pointer;flex-shrink:0;}
+.checkbox-row label{font-size:13px;color:var(--g700);cursor:pointer;margin:0;}
+.btn-save{background:var(--grad);color:#fff;padding:13px 28px;border-radius:var(--r);font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;}
+.btn-cancel{background:#fff;color:var(--g500);padding:13px 24px;border-radius:var(--r);font-size:14px;font-weight:500;border:1.5px solid var(--g200);cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;}
+.vars-helper{background:var(--bpale);border:1.5px solid rgba(27,79,219,0.2);border-radius:var(--r);padding:1rem;margin-bottom:1rem;}
+.vars-tit{font-size:12px;font-weight:700;color:var(--blue);margin-bottom:8px;}
+.var-chip{display:inline-block;background:rgba(27,79,219,0.12);color:var(--blue);padding:3px 10px;border-radius:4px;font-family:monospace;font-size:11px;margin:2px 4px;cursor:pointer;transition:all 0.15s;}
+.var-chip:hover{background:var(--blue);color:#fff;}
+.preview-box{background:var(--g50);border:1.5px solid var(--g200);border-radius:var(--r);padding:1rem;font-size:13px;color:var(--g700);line-height:1.6;min-height:80px;white-space:pre-wrap;}
+.info-box{background:var(--bpale);border:1.5px solid rgba(27,79,219,0.2);border-radius:var(--r);padding:12px 16px;font-size:13px;color:var(--blue);margin-bottom:1rem;}
+@media(max-width:768px){.form-grid{grid-template-columns:1fr;}.wrap{padding:80px 1rem 2rem;}}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <div style="display:flex;align-items:center;gap:8px;"><div class="tn-em">E</div><div class="tn-name">EDEN GROUP</div><span style="font-size:11px;color:var(--g400);margin-left:6px;">GROUPY</span></div>
+  <div style="display:flex;gap:8px;">
+    <a class="tn-btn" href="{% url 'dashboard_groupy' %}">← Base GROUPY</a>
+    <a class="tn-btn" href="{% url 'logout' %}" style="background:#fee2e2;border-color:#fca5a5;color:#dc2626;">Déconnexion</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="page-tit">{% if qr %}✏ Modifier la Q&R{% else %}➕ Ajouter une Q&R à GROUPY{% endif %}</div>
+
+  {% if messages %}{% for msg in messages %}<div style="background:#fee2e2;border:1.5px solid #fca5a5;border-radius:var(--r);padding:12px 16px;margin-bottom:1.5rem;font-size:13px;color:#dc2626;">{{ msg }}</div>{% endfor %}{% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+
+    <!-- QUESTION -->
+    <div class="card">
+      <div class="card-tit">❓ Question(s)</div>
+      <div class="info-box">💡 Vous pouvez saisir plusieurs variantes de la même question en les séparant avec <strong>|</strong><br>Ex: <em>Où êtes-vous situés | adresse EDEN | comment venir | où se trouve EDEN GROUP</em></div>
+      <div class="fg">
+        <label>Question(s) / Variantes *</label>
+        <textarea name="question" rows="4" placeholder="Où se trouve EDEN GROUP | quelle est votre adresse | comment venir vous voir" required>{{ qr.question|default:'' }}</textarea>
+        <div class="hint">Séparez les variantes avec <strong>|</strong> pour augmenter les chances de détection.</div>
+      </div>
+      <div class="form-grid">
+        <div class="fg">
+          <label>Catégorie</label>
+          <select name="categorie">
+            <option value="">-- Sans catégorie --</option>
+            {% for cat in categories %}
+            <option value="{{ cat.id }}" {% if qr and qr.categorie_id == cat.id %}selected{% endif %}>{{ cat.emoji }} {{ cat.nom }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="fg">
+          <label>Priorité (0 = normale, 10 = très haute)</label>
+          <input type="number" name="priorite" value="{{ qr.priorite|default:'0' }}" min="0" max="10" placeholder="0">
+          <div class="hint">Les Q&R à haute priorité sont vérifiées en premier.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MOTS CLÉS -->
+    <div class="card">
+      <div class="card-tit">🔑 Mots-clés déclencheurs</div>
+      <div class="fg">
+        <label>Mots-clés (séparés par virgule)</label>
+        <input type="text" name="mots_cles" value="{{ qr.mots_cles|default:'' }}" placeholder="adresse, localisation, situé, bureau, où, venir, trouver, kennedy">
+        <div class="hint">Ces mots-clés aident GROUPY à détecter la question même si elle est formulée différemment.</div>
+      </div>
+    </div>
+
+    <!-- RÉPONSE -->
+    <div class="card">
+      <div class="card-tit">💬 Réponse de GROUPY</div>
+      <div class="vars-helper">
+        <div class="vars-tit">📌 Variables dynamiques (cliquez pour insérer dans la réponse)</div>
+        <span class="var-chip" onclick="insererVar('{NB_SITES}')">{NB_SITES}</span>
+        <span class="var-chip" onclick="insererVar('{NB_DISPONIBLES}')">{NB_DISPONIBLES}</span>
+        <span class="var-chip" onclick="insererVar('{NB_PROMOS}')">{NB_PROMOS}</span>
+        <span class="var-chip" onclick="insererVar('{TEL}')">{TEL}</span>
+        <span class="var-chip" onclick="insererVar('{EMAIL}')">{EMAIL}</span>
+        <span class="var-chip" onclick="insererVar('{HORAIRES}')">{HORAIRES}</span>
+        <span class="var-chip" onclick="insererVar('{LISTE_SITES}')">{LISTE_SITES}</span>
+        <span class="var-chip" onclick="insererVar('{LISTE_PROMOS}')">{LISTE_PROMOS}</span>
+      </div>
+      <div class="fg">
+        <label>Réponse *</label>
+        <textarea name="reponse" id="reponse-area" rows="8"
+          placeholder="📍 EDEN GROUP est situé :&#10;&#10;🏢 Immeuble EDEN, Avenue Kennedy, Yaoundé, Cameroun&#10;📞 {TEL}&#10;✉ {EMAIL}&#10;🕐 {HORAIRES}&#10;&#10;N'hésitez pas à nous appeler ou venir nous rendre visite !"
+          required>{{ qr.reponse|default:'' }}</textarea>
+        <div class="hint">Utilisez **texte** pour le gras, les emojis sont supportés, sautez des lignes pour aérer.</div>
+      </div>
+      <div class="fg">
+        <label>Aperçu de la réponse</label>
+        <div class="preview-box" id="preview-box">{{ qr.reponse|default:'La réponse apparaîtra ici...' }}</div>
+      </div>
+    </div>
+
+    <!-- OPTIONS -->
+    <div class="card">
+      <div class="card-tit">⚙ Options</div>
+      <div class="checkbox-row">
+        <input type="checkbox" name="is_active" id="is_active" {% if not qr or qr.is_active %}checked{% endif %}>
+        <label for="is_active">Q&R active (visible par GROUPY)</label>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;align-items:center;">
+      <button type="submit" class="btn-save">💾 {% if qr %}Enregistrer{% else %}Ajouter à la base{% endif %}</button>
+      <a href="{% url 'dashboard_groupy' %}" class="btn-cancel">Annuler</a>
+      {% if qr %}<span style="font-size:12px;color:var(--g400);">Utilisée {{ qr.nb_utilisations }} fois</span>{% endif %}
+    </div>
+  </form>
+</div>
+
+<script>
+const reponseArea = document.getElementById('reponse-area');
+const previewBox = document.getElementById('preview-box');
+
+reponseArea.addEventListener('input', () => {
+  previewBox.textContent = reponseArea.value || 'La réponse apparaîtra ici...';
+});
+
+function insererVar(v) {
+  const start = reponseArea.selectionStart;
+  const end = reponseArea.selectionEnd;
+  const text = reponseArea.value;
+  reponseArea.value = text.substring(0, start) + v + text.substring(end);
+  reponseArea.setSelectionRange(start + v.length, start + v.length);
+  reponseArea.focus();
+  previewBox.textContent = reponseArea.value;
+}
+</script>
+</body>
+</html>

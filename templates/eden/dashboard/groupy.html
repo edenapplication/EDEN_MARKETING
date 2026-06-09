@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GROUPY — Base de connaissances — EDEN GROUP</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g600:#4B5563;--g800:#1F2937;--r:12px;--rl:20px;}
+body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
+.topnav{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;border-bottom:1.5px solid var(--g200);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
+.tn-em{width:36px;height:36px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:#fff;}
+.tn-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tn-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1.5px solid var(--g200);background:#fff;color:var(--g500);font-family:'Outfit',sans-serif;display:inline-flex;align-items:center;gap:5px;transition:all 0.2s;}
+.tn-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--bpale);}
+.wrap{display:flex;padding-top:64px;min-height:100vh;}
+.sidebar{width:240px;background:#fff;border-right:1.5px solid var(--g200);position:fixed;top:64px;left:0;bottom:0;overflow-y:auto;z-index:900;}
+.sb-sec{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g400);padding:1.2rem 1.5rem 0.4rem;}
+.sb-lnk{display:flex;align-items:center;gap:10px;padding:10px 1.5rem;font-size:13px;font-weight:500;color:var(--g600);border-left:2px solid transparent;text-decoration:none;transition:all 0.15s;}
+.sb-lnk:hover,.sb-lnk.active{color:var(--blue);background:var(--bpale);border-left-color:var(--blue);}
+.sb-ico{font-size:15px;width:20px;text-align:center;flex-shrink:0;}
+.sb-user{padding:1.2rem 1.5rem;border-top:1px solid var(--g200);margin-top:1rem;}
+.main{flex:1;padding:2rem;margin-left:240px;}
+.page-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;}
+.page-tit{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--g800);}
+.btn-add{background:var(--grad);color:#fff;padding:10px 18px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+.btn-add:hover{opacity:0.88;}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
+.kpi{background:#fff;border:1.5px solid var(--g200);border-radius:var(--r);padding:1rem;text-align:center;position:relative;overflow:hidden;}
+.kpi::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--grad-h);}
+.kpi-n{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.kpi-l{font-size:11px;color:var(--g400);margin-top:2px;text-transform:uppercase;letter-spacing:0.5px;}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1.5rem;align-items:center;}
+.f-inp{padding:9px 14px;border-radius:var(--r);border:1.5px solid var(--g200);font-size:13px;color:var(--g600);background:#fff;outline:none;font-family:'Outfit',sans-serif;transition:border-color 0.2s;}
+.f-inp:focus{border-color:var(--blue);}
+.search-b{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--g200);border-radius:var(--r);padding:9px 14px;flex:1;max-width:300px;transition:border-color 0.2s;}
+.search-b:focus-within{border-color:var(--blue);}
+.search-b input{flex:1;background:none;border:none;outline:none;font-size:13px;font-family:'Outfit',sans-serif;color:var(--g800);}
+.qr-list{display:flex;flex-direction:column;gap:10px;}
+.qr-card{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);padding:1.2rem;transition:all 0.2s;}
+.qr-card:hover{border-color:rgba(27,79,219,0.2);box-shadow:0 4px 16px rgba(0,0,0,0.05);}
+.qr-card.inactive{opacity:0.55;}
+.qr-head{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:0.8rem;}
+.qr-q{font-size:14px;font-weight:700;color:var(--g800);flex:1;}
+.qr-badges{display:flex;gap:6px;align-items:center;flex-shrink:0;flex-wrap:wrap;}
+.qr-cat{font-size:11px;background:var(--bpale);color:var(--blue);padding:3px 10px;border-radius:100px;font-weight:600;}
+.qr-prio{font-size:11px;background:linear-gradient(135deg,rgba(27,79,219,0.1),rgba(200,16,46,0.08));color:#7B20B4;padding:3px 10px;border-radius:100px;font-weight:700;}
+.qr-uses{font-size:11px;background:#dcfce7;color:#16a34a;padding:3px 10px;border-radius:100px;font-weight:600;}
+.qr-r{font-size:13px;color:var(--g600);line-height:1.6;background:var(--g50);border-radius:8px;padding:0.8rem;margin-bottom:0.8rem;max-height:80px;overflow:hidden;position:relative;}
+.qr-r.expanded{max-height:none;}
+.qr-mots{font-size:11px;color:var(--g400);margin-bottom:0.8rem;}
+.qr-mots span{background:var(--g100);padding:2px 8px;border-radius:4px;margin-right:4px;display:inline-block;margin-bottom:3px;}
+.qr-actions{display:flex;gap:6px;align-items:center;}
+.btn-ed{background:var(--bpale);border:1px solid rgba(27,79,219,0.2);color:var(--blue);padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:4px;}
+.btn-del{background:#fee2e2;border:1px solid #fca5a5;color:#dc2626;padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:4px;cursor:pointer;border:none;font-family:'Outfit',sans-serif;}
+.btn-toggle{padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid;font-family:'Outfit',sans-serif;transition:all 0.2s;}
+.toggle-on{background:#dcfce7;border-color:#86efac;color:#16a34a;}
+.toggle-off{background:var(--g100);border-color:var(--g200);color:var(--g500);}
+.expand-btn{font-size:11px;color:var(--blue);cursor:pointer;margin-left:auto;text-decoration:none;font-weight:500;}
+/* TOP QUESTIONS */
+.top-card{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);padding:1.4rem;margin-bottom:1.5rem;}
+.top-hd{font-size:13px;font-weight:700;color:var(--g800);margin-bottom:1rem;}
+.top-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--g100);}
+.top-row:last-child{border-bottom:none;}
+.top-num{width:24px;height:24px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0;}
+.top-q{flex:1;font-size:12px;color:var(--g700);}
+.top-uses{font-size:11px;font-weight:700;color:#16a34a;background:#dcfce7;padding:2px 8px;border-radius:100px;}
+/* VARIABLES HELPER */
+.vars-box{background:var(--bpale);border:1.5px solid rgba(27,79,219,0.2);border-radius:var(--r);padding:1rem;margin-bottom:1.5rem;font-size:12px;}
+.vars-tit{font-weight:700;color:var(--blue);margin-bottom:8px;}
+.var-tag{display:inline-block;background:rgba(27,79,219,0.15);color:var(--blue);padding:3px 10px;border-radius:4px;font-family:monospace;font-size:11px;margin:3px 4px;cursor:pointer;}
+.var-tag:hover{background:var(--blue);color:#fff;}
+.pagination{display:flex;gap:6px;justify-content:center;margin-top:1.5rem;flex-wrap:wrap;}
+.pag-btn{padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;border:1.5px solid var(--g200);color:var(--g600);background:#fff;transition:all 0.2s;}
+.pag-btn.current{background:var(--grad);border-color:transparent;color:#fff;}
+.toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1.5px solid var(--g200);border-radius:var(--r);padding:14px 20px;font-size:13px;color:var(--g800);z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(100px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.1);}
+.toast.show{transform:none;opacity:1;}
+@media(max-width:1024px){.sidebar{display:none;}.main{margin-left:0;}.kpis{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"><span id="t-ico">✅</span>&nbsp;<span id="t-msg"></span></div>
+
+<nav class="topnav">
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="tn-em">E</div>
+    <div class="tn-name">EDEN GROUP</div>
+    <span style="font-size:11px;color:var(--g400);margin-left:6px;letter-spacing:1px;text-transform:uppercase;">GROUPY</span>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <a class="tn-btn" href="{% url 'dashboard_groupy_categories' %}">📂 Catégories</a>
+    <a class="tn-btn" href="{% url 'dashboard_home' %}">← Dashboard</a>
+    <a class="tn-btn" href="{% url 'logout' %}" style="background:#fee2e2;border-color:#fca5a5;color:#dc2626;">Déconnexion</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="sidebar">
+    <div class="sb-sec">Principal</div>
+    <a class="sb-lnk" href="{% url 'dashboard_home' %}"><span class="sb-ico">📊</span>Tableau de bord</a>
+    <a class="sb-lnk" href="{% url 'dashboard_sites' %}"><span class="sb-ico">🏡</span>Sites fonciers</a>
+    <a class="sb-lnk" href="{% url 'dashboard_parcelles' %}"><span class="sb-ico">📐</span>Parcelles</a>
+    <a class="sb-lnk" href="{% url 'dashboard_reservations' %}"><span class="sb-ico">📋</span>Reservations</a>
+    <a class="sb-lnk" href="{% url 'dashboard_contacts' %}"><span class="sb-ico">📩</span>Contacts</a>
+    <div class="sb-sec">Gestion</div>
+    <a class="sb-lnk" href="{% url 'dashboard_visites' %}"><span class="sb-ico">📅</span>Visites</a>
+    <a class="sb-lnk" href="{% url 'dashboard_promotions' %}"><span class="sb-ico">🔥</span>Promotions</a>
+    <a class="sb-lnk" href="{% url 'dashboard_temoignages' %}"><span class="sb-ico">💬</span>Temoignages</a>
+    <a class="sb-lnk active" href="{% url 'dashboard_groupy' %}"><span class="sb-ico">🤖</span>GROUPY</a>
+    {% if user.is_superuser %}<a class="sb-lnk" href="{% url 'dashboard_utilisateurs' %}"><span class="sb-ico">👥</span>Utilisateurs</a>{% endif %}
+    <a class="sb-lnk" href="{% url 'dashboard_parametres' %}"><span class="sb-ico">⚙</span>Paramètres</a>
+    <div class="sb-user">
+      <div style="font-size:13px;font-weight:700;color:var(--g800);">{{ user.get_full_name|default:user.username }}</div>
+      <div style="font-size:11px;color:var(--g400);">{% if user.is_superuser %}Super Admin{% else %}Admin{% endif %}</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="page-hd">
+      <div>
+        <h1 class="page-tit">🤖 Base de connaissances GROUPY</h1>
+        <div style="font-size:13px;color:var(--g500);margin-top:2px;">{{ total }} question{{ total|pluralize }} · {{ actifs }} active{{ actifs|pluralize }}</div>
+      </div>
+      <a class="btn-add" href="{% url 'dashboard_groupy_qr_ajouter' %}">+ Ajouter une Q&R</a>
+    </div>
+
+    {% if messages %}{% for msg in messages %}<div style="background:{% if msg.tags == 'error' %}#fee2e2{% else %}#dcfce7{% endif %};border:1.5px solid {% if msg.tags == 'error' %}#fca5a5{% else %}#86efac{% endif %};border-radius:var(--r);padding:12px 16px;margin-bottom:1.5rem;font-size:13px;color:{% if msg.tags == 'error' %}#dc2626{% else %}#16a34a{% endif %};">{{ msg }}</div>{% endfor %}{% endif %}
+
+    <!-- KPIs -->
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-n">{{ total }}</div><div class="kpi-l">Questions totales</div></div>
+      <div class="kpi"><div class="kpi-n">{{ actifs }}</div><div class="kpi-l">Actives</div></div>
+      <div class="kpi"><div class="kpi-n">{{ categories.count }}</div><div class="kpi-l">Catégories</div></div>
+      <div class="kpi"><div class="kpi-n">{{ top_questions.0.nb_utilisations|default:"0" }}</div><div class="kpi-l">Top utilisation</div></div>
+    </div>
+
+    <!-- TOP QUESTIONS -->
+    {% if top_questions %}
+    <div class="top-card">
+      <div class="top-hd">🏆 Questions les plus posées</div>
+      {% for q in top_questions %}
+      <div class="top-row">
+        <div class="top-num">{{ forloop.counter }}</div>
+        <div class="top-q">{{ q.question|truncatechars:60 }}</div>
+        <span class="top-uses">{{ q.nb_utilisations }}× utilisée</span>
+        <a href="{% url 'dashboard_groupy_qr_modifier' q.pk %}" style="font-size:11px;color:var(--blue);text-decoration:none;margin-left:8px;">✏</a>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- AIDE VARIABLES -->
+    <div class="vars-box">
+      <div class="vars-tit">💡 Variables dynamiques disponibles dans les réponses (cliquer pour copier)</div>
+      <div>
+        <span class="var-tag" onclick="copyVar('{NB_SITES}')">{NB_SITES}</span> — Nombre de sites actifs
+        <span class="var-tag" onclick="copyVar('{NB_DISPONIBLES}')">{NB_DISPONIBLES}</span> — Parcelles disponibles
+        <span class="var-tag" onclick="copyVar('{NB_PROMOS}')">{NB_PROMOS}</span> — Nombre de promotions
+        <span class="var-tag" onclick="copyVar('{TEL}')">{TEL}</span> — Téléphone EDEN
+        <span class="var-tag" onclick="copyVar('{EMAIL}')">{EMAIL}</span> — Email EDEN
+        <span class="var-tag" onclick="copyVar('{HORAIRES}')">{HORAIRES}</span> — Horaires
+        <span class="var-tag" onclick="copyVar('{LISTE_SITES}')">{LISTE_SITES}</span> — Liste complète des sites
+        <span class="var-tag" onclick="copyVar('{LISTE_PROMOS}')">{LISTE_PROMOS}</span> — Liste des promotions
+      </div>
+    </div>
+
+    <!-- FILTRES -->
+    <form method="get" class="filters">
+      <div class="search-b">
+        <span style="color:var(--blue);">🔍</span>
+        <input type="text" name="q" value="{{ q }}" placeholder="Rechercher dans la base...">
+      </div>
+      <select class="f-inp" name="cat" onchange="this.form.submit()">
+        <option value="">Toutes les catégories</option>
+        {% for cat in categories %}
+        <option value="{{ cat.id }}" {% if cat_filtre == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.emoji }} {{ cat.nom }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" style="padding:9px 18px;border-radius:var(--r);border:1.5px solid var(--g200);background:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;">Filtrer</button>
+      {% if q or cat_filtre %}<a href="{% url 'dashboard_groupy' %}" style="font-size:13px;color:var(--blue);text-decoration:none;padding:9px;">✕ Effacer</a>{% endif %}
+    </form>
+
+    <!-- LISTE Q&R -->
+    <div class="qr-list">
+      {% for qr in qrs %}
+      <div class="qr-card {% if not qr.is_active %}inactive{% endif %}" id="qr-{{ qr.pk }}">
+        <div class="qr-head">
+          <div class="qr-q">❓ {{ qr.question|truncatechars:80 }}</div>
+          <div class="qr-badges">
+            {% if qr.categorie %}<span class="qr-cat">{{ qr.categorie.emoji }} {{ qr.categorie.nom }}</span>{% endif %}
+            {% if qr.priorite > 0 %}<span class="qr-prio">P{{ qr.priorite }}</span>{% endif %}
+            {% if qr.nb_utilisations > 0 %}<span class="qr-uses">{{ qr.nb_utilisations }}× utilisée</span>{% endif %}
+            {% if not qr.is_active %}<span style="font-size:11px;background:#fee2e2;color:#dc2626;padding:3px 10px;border-radius:100px;font-weight:600;">Inactive</span>{% endif %}
+          </div>
+        </div>
+        <div class="qr-r" id="rep-{{ qr.pk }}">{{ qr.reponse }}</div>
+        {% if qr.mots_cles %}
+        <div class="qr-mots">
+          🔑
+          {% for m in qr.get_mots_cles_list %}
+          <span>{{ m }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+        <div class="qr-actions">
+          <a class="btn-ed" href="{% url 'dashboard_groupy_qr_modifier' qr.pk %}">✏ Modifier</a>
+          <button class="btn-del" onclick="supprimerQR({{ qr.pk }}, this)">🗑 Supprimer</button>
+          <button class="btn-toggle {% if qr.is_active %}toggle-on{% else %}toggle-off{% endif %}" onclick="toggleQR({{ qr.pk }}, this)">
+            {% if qr.is_active %}✅ Active{% else %}❌ Inactive{% endif %}
+          </button>
+          {% if qr.reponse|length > 150 %}
+          <a class="expand-btn" onclick="toggleExpand('rep-{{ qr.pk }}', this)">Voir plus ▼</a>
+          {% endif %}
+        </div>
+      </div>
+      {% empty %}
+      <div style="text-align:center;padding:4rem;background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);">
+        <div style="font-size:3rem;margin-bottom:0.8rem;">🤖</div>
+        <div style="font-size:15px;font-weight:600;color:var(--g800);margin-bottom:0.5rem;">Base vide</div>
+        <div style="font-size:13px;color:var(--g500);margin-bottom:1.5rem;">{% if q or cat_filtre %}Aucun résultat pour ces filtres.{% else %}Commencez par ajouter des questions-réponses à la base GROUPY.{% endif %}</div>
+        <a href="{% url 'dashboard_groupy_qr_ajouter' %}" class="btn-add">+ Ajouter la première Q&R</a>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- PAGINATION -->
+    {% if qrs.has_other_pages %}
+    <div class="pagination">
+      {% if qrs.has_previous %}<a class="pag-btn" href="?page={{ qrs.previous_page_number }}&q={{ q }}&cat={{ cat_filtre }}">← Précédent</a>{% endif %}
+      {% for i in qrs.paginator.page_range %}<a class="pag-btn {% if qrs.number == i %}current{% endif %}" href="?page={{ i }}&q={{ q }}&cat={{ cat_filtre }}">{{ i }}</a>{% endfor %}
+      {% if qrs.has_next %}<a class="pag-btn" href="?page={{ qrs.next_page_number }}&q={{ q }}&cat={{ cat_filtre }}">Suivant →</a>{% endif %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+function showToast(ico, msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('t-ico').textContent = ico;
+  document.getElementById('t-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+function supprimerQR(pk, btn) {
+  if (!confirm('Supprimer cette Q&R ?')) return;
+  const data = new FormData();
+  data.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+  fetch(`/dashboard/groupy/qr/${pk}/supprimer/`, {
+    method: 'POST',
+    headers: {'X-Requested-With': 'XMLHttpRequest'},
+    body: data
+  }).then(r => r.json()).then(d => {
+    if (d.success) {
+      document.getElementById('qr-' + pk).remove();
+      showToast('🗑', 'Q&R supprimée.');
+    }
+  });
+}
+
+function toggleQR(pk, btn) {
+  const data = new FormData();
+  data.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+  data.append('action', 'toggle');
+  fetch(`/api/groupy/toggle/?pk=${pk}`, {
+    method: 'POST',
+    headers: {'X-Requested-With': 'XMLHttpRequest'},
+    body: data
+  }).then(() => {
+    const card = document.getElementById('qr-' + pk);
+    const isActive = btn.classList.contains('toggle-on');
+    btn.classList.toggle('toggle-on', !isActive);
+    btn.classList.toggle('toggle-off', isActive);
+    btn.textContent = isActive ? '❌ Inactive' : '✅ Active';
+    card.classList.toggle('inactive', isActive);
+    showToast('✅', isActive ? 'Q&R désactivée.' : 'Q&R activée.');
+  }).catch(() => location.reload());
+}
+
+function toggleExpand(id, btn) {
+  const el = document.getElementById(id);
+  const expanded = el.classList.toggle('expanded');
+  btn.textContent = expanded ? 'Voir moins ▲' : 'Voir plus ▼';
+}
+
+function copyVar(v) {
+  navigator.clipboard.writeText(v).then(() => showToast('📋', `Variable ${v} copiée !`));
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parcelles — Dashboard EDEN GROUP</title>
+{% load humanize %}
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g600:#4B5563;--g800:#1F2937;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--g50);color:var(--g800);}
+.topnav{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;border-bottom:1.5px solid var(--g200);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
+.tn-logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.tnem{width:36px;height:36px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-weight:700;font-size:15px;color:#fff;}
+.tnname{font-family:Georgia,serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tnbtn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--g200);background:#fff;color:var(--g600);}
+.tnbtn:hover{border-color:var(--blue);color:var(--blue);background:var(--bpale);}
+.tnbtn-red{border-color:#fca5a5;background:#fee2e2;color:#dc2626;}
+
+.wrap{display:flex;padding-top:64px;min-height:100vh;}
+.sidebar{width:240px;background:#fff;border-right:1.5px solid var(--g200);min-height:calc(100vh - 64px);position:fixed;top:64px;left:0;bottom:0;overflow-y:auto;}
+.sb-sec{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g400);padding:1.2rem 1.5rem 0.4rem;}
+.sb-lnk{display:flex;align-items:center;gap:10px;padding:10px 1.5rem;font-size:13px;font-weight:500;color:var(--g600);cursor:pointer;border-left:2px solid transparent;text-decoration:none;transition:all 0.15s;}
+.sb-lnk:hover,.sb-lnk.active{color:var(--blue);background:var(--bpale);border-left-color:var(--blue);}
+.sb-ico{font-size:16px;width:20px;text-align:center;}
+
+.main{flex:1;padding:2rem;margin-left:240px;}
+.page-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;}
+.page-tit{font-size:1.5rem;font-weight:700;color:var(--g800);font-family:Georgia,serif;}
+.btn-add{background:var(--grad);color:#fff;padding:10px 18px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+.btn-add:hover{opacity:0.88;}
+
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1.5rem;padding:1rem;background:#fff;border:1.5px solid var(--g200);border-radius:12px;}
+.fi{background:#fff;border:1.5px solid var(--g200);border-radius:8px;padding:8px 12px;color:var(--g800);font-size:13px;outline:none;}
+.fi:focus{border-color:var(--blue);}
+
+.table-wrap{background:#fff;border:1.5px solid var(--g200);border-radius:16px;overflow:hidden;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{padding:12px 16px;text-align:left;font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--g400);border-bottom:1.5px solid var(--g200);background:var(--g50);}
+td{padding:12px 16px;border-bottom:1px solid var(--g100);color:var(--g700);}
+tr:hover td{background:var(--g50);}
+tr:last-child td{border-bottom:none;}
+.td-b{padding:3px 10px;border-radius:6px;font-size:10px;font-weight:700;}
+.td-a{background:#dcfce7;color:#16a34a;}
+.td-r{background:var(--bpale);color:var(--blue);}
+.td-v{background:#fee2e2;color:#dc2626;}
+.btn-sm{padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:4px;margin-right:4px;border:1.5px solid;}
+.btn-ed{background:var(--bpale);border-color:rgba(27,79,219,0.2);color:var(--blue);}
+.btn-ed:hover{background:rgba(27,79,219,0.15);}
+.btn-del{background:#fee2e2;border-color:#fca5a5;color:#dc2626;}
+.btn-del:hover{background:#fecaca;}
+.btn-vw{background:var(--g50);border-color:var(--g200);color:var(--g600);}
+.empty{text-align:center;padding:4rem;color:var(--g400);}
+@media(max-width:1024px){.sidebar{display:none;}.main{margin-left:0;}}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="tn-logo" href="{% url 'home' %}">
+    <div class="tnem">E</div>
+    <div class="tnname">EDEN GROUP</div>
+    <span style="font-size:11px;color:var(--g400);margin-left:8px;letter-spacing:1px;text-transform:uppercase;">Dashboard</span>
+  </a>
+  <div style="display:flex;gap:8px;">
+    <a class="tnbtn" href="{% url 'home' %}" target="_blank">🌐 Site public</a>
+    <a class="tnbtn tnbtn-red" href="{% url 'logout' %}">Deconnexion</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="sidebar">
+    <div class="sb-sec">Principal</div>
+    <a class="sb-lnk" href="{% url 'dashboard_home' %}"><span class="sb-ico">📊</span> Tableau de bord</a>
+    <a class="sb-lnk" href="{% url 'dashboard_sites' %}"><span class="sb-ico">🏡</span> Sites fonciers</a>
+    <a class="sb-lnk active" href="{% url 'dashboard_parcelles' %}"><span class="sb-ico">📐</span> Parcelles</a>
+    <a class="sb-lnk" href="{% url 'dashboard_reservations' %}"><span class="sb-ico">📋</span> Reservations</a>
+    <a class="sb-lnk" href="{% url 'dashboard_contacts' %}"><span class="sb-ico">📩</span> Contacts</a>
+    <div class="sb-sec">Gestion</div>
+    <a class="sb-lnk" href="{% url 'dashboard_visites' %}"><span class="sb-ico">📅</span> Visites</a>
+    <a class="sb-lnk" href="{% url 'dashboard_promotions' %}"><span class="sb-ico">🔥</span> Promotions</a>
+    <a class="sb-lnk" href="/admin/" target="_blank"><span class="sb-ico">⚙</span> Admin Django</a>
+  </div>
+
+  <div class="main">
+    <div class="page-hd">
+      <h1 class="page-tit">Gestion des Parcelles</h1>
+      <a class="btn-add" href="{% url 'dashboard_parcelle_ajouter' %}">+ Nouvelle parcelle</a>
+    </div>
+
+    <form method="get" class="filters">
+      <select name="site" class="fi" onchange="this.form.submit()">
+        <option value="">Tous les sites</option>
+        {% for s in sites %}<option value="{{ s.slug }}" {% if request.GET.site == s.slug %}selected{% endif %}>{{ s.nom }}</option>{% endfor %}
+      </select>
+      <select name="statut" class="fi" onchange="this.form.submit()">
+        <option value="">Tous les statuts</option>
+        <option value="disponible" {% if request.GET.statut == 'disponible' %}selected{% endif %}>Disponible</option>
+        <option value="reservee" {% if request.GET.statut == 'reservee' %}selected{% endif %}>Reservee</option>
+        <option value="vendue" {% if request.GET.statut == 'vendue' %}selected{% endif %}>Vendue</option>
+      </select>
+      <span style="font-size:13px;color:var(--g400);padding:8px 0;">{{ parcelles.count }} parcelle(s)</span>
+    </form>
+
+    {% if parcelles %}
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Numero</th><th>Site</th><th>Superficie</th><th>Prix</th><th>Prix/m²</th><th>Statut</th><th>GeoJSON</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in parcelles %}
+          <tr>
+            <td style="font-weight:700;">{{ p.numero }}</td>
+            <td><a href="{% url 'site_detail' p.site.slug %}" style="color:var(--blue);text-decoration:none;" target="_blank">{{ p.site.nom }}</a></td>
+            <td>{{ p.superficie|floatformat:0 }} m²</td>
+            <td style="font-weight:600;">
+              {% if p.en_promotion and p.prix_promo %}
+              <span style="text-decoration:line-through;color:var(--g400);font-size:11px;">{{ p.prix|intcomma }}</span><br>
+              <span style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">{{ p.prix_promo|intcomma }} FCFA</span>
+              {% else %}
+              {{ p.prix|intcomma }} FCFA
+              {% endif %}
+            </td>
+            <td style="color:var(--g400);font-size:12px;">{{ p.prix_m2|intcomma }} FCFA</td>
+            <td><span class="td-b {% if p.statut == 'disponible' %}td-a{% elif p.statut == 'reservee' %}td-r{% else %}td-v{% endif %}">{{ p.get_statut_display }}</span>{% if p.en_promotion %} <span class="td-b" style="background:#fff7ed;color:#ea580c;">Promo</span>{% endif %}</td>
+            <td>{% if p.geojson %}<span style="color:#16a34a;">✅</span>{% else %}<span style="color:var(--g400);">—</span>{% endif %}</td>
+            <td style="white-space:nowrap;">
+              <a class="btn-sm btn-ed" href="{% url 'dashboard_parcelle_modifier' p.id %}">✏</a>
+              <a class="btn-sm btn-vw" href="{% url 'parcelle_detail' p.site.slug p.numero %}" target="_blank">👁</a>
+              <a class="btn-sm btn-del" href="{% url 'dashboard_parcelle_supprimer' p.id %}">🗑</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty"><div style="font-size:3rem;margin-bottom:1rem;">📐</div><p>Aucune parcelle trouvee.</p><div style="margin-top:1.5rem;"><a href="{% url 'dashboard_parcelle_ajouter' %}" class="btn-add">+ Ajouter une parcelle</a></div></div>
+    {% endif %}
+  </div>
+</div>
+</body>
+</html>

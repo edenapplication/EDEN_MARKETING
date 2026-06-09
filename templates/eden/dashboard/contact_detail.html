@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact {{ contact.nom }} — EDEN GROUP</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1B4FDB;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g800:#1F2937;--r:12px;--rl:20px;}
+body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
+.topnav{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;border-bottom:1.5px solid var(--g200);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
+.tn-em{width:36px;height:36px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:#fff;}
+.tn-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tn-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1.5px solid var(--g200);background:#fff;color:var(--g500);font-family:'Outfit',sans-serif;}
+.wrap{padding:84px 2rem 2rem;max-width:900px;margin:0 auto;}
+.layout{display:grid;grid-template-columns:1fr 320px;gap:1.5rem;}
+.card{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);padding:1.5rem;margin-bottom:1.5rem;}
+.card-tit{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--g800);margin-bottom:1.2rem;padding-bottom:0.8rem;border-bottom:1px solid var(--g200);}
+.info-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--g100);}
+.info-row:last-child{border-bottom:none;}
+.ik{font-size:12px;color:var(--g500);}
+.iv{font-size:13px;font-weight:600;color:var(--g800);}
+.msg-box{background:var(--g50);border:1.5px solid var(--g200);border-radius:var(--r);padding:1rem;font-size:14px;color:var(--g700);line-height:1.7;margin:1rem 0;}
+textarea{width:100%;background:#fff;border:1.5px solid var(--g200);border-radius:10px;padding:11px 14px;color:var(--g800);font-family:'Outfit',sans-serif;font-size:14px;outline:none;resize:vertical;}
+textarea:focus{border-color:var(--blue);}
+select{width:100%;background:#fff;border:1.5px solid var(--g200);border-radius:10px;padding:11px 14px;color:var(--g800);font-family:'Outfit',sans-serif;font-size:14px;outline:none;appearance:none;margin-bottom:10px;}
+.btn-grad{background:var(--grad);color:#fff;padding:12px;border-radius:var(--r);font-size:13px;font-weight:700;border:none;cursor:pointer;width:100%;font-family:'Outfit',sans-serif;}
+.btn-wa{background:#25D366;color:#fff;padding:12px;border-radius:var(--r);font-size:13px;font-weight:700;border:none;cursor:pointer;width:100%;font-family:'Outfit',sans-serif;margin-top:8px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-del{background:#fee2e2;border:1px solid #fca5a5;color:#dc2626;padding:10px;border-radius:var(--r);font-size:13px;font-weight:600;text-decoration:none;display:block;text-align:center;margin-top:8px;}
+@media(max-width:768px){.layout{grid-template-columns:1fr;}.wrap{padding:80px 1rem 2rem;}}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <div style="display:flex;align-items:center;gap:8px;"><div class="tn-em">E</div><div class="tn-name">EDEN GROUP</div></div>
+  <div style="display:flex;gap:8px;"><a class="tn-btn" href="{% url 'dashboard_contacts' %}">← Contacts</a></div>
+</nav>
+<div class="wrap">
+  <div style="margin-bottom:1.5rem;">
+    <div style="font-size:11px;color:var(--g400);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.3rem;">Demande de contact</div>
+    <div style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--g800);">{{ contact.nom }}</div>
+  </div>
+  <div class="layout">
+    <div>
+      <div class="card">
+        <div class="card-tit">Informations client</div>
+        <div class="info-row"><span class="ik">Nom</span><span class="iv">{{ contact.nom }}</span></div>
+        <div class="info-row"><span class="ik">Email</span><span class="iv"><a href="mailto:{{ contact.email }}" style="color:var(--blue);">{{ contact.email }}</a></span></div>
+        <div class="info-row"><span class="ik">Telephone</span><span class="iv">{{ contact.telephone }}</span></div>
+        {% if contact.whatsapp %}<div class="info-row"><span class="ik">WhatsApp</span><span class="iv">{{ contact.whatsapp }}</span></div>{% endif %}
+        <div class="info-row"><span class="ik">Type de demande</span><span class="iv">{{ contact.get_type_demande_display }}</span></div>
+        {% if contact.site %}<div class="info-row"><span class="ik">Site interesse</span><span class="iv">{{ contact.site.nom }}</span></div>{% endif %}
+        {% if contact.budget %}<div class="info-row"><span class="ik">Budget</span><span class="iv">{{ contact.budget }}</span></div>{% endif %}
+        <div class="info-row"><span class="ik">Date</span><span class="iv">{{ contact.created_at|date:"d/m/Y H:i" }}</span></div>
+        <div class="info-row"><span class="ik">Adresse IP</span><span class="iv" style="color:var(--g400);font-size:11px;">{{ contact.ip_address|default:"—" }}</span></div>
+      </div>
+      <div class="card">
+        <div class="card-tit">Message</div>
+        <div class="msg-box">{{ contact.message }}</div>
+      </div>
+      <div class="card">
+        <div class="card-tit">Notes internes</div>
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="statut" value="{{ contact.statut }}">
+          <textarea name="notes_internes" rows="4" placeholder="Ajouter des notes internes sur ce contact...">{{ contact.notes_internes }}</textarea>
+          <button type="submit" class="btn-grad" style="margin-top:10px;">💾 Sauvegarder les notes</button>
+        </form>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="card-tit">Statut</div>
+        <form method="post">
+          {% csrf_token %}
+          <select name="statut">
+            <option value="nouveau" {% if contact.statut == 'nouveau' %}selected{% endif %}>Nouveau</option>
+            <option value="en_cours" {% if contact.statut == 'en_cours' %}selected{% endif %}>En cours</option>
+            <option value="traite" {% if contact.statut == 'traite' %}selected{% endif %}>Traite</option>
+            <option value="ferme" {% if contact.statut == 'ferme' %}selected{% endif %}>Ferme</option>
+          </select>
+          <button type="submit" class="btn-grad">Mettre a jour</button>
+        </form>
+        <a class="btn-wa" href="https://wa.me/{{ contact.telephone|cut:' '|cut:'+' }}?text=Bonjour+{{ contact.nom|urlencode }}%2C+nous+avons+bien+recu+votre+demande+EDEN+GROUP." target="_blank">💬 Repondre sur WhatsApp</a>
+        <a class="btn-wa" href="mailto:{{ contact.email }}?subject=Re: Demande EDEN GROUP" style="background:#4A7AFF;margin-top:8px;">✉ Repondre par email</a>
+        <a class="btn-del" href="{% url 'dashboard_contact_supprimer' contact.id %}">🗑 Supprimer ce contact</a>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

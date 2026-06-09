@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Promotions — EDEN GROUP</title>
+{% load humanize %}
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g400:#9CA3AF;--g600:#4B5563;--g800:#1F2937;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#fff;color:var(--g800);}
+h1,h2,h3{font-family:Georgia,serif;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;background:rgba(255,255,255,0.95);border-bottom:1.5px solid var(--g200);backdrop-filter:blur(20px);}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-em{width:40px;height:40px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-weight:700;font-size:18px;color:#fff;}
+.logo-name{font-family:Georgia,serif;font-size:19px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.nav-lnk{padding:8px 16px;font-size:13px;font-weight:500;color:var(--g600);text-decoration:none;border-radius:8px;transition:all 0.2s;}
+.nav-lnk:hover,.nav-lnk.active{color:var(--blue);background:var(--bpale);}
+.btn-cta{background:var(--grad);color:#fff;padding:9px 20px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;}
+
+.page-head{padding:8rem 2rem 3rem;background:linear-gradient(to bottom,var(--bpale),#fff);border-bottom:1.5px solid var(--g200);}
+.container{max-width:1200px;margin:0 auto;padding:0 2rem;}
+.ph-eyebrow{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.5rem;}
+.ph-title{font-family:Georgia,serif;font-size:2.4rem;font-weight:700;color:var(--g800);}
+.ph-title em{font-style:italic;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+.promo-hero{background:linear-gradient(135deg,rgba(27,79,219,0.06),rgba(200,16,46,0.04));border:1.5px solid var(--g200);border-radius:24px;padding:2.5rem;margin:2rem 0;position:relative;overflow:hidden;}
+.promo-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(200,16,46,0.1),transparent 70%);}
+
+.promo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;padding:2rem 0;}
+.promo-card{background:#fff;border:1.5px solid var(--g200);border-radius:20px;overflow:hidden;cursor:pointer;transition:all 0.3s;position:relative;}
+.promo-card:hover{transform:translateY(-4px);box-shadow:0 8px 40px rgba(27,79,219,0.15);border-color:rgba(27,79,219,0.2);}
+.pc-ribbon{position:absolute;top:14px;left:0;z-index:2;}
+.pc-ribbon span{background:var(--grad);color:#fff;padding:5px 16px 5px 12px;font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;display:block;clip-path:polygon(0 0,100% 0,93% 50%,100% 100%,0 100%);}
+.pc-top{height:130px;background:linear-gradient(135deg,var(--bpale),#F0F4FF);display:flex;align-items:center;justify-content:center;position:relative;}
+.pc-discount{font-family:Georgia,serif;font-size:4rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.pc-body{padding:1.2rem;}
+.pc-site{font-size:10px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:0.5px;}
+.pc-name{font-size:14px;font-weight:700;color:var(--g800);margin:3px 0 0.7rem;}
+.pc-prices{display:flex;align-items:baseline;gap:10px;margin-bottom:0.8rem;}
+.pc-old{font-size:13px;color:var(--g400);text-decoration:line-through;}
+.pc-new{font-size:1.3rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.pc-info{display:flex;gap:8px;margin-bottom:0.8rem;}
+.pc-tag{background:var(--bpale);color:var(--blue);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;}
+.pc-cd{display:flex;gap:6px;margin-bottom:0.8rem;}
+.cd-b{background:var(--g50);border:1px solid var(--g200);border-radius:8px;padding:6px 10px;text-align:center;min-width:46px;}
+.cd-n{font-size:1.1rem;font-weight:800;color:var(--g800);font-variant-numeric:tabular-nums;}
+.cd-l{font-size:8px;color:var(--g400);text-transform:uppercase;letter-spacing:0.5px;}
+.pc-cta{width:100%;background:var(--grad);border:none;color:#fff;padding:11px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;}
+.pc-cta:hover{opacity:0.88;}
+
+.no-promo{text-align:center;padding:4rem;color:var(--g400);}
+.no-promo-ico{font-size:3rem;margin-bottom:1rem;}
+
+.section{padding:4rem 0;}
+.s-ey{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.5rem;}
+.s-tit{font-family:Georgia,serif;font-size:2rem;font-weight:700;color:var(--g800);margin-bottom:1.5rem;}
+.s-tit em{font-style:italic;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+.sites-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.5rem;padding-bottom:4rem;}
+.site-card{background:#fff;border:1.5px solid var(--g200);border-radius:20px;overflow:hidden;transition:all 0.3s;text-decoration:none;color:inherit;display:block;}
+.site-card:hover{transform:translateY(-4px);border-color:rgba(27,79,219,0.3);box-shadow:0 8px 40px rgba(27,79,219,0.15);}
+.sc-img{height:200px;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--bpale),#F0F4FF);display:flex;align-items:center;justify-content:center;}
+.sc-img img{width:100%;height:100%;object-fit:cover;}
+.sc-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,22,40,0.65) 0%,transparent 55%);}
+.sc-status{position:absolute;top:12px;left:12px;padding:4px 12px;border-radius:100px;font-size:10px;font-weight:700;text-transform:uppercase;}
+.st-a{background:rgba(22,163,74,0.9);color:#fff;}.st-p{background:rgba(27,79,219,0.9);color:#fff;}.st-c{background:rgba(200,16,46,0.9);color:#fff;}
+.sc-loc{position:absolute;bottom:14px;left:14px;font-size:11px;color:rgba(255,255,255,0.9);}
+.sc-body{padding:1.2rem;}
+.sc-name{font-family:Georgia,serif;font-size:1.1rem;font-weight:700;color:var(--g800);margin-bottom:0.3rem;}
+.prog-bar{height:4px;background:var(--g200);border-radius:100px;overflow:hidden;margin:0.5rem 0;}
+.prog-fill{height:100%;background:var(--grad-h);border-radius:100px;}
+.sc-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--g400);}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.5);z-index:3000;display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px);}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:24px;padding:2rem;max-width:480px;width:100%;position:relative;box-shadow:0 24px 80px rgba(0,0,0,0.12);}
+.m-close{position:absolute;top:1rem;right:1rem;background:var(--g100);border:none;color:var(--g400);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:16px;}
+.m-title{font-family:Georgia,serif;font-size:1.5rem;font-weight:700;color:var(--g800);margin-bottom:0.3rem;}
+.m-desc{font-size:13px;color:var(--g400);margin-bottom:1.2rem;}
+.m-tag{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.3rem;}
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
+.fg label{font-size:11px;font-weight:600;color:var(--g400);}
+.fi{width:100%;background:#fff;border:1.5px solid var(--g200);border-radius:10px;padding:11px 14px;color:var(--g800);font-size:14px;outline:none;transition:border-color 0.2s;}
+.fi:focus{border-color:var(--blue);}
+.m-submit{width:100%;background:var(--grad);border:none;color:#fff;padding:13px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-top:6px;}
+.toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1.5px solid var(--g200);border-radius:12px;padding:14px 20px;font-size:13px;z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(80px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 8px 32px rgba(0,0,0,0.1);}
+.toast.show{transform:none;opacity:1;}
+footer{background:var(--g800);color:#fff;padding:2rem;text-align:center;margin-top:2rem;}
+.footer-copy{font-size:12px;color:#6b7280;}
+.footer-copy span{background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700;}
+@media(max-width:768px){nav{padding:0 1rem;}.container{padding:0 1rem;}.promo-grid,.sites-grid{grid-template-columns:1fr;}.page-head{padding:6rem 1rem 2rem;}}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="{% url 'home' %}">
+    <div class="logo-em">E</div>
+    <div><div class="logo-name">EDEN GROUP</div><div style="font-size:9px;font-weight:600;color:var(--g400);letter-spacing:2px;text-transform:uppercase;">Immobilier & Foncier</div></div>
+  </a>
+  <div style="display:flex;align-items:center;gap:4px;">
+    <a class="nav-lnk" href="{% url 'home' %}">Accueil</a>
+    <a class="nav-lnk" href="{% url 'sites_list' %}">Nos Sites</a>
+    <a class="nav-lnk" href="{% url 'carte' %}">Carte</a>
+    <a class="nav-lnk active" href="{% url 'promotions' %}">Promotions</a>
+    <a class="nav-lnk" href="{% url 'a_propos' %}">A Propos</a>
+    {% if user.is_staff %}<a class="nav-lnk" href="{% url 'dashboard_home' %}">Dashboard</a>{% endif %}
+  </div>
+  <button class="btn-cta" onclick="document.getElementById('modal').classList.add('open')">Reserver une parcelle</button>
+</nav>
+
+<div class="page-head">
+  <div class="container">
+    <div class="ph-eyebrow">🔥 Offres a duree limitee</div>
+    <h1 class="ph-title">Promotions <em>EDEN GROUP</em></h1>
+  </div>
+</div>
+
+<div class="container">
+  {% if promos %}
+  <div class="promo-hero">
+    <h2 style="font-family:Georgia,serif;font-size:1.8rem;font-weight:700;color:var(--g800);margin-bottom:0.5rem;">Des reductions <em style="font-style:italic;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">exceptionnelles</em></h2>
+    <p style="font-size:14px;color:var(--g400);">Offres valables jusqu'a epuisement des stocks. Saisissez ces opportunites uniques.</p>
+    <div style="display:flex;gap:2rem;margin-top:1.5rem;flex-wrap:wrap;">
+      <div><div style="font-family:Georgia,serif;font-size:2rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">{{ promos.count }}</div><div style="font-size:12px;color:var(--g400);text-transform:uppercase;letter-spacing:0.5px;">Offres actives</div></div>
+      <div><div style="font-family:Georgia,serif;font-size:2rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">-10%</div><div style="font-size:12px;color:var(--g400);text-transform:uppercase;letter-spacing:0.5px;">a -30% de reduction</div></div>
+    </div>
+  </div>
+
+  <div class="promo-grid">
+    {% for p in promos %}
+    <div class="promo-card" onclick="window.location='{% url 'parcelle_detail' p.site.slug p.numero %}'">
+      <div class="pc-ribbon"><span>Promotion</span></div>
+      <div class="pc-top"><div class="pc-discount">-{{ p.reduction_pct }}%</div></div>
+      <div class="pc-body">
+        <div class="pc-site">{{ p.site.nom }}</div>
+        <div class="pc-name">Parcelle {{ p.numero }} — {{ p.superficie|floatformat:0 }} m²</div>
+        <div class="pc-prices">
+          <span class="pc-old">{{ p.prix|intcomma }} FCFA</span>
+          <span class="pc-new">{{ p.prix_affiche|intcomma }} FCFA</span>
+        </div>
+        <div class="pc-info">
+          <span class="pc-tag">{{ p.superficie|floatformat:0 }} m²</span>
+          <span class="pc-tag" style="background:#f0fdf4;color:#16a34a;">Disponible</span>
+          {% if p.prix_m2 %}<span class="pc-tag">{{ p.prix_m2|intcomma }} FCFA/m²</span>{% endif %}
+        </div>
+        {% if p.promo_fin %}
+        <div style="font-size:11px;color:var(--g400);margin-bottom:0.5rem;">Expire le {{ p.promo_fin|date:"d/m/Y H:i" }}</div>
+        <div class="pc-cd" data-end="{{ p.promo_fin|date:'c' }}">
+          <div class="cd-b"><div class="cd-n cd-d">--</div><div class="cd-l">Jours</div></div>
+          <div class="cd-b"><div class="cd-n cd-h">--</div><div class="cd-l">Heures</div></div>
+          <div class="cd-b"><div class="cd-n cd-m">--</div><div class="cd-l">Min</div></div>
+          <div class="cd-b"><div class="cd-n cd-s">--</div><div class="cd-l">Sec</div></div>
+        </div>
+        {% endif %}
+        <button class="pc-cta" onclick="event.stopPropagation();document.getElementById('msite').value='{{ p.site.nom }} — Parcelle {{ p.numero }}';document.getElementById('modal').classList.add('open')">Saisir l'offre →</button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="no-promo">
+    <div class="no-promo-ico">🔥</div>
+    <h2 style="font-family:Georgia,serif;font-size:1.5rem;margin-bottom:0.5rem;">Aucune promotion en cours</h2>
+    <p>Revenez bientot pour decouvrir nos offres exclusives.</p>
+    <div style="margin-top:1.5rem;"><a href="{% url 'sites_list' %}" style="background:var(--grad);color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600;font-size:14px;">Voir tous nos sites →</a></div>
+  </div>
+  {% endif %}
+
+  {% if sites_promo %}
+  <div class="section">
+    <div class="s-ey">🏡 Sites en promotion</div>
+    <h2 class="s-tit">Sites <em>avec offres speciales</em></h2>
+    <div class="sites-grid">
+      {% for site in sites_promo %}
+      <a class="site-card" href="{% url 'site_detail' site.slug %}">
+        <div class="sc-img">
+          {% if site.image_principale %}<img src="{{ site.image_principale.url }}" alt="{{ site.nom }}">{% endif %}
+          <div class="sc-overlay"></div>
+          <span class="sc-status st-a">{{ site.get_statut_display }}</span>
+          <div class="sc-loc">📍 {{ site.localisation }}</div>
+        </div>
+        <div class="sc-body">
+          <div class="sc-name">{{ site.nom }}</div>
+          <div style="font-size:11px;color:var(--g400);margin-bottom:0.5rem;">{{ site.promotion_description }}</div>
+          <div class="prog-bar"><div class="prog-fill" style="width:{{ site.pourcentage_vendu }}%"></div></div>
+          <div class="sc-meta"><span>{{ site.nb_disponibles }} disponibles</span><span>{{ site.pourcentage_vendu }}% vendu</span></div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="section" style="padding-top:0;">
+    <div class="s-ey">📋 Tous nos sites</div>
+    <h2 class="s-tit">Catalogue <em>complet</em></h2>
+    <div style="text-align:center;"><a href="{% url 'sites_list' %}" style="background:var(--grad);color:#fff;padding:12px 28px;border-radius:12px;text-decoration:none;font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:8px;">🏡 Voir tous les sites fonciers →</a></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="m-close" onclick="document.getElementById('modal').classList.remove('open')">✕</button>
+    <div class="m-tag">✦ EDEN GROUP</div>
+    <div class="m-title">Saisir cette offre</div>
+    <div class="m-desc">Remplissez ce formulaire et notre equipe vous contactera sous 24h.</div>
+    <form id="mform">
+      {% csrf_token %}
+      <input type="hidden" name="type_demande" value="reservation">
+      <div class="fg"><label>Nom complet *</label><input class="fi" type="text" name="nom" placeholder="Votre nom complet" required></div>
+      <div class="fg"><label>Telephone *</label><input class="fi" type="tel" name="telephone" placeholder="+237 6XX XXX XXX" required></div>
+      <div class="fg"><label>Email *</label><input class="fi" type="email" name="email" placeholder="votre@email.com" required></div>
+      <div class="fg"><label>Offre souhaitee</label><input class="fi" type="text" name="message" id="msite" placeholder="Site et parcelle"></div>
+      <button type="button" class="m-submit" onclick="submitForm()">Saisir l'offre →</button>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span>✅</span><span id="tmsg"></span></div>
+
+<footer><div class="footer-copy">© 2025 <span>EDEN GROUP</span>. Tous droits reserves.</div></footer>
+
+<script>
+function submitForm() {
+  const form = document.getElementById('mform');
+  const data = new FormData(form);
+  fetch('{% url "contact" %}', {
+    method: 'POST', headers: {'X-Requested-With': 'XMLHttpRequest'}, body: data
+  }).then(r => r.json()).then(d => {
+    document.getElementById('modal').classList.remove('open');
+    const t = document.getElementById('toast');
+    document.getElementById('tmsg').textContent = 'Demande envoyee ! Nous vous contacterons sous 24h.';
+    t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 4000);
+  });
+}
+
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('open');
+});
+
+document.querySelectorAll('.pc-cd[data-end]').forEach(cd => {
+  const end = new Date(cd.dataset.end);
+  const tick = () => {
+    const diff = end - new Date();
+    if (diff <= 0) return;
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    const de = cd.querySelector('.cd-d'), he = cd.querySelector('.cd-h');
+    const me = cd.querySelector('.cd-m'), se = cd.querySelector('.cd-s');
+    if (de) de.textContent = d;
+    if (he) he.textContent = String(h).padStart(2,'0');
+    if (me) me.textContent = String(m).padStart(2,'0');
+    if (se) se.textContent = String(s).padStart(2,'0');
+  };
+  tick(); setInterval(tick, 1000);
+});
+</script>
+</body>
+</html>

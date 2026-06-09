@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Témoignages — Dashboard EDEN GROUP</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g800:#1F2937;--r:12px;--rl:20px;}
+body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
+.topnav{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;border-bottom:1.5px solid var(--g200);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
+.tn-logo{display:flex;align-items:center;gap:8px;}
+.tn-em{width:36px;height:36px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:#fff;}
+.tn-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tn-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1.5px solid var(--g200);background:#fff;color:var(--g500);font-family:'Outfit',sans-serif;cursor:pointer;}
+.wrap{display:flex;padding-top:64px;}
+.sidebar{width:240px;background:#fff;border-right:1.5px solid var(--g200);position:fixed;top:64px;left:0;bottom:0;overflow-y:auto;}
+.sb-sec{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g400);padding:1.2rem 1.5rem 0.4rem;}
+.sb-lnk{display:flex;align-items:center;gap:10px;padding:10px 1.5rem;font-size:13px;font-weight:500;color:var(--g500);border-left:2px solid transparent;text-decoration:none;}
+.sb-lnk:hover,.sb-lnk.active{color:var(--blue);background:var(--bpale);border-left-color:var(--blue);}
+.main{flex:1;padding:2rem;margin-left:240px;}
+.page-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;}
+.page-tit{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--g800);}
+.btn-add{background:var(--grad);color:#fff;padding:10px 18px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+.testi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.2rem;}
+.testi-card{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);padding:1.4rem;transition:all 0.2s;position:relative;}
+.testi-card:hover{border-color:rgba(27,79,219,0.25);box-shadow:0 4px 20px rgba(27,79,219,0.08);}
+.tc-stars{display:flex;gap:3px;margin-bottom:0.6rem;}
+.tc-star{font-size:13px;color:#f59e0b;}
+.tc-quote{font-size:13px;color:var(--g500);line-height:1.7;font-style:italic;margin-bottom:1rem;padding-left:1rem;position:relative;border-left:3px solid;}
+.tc-auth{display:flex;align-items:center;gap:10px;margin-bottom:1rem;}
+.tc-av{width:36px;height:36px;border-radius:50%;object-fit:cover;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
+.tc-name{font-size:13px;font-weight:700;color:var(--g800);}
+.tc-role{font-size:11px;color:var(--g400);}
+.tc-actions{display:flex;gap:6px;}
+.btn-ed{background:var(--bpale);border:1px solid rgba(27,79,219,0.2);color:var(--blue);padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;text-decoration:none;}
+.btn-del{background:#fee2e2;border:1px solid #fca5a5;color:#dc2626;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;text-decoration:none;}
+.badge-active{position:absolute;top:12px;right:12px;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;}
+.ba{background:#dcfce7;color:#16a34a;}
+.bi{background:var(--g100);color:var(--g500);}
+@media(max-width:1024px){.sidebar{display:none;}.main{margin-left:0;}}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <div class="tn-logo"><div class="tn-em">E</div><div class="tn-name">EDEN GROUP</div></div>
+  <div style="display:flex;gap:8px;"><a class="tn-btn" href="{% url 'dashboard_home' %}">← Dashboard</a><a class="tn-btn" href="{% url 'logout' %}" style="background:#fee2e2;border-color:#fca5a5;color:#dc2626;">Deconnexion</a></div>
+</nav>
+<div class="wrap">
+  <div class="sidebar">
+    <div class="sb-sec">Principal</div>
+    <a class="sb-lnk" href="{% url 'dashboard_home' %}">📊 Tableau de bord</a>
+    <a class="sb-lnk" href="{% url 'dashboard_sites' %}">🏡 Sites</a>
+    <a class="sb-lnk" href="{% url 'dashboard_parcelles' %}">📐 Parcelles</a>
+    <a class="sb-lnk" href="{% url 'dashboard_reservations' %}">📋 Reservations</a>
+    <a class="sb-lnk" href="{% url 'dashboard_contacts' %}">📩 Contacts</a>
+    <div class="sb-sec">Gestion</div>
+    <a class="sb-lnk" href="{% url 'dashboard_visites' %}">📅 Visites</a>
+    <a class="sb-lnk" href="{% url 'dashboard_promotions' %}">🔥 Promotions</a>
+    <a class="sb-lnk active" href="{% url 'dashboard_temoignages' %}">💬 Temoignages</a>
+    <a class="sb-lnk" href="{% url 'dashboard_parametres' %}">⚙ Parametres</a>
+  </div>
+  <div class="main">
+    <div class="page-hd">
+      <h1 class="page-tit">Temoignages Clients</h1>
+      <a class="btn-add" href="{% url 'dashboard_temoignage_ajouter' %}">+ Ajouter un temoignage</a>
+    </div>
+    <div class="testi-grid">
+      {% for t in temoignages %}
+      <div class="testi-card">
+        <span class="badge-active {% if t.is_active %}ba{% else %}bi{% endif %}">{% if t.is_active %}Visible{% else %}Masque{% endif %}</span>
+        <div class="tc-stars">{% for i in "12345" %}<span class="tc-star">{% if forloop.counter <= t.note %}★{% else %}☆{% endif %}</span>{% endfor %}</div>
+        <div class="tc-quote" style="border-color:{% cycle '#1B4FDB' '#C8102E' '#7B20B4' '#16a34a' %}">"{{ t.texte|truncatechars:120 }}"</div>
+        <div class="tc-auth">
+          {% if t.avatar %}
+          <img src="{{ t.avatar.url }}" alt="{{ t.nom }}" class="tc-av">
+          {% else %}
+          <div class="tc-av">{{ t.nom|first|upper }}</div>
+          {% endif %}
+          <div>
+            <div class="tc-name">{{ t.nom }}</div>
+            <div class="tc-role">{{ t.role }} — {{ t.note }}★</div>
+          </div>
+        </div>
+        <div class="tc-actions">
+          <a class="btn-ed" href="{% url 'dashboard_temoignage_modifier' t.pk %}">✏ Modifier</a>
+          <a class="btn-del" href="{% url 'dashboard_temoignage_supprimer' t.pk %}">🗑 Supprimer</a>
+          {% if t.site %}<span style="font-size:11px;color:var(--blue);background:var(--bpale);padding:5px 10px;border-radius:6px;margin-left:auto;">{{ t.site.nom }}</span>{% endif %}
+        </div>
+      </div>
+      {% empty %}
+      <div style="grid-column:1/-1;text-align:center;padding:3rem;background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);">
+        <div style="font-size:2.5rem;margin-bottom:0.8rem;">💬</div>
+        <div style="font-size:15px;font-weight:600;color:var(--g800);margin-bottom:0.4rem;">Aucun temoignage</div>
+        <a href="{% url 'dashboard_temoignage_ajouter' %}" class="btn-add" style="display:inline-flex;margin-top:1rem;">+ Ajouter le premier temoignage</a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+</body>
+</html>

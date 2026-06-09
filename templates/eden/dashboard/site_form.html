@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% if site %}Modifier{% else %}Ajouter{% endif %} un site — EDEN GROUP</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g400:#9CA3AF;--g600:#4B5563;--g800:#1F2937;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--g50);color:var(--g800);}
+.topnav{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;border-bottom:1.5px solid var(--g200);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
+.tn-logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.tnem{width:36px;height:36px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-weight:700;font-size:15px;color:#fff;}
+.tnname{font-family:Georgia,serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tnbtn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--g200);background:#fff;color:var(--g600);}
+.tnbtn:hover{border-color:var(--blue);color:var(--blue);background:var(--bpale);}
+
+.wrap{padding-top:84px;max-width:900px;margin:0 auto;padding-left:2rem;padding-right:2rem;padding-bottom:4rem;}
+.page-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;}
+.page-tit{font-size:1.5rem;font-weight:700;color:var(--g800);font-family:Georgia,serif;}
+
+.form-card{background:#fff;border:1.5px solid var(--g200);border-radius:20px;padding:2rem;margin-bottom:1.5rem;}
+.card-title{font-size:14px;font-weight:700;color:var(--g800);margin-bottom:1.5rem;padding-bottom:0.8rem;border-bottom:1.5px solid var(--g100);}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:4px;}
+.fg label{font-size:11px;font-weight:600;color:var(--g500);letter-spacing:0.3px;}
+.fi{background:#fff;border:1.5px solid var(--g200);border-radius:10px;padding:10px 14px;color:var(--g800);font-size:13px;outline:none;transition:border-color 0.2s;width:100%;}
+.fi:focus{border-color:var(--blue);}
+.fi::placeholder{color:var(--g400);}
+.fi select,.fi-select{appearance:none;background:#fff;}
+textarea.fi{resize:vertical;}
+.check-row{display:flex;align-items:center;gap:8px;padding:8px 0;font-size:13px;color:var(--g600);}
+.check-row input[type=checkbox]{width:16px;height:16px;cursor:pointer;}
+.fg-full{grid-column:1/-1;}
+
+.map-pick{height:300px;border-radius:12px;overflow:hidden;border:1.5px solid var(--g200);margin-top:0.5rem;cursor:crosshair;}
+.map-hint{font-size:11px;color:var(--g400);margin-top:4px;}
+
+.actions{display:flex;gap:12px;margin-top:1.5rem;}
+.btn-save{background:var(--grad);color:#fff;padding:12px 28px;border-radius:10px;font-size:14px;font-weight:700;border:none;cursor:pointer;}
+.btn-save:hover{opacity:0.88;}
+.btn-cancel{background:#fff;color:var(--g600);padding:12px 24px;border-radius:10px;font-size:14px;font-weight:500;border:1.5px solid var(--g200);text-decoration:none;display:inline-flex;}
+.btn-cancel:hover{border-color:var(--g400);}
+
+.errors{background:#fee2e2;border:1px solid #fca5a5;border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.5rem;}
+.errors li{font-size:13px;color:#dc2626;margin-bottom:4px;}
+
+@media(max-width:768px){.form-grid{grid-template-columns:1fr;}.wrap{padding:80px 1rem 3rem;}}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <a class="tn-logo" href="{% url 'home' %}">
+    <div class="tnem">E</div>
+    <div class="tnname">EDEN GROUP</div>
+  </a>
+  <div style="display:flex;gap:8px;">
+    <a class="tnbtn" href="{% url 'dashboard_sites' %}">← Sites</a>
+    <a class="tnbtn" href="{% url 'dashboard_home' %}">📊 Dashboard</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="page-hd">
+    <h1 class="page-tit">{% if site %}Modifier "{{ site.nom }}"{% else %}Nouveau site foncier{% endif %}</h1>
+  </div>
+
+  {% if form.errors %}
+  <ul class="errors">{% for field, errors in form.errors.items %}{% for error in errors %}<li><b>{{ field }}</b> : {{ error }}</li>{% endfor %}{% endfor %}</ul>
+  {% endif %}
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="form-card">
+      <div class="card-title">📋 Informations generales</div>
+      <div class="form-grid">
+        <div class="fg fg-full"><label>Nom du site *</label>{{ form.nom }}</div>
+        <div class="fg fg-full"><label>Description courte *</label>{{ form.description_courte }}</div>
+        <div class="fg fg-full"><label>Description complete *</label>{{ form.description }}</div>
+        <div class="fg"><label>Statut</label>{{ form.statut }}</div>
+        <div class="fg"><label>Ordre d'affichage</label>{{ form.ordre }}</div>
+        <div class="check-row"><label>{{ form.featured }} Mettre en avant sur la page d'accueil</label></div>
+        <div class="check-row"><label>{{ form.is_active }} Site actif (visible sur le site)</label></div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="card-title">📍 Localisation</div>
+      <div class="form-grid">
+        <div class="fg"><label>Localisation (ex: Mfoundi, Yaounde) *</label>{{ form.localisation }}</div>
+        <div class="fg"><label>Ville *</label>{{ form.ville }}</div>
+        <div class="fg"><label>Quartier</label>{{ form.quartier }}</div>
+        <div class="fg"><label>Zoom carte (14-19)</label>{{ form.zoom_carte }}</div>
+        <div class="fg"><label>Latitude GPS (ex: 3.8700)</label>{{ form.latitude }}</div>
+        <div class="fg"><label>Longitude GPS (ex: 11.5210)</label>{{ form.longitude }}</div>
+      </div>
+      <div class="card-title" style="margin-top:1.5rem;font-size:12px;">🗺 Cliquez sur la carte pour definir les coordonnees GPS</div>
+      <div id="map-picker" class="map-pick"></div>
+      <div class="map-hint">Cliquez sur la carte pour selectionner la position exacte du site</div>
+    </div>
+
+    <div class="form-card">
+      <div class="card-title">📸 Medias</div>
+      <div class="form-grid">
+        <div class="fg"><label>Image principale</label>{{ form.image_principale }}
+          {% if site and site.image_principale %}<div style="margin-top:6px;"><img src="{{ site.image_principale.url }}" style="width:100%;max-width:200px;border-radius:8px;" alt="Image actuelle"></div>{% endif %}
+        </div>
+        <div class="fg"><label>Video drone (URL YouTube/Vimeo)</label>{{ form.video_drone }}</div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="card-title">💰 Tarification</div>
+      <div class="form-grid">
+        <div class="fg"><label>Prix minimum (FCFA)</label>{{ form.prix_min }}</div>
+        <div class="fg"><label>Prix maximum (FCFA)</label>{{ form.prix_max }}</div>
+        <div class="fg"><label>Superficie totale (m²)</label>{{ form.superficie_totale }}</div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="card-title">🔥 Promotion</div>
+      <div class="form-grid">
+        <div class="check-row"><label>{{ form.en_promotion }} En promotion</label></div>
+        <div class="fg"><label>Description de la promotion</label>{{ form.promotion_description }}</div>
+        <div class="fg"><label>Date de fin de promotion</label>{{ form.promotion_fin }}</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="btn-save">💾 {% if site %}Sauvegarder les modifications{% else %}Creer le site{% endif %}</button>
+      <a href="{% url 'dashboard_sites' %}" class="btn-cancel">Annuler</a>
+    </div>
+  </form>
+</div>
+
+<script>
+const map = L.map('map-picker').setView([3.858, 11.510], 13);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:'© OpenStreetMap', maxZoom:19}).addTo(map);
+
+{% if site and site.latitude %}
+const existingMarker = L.marker([{{ site.latitude }}, {{ site.longitude }}]).addTo(map);
+map.setView([{{ site.latitude }}, {{ site.longitude }}], 15);
+{% endif %}
+
+let marker = null;
+map.on('click', function(e) {
+  const lat = e.latlng.lat.toFixed(7);
+  const lng = e.latlng.lng.toFixed(7);
+  document.querySelector('[name="latitude"]').value = lat;
+  document.querySelector('[name="longitude"]').value = lng;
+  if (marker) map.removeLayer(marker);
+  marker = L.marker(e.latlng).addTo(map).bindPopup('📍 Lat: ' + lat + '<br>Lng: ' + lng).openPopup();
+});
+</script>
+</body>
+</html>

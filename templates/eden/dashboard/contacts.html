@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contacts — Dashboard EDEN GROUP</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g600:#4B5563;--g800:#1F2937;--r:12px;--rl:20px;}
+body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
+.topnav{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;border-bottom:1.5px solid var(--g200);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
+.tn-em{width:36px;height:36px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:#fff;}
+.tn-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tn-right{display:flex;align-items:center;gap:8px;}
+.tn-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1.5px solid var(--g200);background:#fff;color:var(--g500);font-family:'Outfit',sans-serif;display:inline-flex;align-items:center;gap:5px;}
+.tn-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--bpale);}
+.wrap{display:flex;padding-top:64px;min-height:100vh;}
+.sidebar{width:240px;background:#fff;border-right:1.5px solid var(--g200);position:fixed;top:64px;left:0;bottom:0;overflow-y:auto;z-index:900;}
+.sb-sec{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g400);padding:1.2rem 1.5rem 0.4rem;}
+.sb-lnk{display:flex;align-items:center;gap:10px;padding:10px 1.5rem;font-size:13px;font-weight:500;color:var(--g600);border-left:2px solid transparent;text-decoration:none;transition:all 0.15s;}
+.sb-lnk:hover,.sb-lnk.active{color:var(--blue);background:var(--bpale);border-left-color:var(--blue);}
+.sb-ico{font-size:15px;width:20px;text-align:center;flex-shrink:0;}
+.sb-badge{margin-left:auto;background:var(--red);color:#fff;font-size:9px;font-weight:800;padding:2px 7px;border-radius:100px;}
+.sb-user{padding:1.2rem 1.5rem;border-top:1px solid var(--g200);margin-top:1rem;}
+.sb-uname{font-size:13px;font-weight:700;color:var(--g800);}
+.sb-urole{font-size:11px;color:var(--g400);margin-top:1px;}
+.main{flex:1;padding:2rem;margin-left:240px;}
+.page-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;}
+.page-tit{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--g800);}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1.5rem;align-items:center;}
+.filter-select{padding:9px 14px;border-radius:var(--r);border:1.5px solid var(--g200);font-size:13px;color:var(--g600);background:#fff;outline:none;font-family:'Outfit',sans-serif;}
+.search-box{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--g200);border-radius:var(--r);padding:9px 14px;flex:1;max-width:280px;}
+.search-box:focus-within{border-color:var(--blue);}
+.search-box input{flex:1;background:none;border:none;outline:none;font-size:13px;font-family:'Outfit',sans-serif;color:var(--g800);}
+.contact-list{display:flex;flex-direction:column;gap:12px;}
+.ci{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);padding:1.2rem;transition:all 0.2s;}
+.ci:hover{border-color:rgba(27,79,219,0.2);box-shadow:0 4px 16px rgba(0,0,0,0.05);}
+.ci.nouveau{border-left:4px solid var(--red);}
+.ci-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.6rem;gap:1rem;}
+.ci-name{font-size:15px;font-weight:700;color:var(--g800);}
+.ci-meta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:0.5rem;}
+.ci-meta a,.ci-meta span{font-size:12px;color:var(--g500);text-decoration:none;}
+.ci-meta a{color:var(--blue);}
+.ci-msg{font-size:13px;color:var(--g600);line-height:1.6;background:var(--g50);border:1px solid var(--g200);border-radius:8px;padding:0.8rem;margin-bottom:0.8rem;}
+.ci-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.ci-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid;font-family:'Outfit',sans-serif;transition:all 0.2s;text-decoration:none;display:inline-flex;align-items:center;gap:5px;}
+.cb-traite{background:#dcfce7;border-color:#86efac;color:#16a34a;}
+.cb-progress{background:var(--bpale);border-color:rgba(27,79,219,0.25);color:var(--blue);}
+.cb-close{background:var(--g100);border-color:var(--g200);color:var(--g600);}
+.cb-wa{background:#dcfce7;border-color:#86efac;color:#16a34a;}
+.cb-voir{background:var(--bpale);border-color:rgba(27,79,219,0.2);color:var(--blue);}
+.cb-del{background:#fee2e2;border-color:#fca5a5;color:#dc2626;}
+.pagination{display:flex;gap:6px;justify-content:center;margin-top:1.5rem;flex-wrap:wrap;}
+.pag-btn{padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;border:1.5px solid var(--g200);color:var(--g600);background:#fff;}
+.pag-btn.current{background:var(--grad);border-color:transparent;color:#fff;}
+.toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1.5px solid var(--g200);border-radius:var(--r);padding:14px 20px;font-size:13px;color:var(--g800);z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(100px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.1);}
+.toast.show{transform:none;opacity:1;}
+@media(max-width:1024px){.sidebar{display:none;}.main{margin-left:0;}}
+@media(max-width:640px){.main{padding:1rem;}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"><span id="t-ico">✅</span>&nbsp;<span id="t-msg"></span></div>
+
+<nav class="topnav">
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="tn-em">E</div>
+    <div class="tn-name">EDEN GROUP</div>
+    <span style="font-size:11px;color:var(--g400);margin-left:6px;letter-spacing:1px;text-transform:uppercase;">Dashboard</span>
+  </div>
+  <div class="tn-right">
+    <a class="tn-btn" href="{% url 'home' %}" target="_blank">🌐 Site</a>
+    <a class="tn-btn" href="{% url 'logout' %}" style="background:#fee2e2;border-color:#fca5a5;color:#dc2626;">Deconnexion</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="sidebar">
+    <div class="sb-sec">Principal</div>
+    <a class="sb-lnk" href="{% url 'dashboard_home' %}"><span class="sb-ico">📊</span>Tableau de bord</a>
+    <a class="sb-lnk" href="{% url 'dashboard_sites' %}"><span class="sb-ico">🏡</span>Sites fonciers</a>
+    <a class="sb-lnk" href="{% url 'dashboard_parcelles' %}"><span class="sb-ico">📐</span>Parcelles</a>
+    <a class="sb-lnk" href="{% url 'dashboard_reservations' %}"><span class="sb-ico">📋</span>Reservations</a>
+    <a class="sb-lnk active" href="{% url 'dashboard_contacts' %}">
+      <span class="sb-ico">📩</span>Contacts
+      {% if nouveaux > 0 %}<span class="sb-badge">{{ nouveaux }}</span>{% endif %}
+    </a>
+    <div class="sb-sec">Gestion</div>
+    <a class="sb-lnk" href="{% url 'dashboard_visites' %}"><span class="sb-ico">📅</span>Visites</a>
+    <a class="sb-lnk" href="{% url 'dashboard_promotions' %}"><span class="sb-ico">🔥</span>Promotions</a>
+    <a class="sb-lnk" href="{% url 'dashboard_temoignages' %}"><span class="sb-ico">💬</span>Temoignages</a>
+    {% if user.is_superuser %}<a class="sb-lnk" href="{% url 'dashboard_utilisateurs' %}"><span class="sb-ico">👥</span>Utilisateurs</a>{% endif %}
+    <a class="sb-lnk" href="{% url 'dashboard_parametres' %}"><span class="sb-ico">⚙</span>Parametres</a>
+    <div class="sb-sec">Liens rapides</div>
+    <a class="sb-lnk" href="{% url 'carte' %}" target="_blank"><span class="sb-ico">🗺</span>Carte publique</a>
+    <a class="sb-lnk" href="{% url 'home' %}" target="_blank"><span class="sb-ico">🌐</span>Site public</a>
+    <div class="sb-user">
+      <div class="sb-uname">{{ user.get_full_name|default:user.username }}</div>
+      <div class="sb-urole">{% if user.is_superuser %}Super Admin{% elif user.is_staff %}Administrateur{% endif %}</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="page-hd">
+      <div>
+        <h1 class="page-tit">Contacts & Demandes</h1>
+        <div style="font-size:13px;color:var(--g500);margin-top:2px;">
+          {% if nouveaux > 0 %}<span style="color:var(--red);font-weight:600;">{{ nouveaux }} non traite{{ nouveaux|pluralize }} ·</span>{% endif %}
+          {{ contacts.paginator.count }} total
+        </div>
+      </div>
+    </div>
+
+    <form method="get" class="filters">
+      <div class="search-box">
+        <span style="color:var(--blue);">🔍</span>
+        <input type="text" name="q" value="{{ q }}" placeholder="Nom, email, téléphone...">
+      </div>
+      <select class="filter-select" name="statut" onchange="this.form.submit()">
+        <option value="">Tous les statuts</option>
+        <option value="nouveau" {% if statut == 'nouveau' %}selected{% endif %}>🔴 Nouveau</option>
+        <option value="en_cours" {% if statut == 'en_cours' %}selected{% endif %}>🟡 En cours</option>
+        <option value="traite" {% if statut == 'traite' %}selected{% endif %}>🟢 Traite</option>
+        <option value="ferme" {% if statut == 'ferme' %}selected{% endif %}>⚫ Ferme</option>
+      </select>
+      <select class="filter-select" name="type" onchange="this.form.submit()">
+        <option value="">Tous les types</option>
+        <option value="achat" {% if type_d == 'achat' %}selected{% endif %}>Achat</option>
+        <option value="visite" {% if type_d == 'visite' %}selected{% endif %}>Visite</option>
+        <option value="reservation" {% if type_d == 'reservation' %}selected{% endif %}>Reservation</option>
+        <option value="information" {% if type_d == 'information' %}selected{% endif %}>Information</option>
+      </select>
+      <button type="submit" style="padding:9px 18px;border-radius:var(--r);border:1.5px solid var(--g200);background:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;">Filtrer</button>
+      {% if statut or q or type_d %}<a href="{% url 'dashboard_contacts' %}" style="font-size:13px;color:var(--blue);text-decoration:none;padding:9px;">✕ Effacer</a>{% endif %}
+    </form>
+
+    <div class="contact-list">
+      {% for c in contacts %}
+      <div class="ci {% if c.statut == 'nouveau' %}nouveau{% endif %}" id="ci-{{ c.id }}">
+        <div class="ci-head">
+          <div>
+            <div class="ci-name">{{ c.nom }}</div>
+            <div class="ci-meta">
+              <a href="tel:{{ c.telephone }}">📞 {{ c.telephone }}</a>
+              {% if c.email %}<a href="mailto:{{ c.email }}">✉ {{ c.email }}</a>{% endif %}
+              {% if c.whatsapp %}<a href="https://wa.me/{{ c.whatsapp|cut:'+' }}" target="_blank">💬 {{ c.whatsapp }}</a>{% endif %}
+              {% if c.site %}<span>🏡 {{ c.site.nom }}</span>{% endif %}
+              {% if c.budget %}<span>💰 {{ c.budget }}</span>{% endif %}
+              <span style="color:var(--g400);">{{ c.created_at|date:"d/m/Y H:i" }}</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;">
+            <span style="display:inline-block;padding:4px 12px;border-radius:100px;font-size:10px;font-weight:700;background:{% if c.statut == 'nouveau' %}#fee2e2{% elif c.statut == 'en_cours' %}#fef9c3{% elif c.statut == 'traite' %}#dcfce7{% else %}var(--g100){% endif %};color:{% if c.statut == 'nouveau' %}#dc2626{% elif c.statut == 'en_cours' %}#b45309{% elif c.statut == 'traite' %}#16a34a{% else %}var(--g500){% endif %};">{{ c.get_statut_display }}</span>
+            <span style="font-size:11px;background:var(--bpale);color:var(--blue);padding:3px 10px;border-radius:100px;font-weight:600;">{{ c.get_type_demande_display }}</span>
+          </div>
+        </div>
+        <div class="ci-msg">{{ c.message }}</div>
+        <div class="ci-actions">
+          {% if c.telephone %}
+          <a class="ci-btn cb-wa" href="https://wa.me/{{ c.telephone|cut:' '|cut:'+' }}?text=Bonjour+{{ c.nom|urlencode }}%2C+nous+avons+recu+votre+demande+EDEN+GROUP." target="_blank">💬 WhatsApp</a>
+          {% endif %}
+          <a class="ci-btn cb-voir" href="{% url 'dashboard_contact_detail' c.id %}">👁 Voir détails</a>
+          <button class="ci-btn cb-traite" onclick="updateStatut('{{ c.id }}','traite',this)">✅ Marquer traité</button>
+          <button class="ci-btn cb-progress" onclick="updateStatut('{{ c.id }}','en_cours',this)">⏳ En cours</button>
+          <button class="ci-btn cb-close" onclick="updateStatut('{{ c.id }}','ferme',this)">🔒 Fermer</button>
+          <a class="ci-btn cb-del" href="{% url 'dashboard_contact_supprimer' c.id %}" onclick="return confirm('Supprimer ce contact ?')">🗑</a>
+        </div>
+      </div>
+      {% empty %}
+      <div style="text-align:center;padding:4rem;background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);">
+        <div style="font-size:3rem;margin-bottom:0.8rem;">📩</div>
+        <div style="font-size:15px;font-weight:600;color:var(--g800);margin-bottom:0.4rem;">Aucun contact</div>
+        <div style="font-size:13px;color:var(--g500);">{% if statut or q or type_d %}Aucun résultat. <a href="{% url 'dashboard_contacts' %}" style="color:var(--blue);">Voir tout</a>{% else %}Les demandes de contact apparaîtront ici.{% endif %}</div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% if contacts.has_other_pages %}
+    <div class="pagination">
+      {% if contacts.has_previous %}<a class="pag-btn" href="?page={{ contacts.previous_page_number }}&statut={{ statut }}&q={{ q }}&type={{ type_d }}">← Précédent</a>{% endif %}
+      {% for i in contacts.paginator.page_range %}<a class="pag-btn {% if contacts.number == i %}current{% endif %}" href="?page={{ i }}&statut={{ statut }}&q={{ q }}&type={{ type_d }}">{{ i }}</a>{% endfor %}
+      {% if contacts.has_next %}<a class="pag-btn" href="?page={{ contacts.next_page_number }}&statut={{ statut }}&q={{ q }}&type={{ type_d }}">Suivant →</a>{% endif %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+function updateStatut(id, statut, btn) {
+  const data = new FormData();
+  data.append('pk', id);
+  data.append('statut', statut);
+  data.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+  fetch('{% url "dashboard_contacts" %}', {
+    method: 'POST',
+    headers: {'X-Requested-With': 'XMLHttpRequest'},
+    body: data
+  }).then(r => r.json()).then(d => {
+    if (d.success) {
+      const item = document.getElementById('ci-' + id);
+      if (statut === 'traite') { item.style.opacity = '0.6'; item.classList.remove('nouveau'); }
+      if (statut === 'ferme') { item.style.opacity = '0.4'; }
+      showToast('✅', 'Statut mis à jour : ' + statut);
+    }
+  }).catch(() => showToast('⚠️', 'Erreur réseau.'));
+}
+function showToast(ico, msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('t-ico').textContent = ico;
+  document.getElementById('t-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+</script>
+</body>
+</html>

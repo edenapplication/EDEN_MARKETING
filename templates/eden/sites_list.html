@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nos Sites Fonciers — EDEN GROUP</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g400:#9CA3AF;--g600:#4B5563;--g800:#1F2937;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#fff;color:var(--g800);}
+h1,h2,h3{font-family:Georgia,serif;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;background:rgba(255,255,255,0.95);border-bottom:1.5px solid var(--g200);backdrop-filter:blur(20px);}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-em{width:40px;height:40px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-weight:700;font-size:18px;color:#fff;}
+.logo-name{font-family:Georgia,serif;font-size:19px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.nav-links{display:flex;align-items:center;}
+.nav-lnk{padding:8px 16px;font-size:13px;font-weight:500;color:var(--g600);text-decoration:none;border-radius:8px;transition:all 0.2s;}
+.nav-lnk:hover,.nav-lnk.active{color:var(--blue);background:var(--bpale);}
+.btn-cta{background:var(--grad);color:#fff;padding:9px 20px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;}
+.btn-cta:hover{opacity:0.88;}
+
+.page-head{padding:8rem 2rem 3rem;background:linear-gradient(to bottom,var(--bpale),#fff);border-bottom:1.5px solid var(--g200);}
+.ph-eyebrow{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.5rem;}
+.ph-title{font-family:Georgia,serif;font-size:2.4rem;font-weight:700;color:var(--g800);}
+.ph-title em{font-style:italic;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+.container{max-width:1300px;margin:0 auto;padding:0 2rem;}
+.controls{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:2rem 0 1.5rem;}
+.search-wrap{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid var(--g200);border-radius:12px;padding:10px 16px;flex:1;max-width:380px;}
+.search-wrap:focus-within{border-color:var(--blue);}
+.search-wrap input{flex:1;background:none;border:none;outline:none;color:var(--g800);font-size:14px;}
+.search-wrap input::placeholder{color:var(--g400);}
+.filter-pills{display:flex;gap:8px;flex-wrap:wrap;}
+.fpill{padding:7px 18px;border-radius:100px;border:1.5px solid var(--g200);font-size:12px;font-weight:500;color:var(--g600);cursor:pointer;transition:all 0.2s;background:#fff;text-decoration:none;}
+.fpill:hover{border-color:var(--blue);color:var(--blue);}
+.fpill.active{background:var(--grad);border-color:transparent;color:#fff;}
+
+.sites-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.5rem;padding-bottom:4rem;}
+.site-card{background:#fff;border:1.5px solid var(--g200);border-radius:20px;overflow:hidden;transition:all 0.3s;text-decoration:none;color:inherit;display:block;}
+.site-card:hover{transform:translateY(-4px);border-color:rgba(27,79,219,0.3);box-shadow:0 8px 40px rgba(27,79,219,0.15);}
+.sc-img{height:220px;position:relative;overflow:hidden;}
+.sc-img-inner{width:100%;height:100%;transition:transform 0.4s;background:linear-gradient(135deg,var(--bpale),#F0F4FF);display:flex;align-items:center;justify-content:center;}
+.site-card:hover .sc-img-inner{transform:scale(1.04);}
+.sc-img img{width:100%;height:100%;object-fit:cover;}
+.sc-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,22,40,0.65) 0%,transparent 55%);}
+.sc-status{position:absolute;top:12px;left:12px;padding:4px 12px;border-radius:100px;font-size:10px;font-weight:700;text-transform:uppercase;}
+.st-a{background:rgba(22,163,74,0.9);color:#fff;}
+.st-p{background:rgba(27,79,219,0.9);color:#fff;}
+.st-c{background:rgba(200,16,46,0.9);color:#fff;}
+.sc-promo{position:absolute;top:12px;right:12px;background:var(--grad);color:#fff;padding:4px 10px;border-radius:100px;font-size:9px;font-weight:700;text-transform:uppercase;}
+.sc-loc{position:absolute;bottom:14px;left:14px;font-size:11px;color:rgba(255,255,255,0.9);}
+.sc-body{padding:1.3rem;}
+.sc-name{font-family:Georgia,serif;font-size:1.2rem;font-weight:700;color:var(--g800);margin-bottom:0.3rem;}
+.sc-desc{font-size:12px;color:var(--g400);line-height:1.6;margin-bottom:1rem;}
+.prog-hd{display:flex;justify-content:space-between;margin-bottom:5px;}
+.prog-lbl{font-size:11px;color:var(--g400);}
+.prog-pct{font-size:13px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.prog-bar{height:4px;background:var(--g200);border-radius:100px;overflow:hidden;margin-bottom:1rem;}
+.prog-fill{height:100%;background:var(--grad-h);border-radius:100px;}
+.sc-meta{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--g100);padding-top:0.8rem;margin-bottom:0.8rem;}
+.sm-i{text-align:center;}
+.sm-v{font-size:1.1rem;font-weight:700;color:var(--g800);}
+.sm-k{font-size:9px;color:var(--g400);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;}
+.sc-btns{display:flex;gap:8px;}
+.btn-so{flex:1;background:#fff;border:1.5px solid rgba(27,79,219,0.25);color:var(--blue);padding:9px;border-radius:8px;font-size:12px;font-weight:600;text-align:center;text-decoration:none;transition:all 0.2s;}
+.btn-so:hover{background:var(--bpale);}
+.btn-sg{flex:1;background:var(--grad);border:none;color:#fff;padding:9px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;}
+.btn-sg:hover{opacity:0.88;}
+
+.empty{text-align:center;padding:4rem;color:var(--g400);grid-column:1/-1;}
+.empty-ico{font-size:3rem;margin-bottom:1rem;}
+
+footer{background:var(--g800);color:#fff;padding:2rem;text-align:center;}
+.footer-copy{font-size:12px;color:#6b7280;}
+.footer-copy span{background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700;}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.5);z-index:3000;display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px);}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:24px;padding:2rem;max-width:480px;width:100%;position:relative;animation:mIn 0.3s ease;box-shadow:0 24px 80px rgba(0,0,0,0.12);}
+@keyframes mIn{from{opacity:0;transform:scale(0.95);}to{opacity:1;transform:none;}}
+.m-close{position:absolute;top:1rem;right:1rem;background:var(--g100);border:none;color:var(--g400);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:16px;}
+.m-title{font-family:Georgia,serif;font-size:1.5rem;font-weight:700;color:var(--g800);margin-bottom:0.3rem;}
+.m-desc{font-size:13px;color:var(--g400);margin-bottom:1.2rem;}
+.m-tag{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.3rem;}
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
+.fg label{font-size:11px;font-weight:600;color:var(--g400);}
+.fi{width:100%;background:#fff;border:1.5px solid var(--g200);border-radius:10px;padding:11px 14px;color:var(--g800);font-size:14px;outline:none;transition:border-color 0.2s;}
+.fi:focus{border-color:var(--blue);}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.m-submit{width:100%;background:var(--grad);border:none;color:#fff;padding:13px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-top:6px;}
+.m-submit:hover{opacity:0.88;}
+.toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1.5px solid var(--g200);border-radius:12px;padding:14px 20px;font-size:13px;z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(80px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 8px 32px rgba(0,0,0,0.1);}
+.toast.show{transform:none;opacity:1;}
+@media(max-width:768px){nav{padding:0 1rem;}.nav-links{display:none;}.sites-grid{grid-template-columns:1fr;}.page-head{padding:6rem 1rem 2rem;}.container{padding:0 1rem;}.controls{flex-direction:column;align-items:stretch;}.search-wrap{max-width:100%;}}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="{% url 'home' %}">
+    <div class="logo-em">E</div>
+    <div><div class="logo-name">EDEN GROUP</div><div style="font-size:9px;font-weight:600;color:var(--g400);letter-spacing:2px;text-transform:uppercase;">Immobilier & Foncier</div></div>
+  </a>
+  <div class="nav-links">
+    <a class="nav-lnk" href="{% url 'home' %}">Accueil</a>
+    <a class="nav-lnk active" href="{% url 'sites_list' %}">Nos Sites</a>
+    <a class="nav-lnk" href="{% url 'carte' %}">Carte</a>
+    <a class="nav-lnk" href="{% url 'promotions' %}">Promotions</a>
+    <a class="nav-lnk" href="{% url 'a_propos' %}">A Propos</a>
+    {% if user.is_staff %}<a class="nav-lnk" href="{% url 'dashboard_home' %}">Dashboard</a>{% endif %}
+  </div>
+  <button class="btn-cta" onclick="document.getElementById('modal').classList.add('open')">Reserver une parcelle</button>
+</nav>
+
+<div class="page-head">
+  <div class="container">
+    <div class="ph-eyebrow">✦ EDEN GROUP — Catalogue foncier</div>
+    <h1 class="ph-title">Nos <em>sites d'exception</em></h1>
+  </div>
+</div>
+
+<div class="container">
+  <div class="controls">
+    <div class="search-wrap">
+      <span style="color:var(--blue);">🔍</span>
+      <input type="text" id="search-input" placeholder="Rechercher un site, une ville..." oninput="filterCards()">
+    </div>
+    <div class="filter-pills">
+      <span class="fpill active" onclick="setFilter(this,'all')">Tous ({{ sites.count }})</span>
+      <span class="fpill" onclick="setFilter(this,'disponible')">Disponible</span>
+      <span class="fpill" onclick="setFilter(this,'en_cours')">En cours</span>
+      <span class="fpill" onclick="setFilter(this,'complet')">Complet</span>
+    </div>
+  </div>
+
+  <div class="sites-grid" id="sites-grid">
+    {% for site in sites %}
+    <a class="site-card" href="{% url 'site_detail' site.slug %}" data-statut="{{ site.statut }}" data-nom="{{ site.nom|lower }}" data-ville="{{ site.ville|lower }}">
+      <div class="sc-img">
+        {% if site.image_principale %}
+        <img src="{{ site.image_principale.url }}" alt="{{ site.nom }}">
+        {% else %}
+        <div class="sc-img-inner">
+          <svg width="70" height="70" viewBox="0 0 70 70" fill="none"><rect x="8" y="18" width="22" height="18" fill="rgba(27,79,219,0.2)" rx="2"/><rect x="35" y="12" width="18" height="26" fill="rgba(200,16,46,0.15)" rx="2"/><rect x="12" y="40" width="28" height="14" fill="rgba(27,79,219,0.12)" rx="2"/></svg>
+        </div>
+        {% endif %}
+        <div class="sc-overlay"></div>
+        <span class="sc-status {% if site.statut == 'disponible' %}st-a{% elif site.statut == 'en_cours' %}st-p{% else %}st-c{% endif %}">{{ site.get_statut_display }}</span>
+        {% if site.en_promotion %}<span class="sc-promo">🔥 Promo</span>{% endif %}
+        <div class="sc-loc">📍 {{ site.localisation }}</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-name">{{ site.nom }}</div>
+        <div class="sc-desc">{{ site.description_courte }}</div>
+        <div class="prog-hd"><span class="prog-lbl">Parcelles vendues</span><span class="prog-pct">{{ site.pourcentage_vendu }}%</span></div>
+        <div class="prog-bar"><div class="prog-fill" style="width:{{ site.pourcentage_vendu }}%"></div></div>
+        <div class="sc-meta">
+          <div class="sm-i"><div class="sm-v">{{ site.nb_parcelles_total }}</div><div class="sm-k">Total</div></div>
+          <div class="sm-i"><div class="sm-v" style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">{{ site.nb_vendues }}</div><div class="sm-k">Vendues</div></div>
+          <div class="sm-i"><div class="sm-v" style="color:#16a34a;">{{ site.nb_disponibles }}</div><div class="sm-k">Disponibles</div></div>
+        </div>
+        <div class="sc-btns">
+          <span class="btn-so">🗺 Voir sur la carte</span>
+          <button class="btn-sg" onclick="event.preventDefault();event.stopPropagation();document.getElementById('msite').value='{{ site.nom }}';document.getElementById('modal').classList.add('open')">Reserver →</button>
+        </div>
+      </div>
+    </a>
+    {% empty %}
+    <div class="empty"><div class="empty-ico">🏡</div><p>Aucun site foncier disponible pour le moment.</p><p style="margin-top:0.5rem;font-size:12px;">Ajoutez des sites depuis l'administration EDEN GROUP.</p></div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="m-close" onclick="document.getElementById('modal').classList.remove('open')">✕</button>
+    <div class="m-tag">✦ EDEN GROUP</div>
+    <div class="m-title">Reservez votre parcelle</div>
+    <div class="m-desc">Notre equipe vous contactera dans les 24 heures.</div>
+    <form method="post" action="{% url 'contact' %}" id="mform">
+      {% csrf_token %}
+      <input type="hidden" name="type_demande" value="reservation">
+      <div class="frow">
+        <div class="fg"><label>Prenom</label><input class="fi" type="text" name="nom" placeholder="Prenom Nom" required></div>
+        <div class="fg"><label>Telephone *</label><input class="fi" type="tel" name="telephone" placeholder="+237 6XX XXX XXX" required></div>
+      </div>
+      <div class="fg"><label>Email</label><input class="fi" type="email" name="email" placeholder="votre@email.com" required></div>
+      <div class="fg"><label>Site d'interet</label><input class="fi" type="text" name="message" id="msite" placeholder="Quel site vous interesse ?"></div>
+      <button type="submit" class="m-submit">Envoyer la demande →</button>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span>✅</span><span id="toast-msg"></span></div>
+
+<footer>
+  <div class="footer-copy">© 2025 <span>EDEN GROUP</span>. Tous droits reserves.</div>
+</footer>
+
+<script>
+let currentFilter = 'all';
+
+function setFilter(el, f) {
+  document.querySelectorAll('.fpill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  currentFilter = f;
+  filterCards();
+}
+
+function filterCards() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  document.querySelectorAll('#sites-grid .site-card').forEach(card => {
+    const nom = card.dataset.nom || '';
+    const ville = card.dataset.ville || '';
+    const statut = card.dataset.statut || '';
+    const matchQ = !q || nom.includes(q) || ville.includes(q);
+    const matchF = currentFilter === 'all' || statut === currentFilter;
+    card.style.display = (matchQ && matchF) ? '' : 'none';
+  });
+}
+
+document.getElementById('mform').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const data = new FormData(this);
+  fetch('{% url "contact" %}', {
+    method: 'POST',
+    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    body: data
+  }).then(r => r.json()).then(d => {
+    document.getElementById('modal').classList.remove('open');
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = 'Demande envoyee ! Nous vous contacterons sous 24h.';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 4000);
+  });
+});
+</script>
+</body>
+</html>

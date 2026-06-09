@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Confirmer la suppression — EDEN GROUP</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit',sans-serif;background:#F9FAFB;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;}
+:root{--blue:#1B4FDB;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--g200:#E5E7EB;}
+.card{background:#fff;border:1.5px solid var(--g200);border-radius:24px;padding:2.5rem;max-width:480px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,0.08);text-align:center;}
+.icon{font-size:4rem;margin-bottom:1rem;}
+h2{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;color:#1F2937;margin-bottom:0.5rem;}
+.desc{font-size:14px;color:#6B7280;margin-bottom:0.5rem;}
+.obj{font-size:15px;font-weight:700;color:#1F2937;background:#F3F4F6;border-radius:10px;padding:12px 16px;margin:1rem 0;word-break:break-all;}
+.warn{font-size:13px;color:#dc2626;background:#fee2e2;border:1px solid #fca5a5;border-radius:10px;padding:12px 16px;margin-bottom:1.5rem;}
+.btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn-del{background:#dc2626;color:#fff;padding:13px 28px;border-radius:12px;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;}
+.btn-del:hover{background:#b91c1c;transform:translateY(-1px);}
+.btn-cancel{background:#fff;color:#6B7280;padding:13px 24px;border-radius:12px;font-size:14px;font-weight:500;border:1.5px solid var(--g200);cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;transition:all 0.2s;}
+.btn-cancel:hover{border-color:var(--blue);color:var(--blue);}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="icon">⚠️</div>
+  <h2>Confirmer la suppression</h2>
+  <p class="desc">Vous allez supprimer définitivement :</p>
+  <div class="obj">{{ objet }}</div>
+  <div class="warn">⚠️ Cette action est irréversible. Toutes les données associées seront définitivement perdues.</div>
+  <form method="post">
+    {% csrf_token %}
+    <div class="btns">
+      {% if retour %}
+      <a href="{% url retour %}" class="btn-cancel">← Annuler</a>
+      {% else %}
+      <a href="javascript:history.back()" class="btn-cancel">← Annuler</a>
+      {% endif %}
+      <button type="submit" class="btn-del">🗑 Supprimer définitivement</button>
+    </div>
+  </form>
+</div>
+</body>
+</html>

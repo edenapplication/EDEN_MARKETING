@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connexion EDEN GROUP</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit',sans-serif;background:linear-gradient(135deg,#EEF3FF 0%,#fff 50%,#FFF0F2 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;}
+.card{background:#fff;border:1.5px solid #E5E7EB;border-radius:24px;padding:2.5rem;width:100%;max-width:420px;box-shadow:0 8px 40px rgba(27,79,219,0.1);}
+.lw{text-align:center;margin-bottom:2rem;}
+.lem{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#1B4FDB,#7B20B4,#C8102E);display:inline-flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:22px;color:#fff;margin-bottom:0.6rem;}
+.lname{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;background:linear-gradient(90deg,#1B4FDB,#7B20B4,#C8102E);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block;}
+.lsub{font-size:11px;color:#9CA3AF;letter-spacing:2px;text-transform:uppercase;}
+h2{font-size:1.4rem;font-weight:700;color:#1F2937;margin-bottom:0.3rem;font-family:'Playfair Display',serif;}
+.sub{font-size:13px;color:#6B7280;margin-bottom:1.5rem;}
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:1rem;}
+label{font-size:11px;font-weight:600;color:#6B7280;letter-spacing:0.3px;}
+input{background:#fff;border:1.5px solid #E5E7EB;border-radius:10px;padding:11px 14px;color:#1F2937;font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s;width:100%;}
+input:focus{border-color:#1B4FDB;}
+.btn{width:100%;background:linear-gradient(135deg,#1B4FDB,#7B20B4,#C8102E);color:#fff;border:none;padding:13px;border-radius:11px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;margin-top:0.5rem;transition:all 0.2s;}
+.btn:hover{opacity:0.88;}
+.err{background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;padding:10px 14px;font-size:13px;color:#dc2626;margin-bottom:1rem;}
+.back{display:block;text-align:center;margin-top:1.2rem;font-size:13px;color:#9CA3AF;text-decoration:none;}
+.back:hover{color:#1B4FDB;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="lw">
+    <div class="lem">E</div>
+    <span class="lname">EDEN GROUP</span>
+    <span class="lsub">Espace Administrateur</span>
+  </div>
+  <h2>Connexion</h2>
+  <p class="sub">Acces reserve a l'equipe EDEN GROUP</p>
+  {% if messages %}{% for msg in messages %}<div class="err">{{ msg }}</div>{% endfor %}{% endif %}
+  <form method="post">
+    {% csrf_token %}
+    <div class="fg"><label>Identifiant</label><input type="text" name="username" placeholder="Votre identifiant" required autofocus></div>
+    <div class="fg"><label>Mot de passe</label><input type="password" name="password" placeholder="••••••••" required></div>
+    <button type="submit" class="btn">Se connecter →</button>
+  </form>
+  <a class="back" href="{% url 'home' %}">← Retour au site public</a>
+</div>
+</body>
+</html>

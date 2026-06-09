@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="EDEN GROUP - Plateforme Fonciere Premium. Achat et vente de terrains et parcelles en Afrique.">
+<title>EDEN GROUP - Plateforme Fonciere Premium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+{% load humanize %}
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --blue:#1B4FDB;--blue-d:#0A1628;--blue-pale:#EEF3FF;--blue-light:#4A7AFF;
+  --red:#C8102E;--red-b:#E8213E;
+  --grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
+  --grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
+  --white:#fff;--gray-50:#F9FAFB;--gray-100:#F3F4F6;--gray-200:#E5E7EB;
+  --gray-400:#9CA3AF;--gray-600:#4B5563;--gray-800:#1F2937;
+  --shadow:0 4px 24px rgba(27,79,219,0.10);--shadow-lg:0 8px 40px rgba(27,79,219,0.15);
+  --r:12px;--rl:20px;--rxl:28px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:#fff;color:var(--gray-800);overflow-x:hidden;}
+h1,h2,h3{font-family:'Playfair Display',serif;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:#f1f5f9;}
+::-webkit-scrollbar-thumb{background:var(--grad-h);border-radius:100px;}
+
+/* SPLASH */
+#splash{position:fixed;inset:0;z-index:9999;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.7s,transform 0.7s;}
+#splash.hidden{opacity:0;transform:scale(1.03);pointer-events:none;}
+.sp-logo{font-family:'Playfair Display',serif;font-size:clamp(2.5rem,6vw,4.5rem);font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.3rem;}
+.sp-sub{font-size:13px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:var(--gray-400);margin-bottom:2rem;}
+.sp-bar{width:180px;height:3px;background:var(--gray-200);border-radius:100px;overflow:hidden;}
+.sp-fill{height:100%;width:0%;background:var(--grad-h);border-radius:100px;animation:spFill 2s ease forwards;}
+@keyframes spFill{to{width:100%}}
+.sp-dots{display:flex;gap:8px;margin-top:1.2rem;}
+.sp-dot{width:7px;height:7px;border-radius:50%;animation:dotP 1.2s ease infinite;}
+.sp-dot:nth-child(1){background:var(--blue);animation-delay:0s;}
+.sp-dot:nth-child(2){background:#7B20B4;animation-delay:0.2s;}
+.sp-dot:nth-child(3){background:var(--red);animation-delay:0.4s;}
+@keyframes dotP{0%,80%,100%{transform:scale(0.6);opacity:0.4;}40%{transform:scale(1);opacity:1;}}
+
+/* TOAST */
+.toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1.5px solid var(--gray-200);border-radius:var(--r);padding:14px 20px;font-size:13px;color:var(--gray-800);z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(100px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.1);}
+.toast.show{transform:none;opacity:1;}
+.toast-bar{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:var(--r) 0 0 var(--r);background:var(--grad-h);}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;background:rgba(255,255,255,0.93);backdrop-filter:blur(20px);border-bottom:1.5px solid var(--gray-200);transition:all 0.3s;}
+nav.scrolled{background:#fff;box-shadow:0 2px 20px rgba(0,0,0,0.08);}
+.nav-logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;}
+.logo-em{width:40px;height:40px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:18px;color:#fff;flex-shrink:0;}
+.logo-eden{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.logo-group{font-size:9px;font-weight:600;color:var(--gray-400);letter-spacing:2px;text-transform:uppercase;}
+.nav-links{display:flex;align-items:center;}
+.nav-lnk{padding:8px 16px;font-size:13px;font-weight:500;color:var(--gray-600);cursor:pointer;border-radius:8px;transition:all 0.2s;text-decoration:none;background:none;border:none;font-family:'Outfit',sans-serif;}
+.nav-lnk:hover,.nav-lnk.active{color:var(--blue);background:var(--blue-pale);}
+.btn-cta{background:var(--grad);color:#fff;padding:9px 20px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.25s;}
+.btn-cta:hover{opacity:0.9;transform:translateY(-1px);box-shadow:var(--shadow-lg);}
+.nav-tel{font-size:12px;font-weight:600;color:var(--gray-600);display:flex;align-items:center;gap:5px;}
+.nav-tel span{color:var(--blue);}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:6px;}
+.hamburger span{width:22px;height:2px;background:var(--gray-800);border-radius:2px;display:block;}
+.mob-menu{display:none;position:fixed;top:70px;left:0;right:0;background:#fff;border-bottom:1.5px solid var(--gray-200);padding:1rem;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.08);}
+.mob-menu.open{display:flex;flex-direction:column;gap:4px;}
+
+/* HERO */
+#hero{min-height:100vh;position:relative;display:flex;align-items:center;overflow:hidden;background:#fff;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 15% 50%,rgba(27,79,219,0.05) 0%,transparent 60%),radial-gradient(ellipse at 85% 50%,rgba(200,16,46,0.04) 0%,transparent 60%);}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(27,79,219,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(27,79,219,0.04) 1px,transparent 1px);background-size:80px 80px;}
+.hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;padding:8rem 3rem 5rem;max-width:1300px;margin:0 auto;width:100%;}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:100px;border:1px solid rgba(27,79,219,0.25);background:var(--blue-pale);margin-bottom:1.5rem;}
+.tag-dot{width:7px;height:7px;border-radius:50%;background:var(--grad-h);animation:tagP 2s ease infinite;}
+@keyframes tagP{0%,100%{box-shadow:0 0 0 0 rgba(27,79,219,0.4);}50%{box-shadow:0 0 0 6px rgba(27,79,219,0);}}
+.hero-tag span{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-h1{font-size:clamp(2.4rem,4vw,3.8rem);font-weight:700;line-height:1.1;color:var(--gray-800);margin-bottom:1rem;}
+.hero-h1 .gt{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:italic;}
+.hero-desc{font-size:15px;color:var(--gray-600);line-height:1.75;max-width:480px;margin-bottom:2rem;}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:2rem;}
+.btn-p{background:var(--grad);color:#fff;padding:13px 24px;border-radius:var(--r);font-size:14px;font-weight:600;border:none;cursor:pointer;transition:all 0.25s;display:inline-flex;align-items:center;gap:8px;font-family:'Outfit',sans-serif;text-decoration:none;}
+.btn-p:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);}
+.btn-o{background:#fff;color:var(--blue);padding:13px 24px;border-radius:var(--r);font-size:14px;font-weight:500;border:1.5px solid rgba(27,79,219,0.3);cursor:pointer;transition:all 0.25s;display:inline-flex;align-items:center;gap:8px;font-family:'Outfit',sans-serif;text-decoration:none;}
+.btn-o:hover{border-color:var(--blue);background:var(--blue-pale);}
+.trust-bar{display:flex;align-items:center;gap:1.5rem;}
+.trust-avs{display:flex;}
+.trust-av{width:34px;height:34px;border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;margin-left:-10px;background:var(--grad);}
+.trust-av:first-child{margin-left:0;}
+.trust-txt strong{display:block;font-size:13px;color:var(--gray-800);}
+.trust-txt{font-size:12px;color:var(--gray-400);}
+
+/* Hero right */
+.hero-card{background:#fff;border:1.5px solid var(--gray-200);border-radius:var(--rxl);overflow:hidden;box-shadow:var(--shadow-lg);position:relative;}
+.hc-map{height:280px;background:linear-gradient(135deg,var(--blue-pale),#F8FAFF);position:relative;overflow:hidden;}
+.hc-map-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(27,79,219,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(27,79,219,0.08) 1px,transparent 1px);background-size:30px 30px;}
+.hc-p{position:absolute;border-radius:4px;}
+.hc-stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1.5px solid var(--gray-200);}
+.hc-stat{padding:1rem;text-align:center;border-right:1px solid var(--gray-200);}
+.hc-stat:last-child{border-right:none;}
+.hc-stat-n{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hc-stat-l{font-size:9px;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.7px;margin-top:2px;}
+.float-b{position:absolute;background:#fff;border-radius:12px;padding:10px 14px;border:1.5px solid;box-shadow:0 8px 24px rgba(0,0,0,0.07);animation:fltY 4s ease-in-out infinite;}
+@keyframes fltY{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+.fb-t{top:-18px;right:20px;border-color:rgba(27,79,219,0.2);}
+.fb-b{bottom:60px;left:-24px;border-color:rgba(200,16,46,0.18);animation-delay:2s;}
+.fb-title{font-size:10px;font-weight:600;color:var(--gray-600);}
+.fb-val{font-size:1.2rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.fb-sub{font-size:10px;color:var(--gray-400);}
+.pin-d{position:absolute;width:16px;height:16px;border-radius:50%;background:var(--grad);border:2px solid #fff;animation:pinA 3s ease infinite;box-shadow:0 2px 8px rgba(27,79,219,0.3);}
+@keyframes pinA{0%,100%{transform:scale(1);}50%{transform:scale(1.2);}}
+
+/* STATS BAR */
+.stats-bar{background:var(--gray-50);border-top:1.5px solid var(--gray-200);border-bottom:1.5px solid var(--gray-200);}
+.stats-inner{display:grid;grid-template-columns:repeat(4,1fr);max-width:1200px;margin:0 auto;}
+.stat-c{padding:1.6rem 1.2rem;text-align:center;border-right:1px solid var(--gray-200);position:relative;overflow:hidden;transition:background 0.2s;}
+.stat-c:hover{background:#fff;}
+.stat-c:last-child{border-right:none;}
+.stat-c::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:0;height:3px;background:var(--grad-h);transition:width 0.5s;}
+.stat-c:hover::after{width:100%;}
+.stat-n{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-l{font-size:12px;color:var(--gray-400);font-weight:500;margin-top:3px;}
+.stat-t{font-size:11px;font-weight:600;color:#16a34a;margin-top:2px;}
+
+/* SECTIONS */
+.sec{padding:5rem 2rem;max-width:1300px;margin:0 auto;}
+.sec-full{padding:5rem 2rem;background:var(--gray-50);}
+.sec-center{max-width:1200px;margin:0 auto;}
+.s-ey{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.5rem;}
+.s-tit{font-size:clamp(1.8rem,3vw,2.6rem);font-weight:700;color:var(--gray-800);line-height:1.2;}
+.s-tit em{font-style:italic;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.s-desc{font-size:14px;color:var(--gray-600);line-height:1.7;max-width:560px;margin-top:0.5rem;}
+.s-hd{margin-bottom:2.5rem;}
+
+/* FILTER PILLS */
+.fpills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem;}
+.fpill{padding:7px 18px;border-radius:100px;border:1.5px solid var(--gray-200);font-size:12px;font-weight:500;color:var(--gray-600);cursor:pointer;transition:all 0.2s;background:#fff;}
+.fpill:hover{border-color:var(--blue);color:var(--blue);}
+.fpill.active{background:var(--grad);border-color:transparent;color:#fff;}
+
+/* SITE CARDS */
+.sites-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.5rem;}
+.site-card{background:#fff;border:1.5px solid var(--gray-200);border-radius:var(--rl);overflow:hidden;cursor:pointer;transition:all 0.3s;}
+.site-card:hover{transform:translateY(-4px);border-color:rgba(27,79,219,0.3);box-shadow:var(--shadow-lg);}
+.sc-img{height:220px;position:relative;overflow:hidden;}
+.sc-img-inner{width:100%;height:100%;transition:transform 0.4s;background:linear-gradient(135deg,var(--blue-pale),#F0F4FF);display:flex;align-items:center;justify-content:center;}
+.site-card:hover .sc-img-inner{transform:scale(1.04);}
+.sc-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,22,40,0.65) 0%,transparent 55%);}
+.sc-status{position:absolute;top:12px;left:12px;padding:4px 12px;border-radius:100px;font-size:10px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;}
+.st-a{background:rgba(22,163,74,0.9);color:#fff;}
+.st-p{background:rgba(27,79,219,0.9);color:#fff;}
+.st-c{background:rgba(200,16,46,0.9);color:#fff;}
+.sc-promo{position:absolute;top:12px;right:12px;background:var(--grad);color:#fff;padding:4px 10px;border-radius:100px;font-size:9px;font-weight:700;text-transform:uppercase;}
+.sc-loc{position:absolute;bottom:14px;left:14px;font-size:11px;color:rgba(255,255,255,0.9);display:flex;align-items:center;gap:4px;}
+.sc-body{padding:1.3rem;}
+.sc-name{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--gray-800);margin-bottom:0.3rem;}
+.sc-desc{font-size:12px;color:var(--gray-500);line-height:1.6;margin-bottom:1rem;}
+.prog-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.prog-lbl{font-size:11px;color:var(--gray-400);}
+.prog-pct{font-size:13px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.prog-bar{height:4px;background:var(--gray-200);border-radius:100px;overflow:hidden;margin-bottom:1rem;}
+.prog-fill{height:100%;background:var(--grad-h);border-radius:100px;transition:width 1s ease;}
+.sc-meta{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--gray-100);padding-top:0.8rem;margin-bottom:0.8rem;}
+.sm-i{text-align:center;}
+.sm-v{font-size:1.1rem;font-weight:700;color:var(--gray-800);}
+.sm-k{font-size:9px;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;}
+.sc-btns{display:flex;gap:8px;}
+.btn-so{flex:1;background:#fff;border:1.5px solid rgba(27,79,219,0.25);color:var(--blue);padding:9px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;text-align:center;text-decoration:none;}
+.btn-so:hover{background:var(--blue-pale);}
+.btn-sg{flex:1;background:var(--grad);border:none;color:#fff;padding:9px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;}
+.btn-sg:hover{opacity:0.88;}
+
+/* ABOUT */
+.about-sec{background:#fff;padding:5rem 2rem;}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;max-width:1200px;margin:0 auto;}
+.about-vis{position:relative;height:400px;}
+.about-card{position:absolute;inset:0;background:linear-gradient(135deg,var(--blue-pale),#fff);border:1.5px solid var(--gray-200);border-radius:var(--rxl);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.about-pat{position:absolute;inset:0;background-image:repeating-linear-gradient(45deg,rgba(27,79,219,0.03) 0px,rgba(27,79,219,0.03) 1px,transparent 1px,transparent 40px),repeating-linear-gradient(-45deg,rgba(200,16,46,0.02) 0px,rgba(200,16,46,0.02) 1px,transparent 1px,transparent 40px);}
+.about-num{font-family:'Playfair Display',serif;font-size:5.5rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;position:relative;z-index:1;text-align:center;}
+.about-lbl{font-size:13px;color:var(--gray-400);text-align:center;}
+.about-flt{position:absolute;background:#fff;border:1.5px solid;border-radius:var(--r);padding:12px 16px;box-shadow:var(--shadow);animation:fltY 4s ease-in-out infinite;}
+.af1{top:20px;left:-20px;border-color:rgba(27,79,219,0.2);}
+.af2{bottom:20px;right:-20px;border-color:rgba(200,16,46,0.15);animation-delay:2s;}
+.af-n{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;}
+.af-l{font-size:10px;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.8px;}
+.vals{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.5rem;}
+.val{background:var(--gray-50);border:1.5px solid var(--gray-200);border-radius:var(--r);padding:1.2rem;transition:all 0.2s;}
+.val:hover{border-color:rgba(27,79,219,0.25);background:var(--blue-pale);}
+.val-ico{font-size:1.4rem;margin-bottom:0.4rem;}
+.val-tit{font-size:13px;font-weight:700;color:var(--gray-800);}
+.val-des{font-size:12px;color:var(--gray-500);line-height:1.5;margin-top:2px;}
+
+/* PROMOS */
+.promo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;}
+.promo-card{background:#fff;border:1.5px solid var(--gray-200);border-radius:var(--rl);overflow:hidden;cursor:pointer;transition:all 0.3s;position:relative;}
+.promo-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:rgba(27,79,219,0.2);}
+.pc-rib{position:absolute;top:14px;left:0;z-index:2;}
+.pc-rib span{background:var(--grad);color:#fff;padding:5px 16px 5px 12px;font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;display:block;clip-path:polygon(0 0,100% 0,93% 50%,100% 100%,0 100%);}
+.pc-top{height:120px;background:linear-gradient(135deg,var(--blue-pale),#F0F4FF);display:flex;align-items:center;justify-content:center;}
+.pc-disc{font-family:'Playfair Display',serif;font-size:3.5rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.pc-bod{padding:1.2rem;}
+.pc-site{font-size:10px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;}
+.pc-name{font-size:14px;font-weight:700;color:var(--gray-800);margin:3px 0 0.7rem;}
+.pc-prices{display:flex;align-items:baseline;gap:10px;margin-bottom:0.8rem;}
+.pc-old{font-size:13px;color:var(--gray-400);text-decoration:line-through;}
+.pc-new{font-size:1.3rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.pc-cd{display:flex;gap:6px;margin-bottom:0.8rem;}
+.cd-b{background:var(--gray-50);border:1px solid var(--gray-200);border-radius:8px;padding:6px 10px;text-align:center;min-width:46px;}
+.cd-n{font-size:1.1rem;font-weight:800;color:var(--gray-800);font-variant-numeric:tabular-nums;}
+.cd-l{font-size:8px;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.5px;}
+.pc-cta{width:100%;background:var(--grad);border:none;color:#fff;padding:11px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;}
+.pc-cta:hover{opacity:0.88;}
+
+/* TESTIMONIALS */
+.testi-sec{background:var(--gray-50);padding:5rem 2rem;}
+.testi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem;max-width:1200px;margin:0 auto;}
+.testi-card{background:#fff;border:1.5px solid var(--gray-200);border-radius:var(--rl);padding:1.5rem;transition:all 0.25s;}
+.testi-card:hover{border-color:rgba(27,79,219,0.25);box-shadow:var(--shadow);transform:translateY(-2px);}
+.tc-stars{display:flex;gap:3px;margin-bottom:0.8rem;}
+.tc-star{font-size:13px;color:#f59e0b;}
+.tc-quote{font-size:13px;color:var(--gray-600);line-height:1.75;font-style:italic;margin-bottom:1.2rem;padding-left:1rem;position:relative;}
+.tc-quote::before{content:'"';position:absolute;left:0;top:-4px;font-size:2rem;font-family:'Playfair Display',serif;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
+.tc-auth{display:flex;align-items:center;gap:10px;}
+.tc-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;background:var(--grad);}
+.tc-name{font-size:13px;font-weight:700;color:var(--gray-800);}
+.tc-role{font-size:11px;color:var(--gray-400);}
+
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,0.5);z-index:3000;display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px);}
+.overlay.open{display:flex;}
+.modal{background:#fff;border:1.5px solid var(--gray-200);border-radius:var(--rxl);padding:2rem;max-width:500px;width:100%;position:relative;animation:mIn 0.35s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 24px 80px rgba(0,0,0,0.12);}
+@keyframes mIn{from{opacity:0;transform:scale(0.92);}to{opacity:1;transform:none;}}
+.m-tag{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.4rem;}
+.m-title{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--gray-800);}
+.m-desc{font-size:13px;color:var(--gray-500);margin-top:3px;margin-bottom:1.2rem;}
+.m-close{position:absolute;top:1.2rem;right:1.2rem;background:var(--gray-100);border:none;color:var(--gray-500);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;}
+.m-close:hover{background:#fee2e2;color:#dc2626;}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
+.fg label{font-size:11px;font-weight:600;color:var(--gray-500);letter-spacing:0.3px;}
+.fi{width:100%;background:#fff;border:1.5px solid var(--gray-300);border-radius:10px;padding:11px 14px;color:var(--gray-800);font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s;}
+.fi:focus{border-color:var(--blue);}
+.fi::placeholder{color:var(--gray-400);}
+.fis{appearance:none;background:#fff;}
+.m-submit{width:100%;background:var(--grad);border:none;color:#fff;padding:13px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-top:6px;font-family:'Outfit',sans-serif;transition:all 0.2s;}
+.m-submit:hover{opacity:0.88;transform:translateY(-1px);box-shadow:var(--shadow-lg);}
+.success-box{text-align:center;padding:1.5rem 0;}
+
+/* FOOTER */
+.footer-bar{height:3px;background:var(--grad-h);}
+footer{background:var(--gray-800);color:#fff;padding:4rem 2rem 2rem;}
+.footer-grid{display:grid;grid-template-columns:2.2fr 1fr 1fr 1.5fr;gap:3rem;max-width:1200px;margin:0 auto 3rem;}
+.footer-desc{font-size:13px;color:#9ca3af;line-height:1.75;margin-top:1rem;max-width:280px;}
+.footer-col h4{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:1rem;}
+.footer-lnk{display:block;font-size:13px;color:#9ca3af;text-decoration:none;margin-bottom:7px;transition:color 0.2s;cursor:pointer;}
+.footer-lnk:hover{color:#fff;}
+.contact-ln{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#9ca3af;margin-bottom:8px;line-height:1.4;}
+.footer-bot{border-top:1px solid #374151;max-width:1200px;margin:0 auto;padding-top:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.footer-copy{font-size:12px;color:#6b7280;}
+.footer-copy span{background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700;}
+.soc-btns{display:flex;gap:8px;}
+.soc-btn{width:34px;height:34px;border-radius:8px;background:#374151;border:1px solid #4b5563;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;color:#9ca3af;transition:all 0.2s;}
+.soc-btn:hover{background:var(--grad);border-color:transparent;color:#fff;}
+
+/* Leaflet */
+.leaflet-popup-content-wrapper{background:rgba(255,255,255,0.98)!important;border:1.5px solid var(--gray-200)!important;border-radius:14px!important;box-shadow:0 12px 48px rgba(0,0,0,0.12)!important;}
+.leaflet-popup-content{color:var(--gray-800)!important;font-family:'Outfit',sans-serif!important;font-size:13px!important;margin:10px 14px!important;}
+.leaflet-popup-tip{background:#fff!important;}
+
+@media(max-width:1024px){
+  .hero-inner{grid-template-columns:1fr;padding:7rem 2rem 5rem;}
+  .hero-right{display:none;}
+  .about-grid{grid-template-columns:1fr;}
+  .about-vis{display:none;}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:768px){
+  nav{padding:0 1rem;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .stats-inner{grid-template-columns:1fr 1fr;}
+  .stat-c:nth-child(2){border-right:none;}
+  .sites-grid,.promo-grid,.testi-grid{grid-template-columns:1fr;}
+  .sec{padding:3rem 1rem;}
+  .hero-inner{padding:6rem 1rem 4rem;}
+  .f-row{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="sp-logo">EDEN GROUP</div>
+  <div class="sp-sub">Plateforme Fonciere Premium</div>
+  <div class="sp-bar"><div class="sp-fill"></div></div>
+  <div class="sp-dots">
+    <div class="sp-dot"></div><div class="sp-dot"></div><div class="sp-dot"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-bar"></div>
+  <span id="toast-ico" style="font-size:18px;">✅</span>
+  <span id="toast-msg"></span>
+</div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a class="nav-logo" href="{% url 'home' %}">
+    <div class="logo-em">E</div>
+    <div>
+      <div class="logo-eden">EDEN GROUP</div>
+      <div class="logo-group">Immobilier &amp; Foncier</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a class="nav-lnk active" href="{% url 'home' %}">Accueil</a>
+    <a class="nav-lnk" href="{% url 'sites_list' %}">Nos Sites</a>
+    <a class="nav-lnk" href="{% url 'carte' %}">Carte Interactive</a>
+    <a class="nav-lnk" href="{% url 'promotions' %}">Promotions</a>
+    <a class="nav-lnk" href="{% url 'a_propos' %}">A Propos</a>
+    {% if user.is_staff %}
+    <a class="nav-lnk" href="{% url 'dashboard_home' %}">Dashboard</a>
+    {% endif %}
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div class="nav-tel">📞 <span>+237 600 000 000</span></div>
+    <button class="btn-cta" onclick="openModal()">Reserver une parcelle</button>
+  </div>
+  <button class="hamburger" onclick="toggleMob()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mob-menu" id="mob-menu">
+  <a class="nav-lnk" href="{% url 'home' %}">Accueil</a>
+  <a class="nav-lnk" href="{% url 'sites_list' %}">Nos Sites</a>
+  <a class="nav-lnk" href="{% url 'carte' %}">Carte Interactive</a>
+  <a class="nav-lnk" href="{% url 'promotions' %}">Promotions</a>
+  <a class="nav-lnk" href="{% url 'a_propos' %}">A Propos</a>
+  {% if user.is_staff %}<a class="nav-lnk" href="{% url 'dashboard_home' %}">Dashboard</a>{% endif %}
+  <button class="btn-cta" style="margin-top:8px;width:100%;" onclick="openModal()">Reserver une parcelle</button>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag"><div class="tag-dot"></div><span>Plateforme Fonciere N°1 — Afrique Centrale</span></div>
+      <h1 class="hero-h1">Votre terrain<br>de reve, <span class="gt">trouve<br>en quelques clics.</span></h1>
+      <p class="hero-desc">EDEN GROUP vous connecte aux meilleures parcelles foncieres. Visualisez en satellite, explorez la carte et securisez votre investissement en toute confiance.</p>
+      <div class="hero-btns">
+        <a href="{% url 'sites_list' %}" class="btn-p">🏡 Explorer les sites</a>
+        <a href="{% url 'carte' %}" class="btn-o">🗺 Carte interactive</a>
+        <a href="{% url 'promotions' %}" class="btn-o">🔥 Promotions</a>
+      </div>
+      <div class="trust-bar">
+        <div class="trust-avs">
+          <div class="trust-av">BA</div>
+          <div class="trust-av" style="background:linear-gradient(135deg,#8B0A1E,#C8102E);">CM</div>
+          <div class="trust-av" style="background:linear-gradient(135deg,#7B20B4,#4A7AFF);">PE</div>
+          <div class="trust-av" style="background:linear-gradient(135deg,#0F6E56,#1D9E75);">KN</div>
+        </div>
+        <div class="trust-txt">
+          <strong>+500 clients satisfaits</strong>
+          Nous font confiance depuis 2018
+        </div>
+      </div>
+    </div>
+    <div class="hero-right" style="position:relative;">
+      <div style="position:relative;height:460px;">
+        <div class="float-b fb-t">
+          <div class="fb-title">Parcelles disponibles</div>
+          <div class="fb-val" id="hbadge">—</div>
+          <div class="fb-sub">sur nos sites actifs</div>
+        </div>
+        <div class="hero-card">
+          <div class="hc-map">
+            <div class="hc-map-grid"></div>
+            <div class="hc-p" style="width:75px;height:55px;background:rgba(27,79,219,0.2);border:1.5px solid rgba(27,79,219,0.5);top:28%;left:18%;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:var(--blue);">P-01 Dispo</div>
+            <div class="hc-p" style="width:60px;height:72px;background:rgba(200,16,46,0.15);border:1.5px solid rgba(200,16,46,0.4);top:18%;left:44%;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:var(--red);">P-02 Vendu</div>
+            <div class="hc-p" style="width:80px;height:50px;background:rgba(27,79,219,0.12);border:1.5px solid rgba(74,122,255,0.4);top:50%;left:38%;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:var(--blue-light);">P-03 Reserve</div>
+            <div class="pin-d" style="top:25%;left:16%;"></div>
+            <div class="pin-d" style="top:14%;left:42%;background:linear-gradient(135deg,var(--red),var(--red-b));"></div>
+            <div style="position:absolute;top:6%;left:6%;background:rgba(255,255,255,0.95);border:1px solid var(--gray-200);border-radius:8px;padding:5px 10px;font-size:10px;color:var(--gray-600);">📍 Site EDEN</div>
+          </div>
+          <div class="hc-stats">
+            <div class="hc-stat"><div class="hc-stat-n" id="hstat-v">—</div><div class="hc-stat-l">Vendues</div></div>
+            <div class="hc-stat"><div class="hc-stat-n" id="hstat-d">—</div><div class="hc-stat-l">Disponibles</div></div>
+            <div class="hc-stat"><div class="hc-stat-n">98%</div><div class="hc-stat-l">Satisfaction</div></div>
+          </div>
+        </div>
+        <div class="float-b fb-b">
+          <div class="fb-title">Reservation rapide</div>
+          <div class="fb-val" style="background:linear-gradient(135deg,var(--red),var(--red-b));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">48h</div>
+          <div class="fb-sub">delai moyen de traitement</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-c"><div class="stat-n">{{ stats.vendues }}</div><div class="stat-l">Parcelles vendues</div><div class="stat-t">↑ Croissance continue</div></div>
+    <div class="stat-c"><div class="stat-n">{{ stats.disponibles }}</div><div class="stat-l">Parcelles disponibles</div><div class="stat-t">↑ Nouveaux lots</div></div>
+    <div class="stat-c"><div class="stat-n">{{ stats.sites }}</div><div class="stat-l">Sites fonciers actifs</div><div class="stat-t">↑ Expansion en cours</div></div>
+    <div class="stat-c"><div class="stat-n">98%</div><div class="stat-l">Clients satisfaits</div><div class="stat-t">★★★★★ Excellence</div></div>
+  </div>
+</div>
+
+<!-- SITES -->
+<div style="background:#fff;">
+  <div class="sec">
+    <div class="s-hd">
+      <div class="s-ey">✦ Nos sites fonciers</div>
+      <h2 class="s-tit">Terrains <em>d'exception</em></h2>
+      <p class="s-desc">Des parcelles selectionnees pour leurs emplacements strategiques et leur potentiel d'investissement.</p>
+    </div>
+    <div class="fpills" id="home-pills">
+      <div class="fpill active" onclick="hFilter(this,'all')">Tous</div>
+      <div class="fpill" onclick="hFilter(this,'disponible')">Disponible</div>
+      <div class="fpill" onclick="hFilter(this,'en_cours')">En cours</div>
+      <div class="fpill" onclick="hFilter(this,'complet')">Complet</div>
+    </div>
+    <div class="sites-grid" id="home-grid">
+      {% for site in sites %}
+      <div class="site-card" data-statut="{{ site.statut }}" onclick="window.location='{% url 'site_detail' site.slug %}'">
+        <div class="sc-img">
+          {% if site.image_principale %}
+          <img src="{{ site.image_principale.url }}" alt="{{ site.nom }}" class="sc-img-inner" style="object-fit:cover;width:100%;height:100%;">
+          {% else %}
+          <div class="sc-img-inner">
+            <svg width="70" height="70" viewBox="0 0 70 70" fill="none">
+              <rect x="8" y="18" width="22" height="18" fill="rgba(27,79,219,0.2)" rx="2"/>
+              <rect x="35" y="12" width="18" height="26" fill="rgba(200,16,46,0.15)" rx="2"/>
+              <rect x="12" y="40" width="28" height="14" fill="rgba(27,79,219,0.12)" rx="2"/>
+            </svg>
+          </div>
+          {% endif %}
+          <div class="sc-overlay"></div>
+          <span class="sc-status {% if site.statut == 'disponible' %}st-a{% elif site.statut == 'en_cours' %}st-p{% else %}st-c{% endif %}">{{ site.get_statut_display }}</span>
+          {% if site.en_promotion %}<span class="sc-promo">🔥 Promo</span>{% endif %}
+          <div class="sc-loc">📍 {{ site.localisation }}</div>
+        </div>
+        <div class="sc-body">
+          <div class="sc-name">{{ site.nom }}</div>
+          <div class="sc-desc">{{ site.description_courte }}</div>
+          <div class="prog-hd"><span class="prog-lbl">Parcelles vendues</span><span class="prog-pct">{{ site.pourcentage_vendu }}%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:{{ site.pourcentage_vendu }}%"></div></div>
+          <div class="sc-meta">
+            <div class="sm-i"><div class="sm-v">{{ site.nb_parcelles_total }}</div><div class="sm-k">Total</div></div>
+            <div class="sm-i"><div class="sm-v" style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">{{ site.nb_vendues }}</div><div class="sm-k">Vendues</div></div>
+            <div class="sm-i"><div class="sm-v" style="color:#16a34a;">{{ site.nb_disponibles }}</div><div class="sm-k">Disponibles</div></div>
+          </div>
+          <div class="sc-btns">
+            <a href="{% url 'carte' %}" onclick="event.stopPropagation()" class="btn-so">🗺 Carte</a>
+            <button class="btn-sg" onclick="event.stopPropagation();openModal('{{ site.nom }}')">Reserver →</button>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <p style="color:var(--gray-400);grid-column:1/-1;text-align:center;padding:3rem;">Aucun site disponible pour le moment. Ajoutez des sites depuis l'administration.</p>
+      {% endfor %}
+    </div>
+    <div style="text-align:center;margin-top:2rem;">
+      <a href="{% url 'sites_list' %}" class="btn-o" style="display:inline-flex;">Voir tous les sites →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div class="about-sec">
+  <div class="about-grid">
+    <div class="about-vis">
+      <div class="about-card">
+        <div class="about-pat"></div>
+        <div style="position:relative;z-index:1;text-align:center;">
+          <div class="about-num">6+</div>
+          <div class="about-lbl">annees d'excellence</div>
+        </div>
+      </div>
+      <div class="about-flt af1">
+        <div class="af-n" style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">{{ stats.vendues }}+</div>
+        <div class="af-l">Parcelles vendues</div>
+      </div>
+      <div class="about-flt af2">
+        <div class="af-n" style="background:linear-gradient(135deg,var(--red),var(--red-b));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">98%</div>
+        <div class="af-l">Satisfaction clients</div>
+      </div>
+    </div>
+    <div>
+      <div class="s-ey">✦ Notre histoire</div>
+      <h2 class="s-tit" style="margin-bottom:0.8rem;">EDEN GROUP,<br><em>batisseurs</em> d'avenir</h2>
+      <p style="font-size:14px;color:var(--gray-600);line-height:1.8;margin-bottom:1rem;">Fonde en 2018, EDEN GROUP est devenu la reference fonciere en Afrique Centrale. Notre mission : rendre l'acces a la propriete terrienne transparent, simple et securise pour chaque citoyen africain.</p>
+      <p style="font-size:14px;color:var(--gray-600);line-height:1.8;margin-bottom:1.5rem;">Grace a notre technologie de cartographie avancee et notre reseau de partenaires juridiques, nous garantissons des transactions 100% securisees et des titres fonciers certifies.</p>
+      <div class="vals">
+        <div class="val"><div class="val-ico">🔒</div><div class="val-tit">Securite juridique</div><div class="val-des">Titres fonciers certifies et verifies</div></div>
+        <div class="val"><div class="val-ico">🗺</div><div class="val-tit">Cartographie precise</div><div class="val-des">GPS et vue satellite Esri</div></div>
+        <div class="val"><div class="val-ico">⚡</div><div class="val-tit">Processus rapide</div><div class="val-des">Reservation en 48 heures</div></div>
+        <div class="val"><div class="val-ico">🤝</div><div class="val-tit">Accompagnement</div><div class="val-des">Suivi personnalise de A a Z</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROMOTIONS -->
+{% if promos %}
+<div class="sec-full">
+  <div class="sec-center">
+    <div class="s-hd">
+      <div class="s-ey">🔥 Offres limitees</div>
+      <h2 class="s-tit">Promotions <em>exclusives</em></h2>
+      <p class="s-desc">Saisissez ces opportunites avant qu'elles disparaissent.</p>
+    </div>
+    <div class="promo-grid">
+      {% for p in promos %}
+      <div class="promo-card" onclick="window.location='{% url 'parcelle_detail' p.site.slug p.numero %}'">
+        <div class="pc-rib"><span>Promotion</span></div>
+        <div class="pc-top"><div class="pc-disc">-{{ p.reduction_pct }}%</div></div>
+        <div class="pc-bod">
+          <div class="pc-site">{{ p.site.nom }}</div>
+          <div class="pc-name">Parcelle {{ p.numero }} — {{ p.superficie|floatformat:0 }} m²</div>
+          <div class="pc-prices">
+            <span class="pc-old">{{ p.prix|intcomma }} FCFA</span>
+            <span class="pc-new">{{ p.prix_affiche|intcomma }} FCFA</span>
+          </div>
+          {% if p.promo_fin %}
+          <div class="pc-cd" data-end="{{ p.promo_fin|date:'c' }}">
+            <div class="cd-b"><div class="cd-n cd-d">--</div><div class="cd-l">Jours</div></div>
+            <div class="cd-b"><div class="cd-n cd-h">--</div><div class="cd-l">H</div></div>
+            <div class="cd-b"><div class="cd-n cd-m">--</div><div class="cd-l">Min</div></div>
+            <div class="cd-b"><div class="cd-n cd-s">--</div><div class="cd-l">Sec</div></div>
+          </div>
+          {% endif %}
+          <button class="pc-cta" onclick="event.stopPropagation();openModal('{{ p.site.nom }} — Parcelle {{ p.numero }}')">Saisir l'offre →</button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div style="text-align:center;margin-top:2rem;">
+      <a href="{% url 'promotions' %}" class="btn-o" style="display:inline-flex;">Toutes les promotions →</a>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- TESTIMONIALS -->
+{% if temoignages %}
+<div class="testi-sec">
+  <div class="s-hd" style="max-width:1200px;margin:0 auto 2rem;">
+    <div class="s-ey">💬 Temoignages</div>
+    <h2 class="s-tit">Ce que disent <em>nos clients</em></h2>
+    <p class="s-desc">Plus de 500 familles et investisseurs nous font confiance a travers l'Afrique.</p>
+  </div>
+  <div class="testi-grid">
+    {% for t in temoignages %}
+    <div class="testi-card">
+      <div class="tc-stars">{% for i in "12345" %}<span class="tc-star">{% if forloop.counter <= t.note %}★{% else %}☆{% endif %}</span>{% endfor %}</div>
+      <div class="tc-quote">{{ t.texte }}</div>
+      <div class="tc-auth">
+        {% if t.avatar %}<img src="{{ t.avatar.url }}" alt="{{ t.nom }}" class="tc-av" style="object-fit:cover;">
+        {% else %}<div class="tc-av">{{ t.nom|first|upper }}</div>{% endif %}
+        <div><div class="tc-name">{{ t.nom }}</div><div class="tc-role">{{ t.role }}</div></div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<!-- CONTACT SECTION -->
+<div style="background:#fff;padding:5rem 2rem;">
+  <div style="max-width:800px;margin:0 auto;">
+    <div class="s-hd" style="text-align:center;">
+      <div class="s-ey">📩 Contactez-nous</div>
+      <h2 class="s-tit" style="margin:0 auto 0.5rem;">Parlons de <em>votre projet</em></h2>
+      <p class="s-desc" style="margin:0 auto;text-align:center;max-width:450px;">Remplissez ce formulaire et notre equipe vous recontactera sous 24 heures.</p>
+    </div>
+    <div style="background:#fff;border:1.5px solid var(--gray-200);border-radius:var(--rxl);padding:2rem;box-shadow:var(--shadow);margin-top:2rem;">
+      <form method="post" id="cform">
+        {% csrf_token %}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+          <div class="fg"><label>Nom complet *</label>{{ form.nom }}</div>
+          <div class="fg"><label>Email *</label>{{ form.email }}</div>
+          <div class="fg"><label>Telephone *</label>{{ form.telephone }}</div>
+          <div class="fg"><label>Type de demande</label>{{ form.type_demande }}</div>
+        </div>
+        <div class="fg" style="margin-bottom:1rem;"><label>Message *</label>{{ form.message }}</div>
+        <button type="submit" class="m-submit">Envoyer le message →</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer-bar"></div>
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="logo-em">E</div>
+        <div><div class="logo-eden" style="font-size:18px;">EDEN GROUP</div><div class="logo-group">Immobilier &amp; Foncier</div></div>
+      </div>
+      <p class="footer-desc">Votre partenaire foncier de confiance depuis 2018. Expertise, transparence et excellence au service de votre patrimoine.</p>
+    </div>
+    <div class="footer-col"><h4>Navigation</h4>
+      <a class="footer-lnk" href="{% url 'home' %}">Accueil</a>
+      <a class="footer-lnk" href="{% url 'sites_list' %}">Nos sites</a>
+      <a class="footer-lnk" href="{% url 'carte' %}">Carte interactive</a>
+      <a class="footer-lnk" href="{% url 'promotions' %}">Promotions</a>
+      <a class="footer-lnk" href="{% url 'a_propos' %}">A propos</a>
+    </div>
+    <div class="footer-col"><h4>Services</h4>
+      <a class="footer-lnk">Achat de terrain</a>
+      <a class="footer-lnk">Vente de parcelles</a>
+      <a class="footer-lnk">Conseil foncier</a>
+      <a class="footer-lnk">Titre foncier</a>
+    </div>
+    <div class="footer-col"><h4>Contact</h4>
+      <div class="contact-ln">📞 +237 600 000 000</div>
+      <div class="contact-ln">✉ info@edengroup.cm</div>
+      <div class="contact-ln">📍 Immeuble EDEN, Avenue Kennedy, Yaounde, Cameroun</div>
+      <div class="contact-ln">🕐 Lun-Ven : 8h - 18h</div>
+    </div>
+  </div>
+  <div class="footer-bot">
+    <div class="footer-copy">© 2025 <span>EDEN GROUP</span>. Tous droits reserves. Plateforme Fonciere Premium.</div>
+    <div class="soc-btns">
+      <div class="soc-btn">f</div><div class="soc-btn">in</div>
+      <div class="soc-btn">tw</div><div class="soc-btn">yt</div>
+    </div>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="overlay" id="modal">
+  <div class="modal">
+    <button class="m-close" onclick="closeModal()">✕</button>
+    <div id="mcontent">
+      <div class="m-tag">✦ EDEN GROUP</div>
+      <div class="m-title">Reservez votre parcelle</div>
+      <div class="m-desc">Notre equipe vous contactera dans les 24 heures.</div>
+      <form id="mform">
+        {% csrf_token %}
+        <div class="f-row">
+          <div class="fg"><label>Prenom</label><input class="fi" type="text" placeholder="Jean-Marie" required></div>
+          <div class="fg"><label>Nom</label><input class="fi" type="text" placeholder="Nguema" required></div>
+        </div>
+        <div class="fg"><label>Telephone / WhatsApp *</label><input class="fi" type="tel" placeholder="+237 6XX XXX XXX" required></div>
+        <div class="fg"><label>Email</label><input class="fi" type="email" placeholder="votre@email.com"></div>
+        <div class="fg"><label>Site ou parcelle d'interet</label><input class="fi" type="text" id="msite" placeholder="Ex: Site Verdoyant — Parcelle 500m²"></div>
+        <div class="fg"><label>Budget (FCFA)</label>
+          <select class="fi fis">
+            <option>Moins de 3 000 000</option>
+            <option>3 000 000 — 6 000 000</option>
+            <option>6 000 000 — 12 000 000</option>
+            <option>Plus de 12 000 000</option>
+          </select>
+        </div>
+        <div class="fg"><label>Message</label><textarea class="fi" rows="2" placeholder="Vos questions..."></textarea></div>
+        <button type="button" class="m-submit" onclick="submitModal()">Envoyer la demande →</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+// SPLASH
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('splash').classList.add('hidden');
+    loadStats();
+    initCountdowns();
+  }, 2200);
+});
+
+// NAV SCROLL
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+});
+
+// MOBILE MENU
+function toggleMob() {
+  document.getElementById('mob-menu').classList.toggle('open');
+}
+
+// STATS
+function loadStats() {
+  fetch('/api/stats/')
+    .then(r => r.json())
+    .then(d => {
+      const hv = document.getElementById('hstat-v');
+      const hd = document.getElementById('hstat-d');
+      const hb = document.getElementById('hbadge');
+      if (hv) animN(hv, d.vendues);
+      if (hd) animN(hd, d.disponibles);
+      if (hb) hb.textContent = d.disponibles;
+    }).catch(() => {});
+}
+
+function animN(el, target) {
+  let cur = 0, step = target / 50;
+  const iv = setInterval(() => {
+    cur += step;
+    if (cur >= target) { cur = target; clearInterval(iv); }
+    el.textContent = Math.round(cur).toLocaleString('fr-FR');
+  }, 30);
+}
+
+// FILTER
+function hFilter(el, f) {
+  document.querySelectorAll('#home-pills .fpill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('#home-grid .site-card').forEach(card => {
+    card.style.display = (f === 'all' || card.dataset.statut === f) ? '' : 'none';
+  });
+}
+
+// MODAL
+function openModal(siteName) {
+  if (siteName) {
+    const f = document.getElementById('msite');
+    if (f) f.value = siteName;
+  }
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+function submitModal() {
+  const data = new FormData(document.getElementById('mform'));
+  data.append('type_demande', 'reservation');
+  fetch('/contact/', {
+    method: 'POST',
+    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    body: data
+  }).then(r => r.json()).then(d => {
+    document.getElementById('mcontent').innerHTML =
+      '<div class="success-box">' +
+      '<div style="font-size:3rem;margin-bottom:0.8rem;">✅</div>' +
+      '<div class="m-title" style="font-size:1.3rem;">Demande envoyee !</div>' +
+      '<p style="font-size:13px;color:var(--gray-500);margin:0.5rem 0 1.5rem;">Notre equipe EDEN GROUP vous contactera dans les 24 heures.</p>' +
+      '<button class="m-submit" onclick="closeModal();document.getElementById(\'mcontent\').innerHTML=\'\'">Fermer</button>' +
+      '</div>';
+    showToast('✅', 'Reservation envoyee ! Nous vous contacterons sous 24h.');
+  }).catch(() => showToast('⚠️', 'Erreur reseau. Veuillez reessayer.'));
+}
+
+// TOAST
+function showToast(ico, msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-ico').textContent = ico;
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+// COUNTDOWNS
+function initCountdowns() {
+  document.querySelectorAll('.pc-cd[data-end]').forEach(cd => {
+    const end = new Date(cd.dataset.end);
+    const tick = () => {
+      const diff = end - new Date();
+      if (diff <= 0) return;
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      const de = cd.querySelector('.cd-d'), he = cd.querySelector('.cd-h');
+      const me = cd.querySelector('.cd-m'), se = cd.querySelector('.cd-s');
+      if (de) de.textContent = d;
+      if (he) he.textContent = String(h).padStart(2, '0');
+      if (me) me.textContent = String(m).padStart(2, '0');
+      if (se) se.textContent = String(s).padStart(2, '0');
+    };
+    tick();
+    setInterval(tick, 1000);
+  });
+}
+
+// CONTACT FORM AJAX
+const cf = document.getElementById('cform');
+if (cf) {
+  cf.addEventListener('submit', function(e) {
+    e.preventDefault();
+    fetch('/contact/', {
+      method: 'POST',
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      body: new FormData(this)
+    }).then(r => r.json()).then(d => {
+      if (d.success) {
+        showToast('✅', 'Message envoye ! Nous vous repondrons sous 24h.');
+        cf.reset();
+      } else {
+        showToast('⚠️', 'Veuillez remplir tous les champs requis.');
+      }
+    }).catch(() => showToast('⚠️', 'Erreur reseau.'));
+  });
+}
+</script>
+</body>
+</html>

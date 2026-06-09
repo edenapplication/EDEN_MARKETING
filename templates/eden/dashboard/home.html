@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — EDEN GROUP</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g600:#4B5563;--g800:#1F2937;--r:12px;--rl:20px;}
+body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
+h1,h2{font-family:'Playfair Display',serif;}
+
+/* TOPNAV */
+.topnav{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;border-bottom:1.5px solid var(--g200);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
+.tn-logo{display:flex;align-items:center;gap:8px;}
+.tn-em{width:36px;height:36px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:#fff;}
+.tn-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tn-sub{font-size:11px;color:var(--g400);margin-left:8px;letter-spacing:1px;text-transform:uppercase;}
+.tn-right{display:flex;align-items:center;gap:8px;}
+.tn-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--g200);background:#fff;color:var(--g600);transition:all 0.2s;}
+.tn-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--bpale);}
+.tn-notif{position:relative;}
+.notif-badge{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;width:16px;height:16px;border-radius:50%;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+
+/* SIDEBAR */
+.wrap{display:flex;padding-top:64px;min-height:100vh;}
+.sidebar{width:240px;background:#fff;border-right:1.5px solid var(--g200);position:fixed;top:64px;left:0;bottom:0;overflow-y:auto;z-index:900;}
+.sb-sec{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g400);padding:1.2rem 1.5rem 0.4rem;}
+.sb-lnk{display:flex;align-items:center;gap:10px;padding:10px 1.5rem;font-size:13px;font-weight:500;color:var(--g600);cursor:pointer;border-left:2px solid transparent;text-decoration:none;transition:all 0.15s;position:relative;}
+.sb-lnk:hover,.sb-lnk.active{color:var(--blue);background:var(--bpale);border-left-color:var(--blue);}
+.sb-ico{font-size:16px;width:20px;text-align:center;flex-shrink:0;}
+.sb-badge{margin-left:auto;background:var(--red);color:#fff;font-size:9px;font-weight:800;padding:2px 7px;border-radius:100px;}
+.sb-user{padding:1.2rem 1.5rem;border-top:1px solid var(--g200);margin-top:1rem;}
+.sb-avatar{width:36px;height:36px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;margin-bottom:8px;}
+.sb-uname{font-size:13px;font-weight:700;color:var(--g800);}
+.sb-urole{font-size:11px;color:var(--g400);margin-top:1px;}
+
+/* MAIN */
+.main{flex:1;padding:2rem;margin-left:240px;max-width:calc(100% - 240px);}
+.page-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;}
+.page-tit{font-size:1.5rem;font-weight:700;color:var(--g800);}
+.page-sub{font-size:13px;color:var(--g500);margin-top:2px;}
+.btn-add{background:var(--grad);color:#fff;padding:10px 18px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s;}
+.btn-add:hover{opacity:0.88;transform:translateY(-1px);}
+
+/* KPIs */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
+.kpi{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);padding:1.3rem;position:relative;overflow:hidden;transition:all 0.2s;cursor:pointer;}
+.kpi:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.06);border-color:rgba(27,79,219,0.2);}
+.kpi::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--grad-h);}
+.kpi-ico{width:44px;height:44px;border-radius:12px;background:var(--bpale);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:0.8rem;}
+.kpi-v{font-size:1.9rem;font-weight:800;color:var(--g800);}
+.kpi-l{font-size:12px;color:var(--g400);margin-top:2px;}
+.kpi-t{font-size:11px;font-weight:600;color:#16a34a;margin-top:4px;}
+.kpi-tr{font-size:11px;font-weight:600;color:var(--red);margin-top:4px;}
+
+/* KPI ROW 2 */
+.kpi-row2{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
+.kpi2{background:#fff;border:1.5px solid var(--g200);border-radius:var(--r);padding:1rem;text-align:center;transition:all 0.2s;}
+.kpi2:hover{border-color:rgba(27,79,219,0.2);}
+.kpi2-n{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.kpi2-l{font-size:11px;color:var(--g400);margin-top:2px;}
+
+/* CARDS */
+.dash-row{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;}
+.dash-card{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);padding:1.4rem;}
+.dc-hd{font-size:13px;font-weight:700;color:var(--g800);margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;}
+.dc-more{font-size:11px;color:var(--blue);text-decoration:none;font-weight:500;}
+
+/* PERF */
+.perf-item{padding:10px 0;border-bottom:1px solid var(--g100);}
+.perf-item:last-child{border-bottom:none;}
+.perf-hd{display:flex;justify-content:space-between;margin-bottom:5px;}
+.perf-n{font-size:12px;font-weight:600;color:var(--g800);}
+.perf-p{font-size:12px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.prog-bar{height:4px;background:var(--g200);border-radius:100px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--grad-h);border-radius:100px;}
+.perf-sub{display:flex;justify-content:space-between;margin-top:4px;}
+.perf-sub span{font-size:10px;color:var(--g400);}
+
+/* CHART */
+.ch-area{display:flex;align-items:flex-end;gap:3px;height:80px;margin-bottom:6px;}
+.ch-bar{flex:1;border-radius:3px 3px 0 0;background:var(--grad-h);min-height:4px;transition:opacity 0.2s;}
+.ch-bar:hover{opacity:0.75;}
+.ch-lbls{display:flex;}
+.ch-lbl{flex:1;text-align:center;font-size:8px;color:var(--g400);}
+
+/* ACTIVITY */
+.act-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--g100);}
+.act-row:last-child{border-bottom:none;}
+.act-av{width:34px;height:34px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
+.act-n{font-size:12px;font-weight:600;color:var(--g800);}
+.act-d{font-size:11px;color:var(--g400);}
+.act-bdg{font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;white-space:nowrap;flex-shrink:0;}
+.ab-n{background:#dcfce7;color:#16a34a;}
+.ab-r{background:var(--bpale);color:var(--blue);}
+.ab-v{background:#fee2e2;color:#dc2626;}
+.ab-w{background:#fef9c3;color:#b45309;}
+
+/* TABLE */
+.tw{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+th{padding:8px 12px;text-align:left;font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--g400);border-bottom:1.5px solid var(--g200);}
+td{padding:10px 12px;border-bottom:1px solid var(--g100);color:var(--g700);}
+tr:hover td{background:var(--g50);}
+.td-b{padding:3px 10px;border-radius:6px;font-size:10px;font-weight:700;}
+.btn-ed{background:var(--bpale);border:1px solid rgba(27,79,219,0.2);color:var(--blue);padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;text-decoration:none;margin-right:4px;}
+.btn-vw{background:var(--g100);border:1px solid var(--g200);color:var(--g600);padding:4px 8px;border-radius:6px;font-size:11px;font-weight:600;text-decoration:none;}
+
+/* ACTIONS RAPIDES */
+.actions-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
+.action-btn{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);padding:1.2rem;text-align:center;text-decoration:none;color:var(--g700);transition:all 0.2s;cursor:pointer;}
+.action-btn:hover{border-color:var(--blue);background:var(--bpale);color:var(--blue);transform:translateY(-2px);}
+.action-btn .ab-ico{font-size:1.8rem;margin-bottom:0.4rem;}
+.action-btn .ab-lbl{font-size:12px;font-weight:600;}
+
+@media(max-width:1200px){.kpi-row,.kpi-row2,.actions-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:1024px){.sidebar{display:none;}.main{margin-left:0;max-width:100%;}}
+@media(max-width:640px){.kpi-row,.kpi-row2{grid-template-columns:1fr;}.dash-row{grid-template-columns:1fr;}.actions-grid{grid-template-columns:1fr 1fr;}.main{padding:1rem;}}
+</style>
+</head>
+<body>
+
+<!-- TOPNAV -->
+<nav class="topnav">
+  <div class="tn-logo">
+    <div class="tn-em">E</div>
+    <div class="tn-name">EDEN GROUP</div>
+    <span class="tn-sub">Dashboard</span>
+  </div>
+  <div class="tn-right">
+    <span style="font-size:13px;color:var(--g500);">{{ user.get_full_name|default:user.username }}</span>
+    {% if stats.contacts_nouveaux > 0 %}
+    <div class="tn-notif">
+      <a class="tn-btn" href="{% url 'dashboard_contacts' %}?statut=nouveau">📩</a>
+      <span class="notif-badge">{{ stats.contacts_nouveaux }}</span>
+    </div>
+    {% endif %}
+    <a class="tn-btn" href="{% url 'home' %}" target="_blank">🌐 Site</a>
+    <a class="tn-btn" href="{% url 'carte' %}" target="_blank">🗺 Carte</a>
+    <a class="tn-btn" href="{% url 'logout' %}" style="background:#fee2e2;border-color:#fca5a5;color:#dc2626;">Deconnexion</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-sec">Principal</div>
+    <a class="sb-lnk active" href="{% url 'dashboard_home' %}"><span class="sb-ico">📊</span>Tableau de bord</a>
+    <a class="sb-lnk" href="{% url 'dashboard_sites' %}"><span class="sb-ico">🏡</span>Sites fonciers</a>
+    <a class="sb-lnk" href="{% url 'dashboard_parcelles' %}"><span class="sb-ico">📐</span>Parcelles</a>
+    <a class="sb-lnk" href="{% url 'dashboard_reservations' %}"><span class="sb-ico">📋</span>Reservations{% if stats.reservations_mois > 0 %}<span class="sb-badge">{{ stats.reservations_mois }}</span>{% endif %}</a>
+    <a class="sb-lnk" href="{% url 'dashboard_contacts' %}"><span class="sb-ico">📩</span>Contacts{% if stats.contacts_nouveaux > 0 %}<span class="sb-badge">{{ stats.contacts_nouveaux }}</span>{% endif %}</a>
+    <div class="sb-sec">Gestion</div>
+    <a class="sb-lnk" href="{% url 'dashboard_visites' %}"><span class="sb-ico">📅</span>Visites{% if stats.visites_a_venir > 0 %}<span class="sb-badge">{{ stats.visites_a_venir }}</span>{% endif %}</a>
+    <a class="sb-lnk" href="{% url 'dashboard_promotions' %}"><span class="sb-ico">🔥</span>Promotions</a>
+    <a class="sb-lnk" href="{% url 'dashboard_temoignages' %}"><span class="sb-ico">💬</span>Temoignages</a>
+    {% if user.is_superuser %}<a class="sb-lnk" href="{% url 'dashboard_utilisateurs' %}"><span class="sb-ico">👥</span>Utilisateurs</a>{% endif %}
+    <a class="sb-lnk" href="{% url 'dashboard_parametres' %}"><span class="sb-ico">⚙</span>Parametres</a>
+    <div class="sb-sec">Liens rapides</div>
+    <a class="sb-lnk" href="{% url 'carte' %}" target="_blank"><span class="sb-ico">🗺</span>Carte publique</a>
+    <a class="sb-lnk" href="{% url 'home' %}" target="_blank"><span class="sb-ico">🌐</span>Site public</a>
+    <div class="sb-user">
+      <div class="sb-avatar">{{ user.username|first|upper }}</div>
+      <div class="sb-uname">{{ user.get_full_name|default:user.username }}</div>
+      <div class="sb-urole">{% if user.is_superuser %}Super Admin{% elif user.is_staff %}Administrateur{% endif %}</div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="page-hd">
+      <div>
+        <h1 class="page-tit">Bonjour, {{ user.first_name|default:user.username }} 👋</h1>
+        <div class="page-sub">Voici un apercu de votre plateforme EDEN GROUP</div>
+      </div>
+      <a class="btn-add" href="{% url 'dashboard_site_ajouter' %}">+ Nouveau site</a>
+    </div>
+
+    <!-- ACTIONS RAPIDES -->
+    <div class="actions-grid">
+      <a class="action-btn" href="{% url 'dashboard_site_ajouter' %}"><div class="ab-ico">🏡</div><div class="ab-lbl">Ajouter un site</div></a>
+      <a class="action-btn" href="{% url 'dashboard_parcelle_ajouter' %}"><div class="ab-ico">📐</div><div class="ab-lbl">Ajouter parcelle</div></a>
+      <a class="action-btn" href="{% url 'dashboard_contacts' %}?statut=nouveau"><div class="ab-ico">📩</div><div class="ab-lbl">Contacts nouveaux<br>{% if stats.contacts_nouveaux > 0 %}<span style="color:var(--red);font-size:11px;">{{ stats.contacts_nouveaux }} non traites</span>{% endif %}</div></a>
+      <a class="action-btn" href="{% url 'dashboard_visite_ajouter' %}"><div class="ab-ico">📅</div><div class="ab-lbl">Programmer visite</div></a>
+    </div>
+
+    <!-- KPIs PRINCIPAUX -->
+    <div class="kpi-row">
+      <div class="kpi" onclick="window.location='{% url 'dashboard_parcelles' %}?statut=vendue'">
+        <div class="kpi-ico">🏡</div><div class="kpi-v">{{ stats.vendues }}</div>
+        <div class="kpi-l">Parcelles vendues</div><div class="kpi-t">↑ Performance</div>
+      </div>
+      <div class="kpi" onclick="window.location='{% url 'dashboard_parcelles' %}?statut=disponible'">
+        <div class="kpi-ico">✅</div><div class="kpi-v">{{ stats.disponibles }}</div>
+        <div class="kpi-l">Disponibles</div><div class="kpi-t">↑ A vendre</div>
+      </div>
+      <div class="kpi" onclick="window.location='{% url 'dashboard_reservations' %}'">
+        <div class="kpi-ico">📋</div><div class="kpi-v">{{ stats.reservations_mois }}</div>
+        <div class="kpi-l">Reservations ce mois</div><div class="kpi-t">{{ stats.reservations_total }} au total</div>
+      </div>
+      <div class="kpi" onclick="window.location='{% url 'dashboard_contacts' %}?statut=nouveau'">
+        <div class="kpi-ico">📩</div><div class="kpi-v">{{ stats.contacts_nouveaux }}</div>
+        <div class="kpi-l">Contacts non traites</div>
+        {% if stats.contacts_nouveaux > 0 %}<div class="kpi-tr">⚠ A traiter</div>{% else %}<div class="kpi-t">✅ Tout traite</div>{% endif %}
+      </div>
+    </div>
+
+    <!-- KPIs SECONDAIRES -->
+    <div class="kpi-row2">
+      <div class="kpi2"><div class="kpi2-n">{{ stats.sites_actifs }}</div><div class="kpi2-l">Sites actifs</div></div>
+      <div class="kpi2"><div class="kpi2-n">{{ stats.reservees }}</div><div class="kpi2-l">Parcelles reservees</div></div>
+      <div class="kpi2"><div class="kpi2-n">{{ stats.temoignages }}</div><div class="kpi2-l">Temoignages</div></div>
+      <div class="kpi2"><div class="kpi2-n">{{ stats.visites_a_venir }}</div><div class="kpi2-l">Visites a venir</div></div>
+    </div>
+
+    <div class="dash-row">
+      <!-- PERFORMANCE SITES -->
+      <div class="dash-card">
+        <div class="dc-hd">Performance des sites <a class="dc-more" href="{% url 'dashboard_sites' %}">Voir tout →</a></div>
+        {% for site in sites_perf %}
+        <div class="perf-item">
+          <div class="perf-hd"><span class="perf-n">{{ site.nom }}</span><span class="perf-p">{{ site.pourcentage_vendu }}%</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:{{ site.pourcentage_vendu }}%"></div></div>
+          <div class="perf-sub"><span>{{ site.nb_vendues }} vendues</span><span style="color:#16a34a;">{{ site.nb_disponibles }} disponibles</span></div>
+        </div>
+        {% empty %}
+        <p style="font-size:13px;color:var(--g400);text-align:center;padding:1.5rem 0;">Aucun site actif. <a href="{% url 'dashboard_site_ajouter' %}" style="color:var(--blue);">Ajouter un site →</a></p>
+        {% endfor %}
+      </div>
+      <!-- CHART -->
+      <div class="dash-card">
+        <div class="dc-hd">Reservations mensuelles</div>
+        <div class="ch-area" id="chbars"></div>
+        <div class="ch-lbls" id="chlbls"></div>
+      </div>
+    </div>
+
+    <div class="dash-row">
+      <!-- CONTACTS RECENTS -->
+      <div class="dash-card">
+        <div class="dc-hd">Derniers contacts <a class="dc-more" href="{% url 'dashboard_contacts' %}">Voir tout →</a></div>
+        {% for c in derniers_contacts %}
+        <div class="act-row">
+          <div class="act-av" style="background:{% cycle 'var(--grad)' 'linear-gradient(135deg,#8B0A1E,#C8102E)' 'linear-gradient(135deg,#7B20B4,#4A7AFF)' 'linear-gradient(135deg,#0F6E56,#1D9E75)' %};">{{ c.nom|first|upper }}</div>
+          <div style="flex:1;">
+            <div class="act-n">{{ c.nom }}</div>
+            <div class="act-d">{{ c.get_type_demande_display }} — {{ c.created_at|date:"d/m/Y H:i" }}</div>
+          </div>
+          <span class="act-bdg {% if c.statut == 'nouveau' %}ab-v{% elif c.statut == 'en_cours' %}ab-w{% elif c.statut == 'traite' %}ab-n{% else %}ab-r{% endif %}">{{ c.get_statut_display }}</span>
+          <a href="{% url 'dashboard_contact_detail' c.id %}" style="margin-left:6px;font-size:11px;color:var(--blue);text-decoration:none;">Voir</a>
+        </div>
+        {% empty %}
+        <p style="font-size:13px;color:var(--g400);text-align:center;padding:1.5rem 0;">Aucun contact recent.</p>
+        {% endfor %}
+      </div>
+      <!-- RESERVATIONS RECENTES -->
+      <div class="dash-card">
+        <div class="dc-hd">Dernieres reservations <a class="dc-more" href="{% url 'dashboard_reservations' %}">Voir tout →</a></div>
+        {% for r in dernieres_reservations %}
+        <div class="act-row">
+          <div class="act-av" style="background:linear-gradient(135deg,var(--blue),#7B20B4);">{{ r.nom_client|first|upper }}</div>
+          <div style="flex:1;">
+            <div class="act-n">{{ r.nom_client }}</div>
+            <div class="act-d">{{ r.parcelle.site.nom }} — {{ r.reference }}</div>
+          </div>
+          <span class="act-bdg {% if r.statut == 'payee' %}ab-n{% elif r.statut == 'confirmee' %}ab-r{% elif r.statut == 'en_attente' %}ab-w{% else %}ab-v{% endif %}">{{ r.get_statut_display }}</span>
+          <a href="{% url 'dashboard_reservation_detail' r.id %}" style="margin-left:6px;font-size:11px;color:var(--blue);text-decoration:none;">Voir</a>
+        </div>
+        {% empty %}
+        <p style="font-size:13px;color:var(--g400);text-align:center;padding:1.5rem 0;">Aucune reservation.</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- TABLE SITES -->
+    <div class="dash-card">
+      <div class="dc-hd">Tous les sites fonciers <a class="dc-more" href="{% url 'dashboard_sites' %}">Gerer →</a></div>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Site</th><th>Ville</th><th>Total</th><th>Vendues</th><th>Dispo</th><th>%</th><th>Statut</th><th>Actif</th><th>Actions</th></tr></thead>
+          <tbody>
+            {% for site in sites_perf %}
+            <tr>
+              <td style="font-weight:700;">{{ site.nom }}</td>
+              <td>{{ site.ville }}</td>
+              <td>{{ site.nb_parcelles_total }}</td>
+              <td>{{ site.nb_vendues }}</td>
+              <td style="color:#16a34a;font-weight:600;">{{ site.nb_disponibles }}</td>
+              <td><span style="font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">{{ site.pourcentage_vendu }}%</span></td>
+              <td><span class="td-b {% if site.statut == 'disponible' %}ab-n{% elif site.statut == 'en_cours' %}ab-r{% else %}ab-v{% endif %}">{{ site.get_statut_display }}</span></td>
+              <td>{% if site.is_active %}<span style="color:#16a34a;">✅</span>{% else %}<span style="color:#dc2626;">❌</span>{% endif %}</td>
+              <td>
+                <a class="btn-ed" href="{% url 'dashboard_site_modifier' site.id %}">✏ Modifier</a>
+                <a class="btn-vw" href="{% url 'site_detail' site.slug %}" target="_blank">👁</a>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--g400);">Aucun site. <a href="{% url 'dashboard_site_ajouter' %}" style="color:var(--blue);">Ajouter →</a></td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const chartData = {{ chart_data|safe }};
+const maxVal = Math.max(...chartData.map(d => d.count), 1);
+const barsEl = document.getElementById('chbars');
+const lblsEl = document.getElementById('chlbls');
+chartData.forEach(d => {
+  const h = Math.max(Math.round((d.count / maxVal) * 100), d.count > 0 ? 8 : 4);
+  const bar = document.createElement('div');
+  bar.className = 'ch-bar';
+  bar.style.height = h + '%';
+  bar.title = d.count + ' reservation(s) — ' + d.mois;
+  barsEl.appendChild(bar);
+  const lbl = document.createElement('div');
+  lbl.className = 'ch-lbl';
+  lbl.textContent = d.mois;
+  lblsEl.appendChild(lbl);
+});
+</script>
+</body>
+</html>

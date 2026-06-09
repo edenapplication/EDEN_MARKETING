@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parcelle {{ parcelle.numero }} — {{ site.nom }} — EDEN GROUP</title>
+{% load humanize %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g400:#9CA3AF;--g600:#4B5563;--g800:#1F2937;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#fff;color:var(--g800);}
+h1,h2,h3{font-family:Georgia,serif;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;background:rgba(255,255,255,0.95);border-bottom:1.5px solid var(--g200);backdrop-filter:blur(20px);}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-em{width:40px;height:40px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-weight:700;font-size:18px;color:#fff;}
+.logo-name{font-family:Georgia,serif;font-size:19px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.nav-lnk{padding:8px 16px;font-size:13px;font-weight:500;color:var(--g600);text-decoration:none;border-radius:8px;transition:all 0.2s;}
+.nav-lnk:hover{color:var(--blue);background:var(--bpale);}
+.btn-cta{background:var(--grad);color:#fff;padding:9px 20px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;}
+
+.container{max-width:1200px;margin:0 auto;padding:0 2rem;}
+.page-wrap{padding-top:90px;padding-bottom:4rem;}
+.breadcrumb{font-size:12px;color:var(--g400);margin-bottom:1.5rem;}
+.breadcrumb a{color:var(--g400);text-decoration:none;}
+.breadcrumb a:hover{color:var(--blue);}
+
+.main-grid{display:grid;grid-template-columns:1fr 380px;gap:3rem;}
+.parcel-header{margin-bottom:2rem;}
+.parcel-status{display:inline-flex;padding:4px 14px;border-radius:100px;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:0.8rem;}
+.ps-a{background:#dcfce7;color:#16a34a;}.ps-r{background:var(--bpale);color:var(--blue);}.ps-v{background:#fee2e2;color:#dc2626;}
+.parcel-title{font-family:Georgia,serif;font-size:2.5rem;font-weight:700;color:var(--g800);margin-bottom:0.5rem;}
+.parcel-loc{font-size:14px;color:var(--g400);margin-bottom:1.5rem;}
+
+.promo-banner{background:linear-gradient(135deg,rgba(27,79,219,0.08),rgba(200,16,46,0.06));border:1.5px solid rgba(200,16,46,0.2);border-radius:16px;padding:1.2rem 1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.promo-disc{font-family:Georgia,serif;font-size:2.5rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+.price-block{margin-bottom:2rem;}
+.price-label{font-size:12px;color:var(--g400);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.3rem;}
+.price-main{font-family:Georgia,serif;font-size:2.8rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.price-old{font-size:1.1rem;color:var(--g400);text-decoration:line-through;margin-left:10px;}
+.price-m2{font-size:13px;color:var(--g600);margin-top:4px;}
+
+.specs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem;margin-bottom:2rem;}
+.spec-item{background:var(--g50);border:1.5px solid var(--g200);border-radius:12px;padding:1rem;text-align:center;}
+.spec-val{font-family:Georgia,serif;font-size:1.4rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.spec-lbl{font-size:11px;color:var(--g400);text-transform:uppercase;letter-spacing:0.5px;margin-top:3px;}
+
+.desc-block{margin-bottom:2rem;}
+.desc-title{font-family:Georgia,serif;font-size:1.3rem;font-weight:700;color:var(--g800);margin-bottom:0.8rem;}
+.desc-text{font-size:14px;color:var(--g600);line-height:1.8;}
+
+.map-block{margin-bottom:2rem;}
+.map-wrap{height:300px;border-radius:16px;overflow:hidden;border:1.5px solid var(--g200);}
+
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-bottom:2rem;}
+.gimg{height:140px;border-radius:10px;overflow:hidden;background:var(--bpale);}
+.gimg img{width:100%;height:100%;object-fit:cover;}
+
+.similaires-title{font-family:Georgia,serif;font-size:1.5rem;font-weight:700;color:var(--g800);margin-bottom:1rem;}
+.sim-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;}
+.sim-card{background:#fff;border:1.5px solid var(--g200);border-radius:12px;overflow:hidden;text-decoration:none;color:inherit;display:block;transition:all 0.2s;}
+.sim-card:hover{transform:translateY(-3px);border-color:rgba(27,79,219,0.3);}
+.sim-img{height:130px;background:var(--bpale);overflow:hidden;}
+.sim-img img{width:100%;height:100%;object-fit:cover;}
+.sim-body{padding:1rem;}
+.sim-num{font-weight:700;font-size:13px;color:var(--g800);}
+.sim-info{font-size:11px;color:var(--g400);margin-top:3px;}
+.sim-price{font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-top:4px;}
+
+/* Sidebar */
+.sidebar{position:sticky;top:90px;}
+.reserve-card{background:#fff;border:1.5px solid var(--g200);border-radius:20px;padding:1.5rem;box-shadow:0 4px 16px rgba(0,0,0,0.06);margin-bottom:1.5rem;}
+.rc-title{font-family:Georgia,serif;font-size:1.2rem;font-weight:700;color:var(--g800);margin-bottom:0.3rem;}
+.rc-sub{font-size:13px;color:var(--g400);margin-bottom:1.2rem;}
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
+.fg label{font-size:11px;font-weight:600;color:var(--g400);}
+.fi{width:100%;background:#fff;border:1.5px solid var(--g200);border-radius:10px;padding:10px 13px;color:var(--g800);font-size:13px;outline:none;transition:border-color 0.2s;}
+.fi:focus{border-color:var(--blue);}
+.fi::placeholder{color:var(--g400);}
+.btn-reserve{width:100%;background:var(--grad);border:none;color:#fff;padding:13px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;}
+.btn-reserve:hover{opacity:0.88;}
+.btn-reserve-dis{width:100%;background:var(--g100);border:1.5px solid var(--g200);color:var(--g400);padding:13px;border-radius:10px;font-size:14px;font-weight:600;cursor:not-allowed;}
+.btn-wa{width:100%;background:#25D366;color:#fff;border:none;padding:11px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;}
+.btn-wa:hover{background:#1daa52;}
+.btn-back{width:100%;background:var(--bpale);border:1.5px solid rgba(27,79,219,0.25);color:var(--blue);padding:10px;border-radius:10px;font-size:12px;font-weight:600;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px;}
+.btn-back:hover{background:rgba(27,79,219,0.12);}
+
+.info-card{background:var(--g50);border:1.5px solid var(--g200);border-radius:16px;padding:1.2rem;}
+.info-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--g200);font-size:13px;}
+.info-row:last-child{border-bottom:none;}
+.info-lbl{color:var(--g400);}
+.info-val{font-weight:600;color:var(--g800);}
+
+.toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1.5px solid var(--g200);border-radius:12px;padding:14px 20px;font-size:13px;z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(80px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 8px 32px rgba(0,0,0,0.1);}
+.toast.show{transform:none;opacity:1;}
+
+footer{background:var(--g800);color:#fff;padding:2rem;text-align:center;margin-top:2rem;}
+.footer-copy{font-size:12px;color:#6b7280;}
+.footer-copy span{background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700;}
+@media(max-width:1024px){.main-grid{grid-template-columns:1fr;}.sidebar{position:static;}}
+@media(max-width:768px){nav{padding:0 1rem;}.container{padding:0 1rem;}.parcel-title{font-size:1.8rem;}.specs-grid{grid-template-columns:1fr 1fr;}.sim-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="{% url 'home' %}">
+    <div class="logo-em">E</div>
+    <div><div class="logo-name">EDEN GROUP</div><div style="font-size:9px;font-weight:600;color:var(--g400);letter-spacing:2px;text-transform:uppercase;">Immobilier & Foncier</div></div>
+  </a>
+  <div style="display:flex;align-items:center;gap:4px;">
+    <a class="nav-lnk" href="{% url 'home' %}">Accueil</a>
+    <a class="nav-lnk" href="{% url 'sites_list' %}">Nos Sites</a>
+    <a class="nav-lnk" href="{% url 'carte' %}">Carte</a>
+    {% if user.is_staff %}<a class="nav-lnk" href="{% url 'dashboard_home' %}">Dashboard</a>{% endif %}
+  </div>
+  {% if parcelle.statut == 'disponible' %}
+  <button class="btn-cta" onclick="document.getElementById('reserve-form').scrollIntoView({behavior:'smooth'})">Reserver →</button>
+  {% endif %}
+</nav>
+
+<div class="container page-wrap">
+  <div class="breadcrumb">
+    <a href="{% url 'home' %}">Accueil</a> /
+    <a href="{% url 'sites_list' %}">Sites</a> /
+    <a href="{% url 'site_detail' site.slug %}">{{ site.nom }}</a> /
+    Parcelle {{ parcelle.numero }}
+  </div>
+
+  <div class="main-grid">
+    <div>
+      <div class="parcel-header">
+        <div class="parcel-status {% if parcelle.statut == 'disponible' %}ps-a{% elif parcelle.statut == 'reservee' %}ps-r{% else %}ps-v{% endif %}">{{ parcelle.get_statut_display }}</div>
+        <h1 class="parcel-title">Parcelle {{ parcelle.numero }}</h1>
+        <div class="parcel-loc">📍 {{ site.localisation }} — {{ site.nom }}</div>
+      </div>
+
+      {% if parcelle.en_promotion and parcelle.reduction_pct %}
+      <div class="promo-banner">
+        <div>
+          <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--red);">🔥 PROMOTION EXCEPTIONNELLE</div>
+          <div style="font-size:14px;font-weight:600;color:var(--g800);margin-top:4px;">Economisez {{ parcelle.reduction_pct }}% sur ce terrain</div>
+        </div>
+        <div class="promo-disc">-{{ parcelle.reduction_pct }}%</div>
+      </div>
+      {% endif %}
+
+      <!-- Prix -->
+      <div class="price-block">
+        <div class="price-label">Prix de vente</div>
+        <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;">
+          <div class="price-main">{{ parcelle.prix_affiche|intcomma }} FCFA</div>
+          {% if parcelle.en_promotion and parcelle.prix_promo %}<div class="price-old">{{ parcelle.prix|intcomma }} FCFA</div>{% endif %}
+        </div>
+        {% if parcelle.prix_m2 %}<div class="price-m2">soit {{ parcelle.prix_m2|intcomma }} FCFA/m²</div>{% endif %}
+      </div>
+
+      <!-- Specs -->
+      <div class="specs-grid">
+        <div class="spec-item"><div class="spec-val">{{ parcelle.superficie|floatformat:0 }}</div><div class="spec-lbl">m² superficie</div></div>
+        {% if parcelle.longueur %}<div class="spec-item"><div class="spec-val">{{ parcelle.longueur|floatformat:0 }}m</div><div class="spec-lbl">longueur</div></div>{% endif %}
+        {% if parcelle.largeur %}<div class="spec-item"><div class="spec-val">{{ parcelle.largeur|floatformat:0 }}m</div><div class="spec-lbl">largeur</div></div>{% endif %}
+        {% if parcelle.prix_m2 %}<div class="spec-item"><div class="spec-val">{{ parcelle.prix_m2|intcomma }}</div><div class="spec-lbl">FCFA/m²</div></div>{% endif %}
+      </div>
+
+      {% if parcelle.description %}
+      <div class="desc-block">
+        <h3 class="desc-title">Description</h3>
+        <div class="desc-text">{{ parcelle.description }}</div>
+      </div>
+      {% endif %}
+
+      {% if parcelle.images.all %}
+      <h3 class="desc-title" style="margin-bottom:0.8rem;">Photos de la parcelle</h3>
+      <div class="gallery-grid">
+        {% for img in parcelle.images.all %}
+        <div class="gimg"><img src="{{ img.image.url }}" alt="Parcelle {{ parcelle.numero }}" loading="lazy"></div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% if parcelle.latitude or parcelle.geojson %}
+      <div class="map-block">
+        <h3 class="desc-title" style="margin-bottom:0.8rem;">Localisation GPS</h3>
+        <div class="map-wrap" id="parcel-map"></div>
+        {% if parcelle.latitude %}<div style="font-size:12px;color:var(--g400);margin-top:6px;">📍 Coordonnees : {{ parcelle.latitude }}, {{ parcelle.longitude }}</div>{% endif %}
+      </div>
+      {% endif %}
+
+      {% if similaires %}
+      <div style="padding-top:2rem;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.5rem;">📐 Autres parcelles</div>
+        <h3 class="similaires-title">Parcelles <em style="font-style:italic;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">disponibles</em></h3>
+        <div class="sim-grid">
+          {% for s in similaires %}
+          <a class="sim-card" href="{% url 'parcelle_detail' site.slug s.numero %}">
+            <div class="sim-img">{% if s.images.first %}<img src="{{ s.images.first.image.url }}" alt="Parcelle {{ s.numero }}">{% endif %}</div>
+            <div class="sim-body">
+              <div class="sim-num">Parcelle {{ s.numero }}</div>
+              <div class="sim-info">{{ s.superficie|floatformat:0 }} m²</div>
+              <div class="sim-price">{{ s.prix_affiche|intcomma }} FCFA</div>
+            </div>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="reserve-form">
+      {% if parcelle.statut == 'disponible' %}
+      <div class="reserve-card">
+        <div class="rc-title">Reserver cette parcelle</div>
+        <div class="rc-sub">Confirmation sous 24 heures</div>
+        <div style="background:var(--g50);border-radius:12px;padding:1rem;margin-bottom:1rem;text-align:center;">
+          <div style="font-size:11px;color:var(--g400);text-transform:uppercase;letter-spacing:0.5px;">Prix total</div>
+          <div style="font-family:Georgia,serif;font-size:1.8rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">{{ parcelle.prix_affiche|intcomma }} FCFA</div>
+        </div>
+        <form id="reserve-form-el" method="post" action="{% url 'reserver' parcelle.id %}">
+          {% csrf_token %}
+          <div class="fg"><label>Nom complet *</label><input class="fi" type="text" name="nom_client" placeholder="Votre nom complet" required></div>
+          <div class="fg"><label>Telephone *</label><input class="fi" type="tel" name="telephone_client" placeholder="+237 6XX XXX XXX" required></div>
+          <div class="fg"><label>Email *</label><input class="fi" type="email" name="email_client" placeholder="votre@email.com" required></div>
+          <div class="fg"><label>Notes (optionnel)</label><textarea class="fi" name="notes" rows="2" placeholder="Questions ou remarques..."></textarea></div>
+          <button type="submit" class="btn-reserve">Confirmer la reservation →</button>
+        </form>
+        <button class="btn-wa" onclick="window.open('https://wa.me/237600000000?text=Bonjour+EDEN+GROUP%2C+je+souhaite+reserver+la+Parcelle+{{ parcelle.numero }}+du+{{ site.nom }}','_blank')">💬 WhatsApp EDEN GROUP</button>
+        <a class="btn-back" href="{% url 'site_detail' site.slug %}">← Voir toutes les parcelles</a>
+      </div>
+      {% else %}
+      <div class="reserve-card">
+        <div class="rc-title">Parcelle {{ parcelle.get_statut_display|lower }}</div>
+        <div class="rc-sub">Cette parcelle n'est plus disponible a la reservation.</div>
+        <button class="btn-reserve-dis" disabled>Non disponible</button>
+        <button class="btn-wa" style="margin-top:8px;" onclick="window.open('https://wa.me/237600000000?text=Bonjour+EDEN+GROUP%2C+y-a-t-il+des+parcelles+similaires+disponibles+?','_blank')">💬 Contacter EDEN GROUP</button>
+        <a class="btn-back" href="{% url 'site_detail' site.slug %}">← Voir les parcelles disponibles</a>
+      </div>
+      {% endif %}
+
+      <div class="info-card">
+        <div style="font-size:12px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.8rem;">Details</div>
+        <div class="info-row"><span class="info-lbl">Numero</span><span class="info-val">Parcelle {{ parcelle.numero }}</span></div>
+        <div class="info-row"><span class="info-lbl">Site</span><span class="info-val">{{ site.nom }}</span></div>
+        <div class="info-row"><span class="info-lbl">Superficie</span><span class="info-val">{{ parcelle.superficie|floatformat:0 }} m²</span></div>
+        {% if parcelle.longueur %}<div class="info-row"><span class="info-lbl">Dimensions</span><span class="info-val">{{ parcelle.longueur|floatformat:0 }}m × {{ parcelle.largeur|floatformat:0 }}m</span></div>{% endif %}
+        <div class="info-row"><span class="info-lbl">Prix/m²</span><span class="info-val">{{ parcelle.prix_m2|intcomma }} FCFA</span></div>
+        <div class="info-row"><span class="info-lbl">Statut</span><span class="info-val">{{ parcelle.get_statut_display }}</span></div>
+        {% if parcelle.prix_negocie %}<div class="info-row"><span class="info-lbl">Negociable</span><span class="info-val" style="color:#16a34a;">Oui</span></div>{% endif %}
+        {% if parcelle.geojson %}<div class="info-row"><span class="info-lbl">GeoJSON</span><span class="info-val" style="color:#16a34a;">✅ Disponible</span></div>{% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span>✅</span><span id="tmsg"></span></div>
+<footer><div class="footer-copy">© 2025 <span>EDEN GROUP</span>. Tous droits reserves.</div></footer>
+
+{% if parcelle.latitude %}
+<script>
+const map = L.map('parcel-map').setView([{{ parcelle.latitude }}, {{ parcelle.longitude }}], 17);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {attribution:'© Esri', maxZoom:19}).addTo(map);
+{% if parcelle.geojson %}
+const geo = {{ parcelle.geojson|safe }};
+L.geoJSON({type:'Feature',geometry:geo}, {
+  style:{color:'{{ parcelle.couleur_statut }}',fillColor:'{{ parcelle.couleur_statut }}',fillOpacity:0.25,weight:3,opacity:1}
+}).addTo(map).bindPopup('<b>Parcelle {{ parcelle.numero }}</b><br>{{ parcelle.superficie }}m²<br>{{ parcelle.get_statut_display }}');
+{% else %}
+const icon = L.divIcon({
+  html: '<div style="background:{{ parcelle.couleur_statut }};color:#fff;padding:4px 10px;border-radius:10px;font-size:11px;font-weight:800;font-family:Segoe UI,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,0.3);">{{ parcelle.numero }}</div>',
+  className: '', iconAnchor: [0,0]
+});
+L.marker([{{ parcelle.latitude }}, {{ parcelle.longitude }}], {icon}).addTo(map).bindPopup('<b>Parcelle {{ parcelle.numero }}</b>');
+{% endif %}
+</script>
+{% elif parcelle.geojson %}
+<script>
+const map = L.map('parcel-map').setView([{{ site.latitude|default:"3.858" }}, {{ site.longitude|default:"11.510" }}], 16);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {attribution:'© Esri', maxZoom:19}).addTo(map);
+const geo = {{ parcelle.geojson|safe }};
+const layer = L.geoJSON({type:'Feature',geometry:geo}, {
+  style:{color:'{{ parcelle.couleur_statut }}',fillColor:'{{ parcelle.couleur_statut }}',fillOpacity:0.25,weight:3}
+}).addTo(map);
+map.fitBounds(layer.getBounds());
+</script>
+{% endif %}
+</body>
+</html>
