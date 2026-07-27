@@ -11,4 +11,20 @@ services:
       - "8002:8000"
     environment:
       - PYTHONUNBUFFERED=1
+    depends_on:
+      - db
     restart: unless-stopped
+
+  db:
+    image: postgres:16
+    container_name: eden_marketing_db
+    environment:
+      POSTGRES_DB: eden_marketing
+      POSTGRES_USER: cosmas
+      POSTGRES_PASSWORD: cosmas
+    volumes:
+      - eden_marketing_postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  eden_marketing_postgres_data:
