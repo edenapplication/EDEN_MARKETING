@@ -1,0 +1,680 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nos Services — EDEN GROUP</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --blue:#1B4FDB;--blue-d:#0A2494;--blue-pale:#EEF3FF;
+  --red:#C8102E;--red-d:#A00C24;
+  --grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
+  --grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
+  --g50:#F8FAFF;--g100:#F0F4FF;--g200:#E2E8F0;
+  --g400:#94A3B8;--g500:#64748B;--g600:#475569;--g800:#1E293B;
+  --sh:0 2px 12px rgba(0,0,0,0.08);--sh-lg:0 8px 32px rgba(27,79,219,0.15);
+  --r:10px;--rl:16px;--rxl:24px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:#fff;color:var(--g800);overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-thumb{background:var(--grad-h);border-radius:100px;}
+
+/* ══ NAV TRANSPARENTE ══ */
+nav{
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    z-index:1000;
+    height:70px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 2rem;
+    background:transparent;
+    border-bottom:1px solid transparent;
+    box-shadow:none;
+    transition:
+        background .4s ease,
+        backdrop-filter .4s ease,
+        border-color .4s ease,
+        box-shadow .4s ease;
+}
+
+nav.scrolled{
+    background:rgba(255,255,255,.92);
+    backdrop-filter:blur(22px);
+    -webkit-backdrop-filter:blur(22px);
+    border-bottom:1px solid rgba(226,232,240,.9);
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo-img{height:48px;width:auto;object-fit:contain;}
+.logo-box{width:42px;height:42px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#fff;}
+.logo-name{font-size:18px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.logo-tagline{font-size:9px;color:var(--g500);letter-spacing:1.5px;text-transform:uppercase;}
+.nav-links{display:flex;align-items:center;gap:0;}
+.nav-lnk{padding:6px 13px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.85);text-decoration:none;border-radius:7px;transition:all 0.18s;position:relative;}
+.nav-lnk:hover,.nav-lnk.active{color:#fff;}
+.nav-lnk.active::after{content:'';position:absolute;bottom:-4px;left:13px;right:13px;height:2px;background:var(--red);border-radius:100px;}
+nav.scrolled .nav-lnk{color:var(--g600);}
+nav.scrolled .nav-lnk:hover,
+nav.scrolled .nav-lnk.active{color:var(--blue);}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-icon-btn{width:36px;height:36px;border-radius:8px;border:1.5px solid rgba(255,255,255,0.25);background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:all 0.18s;color:#fff;text-decoration:none;}
+.nav-icon-btn:hover{border-color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.2);}
+nav.scrolled .nav-icon-btn{background:#fff;border-color:var(--g200);color:var(--g600);}
+nav.scrolled .nav-icon-btn:hover{border-color:var(--blue);background:var(--blue-pale);}
+.btn-rdv{background:var(--red);color:#fff;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:7px;text-decoration:none;}
+.btn-rdv:hover{background:var(--red-d);transform:translateY(-1px);box-shadow:0 4px 16px rgba(200,16,46,0.3);}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:none;padding:6px;}
+.hamburger span{width:22px;height:2px;background:#fff;border-radius:2px;display:block;transition:background 0.3s;}
+nav.scrolled .hamburger span{background:var(--g800);}
+.mob-menu{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(255,255,255,0.98);border-bottom:1px solid var(--g200);padding:1rem 1.5rem;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.1);backdrop-filter:blur(10px);}
+.mob-menu.open{display:flex;flex-direction:column;gap:4px;}
+.mob-menu .nav-lnk{color:var(--g600);padding:8px 0;}
+.mob-menu .nav-lnk.active{color:var(--blue);}
+.mob-menu .nav-lnk.active::after{display:none;}
+
+/* ══ HERO ══ */
+/* ══ HERO ══ */
+.hero-services{margin-top:0;position:relative;background:var(--blue-d);min-height:200px;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;}
+.hero-bg img{width:100%;height:100%;object-fit:cover;display:block;opacity:1;}
+.hero-bg-ph{width:100%;height:100%;background:linear-gradient(135deg,#0A2494,#1B4FDB 50%,#7B20B4);}
+
+.hero-overlay{
+    position:absolute;
+    inset:0;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(5,15,50,.98) 0%,
+            rgba(8,25,70,.92) 15%,
+            rgba(10,30,80,.80) 30%,
+            rgba(10,35,85,.65) 45%,
+            rgba(10,35,85,.45) 55%,
+            rgba(10,35,85,.25) 70%,
+            rgba(10,35,85,.10) 85%,
+            rgba(0,0,0,0) 100%
+        );
+    z-index:1;
+}
+
+.hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr 320px;align-items:center;gap:2rem;padding:6rem 2rem 2.5rem;max-width:1280px;margin:0 auto;}
+.hero-tit{font-size:clamp(2rem,3.5vw,2.8rem);font-weight:900;color:#fff;margin-bottom:0.5rem;}
+.hero-desc{font-size:14px;color:rgba(255,255,255,0.85);line-height:1.7;max-width:500px;margin-bottom:1.5rem;}
+
+/* Badges */
+.hero-badges{display:flex;gap:1.5rem;flex-wrap:wrap;}
+.hero-badge{display:flex;align-items:center;gap:8px;}
+.hb-ico{width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.hb-txt{font-size:11px;color:rgba(255,255,255,0.85);font-weight:600;line-height:1.3;}
+
+/* Hero right card engagement - TOTALEMENT BLEU FONCÉ */
+.hero-engagement-card{
+    background:linear-gradient(135deg,#0A1A3A,#0D2B5E 50%,#1B4FDB);
+    backdrop-filter:blur(12px);
+    border:1.5px solid rgba(255,255,255,0.10);
+    border-radius:var(--rl);
+    padding:1.3rem;
+    color:#fff;
+    box-shadow:0 8px 32px rgba(0,0,0,0.3);
+}
+
+.hec-ico{
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.10);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+    margin-bottom:0.8rem;
+}
+
+.hec-tit{
+    font-size:14px;
+    font-weight:800;
+    color:#fff;
+    margin-bottom:0.4rem;
+}
+
+.hec-desc{
+    font-size:12px;
+    color:rgba(255,255,255,0.80);
+    line-height:1.65;
+}
+/* Badges */
+.hero-badges{display:flex;gap:1.5rem;flex-wrap:wrap;}
+.hero-badge{display:flex;align-items:center;gap:8px;}
+.hb-ico{width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.hb-txt{font-size:11px;color:rgba(255,255,255,0.85);font-weight:600;line-height:1.3;}
+/* Hero right card engagement */
+/* Hero right card engagement - TOTALEMENT BLEU */
+.hero-engagement-card{
+    background:linear-gradient(135deg,#0A2494,#061745 50%,#09055d);
+    backdrop-filter:blur(12px);
+    border:1.5px solid rgba(255,255,255,0.15);
+    border-radius:var(--rl);
+    padding:1.3rem;
+    color:#fff;
+    box-shadow:0 8px 32px rgba(0,0,0,0.2);
+}
+
+.hec-ico{
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.15);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+    margin-bottom:0.8rem;
+}
+
+.hec-tit{
+    font-size:14px;
+    font-weight:800;
+    color:#fff;
+    margin-bottom:0.4rem;
+}
+
+.hec-desc{
+    font-size:12px;
+    color:rgba(255,255,255,0.85);
+    line-height:1.65;
+}
+/* ══ LAYOUT PRINCIPAL ══ */
+.services-layout{display:grid;grid-template-columns:220px 1fr;gap:0;max-width:1280px;margin:0 auto;}
+
+/* ══ MENU GAUCHE ══ */
+.sidebar-menu{background:#fff;border-right:1.5px solid var(--g200);padding:1.2rem 0;position:sticky;top:70px;height:calc(100vh - 70px);overflow-y:auto;}
+.sidebar-menu::-webkit-scrollbar{width:3px;}
+.sidebar-menu::-webkit-scrollbar-thumb{background:var(--grad-h);border-radius:100px;}
+.sm-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g400);padding:0.5rem 1.2rem 0.8rem;border-bottom:1px solid var(--g200);margin-bottom:0.4rem;}
+.sm-item{display:flex;align-items:center;gap:9px;padding:9px 1.2rem;font-size:12.5px;font-weight:500;color:var(--g600);cursor:pointer;transition:all 0.15s;border-left:3px solid transparent;text-decoration:none;}
+.sm-item:hover{color:var(--blue);background:var(--blue-pale);}
+.sm-item.active{color:var(--blue);background:var(--blue-pale);border-left-color:var(--blue);font-weight:700;}
+.sm-item-ico{font-size:14px;flex-shrink:0;width:20px;text-align:center;}
+/* Box conseil en bas du menu */
+.sm-conseil-box{margin:1rem;background:var(--blue-pale);border-radius:var(--rl);padding:1rem;}
+.scb-tit{font-size:12px;font-weight:700;color:var(--g800);margin-bottom:0.4rem;}
+.scb-desc{font-size:11px;color:var(--g500);line-height:1.5;margin-bottom:0.8rem;}
+.btn-conseiller{background:var(--red);color:#fff;border:none;padding:9px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;width:100%;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s;}
+.btn-conseiller:hover{background:var(--red-d);}
+
+/* ══ CONTENU SERVICES ══ */
+.services-content{padding:2rem 2rem;background:var(--g50);}
+.services-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1.2rem;margin-bottom:0;}
+
+/* Card service */
+.service-card{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);padding:1.2rem;transition:all 0.3s;cursor:pointer;position:relative;}
+.service-card:hover{border-color:var(--blue);box-shadow:var(--sh-lg);transform:translateY(-3px);}
+.sc-num{font-size:12px;font-weight:800;color:var(--g400);margin-bottom:0.8rem;letter-spacing:0.5px;}
+.sc-ico-box{width:48px;height:48px;border-radius:12px;background:var(--blue-pale);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:0.8rem;transition:all 0.3s;}
+.service-card:hover .sc-ico-box{background:var(--blue);transform:scale(1.08);}
+.sc-nom{font-size:13px;font-weight:700;color:var(--g800);line-height:1.35;margin-bottom:0.6rem;}
+.sc-desc{font-size:11px;color:var(--g500);line-height:1.6;margin-bottom:0.8rem;}
+.sc-lire{font-size:11px;font-weight:700;color:var(--blue);text-decoration:none;display:flex;align-items:center;gap:4px;transition:gap 0.2s;}
+.sc-lire:hover{gap:7px;}
+
+/* ══ PROCESSUS ══ */
+.processus-section{background:#fff;padding:2rem;border-top:1px solid var(--g200);max-width:1280px;margin:0 auto;}
+.proc-header{display:flex;align-items:flex-end;gap:1rem;margin-bottom:1.5rem;}
+.proc-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--g400);margin-bottom:3px;}
+.proc-tit{font-size:1.2rem;font-weight:800;color:var(--g800);}
+.proc-num{font-size:1.5rem;font-weight:900;color:var(--blue);line-height:1;flex-shrink:0;}
+.proc-track{display:flex;align-items:flex-start;}
+.proc-step{display:flex;flex-direction:column;align-items:center;flex:1;text-align:center;position:relative;}
+.proc-step-top{display:flex;align-items:center;width:100%;}
+.proc-line-l{flex:1;height:2px;background:var(--grad-h);}
+.proc-line-r{flex:1;height:2px;background:var(--grad-h);}
+.proc-line-blank{flex:1;}
+.proc-circle{width:48px;height:48px;border-radius:50%;background:var(--blue-pale);border:2.5px solid var(--blue);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;position:relative;z-index:1;transition:all 0.3s;}
+.proc-circle:hover{background:var(--blue);transform:scale(1.1);}
+.proc-step-num{position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:var(--red);color:#fff;width:18px;height:18px;border-radius:50%;font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center;}
+.proc-body{margin-top:10px;padding:0 4px;}
+.proc-nom{font-size:11px;font-weight:700;color:var(--g800);line-height:1.3;}
+.proc-desc{font-size:10px;color:var(--g500);margin-top:3px;line-height:1.4;}
+
+/* ══ ENGAGEMENTS ══ */
+.engagements-bar{background:var(--blue-d);padding:2rem 1.5rem;}
+.eng-inner{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;}
+.eng-item{display:flex;align-items:flex-start;gap:12px;}
+.eng-ico{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.eng-blue{background:rgba(27,79,219,0.3);}
+.eng-red{background:rgba(200,16,46,0.3);}
+.eng-green{background:rgba(22,163,74,0.3);}
+.eng-purple{background:rgba(123,32,180,0.3);}
+.eng-tit{font-size:13px;font-weight:700;color:#fff;margin-bottom:3px;}
+.eng-desc{font-size:11px;color:rgba(255,255,255,0.7);line-height:1.55;}
+
+/* ══ FOOTER ══ */
+.footer-bar{height:3px;background:var(--grad-h);}
+footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1px solid #334155;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1.5fr;gap:2rem;max-width:1280px;margin:0 auto 2rem;}
+.footer-logo-img{height:40px;object-fit:contain;}
+.footer-desc{font-size:12px;color:#94A3B8;line-height:1.75;max-width:260px;margin-bottom:1rem;margin-top:0.8rem;}
+.footer-tagline{font-size:11px;color:rgba(255,255,255,0.4);font-style:italic;}
+.footer-col h4{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.9rem;}
+.footer-lnk{display:block;font-size:12px;color:#94A3B8;text-decoration:none;margin-bottom:6px;transition:color 0.2s;}
+.footer-lnk:hover{color:#fff;}
+.footer-agences-item{display:flex;align-items:center;gap:5px;font-size:12px;color:#94A3B8;margin-bottom:6px;}
+.footer-socials{display:flex;gap:8px;margin-top:0.8rem;}
+.footer-social-btn{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;transition:all 0.2s;}
+.fs-fb{background:#1877F2;color:#fff;}
+.fs-tt{background:#010101;color:#fff;}
+.fs-yt{background:#FF0000;color:#fff;}
+.fs-li{background:#0A66C2;color:#fff;}
+.fs-ig{background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;}
+.footer-social-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.3);}
+.footer-nl-wrap{position:relative;}
+.footer-nl-input{width:100%;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);border-radius:8px;padding:9px 48px 9px 12px;font-size:12px;color:#fff;font-family:'Outfit',sans-serif;outline:none;}
+.footer-nl-input::placeholder{color:rgba(255,255,255,0.35);}
+.footer-nl-btn{position:absolute;right:0;top:0;bottom:0;background:var(--red);border:none;width:40px;border-radius:0 8px 8px 0;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;transition:background 0.2s;}
+.footer-nl-btn:hover{background:var(--red-d);}
+.footer-bot{border-top:1px solid #334155;max-width:1280px;margin:0 auto;padding-top:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.footer-copy{font-size:12px;color:#64748B;}
+.footer-links-bot{display:flex;gap:1.5rem;}
+.footer-links-bot a{font-size:12px;color:#64748B;text-decoration:none;transition:color 0.2s;}
+.footer-links-bot a:hover{color:#fff;}
+
+/* Toast */
+.toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1px solid var(--g200);border-radius:var(--r);padding:14px 20px;font-size:13px;color:var(--g800);z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(100px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.12);}
+.toast.show{transform:none;opacity:1;}
+
+/* MODAL DETAIL SERVICE */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.6);z-index:3000;display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px);}
+.modal-overlay.open{display:flex;}
+.modal-box{background:#fff;border-radius:var(--rxl);max-width:480px;width:100%;animation:mIn 0.3s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 24px 80px rgba(0,0,0,0.2);overflow:hidden;}
+@keyframes mIn{from{opacity:0;transform:scale(0.92);}to{opacity:1;transform:none;}}
+.modal-header{background:var(--blue-d);padding:1.5rem;position:relative;}
+.modal-close{position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,0.1);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;}
+.modal-close:hover{background:rgba(255,255,255,0.2);}
+.modal-header-top{font-size:11px;color:rgba(255,255,255,0.5);font-weight:700;letter-spacing:2px;margin-bottom:0.5rem;}
+.modal-header-bottom{display:flex;align-items:center;gap:12px;}
+.modal-icon{width:52px;height:52px;border-radius:12px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:24px;}
+.modal-title{font-size:1.2rem;font-weight:900;color:#fff;}
+.modal-body{padding:1.5rem;}
+.modal-desc{font-size:13px;color:var(--g600);line-height:1.75;margin-bottom:1.2rem;}
+.modal-actions{display:flex;gap:10px;}
+.btn-modal-primary{flex:1;background:var(--red);color:#fff;border:none;padding:12px;border-radius:var(--r);font-size:13px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;}
+.btn-modal-primary:hover{background:var(--red-d);}
+.btn-modal-secondary{padding:12px 18px;background:var(--g50);border:1.5px solid var(--g200);border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;color:var(--g600);}
+.btn-modal-secondary:hover{background:var(--g200);}
+
+/* RESPONSIVE */
+@media(max-width:1200px){.services-grid{grid-template-columns:repeat(3,1fr);}.eng-inner{grid-template-columns:repeat(2,1fr);}.footer-grid{grid-template-columns:1fr 1fr 1fr;}}
+@media(max-width:1024px){.services-layout{grid-template-columns:1fr;}.sidebar-menu{position:static;height:auto;display:flex;flex-direction:row;overflow-x:auto;border-right:none;border-bottom:1.5px solid var(--g200);padding:0;}.sm-title{display:none;}.sm-item{padding:10px 14px;border-left:none;border-bottom:3px solid transparent;white-space:nowrap;}.sm-item.active{border-bottom-color:var(--blue);border-left:none;}.sm-conseil-box{display:none;}.footer-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:768px){
+  nav{padding:0 1rem;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .hero-inner{grid-template-columns:1fr;padding:5rem 1.5rem 2rem;}
+  .hero-engagement-card{display:none;}
+  .services-grid{grid-template-columns:1fr 1fr;}
+  .services-content{padding:1.5rem 1rem;}
+  .eng-inner{grid-template-columns:1fr;}
+  .proc-track{overflow-x:auto;}
+  .footer-grid{grid-template-columns:1fr;gap:1.5rem;}
+  .footer-grid>div:first-child{grid-column:1;}
+  .footer-bot{flex-direction:column;text-align:center;}
+}
+@media(max-width:480px){.services-grid{grid-template-columns:1fr;}.hero-tit{font-size:1.8rem;}}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"><span id="t-ico">✅</span>&nbsp;<span id="t-msg"></span></div>
+
+<!-- MODAL SERVICE -->
+<div class="modal-overlay" id="modal-service">
+  <div class="modal-box">
+    <div class="modal-header">
+      <button class="modal-close" onclick="fermerModalSrv()">✕</button>
+      <div class="modal-header-top" id="ms-num">SERVICE 01</div>
+      <div class="modal-header-bottom">
+        <div class="modal-icon" id="ms-ico">🏠</div>
+        <div class="modal-title" id="ms-nom">Nom du service</div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-desc" id="ms-desc">Description du service...</div>
+      <div class="modal-actions">
+        <button class="btn-modal-primary" onclick="showToast('📅','Notre équipe vous contactera sous 24h.');fermerModalSrv();">
+          Demander ce service
+        </button>
+        <button class="btn-modal-secondary" onclick="fermerModalSrv()">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a class="nav-logo" href="{% url 'home' %}">
+    <div class="logo-box">E</div>
+    <div>
+      <div class="logo-name">EDEN GROUP</div>
+      <div class="logo-tagline">Le foncier sécurisé, notre engagement</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'sites_list' or request.resolver_match.url_name == 'site_detail' %}active{% endif %}" href="{% url 'sites_list' %}">Nos Terrains</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_projets' %}active{% endif %}" href="{% url 'nos_projets' %}">Nos Projets</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' or request.resolver_match.url_name == 'une_evenement_detail' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'journal_kiosque' or request.resolver_match.url_name == 'journal_lire' %}active{% endif %}" href="{% url 'journal_kiosque' %}">📰 Documentation</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
+    {% if user.is_staff %}
+    <a class="nav-lnk" href="{% url 'dashboard_home' %}" style="color:var(--blue);font-weight:700;">Dashboard</a>
+    {% endif %}
+  </div>
+  <div class="nav-right">
+    <button class="btn-rdv" onclick="document.getElementById('cc-form')?.scrollIntoView({behavior:'smooth'})">📅 Contact</button>
+  </div>
+  <button class="hamburger" onclick="toggleMob()"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="mob-menu" id="mob-menu">
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'sites_list' or request.resolver_match.url_name == 'site_detail' %}active{% endif %}" href="{% url 'sites_list' %}">Nos Terrains</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_projets' %}active{% endif %}" href="{% url 'nos_projets' %}">Nos Projets</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' or request.resolver_match.url_name == 'une_evenement_detail' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'journal_kiosque' or request.resolver_match.url_name == 'journal_lire' %}active{% endif %}" href="{% url 'journal_kiosque' %}">📰 Documentation</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'promotions' %}active{% endif %}" href="{% url 'promotions' %}">Promotions</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
+  {% if user.is_staff %}<a class="nav-lnk" href="{% url 'dashboard_home' %}">Dashboard</a>{% endif %}
+  <button class="btn-rdv" style="width:100%;margin-top:8px;justify-content:center;" onclick="document.getElementById('cc-form')?.scrollIntoView({behavior:'smooth'})">📅 Contact</button>
+</div>
+
+<!-- HERO -->
+<div class="hero-services">
+  <div class="hero-bg">
+    {% if services.0 and services.0.image %}
+      <img src="{{ services.0.image.url }}" alt="Nos Services">
+    {% else %}
+      <div class="hero-bg-ph"></div>
+    {% endif %}
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-inner">
+    <div>
+      <h1 class="hero-tit">Nos Services</h1>
+      <p class="hero-desc">Un accompagnement complet et professionnel à chaque étape de votre projet foncier.</p>
+      <div class="hero-badges">
+        <div class="hero-badge">
+          <div class="hb-ico">🎓</div>
+          <div class="hb-txt">Expertise &amp;<br>Expérience</div>
+        </div>
+        <div class="hero-badge">
+          <div class="hb-ico">🔒</div>
+          <div class="hb-txt">Sécurité<br>Garantie</div>
+        </div>
+        <div class="hero-badge">
+          <div class="hb-ico">🤝</div>
+          <div class="hb-txt">Accompagnement<br>Personnalisé</div>
+        </div>
+        <div class="hero-badge">
+          <div class="hb-ico">⭐</div>
+          <div class="hb-txt">Satisfaction<br>Client</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-engagement-card">
+      <div class="hec-ico">🛡</div>
+      <div class="hec-tit">Notre engagement</div>
+      <div class="hec-desc">Vous offrir des services fiables, transparents et innovants pour sécuriser votre patrimoine et construire votre avenir en toute sérénité.</div>
+    </div>
+  </div>
+</div>
+
+<!-- LAYOUT PRINCIPAL -->
+<div class="services-layout">
+
+  <!-- MENU GAUCHE -->
+  <div class="sidebar-menu">
+    <div class="sm-title">NOS DOMAINES D'EXPERTISE</div>
+    <a href="{% url 'nos_services' %}" class="sm-item {% if cat_actif == 'tous' %}active{% endif %}">
+      <span class="sm-item-ico">🏠</span>Tous nos services
+    </a>
+    {% for cat in categories %}
+    <a href="{% url 'nos_services' %}?cat={{ cat.slug }}"
+       class="sm-item {% if cat_actif == cat.slug %}active{% endif %}">
+      <span class="sm-item-ico">{{ cat.icone }}</span>{{ cat.nom }}
+    </a>
+    {% endfor %}
+
+    <!-- Box conseil -->
+    <div class="sm-conseil-box">
+      <div class="scb-tit">Besoin d'un conseil personnalisé ?</div>
+      <div class="scb-desc">Nos experts sont à votre disposition.</div>
+      <button class="btn-conseiller" onclick="showToast('💬','Notre équipe vous contactera sous 24h.')">
+        Parler à un conseiller 💬
+      </button>
+    </div>
+  </div>
+
+  <!-- GRILLE SERVICES -->
+  <div class="services-content">
+    {% if services %}
+    <div class="services-grid">
+      {% for srv in services %}
+      <div class="service-card" onclick="ouvrirDetailService('{{ srv.nom|escapejs }}','{{ srv.description|escapejs }}','{{ srv.icone|escapejs }}',{{ srv.numero }})">
+        <div class="sc-num">0{{ srv.numero }}</div>
+        <div class="sc-ico-box">{{ srv.icone }}</div>
+        <div class="sc-nom">{{ srv.nom }}</div>
+        <div class="sc-desc">{{ srv.description|truncatechars:120 }}</div>
+        <a class="sc-lire" href="{% if srv.lien_detail and srv.lien_detail != '#' %}{{ srv.lien_detail }}{% else %}#{% endif %}"
+           onclick="event.stopPropagation();">En savoir plus →</a>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align:center;padding:4rem;color:var(--g400);">
+      <div style="font-size:3rem;margin-bottom:0.8rem;">🔍</div>
+      <div style="font-size:15px;font-weight:600;color:var(--g800);margin-bottom:0.4rem;">Aucun service</div>
+      <div style="font-size:13px;">Aucun service dans cette catégorie pour le moment.</div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- PROCESSUS -->
+{% if etapes %}
+<div style="background:#fff;padding:2.5rem 1.5rem;border-top:1px solid var(--g200);">
+  <div style="max-width:1280px;margin:0 auto;">
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.8rem;flex-wrap:wrap;">
+      <div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g400);margin-bottom:3px;">Notre</div>
+        <div style="font-size:1.2rem;font-weight:900;color:var(--g800);">Processus d'accompagnement</div>
+      </div>
+    </div>
+    <div class="proc-track">
+      {% for etape in etapes %}
+      <div class="proc-step">
+        <div class="proc-step-top">
+          {% if not forloop.first %}
+          <div class="proc-line-l"></div>
+          {% else %}
+          <div class="proc-line-blank"></div>
+          {% endif %}
+          <div class="proc-circle" style="position:relative;">
+            <div class="proc-step-num">{{ forloop.counter }}</div>
+            {{ etape.icone }}
+          </div>
+          {% if not forloop.last %}
+          <div class="proc-line-r"></div>
+          {% else %}
+          <div class="proc-line-blank"></div>
+          {% endif %}
+        </div>
+        <div class="proc-body">
+          <div class="proc-nom">{{ etape.titre }}</div>
+          {% if etape.description %}<div class="proc-desc">{{ etape.description }}</div>{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- ENGAGEMENTS -->
+<div class="engagements-bar">
+  <div class="eng-inner">
+    {% if engagements_are_objects %}
+      {% for eng in engagements %}
+      <div class="eng-item">
+        <div class="eng-ico eng-{{ eng.couleur }}">{{ eng.icone }}</div>
+        <div>
+          <div class="eng-tit">{{ eng.titre }}</div>
+          <div class="eng-desc">{{ eng.description }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      {% for eng in engagements %}
+      <div class="eng-item">
+        <div class="eng-ico eng-{{ eng.couleur }}">{{ eng.icone }}</div>
+        <div>
+          <div class="eng-tit">{{ eng.titre }}</div>
+          <div class="eng-desc">{{ eng.description }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<div class="footer-bar"></div>
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;">
+        <div class="logo-box" style="width:36px;height:36px;font-size:15px;border-radius:8px;">E</div>
+        <div style="font-size:15px;font-weight:900;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">EDEN GROUP</div>
+      </div>
+      <p class="footer-desc">Votre partenaire foncier de confiance depuis 2018.</p>
+      <div class="footer-tagline">Le foncier sécurisé, notre engagement</div>
+    </div>
+    <div class="footer-col">
+      <h4>Liens rapides</h4>
+      <a class="footer-lnk" href="{% url 'home' %}">Accueil</a>
+      <a class="footer-lnk" href="{% url 'sites_list' %}">Nos Terrains</a>
+      <a class="footer-lnk" href="{% url 'nos_projets' %}">Nos Projets</a>
+      <a class="footer-lnk" href="{% url 'nos_services' %}">Nos Services</a>
+      <a class="footer-lnk" href="{% url 'nos_agences' %}">Nos Agences</a>
+      <a class="footer-lnk" href="{% url 'journal_kiosque' %}">Actualités</a>
+      <a class="footer-lnk" href="{% url 'a_propos' %}">À propos</a>
+      <a class="footer-lnk" href="{% url 'contact' %}">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h4>Nos agences</h4>
+      <div class="footer-agences-item">📍 Yaoundé (Siège)</div>
+      <div class="footer-agences-item">📍 Bafoussam</div>
+      <div class="footer-agences-item">📍 Dschang</div>
+      <div class="footer-agences-item">📍 Bangangté</div>
+    </div>
+    <div class="footer-col">
+      <h4>Suivez-nous</h4>
+      <div class="footer-socials">
+        <a href="#" class="footer-social-btn fs-fb">f</a>
+        <a href="#" class="footer-social-btn fs-tt" style="color:#fff;">T</a>
+        <a href="#" class="footer-social-btn fs-yt" style="color:#fff;">▶</a>
+        <a href="#" class="footer-social-btn fs-li" style="color:#fff;">in</a>
+        <a href="#" class="footer-social-btn fs-ig" style="color:#fff;">📷</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Newsletter</h4>
+      <div style="font-size:12px;color:#94A3B8;margin-bottom:0.8rem;">Recevez nos offres et actualités</div>
+      <div class="footer-nl-wrap">
+        <input class="footer-nl-input" type="email" placeholder="Votre email" id="footer-nl">
+        <button class="footer-nl-btn" onclick="souscrireFooter()">→</button>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bot">
+    <div class="footer-copy">© 2026 EDEN GROUP ENTREPRISE. Tous droits réservés.</div>
+    <div class="footer-links-bot">
+      <a href="#">Mentions légales</a>
+      <a href="#">Politique de confidentialité</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+function showToast(ico, msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('t-ico').textContent = ico;
+  document.getElementById('t-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+function ouvrirDetailService(nom, desc, ico, num) {
+  document.getElementById('ms-num').textContent = `SERVICE 0${num}`;
+  document.getElementById('ms-ico').textContent = ico;
+  document.getElementById('ms-nom').textContent = nom;
+  document.getElementById('ms-desc').textContent = desc;
+  document.getElementById('modal-service').classList.add('open');
+}
+
+function fermerModalSrv() {
+  document.getElementById('modal-service').classList.remove('open');
+}
+
+document.getElementById('modal-service').addEventListener('click', function(e) {
+  if (e.target === this) fermerModalSrv();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') fermerModalSrv();
+});
+
+function toggleMob() {
+  document.getElementById('mob-menu').classList.toggle('open');
+}
+
+function souscrireFooter() {
+  const e = document.getElementById('footer-nl').value;
+  if (!e) return;
+  showToast('✅', 'Inscription confirmée !');
+  document.getElementById('footer-nl').value = '';
+}
+
+// Gestion du scroll pour la navbar
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('navbar');
+  if (window.scrollY > 40) {
+    nav.classList.add('scrolled');
+  } else {
+    nav.classList.remove('scrolled');
+  }
+});
+
+// Initialisation au chargement
+document.addEventListener('DOMContentLoaded', function() {
+  const nav = document.getElementById('navbar');
+  if (window.scrollY > 40) {
+    nav.classList.add('scrolled');
+  } else {
+    nav.classList.remove('scrolled');
+  }
+});
+</script>
+</body>
+</html>

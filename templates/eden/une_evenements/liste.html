@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ categorie_label }} — EDEN GROUP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+{% load humanize %}
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --blue:#1B4FDB;--blue-d:#0A2494;--blue-pale:#EEF3FF;
+  --red:#C8102E;--red-d:#A00C24;
+  --grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
+  --grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
+  --g50:#F8FAFF;--g100:#F0F4FF;--g200:#E2E8F0;
+  --g400:#94A3B8;--g500:#64748B;--g600:#475569;--g800:#1E293B;
+  --sh:0 2px 12px rgba(0,0,0,0.08);--sh-lg:0 8px 40px rgba(27,79,219,0.15);
+  --r:10px;--rl:16px;--rxl:24px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:#fff;color:var(--g800);overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-thumb{background:var(--grad-h);border-radius:100px;}
+
+/* ══ NAV TRANSPARENTE ══ */
+nav{
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    z-index:1000;
+    height:70px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 2rem;
+    background:transparent;
+    border-bottom:1px solid transparent;
+    box-shadow:none;
+    transition:
+        background .4s ease,
+        backdrop-filter .4s ease,
+        border-color .4s ease,
+        box-shadow .4s ease;
+}
+
+nav.scrolled{
+    background:rgba(255,255,255,.92);
+    backdrop-filter:blur(22px);
+    -webkit-backdrop-filter:blur(22px);
+    border-bottom:1px solid rgba(226,232,240,.9);
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo-img{height:48px;width:auto;object-fit:contain;}
+.logo-box{width:42px;height:42px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#fff;}
+.logo-name{font-size:18px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.logo-tagline{font-size:9px;color:var(--g500);letter-spacing:1.5px;text-transform:uppercase;}
+.nav-links{display:flex;align-items:center;gap:0;}
+.nav-lnk{padding:6px 13px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.85);text-decoration:none;border-radius:7px;transition:all 0.18s;position:relative;}
+.nav-lnk:hover,.nav-lnk.active{color:#fff;}
+.nav-lnk.active::after{content:'';position:absolute;bottom:-4px;left:13px;right:13px;height:2px;background:var(--red);border-radius:100px;}
+nav.scrolled .nav-lnk{color:var(--g600);}
+nav.scrolled .nav-lnk:hover,
+nav.scrolled .nav-lnk.active{color:var(--blue);}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-icon-btn{width:36px;height:36px;border-radius:8px;border:1.5px solid rgba(255,255,255,0.25);background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:all 0.18s;color:#fff;text-decoration:none;}
+.nav-icon-btn:hover{border-color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.2);}
+nav.scrolled .nav-icon-btn{background:#fff;border-color:var(--g200);color:var(--g600);}
+nav.scrolled .nav-icon-btn:hover{border-color:var(--blue);background:var(--blue-pale);}
+.btn-rdv{background:var(--red);color:#fff;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:7px;text-decoration:none;}
+.btn-rdv:hover{background:var(--red-d);transform:translateY(-1px);box-shadow:0 4px 16px rgba(200,16,46,0.3);}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:none;padding:6px;}
+.hamburger span{width:22px;height:2px;background:#fff;border-radius:2px;display:block;transition:background 0.3s;}
+nav.scrolled .hamburger span{background:var(--g800);}
+.mob-menu{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(255,255,255,0.98);border-bottom:1px solid var(--g200);padding:1rem 1.5rem;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.1);backdrop-filter:blur(10px);}
+.mob-menu.open{display:flex;flex-direction:column;gap:4px;}
+.mob-menu .nav-lnk{color:var(--g600);padding:8px 0;}
+.mob-menu .nav-lnk.active{color:var(--blue);}
+.mob-menu .nav-lnk.active::after{display:none;}
+
+/* ══ HERO UNE ══ */
+.hero-une{margin-top:0;position:relative;min-height:320px;background:var(--blue-d);overflow:hidden;}
+.hero-bg{position:absolute;inset:0;}
+.hero-bg img{width:100%;height:100%;object-fit:cover;display:block;opacity:1;}
+.hero-bg-ph{width:100%;height:100%;background:linear-gradient(135deg,#0A2494,#1B4FDB 50%,#7B20B4);}
+.hero-overlay{
+    position:absolute;
+    inset:0;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(5,15,50,.98) 0%,
+            rgba(8,25,70,.92) 15%,
+            rgba(10,30,80,.80) 30%,
+            rgba(10,35,85,.65) 45%,
+            rgba(10,35,85,.45) 55%,
+            rgba(10,35,85,.25) 70%,
+            rgba(10,35,85,.10) 85%,
+            rgba(0,0,0,0) 100%
+        );
+    z-index:1;
+}
+.hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr 320px;align-items:center;gap:2rem;padding:6rem 2rem 2.5rem;max-width:1280px;margin:0 auto;min-height:320px;}
+.hero-left{padding:0;display:flex;flex-direction:column;justify-content:center;}
+.breadcrumb{font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:0.8rem;display:flex;align-items:center;gap:6px;}
+.breadcrumb a{color:rgba(255,255,255,0.6);text-decoration:none;}
+.breadcrumb a:hover{color:#fff;}
+.breadcrumb span{color:rgba(255,255,255,0.4);}
+.hero-tit{font-size:clamp(2rem,3.5vw,2.8rem);font-weight:900;color:#fff;margin-bottom:0.5rem;line-height:1.1;}
+.hero-desc{font-size:13px;color:rgba(255,255,255,0.8);line-height:1.7;max-width:450px;margin-bottom:1.2rem;}
+.hero-badges{display:flex;gap:1rem;flex-wrap:wrap;}
+.hero-badge{display:flex;align-items:center;gap:7px;}
+.hb-ico{width:30px;height:30px;border-radius:7px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.hb-txt{font-size:10px;color:rgba(255,255,255,0.75);font-weight:500;line-height:1.2;}
+.hb-txt strong{display:block;font-size:11px;color:#fff;font-weight:700;}
+/* Hero right card */
+.hero-card{
+    background:linear-gradient(135deg,#0A1A3A,#0D2B5E 50%,#1B4FDB);
+    backdrop-filter:blur(12px);
+    border:1.5px solid rgba(255,255,255,0.10);
+    border-radius:var(--rl);
+    padding:1.3rem;
+    color:#fff;
+    box-shadow:0 8px 32px rgba(0,0,0,0.3);
+}
+.hero-card-ico{
+    width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.10);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:0.8rem;
+}
+.hero-card-tit{
+    font-size:14px;font-weight:800;color:#fff;margin-bottom:0.4rem;
+}
+.hero-card-desc{
+    font-size:12px;color:rgba(255,255,255,0.80);line-height:1.65;
+}
+
+/* ══ PAGE TABS ══ */
+.page-tabs{display:flex;justify-content:center;gap:8px;padding:1.5rem 2rem;flex-wrap:wrap;background:#fff;border-bottom:1px solid var(--g200);}
+.ptab{padding:8px 20px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--g200);background:#fff;color:var(--g600);text-decoration:none;transition:all 0.2s;}
+.ptab:hover,.ptab.active{background:var(--blue);color:#fff;border-color:var(--blue);}
+
+/* ══ SECTION ══ */
+.section{padding:3.5rem 2rem;background:#fff;}
+.section-inner{max-width:1280px;margin:0 auto;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;}
+.card{background:#fff;border-radius:var(--rl);overflow:hidden;box-shadow:var(--sh);border:1px solid var(--g200);cursor:pointer;transition:all 0.3s;}
+.card:hover{transform:translateY(-5px);box-shadow:var(--sh-lg);}
+.card-img{height:200px;position:relative;overflow:hidden;}
+.card-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s;}
+.card:hover .card-img img{transform:scale(1.06);}
+.card-img-ph{width:100%;height:100%;background:linear-gradient(135deg,var(--blue-pale),#E8EDFF);display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:var(--g400);}
+.date-badge{position:absolute;bottom:0;left:0;background:var(--red);color:#fff;padding:6px 12px;}
+.date-day{font-size:1.2rem;font-weight:900;display:block;line-height:1;}
+.date-month{font-size:10px;display:block;text-transform:uppercase;letter-spacing:1px;}
+.card-body{padding:1.2rem;}
+.card-date{font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px;}
+.card-tit{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--g800);line-height:1.35;margin-bottom:5px;}
+.card-sous{font-size:13px;color:var(--g500);line-height:1.55;margin-bottom:10px;}
+.card-meta{display:flex;gap:1rem;margin-bottom:10px;flex-wrap:wrap;}
+.card-meta span{font-size:11px;color:var(--g400);display:flex;align-items:center;gap:4px;}
+.card-lire{font-size:13px;font-weight:600;color:var(--blue);text-decoration:none;display:flex;align-items:center;gap:4px;transition:gap 0.2s;}
+.card-lire:hover{gap:7px;}
+.empty{text-align:center;padding:4rem 2rem;color:var(--g400);grid-column:1/-1;}
+.empty .ico{font-size:3.5rem;margin-bottom:1rem;}
+.empty .titre{font-size:16px;font-weight:700;color:var(--g800);margin-bottom:0.4rem;}
+.empty .sous{font-size:13px;color:var(--g400);}
+
+/* ══ FOOTER ══ */
+.footer-bar{height:3px;background:var(--grad-h);}
+footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1px solid #334155;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1.5fr;gap:2rem;max-width:1280px;margin:0 auto 2rem;}
+.footer-logo-img{height:40px;object-fit:contain;}
+.footer-desc{font-size:12px;color:#94A3B8;line-height:1.75;max-width:260px;margin-bottom:1rem;margin-top:0.8rem;}
+.footer-tagline{font-size:11px;color:rgba(255,255,255,0.4);font-style:italic;}
+.footer-col h4{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.9rem;}
+.footer-lnk{display:block;font-size:12px;color:#94A3B8;text-decoration:none;margin-bottom:6px;transition:color 0.2s;}
+.footer-lnk:hover{color:#fff;}
+.footer-agences-item{display:flex;align-items:center;gap:5px;font-size:12px;color:#94A3B8;margin-bottom:6px;}
+.footer-socials{display:flex;gap:8px;margin-top:0.8rem;}
+.footer-social-btn{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;transition:all 0.2s;}
+.fs-fb{background:#1877F2;color:#fff;}
+.fs-tt{background:#010101;color:#fff;}
+.fs-yt{background:#FF0000;color:#fff;}
+.fs-li{background:#0A66C2;color:#fff;}
+.fs-ig{background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;}
+.footer-social-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.3);}
+.footer-nl-wrap{position:relative;}
+.footer-nl-input{width:100%;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);border-radius:8px;padding:9px 48px 9px 12px;font-size:12px;color:#fff;font-family:'Outfit',sans-serif;outline:none;}
+.footer-nl-input::placeholder{color:rgba(255,255,255,0.35);}
+.footer-nl-btn{position:absolute;right:0;top:0;bottom:0;background:var(--red);border:none;width:40px;border-radius:0 8px 8px 0;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;transition:background 0.2s;}
+.footer-nl-btn:hover{background:var(--red-d);}
+.footer-bot{border-top:1px solid #334155;max-width:1280px;margin:0 auto;padding-top:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.footer-copy{font-size:12px;color:#64748B;}
+.footer-links-bot{display:flex;gap:1.5rem;}
+.footer-links-bot a{font-size:12px;color:#64748B;text-decoration:none;transition:color 0.2s;}
+.footer-links-bot a:hover{color:#fff;}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:1024px){.footer-grid{grid-template-columns:1fr 1fr 1fr;}}
+@media(max-width:768px){
+  nav{padding:0 1rem;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .hero-inner{grid-template-columns:1fr;padding:5rem 1.5rem 2rem;}
+  .hero-card{display:none;}
+  .section{padding:2.5rem 1rem;}
+  .grid{grid-template-columns:1fr;}
+  .page-tabs{padding:1rem;gap:4px;}
+  .ptab{padding:6px 12px;font-size:11px;}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+  .footer-grid>div:first-child{grid-column:1/-1;}
+}
+@media(max-width:480px){
+  .hero-tit{font-size:1.8rem;}
+  .hero-desc{font-size:12px;}
+  .hero-badges{flex-direction:column;gap:0.5rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a class="nav-logo" href="{% url 'home' %}">
+    <div class="logo-box">E</div>
+    <div>
+      <div class="logo-name">EDEN GROUP</div>
+      <div class="logo-tagline">Le foncier sécurisé, notre engagement</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'sites_list' or request.resolver_match.url_name == 'site_detail' %}active{% endif %}" href="{% url 'sites_list' %}">Nos Terrains</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_projets' %}active{% endif %}" href="{% url 'nos_projets' %}">Nos Projets</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' or request.resolver_match.url_name == 'une_evenement_detail' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'journal_kiosque' or request.resolver_match.url_name == 'journal_lire' %}active{% endif %}" href="{% url 'journal_kiosque' %}">📰 Documentation</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
+    {% if user.is_staff %}
+    <a class="nav-lnk" href="{% url 'dashboard_home' %}" style="color:var(--blue);font-weight:700;">Dashboard</a>
+    {% endif %}
+  </div>
+  <div class="nav-right">
+    <button class="btn-rdv" onclick="document.getElementById('cc-form')?.scrollIntoView({behavior:'smooth'})">📅 Contact</button>
+  </div>
+  <button class="hamburger" onclick="toggleMob()"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="mob-menu" id="mob-menu">
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'sites_list' or request.resolver_match.url_name == 'site_detail' %}active{% endif %}" href="{% url 'sites_list' %}">Nos Terrains</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_projets' %}active{% endif %}" href="{% url 'nos_projets' %}">Nos Projets</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' or request.resolver_match.url_name == 'une_evenement_detail' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'journal_kiosque' or request.resolver_match.url_name == 'journal_lire' %}active{% endif %}" href="{% url 'journal_kiosque' %}">📰 Documentation</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'promotions' %}active{% endif %}" href="{% url 'promotions' %}">Promotions</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
+  {% if user.is_staff %}<a class="nav-lnk" href="{% url 'dashboard_home' %}">Dashboard</a>{% endif %}
+  <button class="btn-rdv" style="width:100%;margin-top:8px;justify-content:center;" onclick="document.getElementById('cc-form')?.scrollIntoView({behavior:'smooth'})">📅 Contact</button>
+</div>
+
+<!-- ══ HERO UNE ══ -->
+<div class="hero-une">
+  <div class="hero-bg">
+    {% if articles.0 and articles.0.image_couverture %}
+      <img src="{{ articles.0.image_couverture.url }}" alt="{{ categorie_label }}">
+    {% else %}
+      <div class="hero-bg-ph"></div>
+    {% endif %}
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="breadcrumb">
+        <a href="{% url 'home' %}">Accueil</a>
+        <span>›</span>
+        <a href="{% url 'une_evenements_accueil' %}" style="color:rgba(255,255,255,0.6);">À la Une</a>
+        <span>›</span>
+        <span style="color:rgba(255,255,255,0.8);">{{ categorie_label }}</span>
+      </div>
+      <h1 class="hero-tit">{{ categorie_label }}</h1>
+      <p class="hero-desc">
+        {% if categorie == 'une' %}Les actualités importantes à ne pas manquer.
+        {% elif categorie == 'evenement_avenir' %}Découvrez nos prochains événements.
+        {% elif categorie == 'evenement_passe' %}Revivez nos événements passés.
+        {% else %}Les dernières actualités d'EDEN GROUP.{% endif %}
+      </p>
+      <div class="hero-badges">
+        <div class="hero-badge">
+          <div class="hb-ico">📰</div>
+          <div class="hb-txt"><strong>{{ total_articles|default:articles.count }}</strong> Article{{ articles.count|pluralize }}</div>
+        </div>
+        <div class="hero-badge">
+          <div class="hb-ico">📅</div>
+          <div class="hb-txt"><strong>Restez informé</strong>Dernières actualités</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-card">
+      <div class="hero-card-ico">
+        {% if categorie == 'une' %}📰{% elif categorie == 'evenement_avenir' %}📅{% elif categorie == 'evenement_passe' %}📁{% else %}📢{% endif %}
+      </div>
+      <div class="hero-card-tit">{{ categorie_label }}</div>
+      <div class="hero-card-desc">
+        {% if categorie == 'une' %}Retrouvez tous les articles mis en avant.
+        {% elif categorie == 'evenement_avenir' %}Ne manquez pas nos prochains événements.
+        {% elif categorie == 'evenement_passe' %}Tous les événements déjà organisés.
+        {% else %}Toutes les actualités en continu.{% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TABS ══ -->
+<div class="page-tabs">
+  <a href="{% url 'une_evenements_accueil' %}" class="ptab {% if categorie == 'tous' %}active{% endif %}">📰 Tout voir</a>
+  <a href="{% url 'une_evenements_liste' 'une' %}" class="ptab {% if categorie == 'une' %}active{% endif %}">⭐ À la Une</a>
+  <a href="{% url 'une_evenements_liste' 'evenement_avenir' %}" class="ptab {% if categorie == 'evenement_avenir' %}active{% endif %}">📅 Événements à venir</a>
+  <a href="{% url 'une_evenements_liste' 'actualite' %}" class="ptab {% if categorie == 'actualite' %}active{% endif %}">📢 Actualités</a>
+</div>
+
+<!-- ══ SECTION ARTICLES ══ -->
+<div class="section">
+  <div class="section-inner">
+    {% if articles %}
+    <div class="grid">
+      {% for article in articles %}
+      <div class="card" onclick="window.location='{% url 'une_evenement_detail' article.pk %}'">
+        <div class="card-img">
+          {% if article.image_couverture %}
+            <img src="{{ article.image_couverture.url }}" alt="{{ article.titre }}" loading="lazy">
+          {% else %}
+            <div class="card-img-ph">
+              {% if article.categorie == 'une' %}📰{% elif article.categorie == 'evenement_avenir' %}📅{% elif article.categorie == 'evenement_passe' %}📁{% else %}📢{% endif %}
+            </div>
+          {% endif %}
+          {% if article.date_evenement %}
+          <div class="date-badge">
+            <span class="date-day">{{ article.date_evenement|date:"d" }}</span>
+            <span class="date-month">{{ article.date_evenement|date:"M"|upper }}</span>
+          </div>
+          {% endif %}
+        </div>
+        <div class="card-body">
+          {% if article.date_evenement %}
+          <div class="card-date">{{ article.date_evenement|date:"d F Y" }}</div>
+          {% endif %}
+          <div class="card-tit">{{ article.titre }}</div>
+          {% if article.sous_titre %}<div class="card-sous">{{ article.sous_titre|truncatechars:120 }}</div>{% endif %}
+          <div class="card-meta">
+            {% if article.lieu %}<span>📍 {{ article.lieu }}</span>{% endif %}
+            {% if article.date_fin_evenement %}<span>📅 Fin : {{ article.date_fin_evenement|date:"d/m/Y" }}</span>{% endif %}
+          </div>
+          <a class="card-lire" href="{% url 'une_evenement_detail' article.pk %}" onclick="event.stopPropagation()">
+            Lire la suite →
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty">
+      <div class="ico">
+        {% if categorie == 'une' %}📰{% elif categorie == 'evenement_avenir' %}📅{% elif categorie == 'evenement_passe' %}📁{% else %}📢{% endif %}
+      </div>
+      <div class="titre">Aucun contenu</div>
+      <div class="sous">Aucun article publié dans cette catégorie pour le moment.</div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<div class="footer-bar"></div>
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;">
+        <div class="logo-box" style="width:36px;height:36px;font-size:15px;border-radius:8px;">E</div>
+        <div style="font-size:15px;font-weight:900;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">EDEN GROUP</div>
+      </div>
+      <p class="footer-desc">Votre partenaire foncier de confiance depuis 2018.</p>
+      <div class="footer-tagline">Le foncier sécurisé, notre engagement</div>
+    </div>
+    <div class="footer-col">
+      <h4>Liens rapides</h4>
+      <a class="footer-lnk" href="{% url 'home' %}">Accueil</a>
+      <a class="footer-lnk" href="{% url 'sites_list' %}">Nos Terrains</a>
+      <a class="footer-lnk" href="{% url 'nos_projets' %}">Nos Projets</a>
+      <a class="footer-lnk" href="{% url 'nos_services' %}">Nos Services</a>
+      <a class="footer-lnk" href="{% url 'nos_agences' %}">Nos Agences</a>
+      <a class="footer-lnk" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+      <a class="footer-lnk" href="{% url 'a_propos' %}">À propos</a>
+      <a class="footer-lnk" href="{% url 'contact' %}">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h4>Nos agences</h4>
+      <div class="footer-agences-item">📍 Yaoundé (Siège)</div>
+      <div class="footer-agences-item">📍 Bafoussam</div>
+      <div class="footer-agences-item">📍 Dschang</div>
+      <div class="footer-agences-item">📍 Bangangté</div>
+    </div>
+    <div class="footer-col">
+      <h4>Suivez-nous</h4>
+      <div class="footer-socials">
+        <a href="#" class="footer-social-btn fs-fb">f</a>
+        <a href="#" class="footer-social-btn fs-tt" style="color:#fff;">T</a>
+        <a href="#" class="footer-social-btn fs-yt" style="color:#fff;">▶</a>
+        <a href="#" class="footer-social-btn fs-li" style="color:#fff;">in</a>
+        <a href="#" class="footer-social-btn fs-ig" style="color:#fff;">📷</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Newsletter</h4>
+      <div style="font-size:12px;color:#94A3B8;margin-bottom:0.8rem;">Recevez nos offres et actualités</div>
+      <div class="footer-nl-wrap">
+        <input class="footer-nl-input" type="email" placeholder="Votre email" id="footer-nl">
+        <button class="footer-nl-btn" onclick="souscrireFooter()">→</button>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bot">
+    <div class="footer-copy">© 2026 EDEN GROUP ENTREPRISE. Tous droits réservés.</div>
+    <div class="footer-links-bot">
+      <a href="#">Mentions légales</a>
+      <a href="#">Politique de confidentialité</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── NAV ──
+function toggleMob(){document.getElementById('mob-menu').classList.toggle('open');}
+
+window.addEventListener('scroll', function() {
+  const nav = document.getElementById('navbar');
+  if (window.scrollY > 40) {
+    nav.classList.add('scrolled');
+  } else {
+    nav.classList.remove('scrolled');
+  }
+});
+
+function souscrireFooter() {
+  const e = document.getElementById('footer-nl').value;
+  if (!e) return;
+  alert('✅ Inscription confirmée !');
+  document.getElementById('footer-nl').value = '';
+}
+</script>
+</body>
+</html>

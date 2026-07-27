@@ -2,7 +2,9 @@ from django.contrib import admin
 from django.utils.html import format_html
 from .models import (
     SiteFoncier, ImageSite, Parcelle, ImageParcelle,
-    Temoignage, DemandeContact, Reservation, VisiteProgrammee, GroupyCategorie, GroupyQR
+    Temoignage, DemandeContact, Reservation, VisiteProgrammee, GroupyCategorie, GroupyQR, HeroConfig, ServiceItem, EtapeAcquisition,
+    SectionLivret, AvantagesLivret, ActualiteHome,
+    CommentaireHome, StatistiqueHome
 )
 
 
@@ -185,3 +187,88 @@ class GroupyQRAdmin(admin.ModelAdmin):
     def question_courte(self, obj):
         return obj.question[:60] + '...' if len(obj.question) > 60 else obj.question
     question_courte.short_description = 'Question'
+
+# ─────────────────────────────────────────────
+# ADMIN — Home page configurables
+# ─────────────────────────────────────────────
+@admin.register(HeroConfig)
+class HeroConfigAdmin(admin.ModelAdmin):
+    fieldsets = (
+        ('🖼 Image de fond', {
+            'description': 'Cette image prend toute la largeur de la page et la barre de navigation est par-dessus.',
+            'fields': ('image_fond',)
+        }),
+        ('✏ Textes du hero', {
+            'fields': ('eyebrow', 'titre_ligne1', 'titre_ligne2', 'description')
+        }),
+        ('📌 Badge hero (coin haut droite)', {
+            'fields': ('badge_site_nom', 'badge_site_lieu')
+        }),
+        ('🔘 Boutons', {
+            'fields': ('btn1_texte', 'btn2_texte')
+        }),
+    )
+
+    def has_add_permission(self, request):
+        return not HeroConfig.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(ServiceItem)
+class ServiceItemAdmin(admin.ModelAdmin):
+    list_display = ['icone', 'titre', 'ordre', 'is_active']
+    list_editable = ['ordre', 'is_active']
+    list_display_links = ['titre']
+
+
+@admin.register(EtapeAcquisition)
+class EtapeAcquisitionAdmin(admin.ModelAdmin):
+    list_display = ['numero', 'titre', 'description', 'couleur', 'is_active']
+    list_editable = ['is_active']
+    ordering = ['numero']
+
+
+class AvantagesLivretInline(admin.TabularInline):
+    model = AvantagesLivret
+    extra = 3
+    fields = ['texte', 'ordre']
+
+
+@admin.register(SectionLivret)
+class SectionLivretAdmin(admin.ModelAdmin):
+    inlines = [AvantagesLivretInline]
+    fieldsets = (
+        ('Textes', {'fields': ('badge_texte', 'titre_principal', 'sous_titre')}),
+        ('Image', {'fields': ('image',)}),
+        ('Bouton', {'fields': ('btn_texte', 'btn_lien')}),
+        ('Visibilité', {'fields': ('is_active',)}),
+    )
+
+    def has_add_permission(self, request):
+        return not SectionLivret.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(ActualiteHome)
+class ActualiteHomeAdmin(admin.ModelAdmin):
+    list_display = ['titre', 'date_evenement', 'ordre', 'is_active']
+    list_editable = ['ordre', 'is_active']
+    list_filter = ['is_active']
+    search_fields = ['titre']
+
+
+@admin.register(CommentaireHome)
+class CommentaireHomeAdmin(admin.ModelAdmin):
+    list_display = ['nom', 'role', 'note', 'ordre', 'is_active']
+    list_editable = ['ordre', 'is_active']
+    list_filter = ['note', 'is_active']
+
+
+@admin.register(StatistiqueHome)
+class StatistiqueHomeAdmin(admin.ModelAdmin):
+    list_display = ['icone', 'valeur', 'label', 'ordre', 'is_active']
+    list_editable = ['ordre', 'is_active']

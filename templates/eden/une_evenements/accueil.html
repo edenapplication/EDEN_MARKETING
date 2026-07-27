@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>À la Une & Événements — EDEN GROUP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+{% load humanize %}
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --blue:#1B4FDB;--blue-d:#0A2494;--blue-pale:#EEF3FF;
+  --red:#C8102E;--red-d:#A00C24;
+  --grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
+  --grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
+  --g50:#F8FAFF;--g100:#F0F4FF;--g200:#E2E8F0;
+  --g400:#94A3B8;--g500:#64748B;--g600:#475569;--g800:#1E293B;
+  --sh:0 2px 12px rgba(0,0,0,0.08);--sh-lg:0 8px 40px rgba(27,79,219,0.15);
+  --r:10px;--rl:16px;--rxl:24px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:#fff;color:var(--g800);overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-thumb{background:var(--grad-h);border-radius:100px;}
+
+/* ══ NAVBAR TRANSPARENTE ══ */
+nav{
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    z-index:1000;
+    height:70px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 2rem;
+    background:transparent;
+    border-bottom:1px solid transparent;
+    box-shadow:none;
+    transition:
+        background .4s ease,
+        backdrop-filter .4s ease,
+        border-color .4s ease,
+        box-shadow .4s ease;
+}
+
+nav.scrolled{
+    background:rgba(255,255,255,.92);
+    backdrop-filter:blur(22px);
+    -webkit-backdrop-filter:blur(22px);
+    border-bottom:1px solid rgba(226,232,240,.9);
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo-img{height:48px;width:auto;object-fit:contain;}
+.logo-box{width:42px;height:42px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#fff;}
+.logo-name{font-size:18px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.logo-tagline{font-size:9px;color:var(--g500);letter-spacing:1.5px;text-transform:uppercase;}
+.nav-links{display:flex;align-items:center;gap:0;}
+.nav-lnk{padding:6px 13px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.85);text-decoration:none;border-radius:7px;transition:all 0.18s;position:relative;}
+.nav-lnk:hover,.nav-lnk.active{color:#fff;}
+.nav-lnk.active::after{content:'';position:absolute;bottom:-4px;left:13px;right:13px;height:2px;background:var(--red);border-radius:100px;}
+nav.scrolled .nav-lnk{color:var(--g600);}
+nav.scrolled .nav-lnk:hover,
+nav.scrolled .nav-lnk.active{color:var(--blue);}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-icon-btn{width:36px;height:36px;border-radius:8px;border:1.5px solid rgba(255,255,255,0.25);background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:all 0.18s;color:#fff;text-decoration:none;}
+.nav-icon-btn:hover{border-color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.2);}
+nav.scrolled .nav-icon-btn{background:#fff;border-color:var(--g200);color:var(--g600);}
+nav.scrolled .nav-icon-btn:hover{border-color:var(--blue);background:var(--blue-pale);}
+.btn-rdv{background:var(--red);color:#fff;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:7px;text-decoration:none;}
+.btn-rdv:hover{background:var(--red-d);transform:translateY(-1px);box-shadow:0 4px 16px rgba(200,16,46,0.3);}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:none;padding:6px;}
+.hamburger span{width:22px;height:2px;background:#fff;border-radius:2px;display:block;transition:background 0.3s;}
+nav.scrolled .hamburger span{background:var(--g800);}
+.mob-menu{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(255,255,255,0.98);border-bottom:1px solid var(--g200);padding:1rem 1.5rem;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.1);backdrop-filter:blur(10px);}
+.mob-menu.open{display:flex;flex-direction:column;gap:4px;}
+.mob-menu .nav-lnk{color:var(--g600);padding:8px 0;}
+.mob-menu .nav-lnk.active{color:var(--blue);}
+.mob-menu .nav-lnk.active::after{display:none;}
+
+/* ══ HERO UNE ══ */
+.hero-une{margin-top:0;position:relative;min-height:320px;background:var(--blue-d);overflow:hidden;}
+.hero-bg{position:absolute;inset:0;}
+.hero-bg img{width:100%;height:100%;object-fit:cover;display:block;opacity:1;}
+.hero-bg-ph{width:100%;height:100%;background:linear-gradient(135deg,#0A2494,#1B4FDB 50%,#7B20B4);}
+.hero-overlay{
+    position:absolute;
+    inset:0;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(5,15,50,.98) 0%,
+            rgba(8,25,70,.92) 15%,
+            rgba(10,30,80,.80) 30%,
+            rgba(10,35,85,.65) 45%,
+            rgba(10,35,85,.45) 55%,
+            rgba(10,35,85,.25) 70%,
+            rgba(10,35,85,.10) 85%,
+            rgba(0,0,0,0) 100%
+        );
+    z-index:1;
+}
+.hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr 320px;align-items:center;gap:2rem;padding:6rem 2rem 2.5rem;max-width:1280px;margin:0 auto;min-height:320px;}
+.hero-left{padding:0;display:flex;flex-direction:column;justify-content:center;}
+.breadcrumb{font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:0.8rem;display:flex;align-items:center;gap:6px;}
+.breadcrumb a{color:rgba(255,255,255,0.6);text-decoration:none;}
+.breadcrumb a:hover{color:#fff;}
+.breadcrumb span{color:rgba(255,255,255,0.4);}
+.hero-tit{font-size:clamp(2rem,3.5vw,2.8rem);font-weight:900;color:#fff;margin-bottom:0.5rem;line-height:1.1;}
+.hero-desc{font-size:13px;color:rgba(255,255,255,0.8);line-height:1.7;max-width:450px;margin-bottom:1.2rem;}
+.hero-badges{display:flex;gap:1rem;flex-wrap:wrap;}
+.hero-badge{display:flex;align-items:center;gap:7px;}
+.hb-ico{width:30px;height:30px;border-radius:7px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.hb-txt{font-size:10px;color:rgba(255,255,255,0.75);font-weight:500;line-height:1.2;}
+.hb-txt strong{display:block;font-size:11px;color:#fff;font-weight:700;}
+/* Hero right card */
+.hero-card{
+    background:linear-gradient(135deg,#0A1A3A,#0D2B5E 50%,#1B4FDB);
+    backdrop-filter:blur(12px);
+    border:1.5px solid rgba(255,255,255,0.10);
+    border-radius:var(--rl);
+    padding:1.3rem;
+    color:#fff;
+    box-shadow:0 8px 32px rgba(0,0,0,0.3);
+}
+.hero-card-ico{
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.10);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+    margin-bottom:0.8rem;
+}
+.hero-card-tit{
+    font-size:14px;
+    font-weight:800;
+    color:#fff;
+    margin-bottom:0.4rem;
+}
+.hero-card-desc{
+    font-size:12px;
+    color:rgba(255,255,255,0.80);
+    line-height:1.65;
+}
+
+/* ══ PAGE TABS ══ */
+.page-tabs{display:flex;justify-content:center;gap:8px;padding:1.5rem 2rem;flex-wrap:wrap;background:#fff;border-bottom:1px solid var(--g200);}
+.ptab{padding:8px 20px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--g200);background:#fff;color:var(--g600);text-decoration:none;transition:all 0.2s;}
+.ptab:hover,.ptab.active{background:var(--blue);color:#fff;border-color:var(--blue);}
+
+/* ══ À LA UNE — GRAND FORMAT ══ */
+.une-section{padding:3rem 2rem;background:#fff;}
+.une-inner{max-width:1280px;margin:0 auto;}
+.une-hero-card{border-radius:var(--rxl);overflow:hidden;box-shadow:var(--sh-lg);border:1px solid var(--g200);cursor:pointer;transition:all 0.3s;background:#fff;}
+.une-hero-card:hover{transform:translateY(-4px);box-shadow:0 12px 48px rgba(27,79,219,0.2);}
+.une-hero-img{position:relative;width:100%;height:520px;overflow:hidden;}
+.une-hero-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s;}
+.une-hero-card:hover .une-hero-img img{transform:scale(1.03);}
+.une-hero-img-ph{width:100%;height:100%;background:linear-gradient(135deg,var(--blue-d),#1B4FDB,#7B20B4);display:flex;align-items:center;justify-content:center;font-size:5rem;color:rgba(255,255,255,0.3);}
+.une-hero-badge{position:absolute;top:20px;left:20px;background:var(--red);color:#fff;padding:8px 20px;border-radius:100px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1px;box-shadow:0 4px 16px rgba(200,16,46,0.4);}
+.une-hero-date-badge{position:absolute;bottom:20px;left:20px;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);color:#fff;padding:12px 18px;border-radius:12px;text-align:center;}
+.une-hero-date-day{font-size:2rem;font-weight:900;display:block;line-height:1;}
+.une-hero-date-month{font-size:11px;display:block;text-transform:uppercase;letter-spacing:1px;opacity:0.8;}
+.une-hero-body{padding:2.5rem 3rem;}
+.une-hero-cat{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:0.5rem;}
+.une-hero-title{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3vw,2.6rem);font-weight:900;color:var(--g800);line-height:1.2;margin-bottom:0.8rem;}
+.une-hero-sous{font-size:15px;color:var(--g500);line-height:1.7;margin-bottom:1.2rem;max-width:80%;}
+.une-hero-meta{display:flex;align-items:center;gap:1.5rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+.une-hero-meta-item{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--g500);}
+.une-hero-btn{background:var(--red);color:#fff;padding:14px 32px;border-radius:var(--r);font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all 0.2s;}
+.une-hero-btn:hover{background:var(--red-d);transform:translateY(-2px);box-shadow:0 4px 20px rgba(200,16,46,0.3);}
+
+/* ══ ÉVÉNEMENTS À VENIR ══ */
+.ev-section{padding:3rem 2rem;}
+.ev-section.bg-gray{background:var(--g50);}
+.ev-inner{max-width:1280px;margin:0 auto;}
+.ev-hd{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:1.5rem;}
+.ev-eyebrow{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:0.3rem;}
+.ev-title{font-size:clamp(1.4rem,2vw,1.8rem);font-weight:800;color:var(--g800);}
+.ev-title span{color:var(--blue);}
+.view-all-btn{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:700;color:var(--blue);text-decoration:none;padding:8px 16px;border:1.5px solid rgba(27,79,219,0.2);border-radius:8px;transition:all 0.2s;white-space:nowrap;}
+.view-all-btn:hover{background:var(--blue-pale);}
+
+.ev-carousel-outer{position:relative;overflow:visible;}
+.ev-carousel-wrap{overflow:hidden;cursor:grab;user-select:none;}
+.ev-carousel-wrap.grabbed{cursor:grabbing;}
+.ev-carousel-track{display:flex;gap:1.2rem;transition:transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94);}
+.ev-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:10;}
+.ev-nav.prev{left:-16px;}
+.ev-nav.next{right:-16px;}
+.ev-nav button{width:34px;height:34px;border-radius:50%;background:#fff;border:1.5px solid var(--g200);box-shadow:var(--sh);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.ev-nav button:hover{background:var(--blue);color:#fff;border-color:var(--blue);}
+
+.ev-card{min-width:280px;max-width:280px;border-radius:var(--rl);overflow:hidden;background:#fff;box-shadow:var(--sh);border:1px solid var(--g100);cursor:pointer;transition:all 0.3s;flex-shrink:0;}
+.ev-card:hover{transform:translateY(-5px);box-shadow:var(--sh-lg);}
+.ev-card-img{position:relative;height:180px;overflow:hidden;}
+.ev-card-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s;}
+.ev-card:hover .ev-card-img img{transform:scale(1.06);}
+.ev-card-img-ph{width:100%;height:100%;background:linear-gradient(135deg,var(--blue-pale),#E8EDFF);display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:var(--g400);}
+.ev-card-date-badge{position:absolute;bottom:0;left:0;background:var(--red);color:#fff;padding:5px 12px;}
+.ev-card-date-day{font-size:1.2rem;font-weight:900;display:block;line-height:1;}
+.ev-card-date-month{font-size:10px;display:block;text-transform:uppercase;letter-spacing:1px;}
+.ev-cat-badge{position:absolute;top:10px;right:10px;background:rgba(27,79,219,0.9);color:#fff;padding:3px 10px;border-radius:100px;font-size:9px;font-weight:700;text-transform:uppercase;}
+.ev-cat-badge.avenir{background:rgba(22,163,74,0.9);}
+.ev-card-body{padding:1rem;}
+.ev-card-lieu{font-size:10px;color:var(--g400);display:flex;align-items:center;gap:4px;margin-bottom:5px;}
+.ev-card-tit{font-size:14px;font-weight:700;color:var(--g800);line-height:1.35;margin-bottom:6px;}
+.ev-card-sous{font-size:12px;color:var(--g500);line-height:1.5;margin-bottom:8px;}
+.ev-card-lire{font-size:12px;font-weight:600;color:var(--blue);text-decoration:none;display:flex;align-items:center;gap:4px;transition:gap 0.2s;}
+.ev-card-lire:hover{gap:7px;}
+
+/* ══ ACTUALITÉS ══ */
+.actu-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;}
+.actu-card{background:#fff;border-radius:var(--rl);overflow:hidden;box-shadow:var(--sh);border:1px solid var(--g100);cursor:pointer;transition:all 0.3s;}
+.actu-card:hover{transform:translateY(-4px);box-shadow:var(--sh-lg);}
+.actu-img{height:180px;position:relative;overflow:hidden;}
+.actu-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s;}
+.actu-card:hover .actu-img img{transform:scale(1.06);}
+.actu-img-ph{width:100%;height:100%;background:linear-gradient(135deg,var(--blue-pale),#E8EDFF);display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:var(--g400);}
+.actu-body{padding:1rem 1.1rem;}
+.actu-date{font-size:10px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px;}
+.actu-tit{font-size:14px;font-weight:700;color:var(--g800);line-height:1.35;margin-bottom:5px;}
+.actu-sous{font-size:12px;color:var(--g500);line-height:1.5;margin-bottom:8px;}
+.actu-lire{font-size:12px;font-weight:600;color:var(--blue);text-decoration:none;display:flex;align-items:center;gap:4px;transition:gap 0.2s;}
+.actu-lire:hover{gap:7px;}
+/* ══ BADGE DATE ACTUALITÉS ══ */
+.actu-date-badge{
+    position:absolute;
+    bottom:0;
+    left:0;
+    background:var(--red);
+    color:#fff;
+    padding:6px 12px;
+    text-align:center;
+}
+.actu-date-day{
+    font-size:1.2rem;
+    font-weight:900;
+    display:block;
+    line-height:1;
+}
+.actu-date-month{
+    font-size:10px;
+    display:block;
+    text-transform:uppercase;
+    letter-spacing:1px;
+}
+
+.empty-state{text-align:center;padding:3rem;color:var(--g400);grid-column:1/-1;}
+.empty-state .ico{font-size:3rem;margin-bottom:0.8rem;}
+.empty-state .titre{font-size:16px;font-weight:700;color:var(--g800);margin-bottom:0.4rem;}
+.empty-state .sous{font-size:13px;color:var(--g400);}
+
+/* ══ FOOTER ══ */
+.footer-bar{height:3px;background:var(--grad-h);}
+footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1px solid #334155;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1.5fr;gap:2rem;max-width:1280px;margin:0 auto 2rem;}
+.footer-logo-img{height:40px;object-fit:contain;}
+.footer-desc{font-size:12px;color:#94A3B8;line-height:1.75;max-width:260px;margin-bottom:1rem;margin-top:0.8rem;}
+.footer-tagline{font-size:11px;color:rgba(255,255,255,0.4);font-style:italic;}
+.footer-col h4{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.9rem;}
+.footer-lnk{display:block;font-size:12px;color:#94A3B8;text-decoration:none;margin-bottom:6px;transition:color 0.2s;}
+.footer-lnk:hover{color:#fff;}
+.footer-agences-item{display:flex;align-items:center;gap:5px;font-size:12px;color:#94A3B8;margin-bottom:6px;}
+.footer-socials{display:flex;gap:8px;margin-top:0.8rem;}
+.footer-social-btn{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;transition:all 0.2s;}
+.fs-fb{background:#1877F2;color:#fff;}
+.fs-tt{background:#010101;color:#fff;}
+.fs-yt{background:#FF0000;color:#fff;}
+.fs-li{background:#0A66C2;color:#fff;}
+.fs-ig{background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;}
+.footer-social-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.3);}
+.footer-nl-wrap{position:relative;}
+.footer-nl-input{width:100%;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);border-radius:8px;padding:9px 48px 9px 12px;font-size:12px;color:#fff;font-family:'Outfit',sans-serif;outline:none;}
+.footer-nl-input::placeholder{color:rgba(255,255,255,0.35);}
+.footer-nl-btn{position:absolute;right:0;top:0;bottom:0;background:var(--red);border:none;width:40px;border-radius:0 8px 8px 0;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;transition:background 0.2s;}
+.footer-nl-btn:hover{background:var(--red-d);}
+.footer-bot{border-top:1px solid #334155;max-width:1280px;margin:0 auto;padding-top:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.footer-copy{font-size:12px;color:#64748B;}
+.footer-links-bot{display:flex;gap:1.5rem;}
+.footer-links-bot a{font-size:12px;color:#64748B;text-decoration:none;transition:color 0.2s;}
+.footer-links-bot a:hover{color:#fff;}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:1024px){
+  .une-hero-img{height:400px;}
+  .une-hero-sous{max-width:100%;}
+  .actu-grid{grid-template-columns:repeat(2,1fr);}
+  .footer-grid{grid-template-columns:1fr 1fr 1fr;}
+}
+@media(max-width:768px){
+  nav{padding:0 1rem;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .hero-inner{grid-template-columns:1fr;padding:5rem 1.5rem 2rem;}
+  .hero-card{display:none;}
+  .ev-section,.une-section{padding:2rem 1rem;}
+  .actu-grid{grid-template-columns:1fr;}
+  .ev-card{min-width:240px;max-width:240px;}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+  .footer-grid>div:first-child{grid-column:1/-1;}
+  .une-hero-img{height:280px;}
+  .une-hero-body{padding:1.5rem;}
+  .une-hero-date-badge{padding:8px 14px;}
+  .une-hero-date-day{font-size:1.4rem;}
+}
+@media(max-width:480px){
+  .ev-card{min-width:200px;max-width:200px;}
+  .une-hero-img{height:200px;}
+  .une-hero-body{padding:1.2rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a class="nav-logo" href="{% url 'home' %}">
+    <div class="logo-box">E</div>
+    <div>
+      <div class="logo-name">EDEN GROUP</div>
+      <div class="logo-tagline">Le foncier sécurisé, notre engagement</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'sites_list' or request.resolver_match.url_name == 'site_detail' %}active{% endif %}" href="{% url 'sites_list' %}">Nos Terrains</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_projets' %}active{% endif %}" href="{% url 'nos_projets' %}">Nos Projets</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' or request.resolver_match.url_name == 'une_evenement_detail' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'journal_kiosque' or request.resolver_match.url_name == 'journal_lire' %}active{% endif %}" href="{% url 'journal_kiosque' %}">📰 Documentation</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
+    {% if user.is_staff %}
+    <a class="nav-lnk" href="{% url 'dashboard_home' %}" style="color:var(--blue);font-weight:700;">Dashboard</a>
+    {% endif %}
+  </div>
+  <div class="nav-right">
+    <button class="btn-rdv" onclick="document.getElementById('cc-form')?.scrollIntoView({behavior:'smooth'})">📅 Contact</button>
+  </div>
+  <button class="hamburger" onclick="toggleMob()"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="mob-menu" id="mob-menu">
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'sites_list' or request.resolver_match.url_name == 'site_detail' %}active{% endif %}" href="{% url 'sites_list' %}">Nos Terrains</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_projets' %}active{% endif %}" href="{% url 'nos_projets' %}">Nos Projets</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' or request.resolver_match.url_name == 'une_evenement_detail' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'journal_kiosque' or request.resolver_match.url_name == 'journal_lire' %}active{% endif %}" href="{% url 'journal_kiosque' %}">📰 Documentation</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'promotions' %}active{% endif %}" href="{% url 'promotions' %}">Promotions</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
+  {% if user.is_staff %}<a class="nav-lnk" href="{% url 'dashboard_home' %}">Dashboard</a>{% endif %}
+  <button class="btn-rdv" style="width:100%;margin-top:8px;justify-content:center;" onclick="document.getElementById('cc-form')?.scrollIntoView({behavior:'smooth'})">📅 Contact</button>
+</div>
+
+<!-- ══ HERO UNE ══ -->
+<div class="hero-une">
+  <div class="hero-bg">
+    {% if a_la_une and a_la_une.image_couverture %}
+      <img src="{{ a_la_une.image_couverture.url }}" alt="À la Une">
+    {% else %}
+      <div class="hero-bg-ph"></div>
+    {% endif %}
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="breadcrumb">
+        <a href="{% url 'home' %}">Accueil</a>
+        <span>›</span>
+        <span style="color:rgba(255,255,255,0.8);">À la Une</span>
+      </div>
+      <h1 class="hero-tit">À la Une &amp; Événements</h1>
+      <p class="hero-desc">
+        Restez informé de toutes les actualités, événements et annonces importantes d'EDEN GROUP.
+      </p>
+      <div class="hero-badges">
+        <div class="hero-badge">
+          <div class="hb-ico">📰</div>
+          <div class="hb-txt"><strong>À la Une</strong>Les actualités importantes</div>
+        </div>
+        <div class="hero-badge">
+          <div class="hb-ico">📅</div>
+          <div class="hb-txt"><strong>Événements</strong>À venir</div>
+        </div>
+        <div class="hero-badge">
+          <div class="hb-ico">📢</div>
+          <div class="hb-txt"><strong>Actualités</strong>Restez informé en continu</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-card">
+      <div class="hero-card-ico">📰</div>
+      <div class="hero-card-tit">Votre source d'information</div>
+      <div class="hero-card-desc">Retrouvez toutes les actualités, événements et annonces importantes d'EDEN GROUP en un seul endroit.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TABS ══ -->
+<div class="page-tabs">
+  <a href="{% url 'une_evenements_accueil' %}" class="ptab active">📰 Tout voir</a>
+  <a href="{% url 'une_evenements_liste' 'une' %}" class="ptab">⭐ À la Une</a>
+  <a href="{% url 'une_evenements_liste' 'evenement_avenir' %}" class="ptab">📅 Événements à venir</a>
+  <a href="{% url 'une_evenements_liste' 'actualite' %}" class="ptab">📢 Actualités</a>
+</div>
+
+<!-- ══ À LA UNE — GRAND FORMAT ══ -->
+<section class="une-section">
+  <div class="une-inner">
+    {% if a_la_une %}
+    <div class="une-hero-card" onclick="window.location='{% url 'une_evenement_detail' a_la_une.pk %}'">
+      <div class="une-hero-img">
+        {% if a_la_une.image_couverture %}
+          <img src="{{ a_la_une.image_couverture.url }}" alt="{{ a_la_une.titre }}" loading="eager">
+        {% else %}
+          <div class="une-hero-img-ph">📰</div>
+        {% endif %}
+        <div class="une-hero-badge">⭐ À la Une</div>
+        {% if a_la_une.date_evenement %}
+        <div class="une-hero-date-badge">
+          <span class="une-hero-date-day">{{ a_la_une.date_evenement|date:"d" }}</span>
+          <span class="une-hero-date-month">{{ a_la_une.date_evenement|date:"M"|upper }}</span>
+        </div>
+        {% endif %}
+      </div>
+      <div class="une-hero-body">
+        <div class="une-hero-cat">📰 Édition spéciale</div>
+        <h1 class="une-hero-title">{{ a_la_une.titre }}</h1>
+        {% if a_la_une.sous_titre %}<p class="une-hero-sous">{{ a_la_une.sous_titre }}</p>{% endif %}
+        <div class="une-hero-meta">
+          {% if a_la_une.date_evenement %}
+          <div class="une-hero-meta-item">📅 {{ a_la_une.date_evenement|date:"d F Y" }}</div>
+          {% endif %}
+          {% if a_la_une.lieu %}
+          <div class="une-hero-meta-item">📍 {{ a_la_une.lieu }}</div>
+          {% endif %}
+          {% if a_la_une.date_fin_evenement %}
+          <div class="une-hero-meta-item">📅 Fin : {{ a_la_une.date_fin_evenement|date:"d/m/Y" }}</div>
+          {% endif %}
+        </div>
+        <a href="{% url 'une_evenement_detail' a_la_une.pk %}" class="une-hero-btn" onclick="event.stopPropagation()">
+          📖 Lire l'article complet →
+        </a>
+      </div>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <div class="ico">📰</div>
+      <div class="titre">Aucun article "À la Une"</div>
+      <div class="sous">Publiez un article dans la catégorie "À la Une" depuis le dashboard.</div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- ══ ÉVÉNEMENTS À VENIR ══ -->
+<section class="ev-section bg-gray">
+  <div class="ev-inner">
+    <div class="ev-hd">
+      <div>
+        <div class="ev-eyebrow">📅 À NE PAS MANQUER</div>
+        <div class="ev-title">Événements <span>à venir</span></div>
+      </div>
+      <a href="{% url 'une_evenements_liste' 'evenement_avenir' %}" class="view-all-btn">Voir tous →</a>
+    </div>
+    {% if evenements_avenir %}
+    <div class="ev-carousel-outer">
+      <div class="ev-nav prev"><button onclick="scrollEv('avenir',-1)">‹</button></div>
+      <div class="ev-carousel-wrap" id="wrap-avenir">
+        <div class="ev-carousel-track" id="track-avenir">
+          {% for ev in evenements_avenir %}
+          <div class="ev-card" onclick="window.location='{% url 'une_evenement_detail' ev.pk %}'">
+            <div class="ev-card-img">
+              {% if ev.image_couverture %}
+                <img src="{{ ev.image_couverture.url }}" alt="{{ ev.titre }}" loading="lazy">
+              {% else %}
+                <div class="ev-card-img-ph">📅</div>
+              {% endif %}
+              <span class="ev-cat-badge avenir">À VENIR</span>
+              {% if ev.date_evenement %}
+              <div class="ev-card-date-badge">
+                <span class="ev-card-date-day">{{ ev.date_evenement|date:"d" }}</span>
+                <span class="ev-card-date-month">{{ ev.date_evenement|date:"M"|upper }}</span>
+              </div>
+              {% endif %}
+            </div>
+            <div class="ev-card-body">
+              {% if ev.lieu %}<div class="ev-card-lieu">📍 {{ ev.lieu }}</div>{% endif %}
+              <div class="ev-card-tit">{{ ev.titre }}</div>
+              {% if ev.sous_titre %}<div class="ev-card-sous">{{ ev.sous_titre|truncatechars:80 }}</div>{% endif %}
+              <a class="ev-card-lire" href="{% url 'une_evenement_detail' ev.pk %}" onclick="event.stopPropagation()">En savoir plus →</a>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="ev-nav next"><button onclick="scrollEv('avenir',1)">›</button></div>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <div class="ico">📅</div>
+      <div class="titre">Aucun événement à venir</div>
+      <div class="sous">Revenez bientôt pour découvrir nos prochains événements.</div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- ══ ACTUALITÉS ══ -->
+<!-- ══ ACTUALITÉS ══ -->
+<section class="ev-section">
+  <div class="ev-inner">
+    <div class="ev-hd">
+      <div>
+        <div class="ev-eyebrow">📢 RESTEZ INFORMÉ</div>
+        <div class="ev-title">Dernières <span>actualités</span></div>
+      </div>
+      <a href="{% url 'une_evenements_liste' 'actualite' %}" class="view-all-btn">Voir toutes →</a>
+    </div>
+    {% if actualites %}
+    <div class="actu-grid">
+      {% for actu in actualites %}
+      <div class="actu-card" onclick="window.location='{% url 'une_evenement_detail' actu.pk %}'">
+        <div class="actu-img">
+          {% if actu.image_couverture %}
+            <img src="{{ actu.image_couverture.url }}" alt="{{ actu.titre }}" loading="lazy">
+          {% else %}
+            <div class="actu-img-ph">📢</div>
+          {% endif %}
+          {% if actu.date_evenement %}
+          <div class="actu-date-badge">
+            <span class="actu-date-day">{{ actu.date_evenement|date:"d" }}</span>
+            <span class="actu-date-month">{{ actu.date_evenement|date:"M"|upper }}</span>
+          </div>
+          {% endif %}
+        </div>
+        <div class="actu-body">
+          <div class="actu-tit">{{ actu.titre }}</div>
+          {% if actu.sous_titre %}<div class="actu-sous">{{ actu.sous_titre|truncatechars:100 }}</div>{% endif %}
+          <a class="actu-lire" href="{% url 'une_evenement_detail' actu.pk %}" onclick="event.stopPropagation()">Lire la suite →</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <div class="ico">📢</div>
+      <div class="titre">Aucune actualité</div>
+      <div class="sous">Aucune actualité publiée pour le moment.</div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<div class="footer-bar"></div>
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;">
+        <div class="logo-box" style="width:36px;height:36px;font-size:15px;border-radius:8px;">E</div>
+        <div style="font-size:15px;font-weight:900;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">EDEN GROUP</div>
+      </div>
+      <p class="footer-desc">Votre partenaire foncier de confiance depuis 2018.</p>
+      <div class="footer-tagline">Le foncier sécurisé, notre engagement</div>
+    </div>
+    <div class="footer-col"><h4>Liens rapides</h4>
+      <a class="footer-lnk" href="{% url 'home' %}">Accueil</a>
+      <a class="footer-lnk" href="{% url 'sites_list' %}">Nos Terrains</a>
+      <a class="footer-lnk" href="{% url 'nos_projets' %}">Nos Projets</a>
+      <a class="footer-lnk" href="{% url 'nos_services' %}">Nos Services</a>
+      <a class="footer-lnk" href="{% url 'nos_agences' %}">Nos Agences</a>
+      <a class="footer-lnk" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+      <a class="footer-lnk" href="{% url 'a_propos' %}">À propos</a>
+      <a class="footer-lnk" href="{% url 'contact' %}">Contact</a>
+    </div>
+    <div class="footer-col"><h4>Nos agences</h4>
+      <div class="footer-agences-item">📍 Yaoundé (Siège)</div>
+      <div class="footer-agences-item">📍 Bafoussam</div>
+      <div class="footer-agences-item">📍 Dschang</div>
+      <div class="footer-agences-item">📍 Bangangté</div>
+    </div>
+    <div class="footer-col"><h4>Suivez-nous</h4>
+      <div class="footer-socials">
+        <a href="#" class="footer-social-btn fs-fb">f</a>
+        <a href="#" class="footer-social-btn fs-tt" style="color:#fff;">T</a>
+        <a href="#" class="footer-social-btn fs-yt" style="color:#fff;">▶</a>
+        <a href="#" class="footer-social-btn fs-li" style="color:#fff;">in</a>
+        <a href="#" class="footer-social-btn fs-ig" style="color:#fff;">📷</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Newsletter</h4>
+      <div style="font-size:12px;color:#94A3B8;margin-bottom:0.8rem;">Recevez nos offres et actualités</div>
+      <div class="footer-nl-wrap">
+        <input class="footer-nl-input" type="email" placeholder="Votre email" id="footer-nl">
+        <button class="footer-nl-btn" onclick="souscrireFooter()">→</button>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bot">
+    <div class="footer-copy">© 2026 EDEN GROUP ENTREPRISE. Tous droits réservés.</div>
+    <div class="footer-links-bot">
+      <a href="#">Mentions légales</a>
+      <a href="#">Politique de confidentialité</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── NAV ──
+function toggleMob(){document.getElementById('mob-menu').classList.toggle('open');}
+
+window.addEventListener('scroll', function() {
+  const nav = document.getElementById('navbar');
+  if (window.scrollY > 40) {
+    nav.classList.add('scrolled');
+  } else {
+    nav.classList.remove('scrolled');
+  }
+});
+
+function souscrireFooter() {
+  const e = document.getElementById('footer-nl').value;
+  if (!e) return;
+  alert('✅ Inscription confirmée !');
+  document.getElementById('footer-nl').value = '';
+}
+
+// ── CAROUSELS ──
+const carousels = { avenir: { pos: 0, auto: null } };
+const CARD_W = 292;
+
+function scrollEv(id, dir) {
+  const track = document.getElementById(`track-${id}`);
+  if (!track) return;
+  const cards = track.querySelectorAll('.ev-card').length;
+  const maxPos = Math.max(0, (cards - 4) * CARD_W);
+  carousels[id].pos = Math.max(0, Math.min(carousels[id].pos + dir * CARD_W, maxPos));
+  track.style.transform = `translateX(-${carousels[id].pos}px)`;
+}
+
+function startAutoCarousel(id, dir) {
+  if (dir === undefined) dir = 1;
+  clearInterval(carousels[id].auto);
+  carousels[id].auto = setInterval(() => {
+    const track = document.getElementById(`track-${id}`);
+    if (!track) return;
+    const cards = track.querySelectorAll('.ev-card').length;
+    const maxPos = Math.max(0, (cards - 4) * CARD_W);
+    if (carousels[id].pos >= maxPos) carousels[id].pos = 0;
+    else carousels[id].pos += CARD_W;
+    track.style.transform = `translateX(-${carousels[id].pos}px)`;
+  }, 4000);
+}
+
+['avenir'].forEach(id => {
+  startAutoCarousel(id);
+  const wrap = document.getElementById(`wrap-${id}`);
+  if (!wrap) return;
+  let isDrag = false, startX = 0, startPos = 0;
+  wrap.addEventListener('mousedown', e => {
+    isDrag = true;
+    startX = e.clientX;
+    startPos = carousels[id].pos;
+    wrap.classList.add('grabbed');
+    clearInterval(carousels[id].auto);
+  });
+  document.addEventListener('mousemove', e => {
+    if (!isDrag) return;
+    carousels[id].pos = Math.max(0, startPos + (startX - e.clientX));
+    const track = document.getElementById(`track-${id}`);
+    if (track) track.style.transform = `translateX(-${carousels[id].pos}px)`;
+  });
+  document.addEventListener('mouseup', () => {
+    if (isDrag) {
+      isDrag = false;
+      wrap.classList.remove('grabbed');
+      startAutoCarousel(id);
+    }
+  });
+  wrap.addEventListener('touchstart', e => {
+    startX = e.touches[0].clientX;
+    startPos = carousels[id].pos;
+    clearInterval(carousels[id].auto);
+  }, { passive: true });
+  wrap.addEventListener('touchmove', e => {
+    carousels[id].pos = Math.max(0, startPos + (startX - e.touches[0].clientX));
+    const track = document.getElementById(`track-${id}`);
+    if (track) track.style.transform = `translateX(-${carousels[id].pos}px)`;
+  }, { passive: true });
+  wrap.addEventListener('touchend', () => startAutoCarousel(id));
+});
+</script>
+</body>
+</html>

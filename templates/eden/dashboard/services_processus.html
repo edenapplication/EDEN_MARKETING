@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Processus d'accompagnement — EDEN GROUP</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g800:#1F2937;--r:12px;--rl:20px;}
+body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
+.topnav{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;border-bottom:1.5px solid var(--g200);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
+.tn-em{width:36px;height:36px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:#fff;}
+.tn-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tn-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1.5px solid var(--g200);background:#fff;color:var(--g500);font-family:'Outfit',sans-serif;transition:all 0.2s;}
+.tn-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--bpale);}
+.wrap{padding:84px 2rem 3rem;max-width:860px;margin:0 auto;}
+.page-tit{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--g800);margin-bottom:1.5rem;}
+.card{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);padding:2rem;margin-bottom:1.5rem;}
+.card-tit{font-size:13px;font-weight:700;color:var(--g800);margin-bottom:1.2rem;padding-bottom:0.8rem;border-bottom:1px solid var(--g200);}
+.info-box{background:var(--bpale);border:1.5px solid rgba(27,79,219,0.2);border-radius:var(--r);padding:1rem 1.2rem;margin-bottom:1.5rem;font-size:13px;color:var(--blue);}
+.form-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;}
+.fg{display:flex;flex-direction:column;gap:5px;flex:1;min-width:100px;}
+.fg label{font-size:11px;font-weight:600;color:var(--g500);}
+input,textarea{background:#fff;border:1.5px solid var(--g200);border-radius:10px;padding:10px 14px;color:var(--g800);font-family:'Outfit',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;width:100%;}
+input:focus,textarea:focus{border-color:var(--blue);}
+input::placeholder,textarea::placeholder{color:var(--g400);}
+.btn-add{background:var(--grad);color:#fff;padding:10px 18px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:'Outfit',sans-serif;white-space:nowrap;}
+.etapes-list{display:flex;flex-direction:column;gap:10px;}
+.etape-item{background:var(--g50);border:1.5px solid var(--g200);border-radius:var(--r);padding:0.9rem 1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+.etape-left{display:flex;align-items:center;gap:10px;flex:1;}
+.et-num{width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;}
+.et-ico{font-size:1.3rem;flex-shrink:0;}
+.et-info-nom{font-size:13px;font-weight:700;color:var(--g800);}
+.et-info-desc{font-size:11px;color:var(--g500);margin-top:2px;}
+.et-actions{display:flex;gap:6px;flex-shrink:0;}
+.btn-sm-ed{padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Outfit',sans-serif;background:var(--bpale);color:var(--blue);}
+.btn-sm-del{padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Outfit',sans-serif;background:#fee2e2;color:#dc2626;}
+.alert{background:#dcfce7;border:1.5px solid #86efac;border-radius:var(--r);padding:12px 16px;font-size:13px;color:#16a34a;margin-bottom:1.5rem;}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:2000;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:#fff;border-radius:var(--rl);padding:2rem;max-width:460px;width:100%;margin:1rem;}
+.modal-tit{font-size:15px;font-weight:700;color:var(--g800);margin-bottom:1.2rem;}
+.btn-save{background:var(--grad);color:#fff;padding:11px 22px;border-radius:var(--r);font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;}
+.btn-cancel-m{background:#fff;color:var(--g500);padding:11px 18px;border-radius:var(--r);font-size:13px;font-weight:500;border:1.5px solid var(--g200);cursor:pointer;font-family:'Outfit',sans-serif;}
+.chk-row{display:flex;align-items:center;gap:8px;margin:8px 0;}
+.chk-row input{width:18px;height:18px;}
+.chk-row label{font-size:13px;color:var(--g700);margin:0;}
+@media(max-width:768px){.wrap{padding:80px 1rem 2rem;}.form-row{flex-direction:column;}}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <div style="display:flex;align-items:center;gap:8px;"><div class="tn-em">E</div><div class="tn-name">EDEN GROUP</div></div>
+  <div style="display:flex;gap:8px;">
+    <a class="tn-btn" href="{% url 'dashboard_services_liste' %}">← Services</a>
+    <a class="tn-btn" href="{% url 'nos_services' %}" target="_blank">👁 Voir</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="page-tit">🔄 Processus d'accompagnement</div>
+
+  <div class="info-box">💡 Ces étapes apparaissent dans la section "Notre processus d'accompagnement" sur la page Nos Services.</div>
+
+  {% if messages %}{% for msg in messages %}<div class="alert">{{ msg }}</div>{% endfor %}{% endif %}
+
+  <!-- AJOUTER -->
+  <div class="card">
+    <div class="card-tit">➕ Ajouter une étape</div>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="ajouter">
+      <div class="form-row" style="margin-bottom:1rem;">
+        <div class="fg" style="max-width:70px;"><label>N°</label><input type="number" name="numero" value="{{ etapes.count|add:1 }}" min="1" required></div>
+        <div class="fg" style="max-width:70px;"><label>Icône</label><input type="text" name="icone" value="✅" maxlength="4" style="text-align:center;font-size:18px;"></div>
+        <div class="fg"><label>Titre *</label><input type="text" name="titre" placeholder="Ex: Écoute & Conseil" required></div>
+        <button type="submit" class="btn-add">Ajouter</button>
+      </div>
+      <div class="fg"><label>Description courte</label><input type="text" name="description" placeholder="Nous écoutons votre besoin et vous conseillons."></div>
+    </form>
+  </div>
+
+  <!-- LISTE -->
+  <div class="card">
+    <div class="card-tit">Étapes actuelles ({{ etapes.count }})</div>
+    {% if etapes %}
+    <div class="etapes-list">
+      {% for e in etapes %}
+      <div class="etape-item" id="et-{{ e.pk }}">
+        <div class="etape-left">
+          <div class="et-num">{{ e.numero }}</div>
+          <span class="et-ico">{{ e.icone }}</span>
+          <div>
+            <div class="et-info-nom">{{ e.titre }}</div>
+            {% if e.description %}<div class="et-info-desc">{{ e.description }}</div>{% endif %}
+          </div>
+        </div>
+        <div class="et-actions">
+          <button class="btn-sm-ed" onclick="ouvrirModal({{ e.pk }},{{ e.numero }},'{{ e.icone|escapejs }}','{{ e.titre|escapejs }}','{{ e.description|escapejs }}',{{ e.ordre }},{{ e.is_active|lower }})">✏</button>
+          <form method="post" style="display:inline;" onsubmit="return confirm('Supprimer ?')">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="supprimer">
+            <input type="hidden" name="pk" value="{{ e.pk }}">
+            <button type="submit" class="btn-sm-del">🗑</button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p style="font-size:13px;color:var(--g400);text-align:center;padding:2rem;">Lancez <code>python manage.py init_services</code>.</p>
+    {% endif %}
+  </div>
+</div>
+
+<!-- MODAL MODIFIER -->
+<div class="modal-overlay" id="modal-et">
+  <div class="modal-box">
+    <div class="modal-tit">✏ Modifier l'étape</div>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="modifier">
+      <input type="hidden" name="pk" id="met-pk">
+      <div style="display:flex;gap:10px;margin-bottom:1rem;">
+        <div class="fg" style="max-width:70px;"><label>N°</label><input type="number" name="numero" id="met-num" min="1" required></div>
+        <div class="fg" style="max-width:70px;"><label>Icône</label><input type="text" name="icone" id="met-ico" maxlength="4" style="text-align:center;font-size:18px;"></div>
+        <div class="fg"><label>Titre *</label><input type="text" name="titre" id="met-tit" required></div>
+      </div>
+      <div class="fg" style="margin-bottom:1rem;"><label>Description</label><input type="text" name="description" id="met-desc" placeholder="Description courte..."></div>
+      <div style="display:flex;gap:10px;margin-bottom:1rem;align-items:center;">
+        <div class="fg" style="max-width:80px;"><label>Ordre</label><input type="number" name="ordre" id="met-ordre" min="0"></div>
+        <div class="chk-row" style="padding-top:18px;">
+          <input type="checkbox" name="is_active" id="met-active">
+          <label for="met-active">Active</label>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button type="submit" class="btn-save">💾 Enregistrer</button>
+        <button type="button" class="btn-cancel-m" onclick="fermerModal()">Annuler</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function ouvrirModal(pk, num, ico, tit, desc, ordre, active) {
+  document.getElementById('met-pk').value = pk;
+  document.getElementById('met-num').value = num;
+  document.getElementById('met-ico').value = ico;
+  document.getElementById('met-tit').value = tit;
+  document.getElementById('met-desc').value = desc;
+  document.getElementById('met-ordre').value = ordre;
+  document.getElementById('met-active').checked = active;
+  document.getElementById('modal-et').classList.add('open');
+}
+function fermerModal() { document.getElementById('modal-et').classList.remove('open'); }
+document.getElementById('modal-et').addEventListener('click', e => { if (e.target === document.getElementById('modal-et')) fermerModal(); });
+</script>
+</body>
+</html>

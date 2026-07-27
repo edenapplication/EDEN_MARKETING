@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% if projet %}Modifier{% else %}Nouveau{% endif %} projet — EDEN GROUP</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g800:#1F2937;--r:12px;--rl:20px;}
+body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
+.topnav{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;border-bottom:1.5px solid var(--g200);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
+.tn-em{width:36px;height:36px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:#fff;}
+.tn-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tn-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1.5px solid var(--g200);background:#fff;color:var(--g500);font-family:'Outfit',sans-serif;transition:all 0.2s;}
+.tn-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--bpale);}
+.wrap{padding:84px 2rem 3rem;max-width:860px;margin:0 auto;}
+.page-tit{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--g800);margin-bottom:1.5rem;}
+.card{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);padding:2rem;margin-bottom:1.5rem;}
+.card-tit{font-size:13px;font-weight:700;color:var(--g800);margin-bottom:1.2rem;padding-bottom:0.8rem;border-bottom:1px solid var(--g200);}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+.form-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:1rem;}
+.fg label{font-size:11px;font-weight:600;color:var(--g500);}
+.fg .hint{font-size:11px;color:var(--g400);margin-top:2px;}
+input,select,textarea{width:100%;background:#fff;border:1.5px solid var(--g200);border-radius:10px;padding:11px 14px;color:var(--g800);font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s;}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(27,79,219,0.08);}
+input::placeholder,textarea::placeholder{color:var(--g400);}
+select{appearance:none;}
+.chk-row{display:flex;align-items:center;gap:10px;padding:8px 0;}
+.chk-row input[type="checkbox"]{width:18px;height:18px;cursor:pointer;}
+.chk-row label{font-size:13px;color:var(--g700);margin:0;cursor:pointer;}
+.preview-img{width:100%;height:180px;object-fit:cover;border-radius:var(--r);margin-top:8px;display:none;border:1.5px solid var(--g200);}
+.btn-save{background:var(--grad);color:#fff;padding:13px 28px;border-radius:var(--r);font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;}
+.btn-save:hover{opacity:0.88;}
+.btn-cancel{background:#fff;color:var(--g500);padding:13px 24px;border-radius:var(--r);font-size:14px;font-weight:500;border:1.5px solid var(--g200);cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;}
+.err{background:#fee2e2;border:1.5px solid #fca5a5;border-radius:var(--r);padding:12px 16px;font-size:13px;color:#dc2626;margin-bottom:1.5rem;}
+.alert{background:#dcfce7;border:1.5px solid #86efac;border-radius:var(--r);padding:12px 16px;font-size:13px;color:#16a34a;margin-bottom:1.5rem;}
+.quick-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--g200);}
+.ql-btn{padding:8px 14px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1.5px solid;transition:all 0.2s;display:inline-flex;align-items:center;gap:5px;}
+@media(max-width:768px){.form-grid,.form-grid-3{grid-template-columns:1fr;}.wrap{padding:80px 1rem 2rem;}}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <div style="display:flex;align-items:center;gap:8px;"><div class="tn-em">E</div><div class="tn-name">EDEN GROUP</div></div>
+  <div style="display:flex;gap:8px;">
+    <a class="tn-btn" href="{% url 'dashboard_projets_liste' %}">← Projets</a>
+    {% if projet %}
+    <a class="tn-btn" href="{% url 'dashboard_projet_etapes' projet.pk %}" style="background:#f0fdf4;border-color:#86efac;color:#16a34a;">📈 Étapes</a>
+    <a class="tn-btn" href="{% url 'dashboard_projet_galerie' projet.pk %}" style="background:#fef9c3;border-color:#fde68a;color:#b45309;">🖼 Galerie</a>
+    <a class="tn-btn" href="{% url 'dashboard_projet_infrastructures' projet.pk %}" style="background:var(--bpale);border-color:rgba(27,79,219,0.2);color:var(--blue);">🔧 Infra</a>
+    {% endif %}
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="page-tit">{% if projet %}✏ Modifier "{{ projet.nom }}"{% else %}🏗 Nouveau projet{% endif %}</div>
+
+  {% if messages %}{% for msg in messages %}<div class="{% if 'error' in msg.tags %}err{% else %}alert{% endif %}">{{ msg }}</div>{% endfor %}{% endif %}
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="card">
+      <div class="card-tit">📋 Informations générales</div>
+      <div class="fg">
+        <label>Nom du projet *</label>
+        <input type="text" name="nom" value="{{ projet.nom|default:'' }}" placeholder="Ex: MVÉ 3 — Yaoundé" required>
+      </div>
+      <div class="form-grid">
+        <div class="fg">
+          <label>Statut *</label>
+          <select name="statut">
+            <option value="en_cours" {% if not projet or projet.statut == 'en_cours' %}selected{% endif %}>🏗 En cours</option>
+            <option value="livre" {% if projet and projet.statut == 'livre' %}selected{% endif %}>✅ Livré</option>
+            <option value="futur" {% if projet and projet.statut == 'futur' %}selected{% endif %}>🚀 Projet futur</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Type de projet</label>
+          <select name="type_projet">
+            <option value="lotissement" {% if not projet or projet.type_projet == 'lotissement' %}selected{% endif %}>Lotissement</option>
+            <option value="mini_cite" {% if projet and projet.type_projet == 'mini_cite' %}selected{% endif %}>Mini-cité</option>
+            <option value="residence" {% if projet and projet.type_projet == 'residence' %}selected{% endif %}>Résidence</option>
+            <option value="autre" {% if projet and projet.type_projet == 'autre' %}selected{% endif %}>Autre</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg">
+        <label>Localisation *</label>
+        <input type="text" name="localisation" value="{{ projet.localisation|default:'' }}" placeholder="Ex: Yaoundé — Voie de Contournement" required>
+      </div>
+      <div class="fg">
+        <label>Description courte (affichée dans la liste)</label>
+        <input type="text" name="description_courte" value="{{ projet.description_courte|default:'' }}" placeholder="Résumé en 1-2 phrases">
+      </div>
+      <div class="fg">
+        <label>Description complète</label>
+        <textarea name="description" rows="4" placeholder="Description détaillée du projet...">{{ projet.description|default:'' }}</textarea>
+      </div>
+      <div class="form-grid">
+        <div class="fg">
+          <label>Ordre d'affichage</label>
+          <input type="number" name="ordre" value="{{ projet.ordre|default:'0' }}" min="0">
+        </div>
+        <div class="fg">
+          <label>Année de livraison</label>
+          <input type="text" name="annee_livraison" value="{{ projet.annee_livraison|default:'' }}" placeholder="Ex: 2025">
+        </div>
+      </div>
+      <div class="chk-row">
+        <input type="checkbox" name="is_active" id="is_active" {% if not projet or projet.is_active %}checked{% endif %}>
+        <label for="is_active">Projet visible sur le site</label>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-tit">🖼 Image principale</div>
+      {% if projet and projet.image_principale %}
+        <img src="{{ projet.image_principale.url }}" class="preview-img" id="preview" style="display:block;" alt="">
+      {% else %}
+        <img class="preview-img" id="preview" alt="">
+      {% endif %}
+      <div class="fg" style="margin-top:{% if projet and projet.image_principale %}0.8rem{% else %}0{% endif %};">
+        <label>Image principale du projet</label>
+        <input type="file" name="image_principale" accept="image/*" onchange="previewImg(this)">
+        <div class="hint">Recommandé : 1200×800px. Apparaît dans la liste et en bannière du détail.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-tit">📊 Données des lots</div>
+      <div class="form-grid-3">
+        <div class="fg">
+          <label>Superficie totale</label>
+          <input type="text" name="superficie_totale" value="{{ projet.superficie_totale|default:'' }}" placeholder="Ex: 65 Ha">
+        </div>
+        <div class="fg">
+          <label>Nombre de lots total</label>
+          <input type="number" name="nb_lots" value="{{ projet.nb_lots|default:'0' }}" min="0">
+        </div>
+        <div class="fg">
+          <label>Surface des lots</label>
+          <input type="text" name="surface_lots" value="{{ projet.surface_lots|default:'' }}" placeholder="Ex: 300 à 1000 m²">
+        </div>
+      </div>
+      <div class="form-grid-3">
+        <div class="fg">
+          <label>Lots disponibles</label>
+          <input type="number" name="lots_disponibles" value="{{ projet.lots_disponibles|default:'0' }}" min="0">
+        </div>
+        <div class="fg">
+          <label>Lots réservés</label>
+          <input type="number" name="lots_reserves" value="{{ projet.lots_reserves|default:'0' }}" min="0">
+        </div>
+        <div class="fg">
+          <label>Lots vendus</label>
+          <input type="number" name="lots_vendus" value="{{ projet.lots_vendus|default:'0' }}" min="0">
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="fg">
+          <label>Nombre de propriétaires</label>
+          <input type="number" name="nb_proprietaires" value="{{ projet.nb_proprietaires|default:'0' }}" min="0">
+        </div>
+        <div class="fg">
+          <label>Prix minimum (FCFA)</label>
+          <input type="number" name="prix_min" value="{{ projet.prix_min|default:'' }}" placeholder="Ex: 4000000" min="0">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-tit">📁 Documents téléchargeables</div>
+      <div class="form-grid">
+        <div class="fg">
+          <label>Brochure PDF</label>
+          {% if projet and projet.brochure %}<div style="font-size:11px;color:var(--g500);margin-bottom:6px;">✅ <a href="{{ projet.brochure.url }}" target="_blank">Brochure actuelle</a></div>{% endif %}
+          <input type="file" name="brochure" accept=".pdf,.doc,.docx">
+        </div>
+        <div class="fg">
+          <label>Plan cadastral</label>
+          {% if projet and projet.plan_cadastral %}<div style="font-size:11px;color:var(--g500);margin-bottom:6px;">✅ <a href="{{ projet.plan_cadastral.url }}" target="_blank">Plan actuel</a></div>{% endif %}
+          <input type="file" name="plan_cadastral" accept=".pdf,.jpg,.png">
+        </div>
+        <div class="fg">
+          <label>Grille tarifaire</label>
+          {% if projet and projet.grille_tarifaire %}<div style="font-size:11px;color:var(--g500);margin-bottom:6px;">✅ <a href="{{ projet.grille_tarifaire.url }}" target="_blank">Grille actuelle</a></div>{% endif %}
+          <input type="file" name="grille_tarifaire" accept=".pdf,.xlsx,.xls">
+        </div>
+        <div class="fg">
+          <label>Dossier technique</label>
+          {% if projet and projet.dossier_technique %}<div style="font-size:11px;color:var(--g500);margin-bottom:6px;">✅ <a href="{{ projet.dossier_technique.url }}" target="_blank">Dossier actuel</a></div>{% endif %}
+          <input type="file" name="dossier_technique" accept=".pdf,.doc,.docx">
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <button type="submit" class="btn-save">💾 {% if projet %}Enregistrer{% else %}Créer le projet{% endif %}</button>
+      <a href="{% url 'dashboard_projets_liste' %}" class="btn-cancel">Annuler</a>
+    </div>
+
+    {% if projet %}
+    <div class="quick-links">
+      <span style="font-size:12px;color:var(--g400);align-self:center;">Compléter ce projet :</span>
+      <a href="{% url 'dashboard_projet_etapes' projet.pk %}" class="ql-btn" style="background:#f0fdf4;border-color:#86efac;color:#16a34a;">📈 Gérer les étapes</a>
+      <a href="{% url 'dashboard_projet_galerie' projet.pk %}" class="ql-btn" style="background:#fef9c3;border-color:#fde68a;color:#b45309;">🖼 Galerie photos</a>
+      <a href="{% url 'dashboard_projet_infrastructures' projet.pk %}" class="ql-btn" style="background:var(--bpale);border-color:rgba(27,79,219,0.2);color:var(--blue);">🔧 Infrastructures</a>
+    </div>
+    {% endif %}
+  </form>
+</div>
+
+<script>
+function previewImg(input) {
+  const img = document.getElementById('preview');
+  if (input.files && input.files[0]) { img.src = URL.createObjectURL(input.files[0]); img.style.display = 'block'; }
+}
+</script>
+</body>
+</html>

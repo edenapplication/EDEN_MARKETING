@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ article.titre }} — EDEN GROUP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --blue:#1B4FDB;--blue-d:#0A2494;--blue-pale:#EEF3FF;
+  --red:#C8102E;--red-d:#A00C24;
+  --grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
+  --grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
+  --g50:#F8FAFF;--g100:#F0F4FF;--g200:#E2E8F0;
+  --g400:#94A3B8;--g500:#64748B;--g600:#475569;--g800:#1E293B;
+  --sh:0 2px 12px rgba(0,0,0,0.08);
+  --sh-lg:0 8px 40px rgba(27,79,219,0.15);
+  --r:10px;--rl:16px;--rxl:24px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:#fff;color:var(--g800);overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-thumb{background:var(--grad-h);border-radius:100px;}
+
+/* ══ NAVBAR TRANSPARENTE ══ */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;background:transparent;transition:background 0.3s ease, box-shadow 0.3s ease;}
+nav.scrolled{background:rgba(255,255,255,.92);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);box-shadow:0 2px 20px rgba(0,0,0,0.08);}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo-img{height:48px;width:auto;object-fit:contain;}
+.logo-box{width:42px;height:42px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#fff;}
+.logo-name{font-size:18px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.logo-tagline{font-size:9px;color:var(--g500);letter-spacing:1.5px;text-transform:uppercase;}
+.nav-links{display:flex;align-items:center;gap:0;}
+.nav-lnk{padding:6px 13px;font-size:16px;font-weight:500;color:#ffffff;text-decoration:none;border-radius:7px;transition:all 0.18s;position:relative;}
+nav.scrolled .nav-lnk{color:#000000;}
+.nav-lnk:hover,.nav-lnk.active{color:var(--blue);}
+.nav-lnk.active::after{content:'';position:absolute;bottom:-4px;left:13px;right:13px;height:2px;background:var(--red);border-radius:100px;}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.btn-rdv{background:var(--red);color:#fff;padding:10px 18px;border-radius:50px;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:6px;}
+.btn-rdv:hover{background:var(--red-d);transform:translateY(-1px);box-shadow:0 4px 16px rgba(200,16,46,0.3);}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:none;padding:6px;}
+.hamburger span{width:22px;height:2px;background:#ffffff;border-radius:2px;display:block;transition:background 0.3s;}
+nav.scrolled .hamburger span{background:var(--g800);}
+.mob-menu{display:none;position:fixed;top:70px;left:0;right:0;background:#fff;border-bottom:1px solid var(--g200);padding:1rem 1.5rem;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.1);}
+.mob-menu.open{display:flex;flex-direction:column;gap:4px;}
+
+/* ══ COUVERTURE ══ */
+.cover-zone{margin-top:0;position:relative;width:100%;background:#000;min-height:60vh;}
+.cover-zone img{width:100%;height:60vh;object-fit:cover;display:block;opacity:0.8;}
+.cover-ph{width:100%;height:60vh;background:linear-gradient(135deg,var(--blue-d),#1B4FDB,#7B20B4);display:flex;align-items:center;justify-content:center;font-size:5rem;color:rgba(255,255,255,0.3);}
+.cover-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 50%);}
+.cover-meta{position:absolute;bottom:2rem;left:2rem;right:2rem;color:#fff;}
+.cover-cat{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.8);margin-bottom:0.5rem;}
+.cover-titre{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:900;color:#fff;line-height:1.1;margin-bottom:0.5rem;}
+.cover-sous{font-size:15px;color:rgba(255,255,255,0.8);line-height:1.6;max-width:700px;}
+.cover-infos{display:flex;gap:1.5rem;margin-top:1rem;flex-wrap:wrap;}
+.cover-info-item{display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,0.8);}
+
+/* ══ CATEGORY BADGE ══ */
+.nav-cat-badge{padding:5px 14px;border-radius:100px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
+.cat-une{background:rgba(200,16,46,0.9);color:#fff;}
+.cat-avenir{background:rgba(22,163,74,0.9);color:#fff;}
+.cat-passe{background:rgba(100,116,139,0.9);color:#fff;}
+.cat-actu{background:rgba(27,79,219,0.9);color:#fff;}
+
+/* ══ BARRE NAV ARTICLE ══ */
+.article-nav-bar{background:var(--g800);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.8rem;}
+.anb-back{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#94A3B8;text-decoration:none;transition:color 0.2s;}
+.anb-back:hover{color:#fff;}
+.anb-share{display:flex;gap:8px;}
+.anb-share-btn{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;transition:all 0.2s;}
+.anb-share-btn:hover{background:rgba(255,255,255,0.2);}
+
+/* ══ CONTENU ══ */
+.article-page{position:relative;width:100%;background:#FFFEF7;min-height:50vh;padding:2rem;}
+.r-texte p{font-family:'Lora',serif;font-size:14px;color:#2d1f0e;line-height:1.75;text-align:justify;hyphens:auto;}
+.r-texte p::first-letter{font-size:2.2em;font-family:'Playfair Display',serif;font-weight:900;float:left;line-height:0.8;margin:3px 3px 0 0;color:#1a1008;}
+.r-texte .chapeau{font-style:italic;border-left:3px solid #C8102E;padding-left:8px;margin-bottom:4px;font-family:'Lora',serif;line-height:1.6;}
+.r-titre h1{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;color:#1a1008;border-bottom:3px double #1a1008;padding-bottom:6px;margin-bottom:6px;line-height:1.1;}
+.r-titre h2{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#1a1008;border-bottom:1px solid #8B7355;padding-bottom:4px;margin-bottom:4px;}
+.r-titre h3{font-family:'Playfair Display',serif;font-size:15px;font-style:italic;font-weight:600;color:#1a1008;}
+.r-titre .surtitre{font-size:10px;color:#C8102E;text-transform:uppercase;letter-spacing:2px;font-family:'Outfit',sans-serif;}
+.r-image img{width:100%;display:block;border-radius:8px;}
+.r-image figcaption{font-size:10px;color:#8B7355;text-align:center;font-style:italic;padding:3px 4px;}
+.r-citation blockquote{border:2px solid #1a1008;padding:10px 14px;background:#FFF3D6;text-align:center;}
+.r-citation blockquote p{font-family:'Playfair Display',serif;font-style:italic;font-size:13px;color:#1a1008;}
+.r-citation blockquote p::first-letter{font-size:1em;float:none;}
+.r-citation .auteur{font-size:10px;color:#C8102E;text-align:right;font-family:'Outfit',sans-serif;}
+.r-filet hr{border:none;height:2px;background:#1a1008;}
+.r-filet.ornement{text-align:center;color:#8B7355;font-size:16px;padding:4px;}
+.r-encart{background:#FFF3D6;border:2px solid #1a1008;padding:10px;}
+.r-encart .et{font-family:'Playfair Display',serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid #8B7355;padding-bottom:4px;margin-bottom:6px;}
+.r-encart p{font-family:'Lora',serif;font-size:11px;line-height:1.65;}
+.r-encart p::first-letter{font-size:1em;float:none;}
+.r-pub{background:#1a1008;color:#FFFEF7;padding:12px;text-align:center;}
+.r-pub .pt{font-size:18px;color:#FFD700;}
+.r-pub .px{font-size:10px;line-height:1.4;}
+.r-pub .tel{font-size:11px;color:#FFD700;font-weight:700;}
+.r-video{background:#222;display:flex;align-items:center;justify-content:center;min-height:100px;color:#fff;font-size:13px;cursor:pointer;border-radius:8px;}
+.r-forme-inner{width:100%;height:100%;}
+
+.no-content{padding:4rem;text-align:center;color:var(--g400);}
+.no-content .ico{font-size:3rem;margin-bottom:1rem;}
+
+/* ══ FOOTER ══ */
+.footer-bar{height:3px;background:var(--grad-h);}
+footer{background:var(--g800);color:#fff;padding:3rem 2rem 1.5rem;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1.5fr;gap:2rem;max-width:1280px;margin:0 auto 2rem;}
+.footer-logo-img{height:40px;object-fit:contain;}
+.footer-desc{font-size:12px;color:#94A3B8;line-height:1.75;max-width:260px;margin-bottom:1rem;margin-top:0.8rem;}
+.footer-tagline{font-size:11px;color:rgba(255,255,255,0.4);font-style:italic;}
+.footer-col h4{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.9rem;}
+.footer-lnk{display:block;font-size:12px;color:#94A3B8;text-decoration:none;margin-bottom:6px;transition:color 0.2s;}
+.footer-lnk:hover{color:#fff;}
+.footer-socials{display:flex;gap:8px;margin-top:0.8rem;}
+.footer-social-btn{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;transition:all 0.2s;}
+.fs-fb{background:#1877F2;color:#fff;}
+.fs-tt{background:#010101;color:#fff;}
+.fs-yt{background:#FF0000;color:#fff;}
+.fs-li{background:#0A66C2;color:#fff;}
+.fs-ig{background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;}
+.footer-social-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.3);}
+.footer-bot{border-top:1px solid #334155;max-width:1280px;margin:0 auto;padding-top:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.footer-copy{font-size:12px;color:#64748B;}
+.footer-links-bot{display:flex;gap:1.5rem;}
+.footer-links-bot a{font-size:12px;color:#64748B;text-decoration:none;transition:color 0.2s;}
+.footer-links-bot a:hover{color:#fff;}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:1024px){.footer-grid{grid-template-columns:1fr 1fr 1fr;}}
+@media(max-width:768px){
+  nav{padding:0 1rem;}
+  .nav-links,.nav-right .btn-rdv{display:none;}
+  .hamburger{display:flex;}
+  .cover-zone{min-height:40vh;}
+  .cover-zone img{height:40vh;}
+  .cover-ph{height:40vh;}
+  .cover-titre{font-size:1.6rem;}
+  .cover-meta{left:1rem;right:1rem;bottom:1rem;}
+  .article-nav-bar{padding:0.8rem 1rem;flex-direction:column;align-items:stretch;}
+  .anb-share{justify-content:center;}
+  .article-page{padding:1rem;}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+  .footer-grid>div:first-child{grid-column:1/-1;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ NAVBAR TRANSPARENTE ══ -->
+<nav id="navbar">
+  <a class="nav-logo" href="{% url 'home' %}">
+    <div class="logo-box">E</div>
+    <div>
+      <div class="logo-name">EDEN GROUP</div>
+      <div class="logo-tagline">Le foncier sécurisé, notre engagement</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'sites_list' or request.resolver_match.url_name == 'site_detail' %}active{% endif %}" href="{% url 'sites_list' %}">Nos Terrains</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_projets' %}active{% endif %}" href="{% url 'nos_projets' %}">Nos Projets</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' or request.resolver_match.url_name == 'une_evenement_detail' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'journal_kiosque' or request.resolver_match.url_name == 'journal_lire' %}active{% endif %}" href="{% url 'journal_kiosque' %}">📰 Documentation</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
+    {% if user.is_staff %}
+    <a class="nav-lnk" href="{% url 'dashboard_home' %}" style="color:var(--blue);font-weight:700;">Dashboard</a>
+    {% endif %}
+  </div>
+  <div class="nav-right">
+    <button class="btn-rdv" onclick="document.getElementById('cc-form')?.scrollIntoView({behavior:'smooth'})">📅 Contact</button>
+  </div>
+  <button class="hamburger" onclick="toggleMob()"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="mob-menu" id="mob-menu">
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'sites_list' or request.resolver_match.url_name == 'site_detail' %}active{% endif %}" href="{% url 'sites_list' %}">Nos Terrains</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_projets' %}active{% endif %}" href="{% url 'nos_projets' %}">Nos Projets</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' or request.resolver_match.url_name == 'une_evenement_detail' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'journal_kiosque' or request.resolver_match.url_name == 'journal_lire' %}active{% endif %}" href="{% url 'journal_kiosque' %}">📰 Documentation</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'promotions' %}active{% endif %}" href="{% url 'promotions' %}">Promotions</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
+  {% if user.is_staff %}<a class="nav-lnk" href="{% url 'dashboard_home' %}">Dashboard</a>{% endif %}
+  <button class="btn-rdv" style="width:100%;margin-top:8px;justify-content:center;" onclick="document.getElementById('cc-form')?.scrollIntoView({behavior:'smooth'})">📅 Contact</button>
+</div>
+
+<!-- ══ COUVERTURE ══ -->
+<div class="cover-zone">
+  {% if article.image_couverture %}
+    <img src="{{ article.image_couverture.url }}" alt="{{ article.titre }}">
+  {% else %}
+    <div class="cover-ph">
+      {% if article.categorie == 'une' %}📰{% elif article.categorie == 'evenement_avenir' %}📅{% elif article.categorie == 'evenement_passe' %}📁{% else %}📢{% endif %}
+    </div>
+  {% endif %}
+  {% if article.image_couverture %}<div class="cover-overlay"></div>{% endif %}
+  <div class="cover-meta">
+    <div class="cover-cat">{{ article.get_categorie_display }}</div>
+    <div class="cover-titre">{{ article.titre }}</div>
+    {% if article.sous_titre %}<div class="cover-sous">{{ article.sous_titre }}</div>{% endif %}
+    <div class="cover-infos">
+      {% if article.date_evenement %}
+      <div class="cover-info-item">📅 {{ article.date_evenement|date:"d F Y" }}{% if article.date_fin_evenement %} → {{ article.date_fin_evenement|date:"d F Y" }}{% endif %}</div>
+      {% endif %}
+      {% if article.lieu %}
+      <div class="cover-info-item">📍 {{ article.lieu }}</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- ══ BARRE NAV ARTICLE ══ -->
+<div class="article-nav-bar">
+  <a class="anb-back" href="{% url 'une_evenements_accueil' %}">← Retour à Une &amp; Événements</a>
+  <div class="anb-share">
+    <a class="anb-share-btn" href="https://wa.me/?text={{ article.titre|urlencode }}%20{{ request.build_absolute_uri }}" target="_blank" title="Partager sur WhatsApp">💬</a>
+    <a class="anb-share-btn" href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" title="Partager sur Facebook">f</a>
+    <button class="anb-share-btn" onclick="copyLink()" title="Copier le lien">🔗</button>
+  </div>
+</div>
+
+<!-- ══ CONTENU DE L'ARTICLE ══ -->
+{% if article.contenu %}
+<div class="article-page" id="article-page">
+  <!-- Le contenu est rendu par JS en mode responsive -->
+</div>
+{% else %}
+<div class="no-content">
+  <div class="ico">📄</div>
+  <div style="font-size:16px;font-weight:600;color:var(--g800);margin-bottom:0.4rem;">Contenu à venir</div>
+  <div style="font-size:13px;">L'article est en cours de rédaction.</div>
+</div>
+{% endif %}
+
+<!-- ══ FOOTER ══ -->
+<div class="footer-bar"></div>
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;">
+        <div class="logo-box" style="width:36px;height:36px;font-size:15px;border-radius:8px;">E</div>
+        <div style="font-size:15px;font-weight:900;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">EDEN GROUP</div>
+      </div>
+      <p class="footer-desc">Votre partenaire foncier de confiance depuis 2018.</p>
+      <div class="footer-tagline">Le foncier sécurisé, notre engagement</div>
+    </div>
+    <div class="footer-col"><h4>Liens rapides</h4>
+      <a class="footer-lnk" href="{% url 'home' %}">Accueil</a>
+      <a class="footer-lnk" href="{% url 'sites_list' %}">Nos Terrains</a>
+      <a class="footer-lnk" href="#">Nos Services</a>
+      <a class="footer-lnk" href="#">Projets</a>
+      <a class="footer-lnk" href="#">Académie</a>
+      <a class="footer-lnk" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+      <a class="footer-lnk" href="{% url 'a_propos' %}">À propos</a>
+      <a class="footer-lnk" href="#">Contact</a>
+    </div>
+    <div class="footer-col"><h4>Nos agences</h4>
+      <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:#94A3B8;margin-bottom:6px;">📍 Yaoundé (Siège)</div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:#94A3B8;margin-bottom:6px;">📍 Bafoussam</div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:#94A3B8;margin-bottom:6px;">📍 Dschang</div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:#94A3B8;margin-bottom:6px;">📍 Bangangté</div>
+    </div>
+    <div class="footer-col"><h4>Suivez-nous</h4>
+      <div class="footer-socials">
+        <a href="#" class="footer-social-btn fs-fb">f</a>
+        <a href="#" class="footer-social-btn fs-tt" style="color:#fff;">T</a>
+        <a href="#" class="footer-social-btn fs-yt" style="color:#fff;">▶</a>
+        <a href="#" class="footer-social-btn fs-li" style="color:#fff;">in</a>
+        <a href="#" class="footer-social-btn fs-ig" style="color:#fff;">📷</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bot">
+    <div class="footer-copy">© 2026 EDEN GROUP ENTREPRISE. Tous droits réservés.</div>
+    <div class="footer-links-bot">
+      <a href="#">Mentions légales</a>
+      <a href="#">Politique de confidentialité</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── NAV ──
+function toggleMob(){document.getElementById('mob-menu').classList.toggle('open');}
+
+window.addEventListener('scroll', function() {
+  const nav = document.getElementById('navbar');
+  if (window.scrollY > 40) {
+    nav.classList.add('scrolled');
+  } else {
+    nav.classList.remove('scrolled');
+  }
+});
+
+const CONTENU = {{ contenu_json|safe }};
+
+function getEmbedUrl(url) {
+  if (!url) return '';
+  const yt = url.match(/youtube\.com\/watch\?v=([^&]+)|youtu\.be\/([^?]+)/);
+  if (yt) return `https://www.youtube.com/embed/${yt[1]||yt[2]}`;
+  const vimeo = url.match(/vimeo\.com\/(\d+)/);
+  if (vimeo) return `https://player.vimeo.com/video/${vimeo[1]}`;
+  return url;
+}
+
+function rendreBloc(bloc) {
+  switch(bloc.type) {
+    case 'texte':
+      const paras = (bloc.contenu || '').split('\n');
+      return `<div class="r-texte">
+        ${bloc.chapeau ? `<p class="chapeau">${bloc.chapeau}</p>` : ''}
+        ${paras.map(p => `<p>${p || '&nbsp;'}</p>`).join('')}
+      </div>`;
+    case 'titre':
+      return `<div class="r-titre">
+        ${bloc.surtitre ? `<div class="surtitre">${bloc.surtitre}</div>` : ''}
+        ${bloc.niveau === 1 ? `<h1>${bloc.contenu||''}</h1>` :
+          bloc.niveau === 3 ? `<h3>${bloc.contenu||''}</h3>` :
+          `<h2>${bloc.contenu||''}</h2>`}
+      </div>`;
+    case 'image':
+      return `<div class="r-image">
+        <figure>
+          ${bloc.url ? `<img src="${bloc.url}" alt="${bloc.legende||''}" loading="lazy">` : ''}
+          ${bloc.legende ? `<figcaption>${bloc.legende}</figcaption>` : ''}
+        </figure>
+      </div>`;
+    case 'citation':
+      return `<div class="r-citation">
+        <blockquote>
+          <p>${bloc.contenu||''}</p>
+          ${bloc.auteur ? `<div class="auteur">— ${bloc.auteur}</div>` : ''}
+        </blockquote>
+      </div>`;
+    case 'filet':
+      return bloc.style === 'ornement' ? `<div class="r-filet ornement">✦ ✦ ✦</div>` : `<div class="r-filet"><hr></div>`;
+    case 'encart':
+      return `<div class="r-encart">
+        ${bloc.titre_encart ? `<div class="et">${bloc.titre_encart}</div>` : ''}
+        ${(bloc.contenu||'').split('\n').map(p => `<p>${p}</p>`).join('')}
+      </div>`;
+    case 'pub':
+      return `<div class="r-pub">
+        <div class="pt">EDEN GROUP</div>
+        <div class="px">${bloc.contenu||''}</div>
+        ${bloc.telephone ? `<div class="tel">📞 ${bloc.telephone}</div>` : ''}
+      </div>`;
+    case 'video':
+      const vUrl = getEmbedUrl(bloc.url||'');
+      return vUrl ? `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:8px;">
+        <iframe src="${vUrl}" style="position:absolute;inset:0;width:100%;height:100%;border:none;" allowfullscreen></iframe>
+      </div>` : `<div class="r-video">🎬 ${bloc.legende||'Vidéo'}</div>`;
+    case 'forme':
+      return `<div class="r-forme-inner" style="background:${bloc.couleur_fond||'#1B4FDB'};border-radius:${bloc.radius||0}px;border:${bloc.bordure_ep||0}px solid ${bloc.bordure_col||'#000'};"></div>`;
+    default:
+      return `<div style="padding:8px;color:#888;font-size:12px;">Bloc: ${bloc.type}</div>`;
+  }
+}
+
+function rendreArticle() {
+  const page = document.getElementById('article-page');
+  if (!page || !CONTENU.length) return;
+
+  // Mode responsive : on place les éléments en flux normal (pas absolu)
+  const pageW = 794;
+  const scale = Math.min(1, (page.offsetWidth || window.innerWidth) / pageW);
+  let maxH = 0;
+
+  CONTENU.forEach(el => {
+    const bottom = (el.y || 0) + (el.h || 100);
+    if (bottom > maxH) maxH = bottom;
+  });
+
+  page.style.height = (maxH * scale + 40) + 'px';
+  page.style.position = 'relative';
+  page.style.transformOrigin = 'top left';
+
+  CONTENU.forEach(el => {
+    const div = document.createElement('div');
+    div.style.cssText = `
+      position:absolute;
+      left:${(el.x || 0) * scale}px;
+      top:${(el.y || 0) * scale}px;
+      width:${(el.w || 200) * scale}px;
+      height:${el.h ? (el.h * scale) + 'px' : 'auto'};
+      z-index:${el.z || 1};
+      ${el.rotation ? `transform:rotate(${el.rotation}deg);` : ''}
+      overflow:hidden;
+      font-size:${Math.max(10, (el.taille || 14) * scale)}px;
+    `;
+    div.innerHTML = rendreBloc(el);
+
+    if (el.type === 'texte') {
+      div.style.fontFamily = el.font || "'Lora',serif";
+      div.style.color = el.couleur || '#1a1008';
+      div.style.lineHeight = el.interligne || '1.65';
+      if (el.fond && el.fond !== 'transparent') div.style.background = el.fond;
+      if (el.padding) div.style.padding = (el.padding * scale) + 'px';
+    }
+    page.appendChild(div);
+  });
+}
+
+window.addEventListener('load', rendreArticle);
+window.addEventListener('resize', () => {
+  const page = document.getElementById('article-page');
+  if (page) { page.innerHTML = ''; rendreArticle(); }
+});
+
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    alert('Lien copié !');
+  });
+}
+</script>
+</body>
+</html>

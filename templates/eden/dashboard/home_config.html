@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Configuration Home — EDEN GROUP</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g800:#1F2937;--r:12px;--rl:20px;}
+body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
+.topnav{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;border-bottom:1.5px solid var(--g200);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
+.tn-em{width:36px;height:36px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:#fff;}
+.tn-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tn-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1.5px solid var(--g200);background:#fff;color:var(--g500);font-family:'Outfit',sans-serif;display:inline-flex;align-items:center;gap:5px;transition:all 0.2s;}
+.tn-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--bpale);}
+.wrap{padding:84px 2rem 3rem;max-width:1000px;margin:0 auto;}
+.page-tit{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--g800);margin-bottom:0.3rem;}
+.page-sub{font-size:13px;color:var(--g500);margin-bottom:2rem;}
+.modules-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem;}
+.module-card{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);padding:1.5rem;transition:all 0.25s;text-decoration:none;display:block;cursor:pointer;}
+.module-card:hover{border-color:rgba(27,79,219,0.3);box-shadow:0 4px 20px rgba(0,0,0,0.06);transform:translateY(-2px);}
+.mc-ico{width:48px;height:48px;border-radius:12px;background:var(--bpale);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:1rem;}
+.mc-tit{font-size:15px;font-weight:700;color:var(--g800);margin-bottom:0.3rem;}
+.mc-desc{font-size:12px;color:var(--g500);line-height:1.5;margin-bottom:0.8rem;}
+.mc-badge{display:inline-block;background:var(--bpale);color:var(--blue);padding:3px 10px;border-radius:100px;font-size:11px;font-weight:600;}
+.info-box{background:var(--bpale);border:1.5px solid rgba(27,79,219,0.2);border-radius:var(--r);padding:1rem 1.2rem;margin-bottom:1.5rem;font-size:13px;color:var(--blue);display:flex;align-items:flex-start;gap:8px;}
+@media(max-width:768px){.wrap{padding:80px 1rem 2rem;}}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <div style="display:flex;align-items:center;gap:8px;"><div class="tn-em">E</div><div class="tn-name">EDEN GROUP</div></div>
+  <div style="display:flex;gap:8px;">
+    <a class="tn-btn" href="{% url 'home' %}" target="_blank">🌐 Voir le site</a>
+    <a class="tn-btn" href="{% url 'dashboard_home' %}">← Dashboard</a>
+    <a class="tn-btn" href="{% url 'logout' %}" style="background:#fee2e2;border-color:#fca5a5;color:#dc2626;">Déconnexion</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="page-tit">🏠 Configuration de la page d'accueil</div>
+  <div class="page-sub">Gérez tous les éléments affichés sur la page d'accueil sans toucher au code.</div>
+
+  <div class="info-box">
+    💡 Chaque section ci-dessous correspond à un bloc de la page d'accueil. Modifiez-les pour personnaliser l'affichage en temps réel.
+  </div>
+
+  <div class="modules-grid">
+    <a href="{% url 'dashboard_hero_form' %}" class="module-card">
+      <div class="mc-ico">🖼</div>
+      <div class="mc-tit">Hero (Bannière principale)</div>
+      <div class="mc-desc">Image de fond, titre, description, badges et boutons d'action.</div>
+      {% if hero.image_fond %}<span class="mc-badge">✅ Image configurée</span>{% else %}<span class="mc-badge" style="background:#fef9c3;color:#b45309;">⚠ Pas d'image</span>{% endif %}
+    </a>
+
+    <a href="{% url 'dashboard_hero_slides' %}" class="module-card">
+  <div class="mc-ico">🎞</div>
+  <div class="mc-tit">Slides Hero (carrousel)</div>
+  <div class="mc-desc">Gérez les images qui défilent dans le carrousel de la section hero. Chaque slide peut être activée ou désactivée.</div>
+  <span class="mc-badge">Gérer les slides →</span>
+</a>
+
+    <a href="{% url 'dashboard_services' %}" class="module-card">
+      <div class="mc-ico">⚙</div>
+      <div class="mc-tit">Services</div>
+      <div class="mc-desc">Les services proposés par EDEN GROUP (acquisition, lotissement, etc.).</div>
+      <span class="mc-badge">{{ nb_services }} service{{ nb_services|pluralize }}</span>
+    </a>
+
+    <a href="{% url 'dashboard_etapes' %}" class="module-card">
+      <div class="mc-ico">🔢</div>
+      <div class="mc-tit">Étapes d'acquisition</div>
+      <div class="mc-desc">Le processus étape par étape pour acquérir un terrain EDEN.</div>
+      <span class="mc-badge">{{ nb_etapes }} étape{{ nb_etapes|pluralize }}</span>
+    </a>
+
+    <a href="{% url 'dashboard_livret_form' %}" class="module-card">
+      <div class="mc-ico">📖</div>
+      <div class="mc-tit">Livret de Sécurité</div>
+      <div class="mc-desc">Image, textes et avantages de la section Livret de Sécurité.</div>
+      <span class="mc-badge">Section configurée</span>
+    </a>
+
+    <a href="{% url 'dashboard_actualites' %}" class="module-card">
+      <div class="mc-ico">📰</div>
+      <div class="mc-tit">Actualités & Événements</div>
+      <div class="mc-desc">Les actualités et événements affichés sur la home.</div>
+      <span class="mc-badge">{{ nb_actualites }} actif{{ nb_actualites|pluralize }}</span>
+    </a>
+
+    <a href="{% url 'dashboard_commentaires' %}" class="module-card">
+      <div class="mc-ico">💬</div>
+      <div class="mc-tit">Commentaires clients</div>
+      <div class="mc-desc">Témoignages courts affichés dans la section "Ils nous font confiance".</div>
+      <span class="mc-badge">{{ nb_commentaires }} commentaire{{ nb_commentaires|pluralize }}</span>
+    </a>
+
+    <a href="{% url 'dashboard_stats_home' %}" class="module-card">
+      <div class="mc-ico">📊</div>
+      <div class="mc-tit">Chiffres-clés</div>
+      <div class="mc-desc">Les statistiques de la bande (20+ années, 10 000+ clients, etc.).</div>
+      <span class="mc-badge">{{ nb_stats }} stat{{ nb_stats|pluralize }}</span>
+    </a>
+
+    <a href="{% url 'dashboard_journal' %}" class="module-card">
+      <div class="mc-ico">📔</div>
+      <div class="mc-tit">Journal EDEN</div>
+      <div class="mc-desc">Les couvertures du journal affichées sur la home. Gérez vos éditions ici.</div>
+      <span class="mc-badge">Gérer le journal →</span>
+    </a>
+
+    <a href="{% url 'dashboard_temoignages' %}" class="module-card">
+      <div class="mc-ico">⭐</div>
+      <div class="mc-tit">Témoignages (carrousel)</div>
+      <div class="mc-desc">Témoignages longs avec photos et notes en étoiles.</div>
+      <span class="mc-badge">Gérer les témoignages →</span>
+    </a>
+  </div>
+</div>
+</body>
+</html>

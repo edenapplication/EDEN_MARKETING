@@ -1,0 +1,1451 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nos Projets — EDEN GROUP</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --blue:#1B4FDB;--blue-d:#0A2494;--blue-pale:#EEF3FF;
+  --red:#C8102E;--red-d:#A00C24;
+  --grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
+  --grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
+  --g50:#F8FAFF;--g100:#F0F4FF;--g200:#E2E8F0;
+  --g400:#94A3B8;--g500:#64748B;--g600:#475569;--g800:#1E293B;
+  --sh:0 2px 12px rgba(0,0,0,0.08);--sh-lg:0 8px 32px rgba(27,79,219,0.15);
+  --r:10px;--rl:16px;--rxl:24px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:#fff;color:var(--g800);overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-thumb{background:var(--grad-h);border-radius:100px;}
+
+/* ══ NAV TRANSPARENTE ══ */
+nav{
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    z-index:1000;
+    height:70px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 2rem;
+    background:transparent;
+    border-bottom:1px solid transparent;
+    box-shadow:none;
+    transition:
+        background .4s ease,
+        backdrop-filter .4s ease,
+        border-color .4s ease,
+        box-shadow .4s ease;
+}
+
+nav.scrolled{
+    background:rgba(255,255,255,.92);
+    backdrop-filter:blur(22px);
+    -webkit-backdrop-filter:blur(22px);
+    border-bottom:1px solid rgba(226,232,240,.9);
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo-img{height:48px;width:auto;object-fit:contain;}
+.logo-box{width:42px;height:42px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#fff;}
+.logo-name{font-size:18px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.logo-tagline{font-size:9px;color:var(--g500);letter-spacing:1.5px;text-transform:uppercase;}
+.nav-links{display:flex;align-items:center;gap:0;}
+.nav-lnk{padding:6px 13px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.85);text-decoration:none;border-radius:7px;transition:all 0.18s;position:relative;}
+.nav-lnk:hover,.nav-lnk.active{color:#fff;}
+.nav-lnk.active::after{content:'';position:absolute;bottom:-4px;left:13px;right:13px;height:2px;background:var(--red);border-radius:100px;}
+nav.scrolled .nav-lnk{color:var(--g600);}
+nav.scrolled .nav-lnk:hover,
+nav.scrolled .nav-lnk.active{color:var(--blue);}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-icon-btn{width:36px;height:36px;border-radius:8px;border:1.5px solid rgba(255,255,255,0.25);background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:all 0.18s;color:#fff;text-decoration:none;}
+.nav-icon-btn:hover{border-color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.2);}
+nav.scrolled .nav-icon-btn{background:#fff;border-color:var(--g200);color:var(--g600);}
+nav.scrolled .nav-icon-btn:hover{border-color:var(--blue);background:var(--blue-pale);}
+.btn-rdv{background:var(--red);color:#fff;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:7px;text-decoration:none;}
+.btn-rdv:hover{background:var(--red-d);transform:translateY(-1px);box-shadow:0 4px 16px rgba(200,16,46,0.3);}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:none;padding:6px;}
+.hamburger span{width:22px;height:2px;background:#fff;border-radius:2px;display:block;transition:background 0.3s;}
+nav.scrolled .hamburger span{background:var(--g800);}
+.mob-menu{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(255,255,255,0.98);border-bottom:1px solid var(--g200);padding:1rem 1.5rem;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.1);backdrop-filter:blur(10px);}
+.mob-menu.open{display:flex;flex-direction:column;gap:4px;}
+.mob-menu .nav-lnk{color:var(--g600);padding:8px 0;}
+.mob-menu .nav-lnk.active{color:var(--blue);}
+.mob-menu .nav-lnk.active::after{display:none;}
+
+/* ══ HERO PROJETS ══ */
+.hero-projets{
+    position:relative;
+    height:400px;
+    margin-top:0;
+    overflow:hidden;
+}
+
+.hero-projets-bg{
+    position:absolute;
+    inset:0;
+}
+
+.hero-projets-bg img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+/* voile bleu gauche */
+.hero-projets-overlay{
+    position:absolute;
+    inset:0;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(5,25,75,.95) 0%,
+            rgba(8,35,90,.75) 35%,
+            rgba(10,30,70,.25) 65%,
+            rgba(0,0,0,0) 100%
+        );
+    z-index:1;
+}
+
+
+/* contenu */
+.hero-projets-content{
+    position:absolute;
+    inset:0;
+    width:100%;
+    padding-left:150px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    transform:translateY(40px);
+    z-index:2;
+}
+
+.hero-p-tit{
+    font-size:46px;
+    font-weight:900;
+    line-height:1;
+    color:white;
+    margin-bottom:12px;
+}
+
+.hero-p-desc{
+    font-size:16px;
+    font-weight:500;
+    color:rgba(255,255,255,.9);
+    margin-bottom:25px;
+}
+
+/* ══ STATS ══ */
+.stats-bar{
+    display:flex;
+    gap:18px;
+    flex-wrap:nowrap;
+}
+
+.stat-chip{
+    width:170px;
+    height:65px;
+    background:white;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    gap:15px;
+    padding:10px 18px;
+    text-decoration:none;
+    box-shadow:0 8px 20px rgba(0,0,0,.18);
+    transition:.25s;
+}
+
+.stat-chip:hover,
+.stat-chip.active{
+    transform:translateY(-4px);
+}
+
+.stat-chip-ico{
+    width:38px;
+    height:38px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:32px;
+}
+
+.stat-chip-n{
+    font-size:25px;
+    font-weight:900;
+    color:#173b8f;
+    line-height:1;
+}
+
+.stat-chip-l{
+    margin-top:5px;
+    font-size:12px;
+    font-weight:700;
+    color:#555;
+    white-space:nowrap;
+}
+.stat-chip:last-child{
+    width:220px;
+}
+
+/* ══ FILTRES ══ */
+.filtres-bar{
+    background:#fff;
+    margin-top:20px;
+    padding:0 2rem;
+    display:flex;
+    align-items:center;
+    gap:0;
+    overflow-x:auto;
+    border-bottom:1px solid #e5e5e5;
+}
+
+.filtres-bar::-webkit-scrollbar{
+    height:3px;
+}
+
+.filtre-btn{
+    padding:14px 40px;
+    font-size:14px;
+    font-weight:700;
+    color:#173b8f;
+    background:#fff;
+    border:none;
+    cursor:pointer;
+    font-family:'Outfit',sans-serif;
+    white-space:nowrap;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    border-radius:0;
+    transition:all .25s ease;
+    text-decoration:none;
+}
+
+.filtre-btn:hover{
+    background:#f1f5ff;
+    color:#173b8f;
+}
+
+.filtre-btn.active{
+    background:#173b8f;
+    color:#fff;
+    border-radius:10px;
+    box-shadow:0 6px 15px rgba(23,59,143,.25);
+}
+
+/* ══ MAIN CONTENT ══ */
+.main-content{max-width:1400px;margin:0 auto;padding:1.5rem 1.5rem;}
+.main-grid{display:grid;grid-template-columns:1fr 300px;gap:1.5rem;align-items:start;}
+
+/* ══ LISTE PROJETS ══ */
+.projets-liste-vue{display:none;}
+.projets-liste-vue.visible{display:block;}
+.projets-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;}
+.projet-card-mini{background:#fff;border:1px solid var(--g200);border-radius:var(--rl);overflow:hidden;cursor:pointer;transition:all 0.3s;position:relative;}
+.projet-card-mini:hover{transform:translateY(-5px);box-shadow:var(--sh-lg);}
+.pcm-img{height:160px;position:relative;overflow:hidden;}
+.pcm-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s;}
+.projet-card-mini:hover .pcm-img img{transform:scale(1.06);}
+.pcm-img-ph{width:100%;height:100%;background:linear-gradient(135deg,var(--blue-pale),#E8EDFF);display:flex;align-items:center;justify-content:center;font-size:2.5rem;}
+.pcm-statut{position:absolute;top:10px;left:10px;padding:4px 10px;border-radius:100px;font-size:10px;font-weight:700;text-transform:uppercase;}
+.s-en-cours{background:var(--blue);color:#fff;}
+.s-livre{background:#16a34a;color:#fff;}
+.s-futur{background:#f59e0b;color:#fff;}
+.pcm-body{padding:1rem;}
+.pcm-nom{font-size:14px;font-weight:800;color:var(--g800);margin-bottom:3px;}
+.pcm-loc{font-size:11px;color:var(--g400);display:flex;align-items:center;gap:4px;margin-bottom:6px;}
+.pcm-desc{font-size:12px;color:var(--g500);line-height:1.5;}
+
+/* ══ VUE DÉTAIL ══ */
+.projet-detail-vue{display:none;}
+.projet-detail-vue.visible{display:block;}
+.pd-left{display:flex;flex-direction:column;gap:1.2rem;}
+
+.pd-hero{position:relative;border-radius:var(--rl);overflow:hidden;height:280px;}
+.pd-hero img{width:100%;height:100%;object-fit:cover;display:block;}
+.pd-hero-ph{width:100%;height:100%;background:linear-gradient(135deg,var(--blue-d),var(--blue));display:flex;align-items:center;justify-content:center;font-size:4rem;}
+.pd-statut-badge{position:absolute;top:12px;left:12px;padding:5px 14px;border-radius:100px;font-size:11px;font-weight:800;text-transform:uppercase;}
+.pd-hero-info{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(10,22,40,0.9),transparent);padding:1.5rem 1.2rem 1rem;}
+.pd-nom{font-size:1.4rem;font-weight:900;color:#fff;}
+.pd-loc{font-size:12px;color:rgba(255,255,255,0.8);display:flex;align-items:center;gap:5px;margin-top:3px;}
+
+.pd-card{background:#fff;border:1px solid var(--g200);border-radius:var(--rl);padding:1.2rem;box-shadow:var(--sh);}
+.pd-card-tit{font-size:13px;font-weight:700;color:var(--g800);margin-bottom:1rem;padding-bottom:0.6rem;border-bottom:1px solid var(--g100);display:flex;align-items:center;gap:6px;}
+.pd-desc{font-size:13px;color:var(--g500);line-height:1.7;}
+
+.infos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.info-item{background:var(--g50);border-radius:var(--r);padding:10px 12px;}
+.info-item-ico{font-size:18px;margin-bottom:4px;}
+.info-item-lbl{font-size:10px;color:var(--g400);text-transform:uppercase;letter-spacing:0.5px;}
+.info-item-val{font-size:1.2rem;font-weight:800;color:var(--blue);}
+.info-item-sub{font-size:10px;color:var(--g500);margin-top:1px;}
+
+.info-infra-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    margin:20px 0;
+}
+.info-infra-grid .pd-card{
+    display:flex;
+    flex-direction:column;
+}
+
+.lots-row{display:flex;gap:8px;margin-top:0.8rem;}
+.lot-chip{flex:1;background:var(--g50);border-radius:var(--r);padding:8px;text-align:center;border:1px solid var(--g200);}
+.lot-chip-n{font-size:1.3rem;font-weight:900;}
+.lot-chip-l{font-size:10px;color:var(--g400);text-transform:uppercase;letter-spacing:0.3px;margin-top:2px;}
+.lot-dispo .lot-chip-n{color:#16a34a;}
+.lot-reserve .lot-chip-n{color:#f59e0b;}
+.lot-vendu .lot-chip-n{color:var(--red);}
+
+.taux-bar{margin-top:1rem;}
+.taux-lbl{display:flex;justify-content:space-between;font-size:12px;color:var(--g500);margin-bottom:5px;}
+.taux-lbl strong{color:var(--blue);}
+.taux-track{height:8px;background:var(--g200);border-radius:100px;overflow:hidden;}
+.taux-fill{height:100%;background:var(--grad-h);border-radius:100px;transition:width 1s ease;}
+
+.infras-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:12px;
+    margin-top:10px;
+}
+.infra-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px;
+    background:#f8faff;
+    border:1px solid #e6ecff;
+    border-radius:10px;
+    font-size:13px;
+    font-weight:500;
+}
+.infra-check{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;}
+.infra-ok{background:#dcfce7;color:#16a34a;}
+.infra-non{background:#fee2e2;color:#dc2626;}
+
+.docs-row{display:flex;gap:8px;flex-wrap:wrap;}
+.doc-btn{display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:var(--r);background:var(--g50);border:1px solid var(--g200);font-size:12px;font-weight:600;color:var(--g700);text-decoration:none;transition:all 0.2s;}
+.doc-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-pale);}
+
+.pd-actions{display:flex;gap:10px;}
+.btn-reserver{background:var(--red);color:#fff;padding:12px 24px;border-radius:var(--r);font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;flex:1;transition:all 0.2s;}
+.btn-reserver:hover{background:var(--red-d);}
+.btn-brochure{background:#fff;color:var(--blue);padding:12px 20px;border-radius:var(--r);font-size:13px;font-weight:600;border:1.5px solid var(--blue);cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;text-decoration:none;display:flex;align-items:center;gap:6px;}
+.btn-brochure:hover{background:var(--blue-pale);}
+
+/* ══ DIAGRAMME ══ */
+.diagramme-zone{background:#fff;border:1px solid var(--g200);border-radius:var(--rl);padding:1.2rem;box-shadow:var(--sh);}
+.dz-tit{font-size:13px;font-weight:700;color:var(--g800);margin-bottom:1rem;display:flex;align-items:center;gap:6px;}
+.diagram-wrap{position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;}
+.diagram-svg{width:200px;height:200px;}
+.diagram-center{position:absolute;text-align:center;}
+.diagram-center-n{font-size:1.6rem;font-weight:900;color:var(--g800);line-height:1;}
+.diagram-center-l{font-size:10px;color:var(--g400);text-transform:uppercase;}
+.diagram-legend{display:flex;flex-direction:column;gap:6px;}
+.dl-item{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:var(--r);cursor:pointer;transition:all 0.15s;border:1.5px solid transparent;}
+.dl-item:hover,.dl-item.active{border-color:rgba(27,79,219,0.2);background:var(--blue-pale);}
+.dl-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+.dl-nom{font-size:12px;font-weight:600;color:var(--g700);flex:1;}
+.dl-pct{font-size:12px;font-weight:800;color:var(--blue);}
+
+.sous-etapes-panel{margin-top:1rem;background:var(--g50);border-radius:var(--r);padding:1rem;display:none;}
+.sous-etapes-panel.visible{display:block;}
+.sep-tit{font-size:12px;font-weight:700;color:var(--g800);margin-bottom:0.8rem;}
+.sep-item{margin-bottom:8px;}
+.sep-item-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.sep-item-nom{font-size:11px;color:var(--g700);}
+.sep-item-pct{font-size:11px;font-weight:700;color:var(--blue);}
+.sep-bar{height:5px;background:var(--g200);border-radius:100px;overflow:hidden;}
+.sep-fill{height:100%;border-radius:100px;transition:width 0.8s ease;}
+
+/* ══ SIDEBAR ══ */
+.sidebar-projets{background:#fff;border:1px solid var(--g200);border-radius:var(--rl);overflow:hidden;box-shadow:var(--sh);}
+.sp-header{padding:10px 14px;border-bottom:1px solid var(--g100);display:flex;align-items:center;justify-content:space-between;}
+.sp-title{font-size:13px;font-weight:700;color:var(--g800);}
+.sp-voir-tout{font-size:11px;font-weight:600;color:var(--blue);text-decoration:none;}
+.sp-list{max-height:600px;overflow-y:auto;}
+.sp-list::-webkit-scrollbar{width:3px;}
+.sp-list::-webkit-scrollbar-thumb{background:var(--grad-h);border-radius:100px;}
+.sp-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--g50);cursor:pointer;transition:all 0.15s;text-decoration:none;}
+.sp-item:hover,.sp-item.active{background:var(--blue-pale);}
+.sp-item:last-child{border-bottom:none;}
+.sp-img{width:52px;height:44px;border-radius:8px;overflow:hidden;flex-shrink:0;background:var(--blue-pale);}
+.sp-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.sp-info{flex:1;min-width:0;}
+.sp-info-nom{font-size:12px;font-weight:700;color:var(--g800);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.sp-info-loc{font-size:10px;color:var(--g400);margin-top:1px;}
+.sp-info-lots{font-size:10px;color:var(--g500);margin-top:1px;}
+.sp-pct-wrap{flex-shrink:0;position:relative;width:40px;height:40px;}
+.sp-pct-svg{width:40px;height:40px;}
+.sp-pct-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:var(--blue);}
+
+/* ══ GALERIE ══ */
+.galerie-section{margin-top:1.5rem;}
+.galerie-carousel-wrap{overflow:hidden;position:relative;}
+.galerie-track{display:flex;gap:8px;transition:transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94);}
+.galerie-img{min-width:200px;max-width:200px;height:140px;border-radius:var(--r);overflow:hidden;flex-shrink:0;cursor:pointer;}
+.galerie-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s;}
+.galerie-img:hover img{transform:scale(1.08);}
+.galerie-img-ph{width:100%;height:100%;background:linear-gradient(135deg,var(--blue-pale),#E8EDFF);display:flex;align-items:center;justify-content:center;font-size:2rem;}
+
+/* Lightbox */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:3000;display:none;align-items:center;justify-content:center;}
+.lightbox.open{display:flex;}
+.lb-img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:var(--r);}
+.lb-close{position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,0.1);border:none;color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;}
+.lb-close:hover{background:rgba(255,255,255,0.2);}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:none;color:#fff;width:44px;height:44px;border-radius:50%;cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;}
+.lb-nav:hover{background:rgba(255,255,255,0.2);}
+.lb-nav.prev{left:1rem;}
+.lb-nav.next{right:1rem;}
+
+/* ══ FOOTER ══ */
+.footer-bar{height:3px;background:var(--grad-h);}
+footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1px solid #334155;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1.5fr;gap:2rem;max-width:1280px;margin:0 auto 2rem;}
+.footer-logo-img{height:40px;object-fit:contain;}
+.footer-desc{font-size:12px;color:#94A3B8;line-height:1.75;max-width:260px;margin-bottom:1rem;margin-top:0.8rem;}
+.footer-tagline{font-size:11px;color:rgba(255,255,255,0.4);font-style:italic;}
+.footer-col h4{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.9rem;}
+.footer-lnk{display:block;font-size:12px;color:#94A3B8;text-decoration:none;margin-bottom:6px;transition:color 0.2s;}
+.footer-lnk:hover{color:#fff;}
+.footer-agences-item{display:flex;align-items:center;gap:5px;font-size:12px;color:#94A3B8;margin-bottom:6px;}
+.footer-socials{display:flex;gap:8px;margin-top:0.8rem;}
+.footer-social-btn{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;transition:all 0.2s;}
+.fs-fb{background:#1877F2;color:#fff;}
+.fs-tt{background:#010101;color:#fff;}
+.fs-yt{background:#FF0000;color:#fff;}
+.fs-li{background:#0A66C2;color:#fff;}
+.fs-ig{background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;}
+.footer-social-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.3);}
+.footer-nl-wrap{position:relative;}
+.footer-nl-input{width:100%;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);border-radius:8px;padding:9px 48px 9px 12px;font-size:12px;color:#fff;font-family:'Outfit',sans-serif;outline:none;}
+.footer-nl-input::placeholder{color:rgba(255,255,255,0.35);}
+.footer-nl-btn{position:absolute;right:0;top:0;bottom:0;background:var(--red);border:none;width:40px;border-radius:0 8px 8px 0;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;transition:background 0.2s;}
+.footer-nl-btn:hover{background:var(--red-d);}
+.footer-bot{border-top:1px solid #334155;max-width:1280px;margin:0 auto;padding-top:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.footer-copy{font-size:12px;color:#64748B;}
+.footer-links-bot{display:flex;gap:1.5rem;}
+.footer-links-bot a{font-size:12px;color:#64748B;text-decoration:none;transition:color 0.2s;}
+.footer-links-bot a:hover{color:#fff;}
+
+/* Toast */
+.toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1px solid var(--g200);border-radius:var(--r);padding:14px 20px;font-size:13px;color:var(--g800);z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(100px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.12);}
+.toast.show{transform:none;opacity:1;}
+
+/* Empty */
+.empty-state{text-align:center;padding:4rem;color:var(--g400);}
+.empty-state .ico{font-size:3rem;margin-bottom:0.8rem;}
+
+/* ══ TRUST BOTTOM ══ */
+.trust-bottom{background:var(--g50);border-top:1px solid var(--g200);padding:1rem 2rem;display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;}
+.tb-item{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--g600);}
+.tb-item span{font-size:15px;}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:1200px){
+  .main-grid{grid-template-columns:1fr;}
+  .projets-grid{grid-template-columns:repeat(3,1fr);}
+  .infos-grid{grid-template-columns:repeat(2,1fr);}
+  .footer-grid{grid-template-columns:1fr 1fr 1fr;}
+}
+@media(max-width:1024px){
+  .projets-grid{grid-template-columns:repeat(2,1fr);}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:768px){
+  nav{padding:0 1rem;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .hero-projets{height:220px;}
+  .hero-projets-content{padding-left:1.5rem;transform:translateY(40px);}
+  .hero-p-tit{font-size:28px;}
+  .stats-bar{gap:8px;}
+  .stat-chip{padding:8px 12px;}
+  .projets-grid{grid-template-columns:1fr 1fr;}
+  .infos-grid{grid-template-columns:1fr 1fr;}
+  .main-content{padding:1rem;}
+  .footer-grid{grid-template-columns:1fr;gap:1.5rem;}
+  .footer-grid>div:first-child{grid-column:1;}
+  .footer-bot{flex-direction:column;text-align:center;}
+}
+@media(max-width:480px){
+  .projets-grid{grid-template-columns:1fr;}
+  .lots-row{flex-wrap:wrap;}
+}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"><span id="t-ico">✅</span>&nbsp;<span id="t-msg"></span></div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" onclick="fermerLightbox()">✕</button>
+  <button class="lb-nav prev" onclick="navLightbox(-1)">‹</button>
+  <img class="lb-img" id="lb-img" src="" alt="">
+  <button class="lb-nav next" onclick="navLightbox(1)">›</button>
+</div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a class="nav-logo" href="{% url 'home' %}">
+    <div class="logo-box">E</div>
+    <div>
+      <div class="logo-name">EDEN GROUP</div>
+      <div class="logo-tagline">Le foncier sécurisé, notre engagement</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'sites_list' or request.resolver_match.url_name == 'site_detail' %}active{% endif %}" href="{% url 'sites_list' %}">Nos Terrains</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_projets' %}active{% endif %}" href="{% url 'nos_projets' %}">Nos Projets</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' or request.resolver_match.url_name == 'une_evenement_detail' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'journal_kiosque' or request.resolver_match.url_name == 'journal_lire' %}active{% endif %}" href="{% url 'journal_kiosque' %}">📰 Documentation</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
+    {% if user.is_staff %}
+    <a class="nav-lnk" href="{% url 'dashboard_home' %}" style="color:var(--blue);font-weight:700;">Dashboard</a>
+    {% endif %}
+  </div>
+  <div class="nav-right">
+    <button class="btn-rdv" onclick="document.getElementById('cc-form')?.scrollIntoView({behavior:'smooth'})">📅 Contact</button>
+  </div>
+  <button class="hamburger" onclick="toggleMob()"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="mob-menu" id="mob-menu">
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'sites_list' or request.resolver_match.url_name == 'site_detail' %}active{% endif %}" href="{% url 'sites_list' %}">Nos Terrains</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_projets' %}active{% endif %}" href="{% url 'nos_projets' %}">Nos Projets</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' or request.resolver_match.url_name == 'une_evenement_detail' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'journal_kiosque' or request.resolver_match.url_name == 'journal_lire' %}active{% endif %}" href="{% url 'journal_kiosque' %}">📰 Documentation</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'promotions' %}active{% endif %}" href="{% url 'promotions' %}">Promotions</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
+  {% if user.is_staff %}<a class="nav-lnk" href="{% url 'dashboard_home' %}">Dashboard</a>{% endif %}
+  <button class="btn-rdv" style="width:100%;margin-top:8px;justify-content:center;" onclick="document.getElementById('cc-form')?.scrollIntoView({behavior:'smooth'})">📅 Contact</button>
+</div>
+
+<!-- HERO -->
+<div class="hero-projets">
+  <div class="hero-projets-bg">
+    {% if projets.0 and projets.0.image_principale %}
+      <img src="{{ projets.0.image_principale.url }}" alt="Nos Projets EDEN GROUP">
+    {% else %}
+      <div class="hero-projets-bg-ph"></div>
+    {% endif %}
+  </div>
+  <div class="hero-projets-overlay"></div>
+  <div class="hero-projets-content">
+    <div class="hero-p-tit">Nos Projets</div>
+    <div class="hero-p-desc">Construire aujourd'hui les espaces de vie et les opportunités foncières de demain.</div>
+    <div class="stats-bar">
+      <a class="stat-chip {% if filtre == 'en_cours' %}active{% endif %}" href="?filtre=en_cours">
+        <div class="stat-chip-ico">🏗</div>
+        <div><div class="stat-chip-n">{{ stats.en_cours }}+</div><div class="stat-chip-l">Projets en cours</div></div>
+      </a>
+      <a class="stat-chip {% if filtre == 'livre' %}active{% endif %}" href="?filtre=livre">
+        <div class="stat-chip-ico">🏘</div>
+        <div><div class="stat-chip-n">{{ stats.livres }}+</div><div class="stat-chip-l">Projets livrés</div></div>
+      </a>
+      <a class="stat-chip {% if filtre == 'futur' %}active{% endif %}" href="?filtre=futur">
+        <div class="stat-chip-ico">🚀</div>
+        <div><div class="stat-chip-n">{{ stats.futurs }}+</div><div class="stat-chip-l">Projets futurs</div></div>
+      </a>
+      <a class="stat-chip" href="?filtre=">
+        <div class="stat-chip-ico">👥</div>
+        <div><div class="stat-chip-n">{{ stats.proprietaires|intcomma }}+</div><div class="stat-chip-l">Propriétaires satisfaits</div></div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- FILTRES -->
+<div class="filtres-bar">
+  <a class="filtre-btn {% if not filtre or filtre == 'en_cours' %}active{% endif %}" href="?filtre=en_cours">🏗 Projets en cours</a>
+  <a class="filtre-btn {% if filtre == 'livre' %}active{% endif %}" href="?filtre=livre">🏘 Projets livrés</a>
+  <a class="filtre-btn {% if filtre == 'futur' %}active{% endif %}" href="?filtre=futur">🚀 Projets futurs</a>
+</div>
+
+<!-- MAIN -->
+<div class="main-content">
+  <div class="main-grid" id="main-grid">
+
+    <!-- GAUCHE -->
+    <div>
+      <!-- VUE LISTE -->
+      <div class="projets-liste-vue {% if not projet_vedette %}visible{% endif %}" id="vue-liste">
+        {% if projets %}
+        <div class="projets-grid" id="projets-grid">
+          {% for p in projets %}
+          <div class="projet-card-mini" onclick="afficherProjet('{{ p.slug }}')" data-slug="{{ p.slug }}">
+            <div class="pcm-img">
+              {% if p.image_principale %}
+                <img src="{{ p.image_principale.url }}" alt="{{ p.nom }}" loading="lazy">
+              {% else %}
+                <div class="pcm-img-ph">🏗</div>
+              {% endif %}
+              <span class="pcm-statut {% if p.statut == 'en_cours' %}s-en-cours{% elif p.statut == 'livre' %}s-livre{% else %}s-futur{% endif %}">
+                {{ p.get_statut_display }}
+              </span>
+            </div>
+            <div class="pcm-body">
+              <div class="pcm-nom">{{ p.nom }}</div>
+              <div class="pcm-loc">📍 {{ p.localisation }}</div>
+              <div class="pcm-desc">{{ p.description_courte|default:p.description|truncatechars:80 }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+          <div class="ico">🏗</div>
+          <div style="font-size:16px;font-weight:600;color:var(--g800);margin-bottom:0.4rem;">Aucun projet</div>
+          <div style="font-size:13px;">Aucun projet dans cette catégorie pour le moment.</div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- VUE DÉTAIL -->
+      <div class="projet-detail-vue {% if projet_vedette %}visible{% endif %}" id="vue-detail">
+        <!-- Le contenu est rendu dynamiquement par JavaScript via rendreDetail() -->
+      </div>
+      
+    </div>
+
+    <!-- SIDEBAR DROITE -->
+    <div>
+      <div class="sidebar-projets">
+        <div class="sp-header">
+          <div class="sp-title">Autres projets en cours</div>
+          <a href="?filtre=en_cours" class="sp-voir-tout">Voir tous →</a>
+        </div>
+        <div class="sp-list" id="sp-list">
+          {% for p in tous_projets %}
+          <div class="sp-item {% if projet_vedette and p.pk == projet_vedette.pk %}active{% endif %}"
+               onclick="afficherProjet('{{ p.slug }}')"
+               id="sp-{{ p.slug }}">
+            <div class="sp-img">
+              {% if p.image_principale %}
+                <img src="{{ p.image_principale.url }}" alt="{{ p.nom }}">
+              {% else %}
+                <div style="width:100%;height:100%;background:var(--blue-pale);display:flex;align-items:center;justify-content:center;">🏗</div>
+              {% endif %}
+            </div>
+            <div class="sp-info">
+              <div class="sp-info-nom">{{ p.nom }}</div>
+              <div class="sp-info-loc">{{ p.localisation }}</div>
+              <div class="sp-info-lots">{{ p.nb_lots }} lots</div>
+            </div>
+            <div class="sp-pct-wrap">
+              <svg class="sp-pct-svg" viewBox="0 0 40 40">
+                <circle cx="20" cy="20" r="15" fill="none" stroke="#E5E7EB" stroke-width="4"/>
+                <circle cx="20" cy="20" r="15" fill="none" stroke="#1B4FDB" stroke-width="4"
+                  stroke-dasharray="{{ p.taux_commercialisation|floatformat:0 }} 100"
+                  stroke-dashoffset="25"
+                  stroke-linecap="round"
+                  transform="rotate(-90 20 20)"
+                  style="transition:stroke-dasharray 1s ease;"/>
+              </svg>
+              <div class="sp-pct-text">{{ p.taux_commercialisation }}%</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GALERIE DU PROJET -->
+  <div id="galerie-section" style="{% if not projet_vedette %}display:none;{% endif %}">
+    <div class="pd-card" style="margin-top:1.2rem;">
+      <div class="pd-card-tit">🖼 Galerie du projet</div>
+      <div class="galerie-carousel-wrap">
+        <div class="galerie-track" id="galerie-track">
+          {% if projet_vedette %}
+            {% for img in projet_vedette.galerie.all %}
+            <div class="galerie-img" onclick="ouvrirLightbox('{{ img.image.url }}', {{ forloop.counter0 }})">
+              <img src="{{ img.image.url }}" alt="{{ img.legende|default:'Photo du projet' }}" loading="lazy">
+            </div>
+            {% empty %}
+            {% for i in "12345" %}
+            <div class="galerie-img"><div class="galerie-img-ph">🖼</div></div>
+            {% endfor %}
+            {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TRUST BAR BOTTOM -->
+<div class="trust-bottom">
+  <div class="tb-item"><span>🔒</span>Titres fonciers sécurisés</div>
+  <div class="tb-item"><span>⚖</span>Accompagnement juridique</div>
+  <div class="tb-item"><span>💳</span>Paiement sécurisé</div>
+  <div class="tb-item"><span>📋</span>Livret de sécurité physique et numérique</div>
+  <div class="tb-item"><span>👤</span>Assistance personnalisée</div>
+  <div class="tb-item"><span>🏆</span>Plus de 20 ans d'expérience</div>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<div class="footer-bar"></div>
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;">
+        <div class="logo-box" style="width:36px;height:36px;font-size:15px;border-radius:8px;">E</div>
+        <div style="font-size:15px;font-weight:900;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">EDEN GROUP</div>
+      </div>
+      <p class="footer-desc">Votre partenaire foncier de confiance depuis 2018.</p>
+      <div class="footer-tagline">Le foncier sécurisé, notre engagement</div>
+    </div>
+    <div class="footer-col">
+      <h4>Liens rapides</h4>
+      <a class="footer-lnk" href="{% url 'home' %}">Accueil</a>
+      <a class="footer-lnk" href="{% url 'sites_list' %}">Nos Terrains</a>
+      <a class="footer-lnk" href="{% url 'nos_projets' %}">Nos Projets</a>
+      <a class="footer-lnk" href="{% url 'nos_services' %}">Nos Services</a>
+      <a class="footer-lnk" href="{% url 'nos_agences' %}">Nos Agences</a>
+      <a class="footer-lnk" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+      <a class="footer-lnk" href="{% url 'journal_kiosque' %}">Journal</a>
+      <a class="footer-lnk" href="{% url 'a_propos' %}">À propos</a>
+      <a class="footer-lnk" href="{% url 'contact' %}">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h4>Nos agences</h4>
+      <div class="footer-agences-item">📍 Yaoundé (Siège)</div>
+      <div class="footer-agences-item">📍 Bafoussam</div>
+      <div class="footer-agences-item">📍 Dschang</div>
+      <div class="footer-agences-item">📍 Bangangté</div>
+    </div>
+    <div class="footer-col">
+      <h4>Suivez-nous</h4>
+      <div class="footer-socials">
+        <a href="#" class="footer-social-btn fs-fb">f</a>
+        <a href="#" class="footer-social-btn fs-tt" style="color:#fff;">T</a>
+        <a href="#" class="footer-social-btn fs-yt" style="color:#fff;">▶</a>
+        <a href="#" class="footer-social-btn fs-li" style="color:#fff;">in</a>
+        <a href="#" class="footer-social-btn fs-ig" style="color:#fff;">📷</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Newsletter</h4>
+      <div style="font-size:12px;color:#94A3B8;margin-bottom:0.8rem;">Recevez nos offres et actualités</div>
+      <div class="footer-nl-wrap">
+        <input class="footer-nl-input" type="email" placeholder="Votre email" id="footer-nl">
+        <button class="footer-nl-btn" onclick="souscrireFooter()">→</button>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bot">
+    <div class="footer-copy">© 2026 EDEN GROUP ENTREPRISE. Tous droits réservés.</div>
+    <div class="footer-links-bot">
+      <a href="#">Mentions légales</a>
+      <a href="#">Politique de confidentialité</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── NAV ──
+function toggleMob(){document.getElementById('mob-menu').classList.toggle('open');}
+
+window.addEventListener('scroll', function() {
+  const nav = document.getElementById('navbar');
+  if (window.scrollY > 40) {
+    nav.classList.add('scrolled');
+  } else {
+    nav.classList.remove('scrolled');
+  }
+});
+
+function souscrireFooter() {
+  const e = document.getElementById('footer-nl').value;
+  if (!e) return;
+  showToast('✅', 'Inscription confirmée !');
+  document.getElementById('footer-nl').value = '';
+}
+
+const PROJETS_DATA = {
+  {% for p in tous_projets %}
+  '{{ p.slug }}': {
+    slug: '{{ p.slug }}',
+    nom: '{{ p.nom|escapejs }}',
+    statut: '{{ p.statut }}',
+    statut_label: '{{ p.get_statut_display }}',
+    localisation: '{{ p.localisation|escapejs }}',
+    description: `{{ p.description|escapejs }}`,
+    description_courte: '{{ p.description_courte|escapejs }}',
+    image: '{% if p.image_principale %}{{ p.image_principale.url }}{% endif %}',
+    superficie_totale: '{{ p.superficie_totale|escapejs }}',
+    nb_lots: {{ p.nb_lots }},
+    surface_lots: '{{ p.surface_lots|escapejs }}',
+    lots_disponibles: {{ p.lots_disponibles }},
+    lots_reserves: {{ p.lots_reserves }},
+    lots_vendus: {{ p.lots_vendus }},
+    nb_proprietaires: {{ p.nb_proprietaires }},
+    taux: {{ p.taux_commercialisation }},
+    prix_min: '{% if p.prix_min %}{{ p.prix_min|intcomma }}{% endif %}',
+    annee_livraison: '{{ p.annee_livraison|escapejs }}',
+    brochure: '{% if p.brochure %}{{ p.brochure.url }}{% endif %}',
+    plan_cadastral: '{% if p.plan_cadastral %}{{ p.plan_cadastral.url }}{% endif %}',
+    grille_tarifaire: '{% if p.grille_tarifaire %}{{ p.grille_tarifaire.url }}{% endif %}',
+    dossier_technique: '{% if p.dossier_technique %}{{ p.dossier_technique.url }}{% endif %}',
+    galerie: [{% for img in p.galerie.all %}'{{ img.image.url }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+    infrastructures: [{% for inf in p.infrastructures.all %}{nom:'{{ inf.nom|escapejs }}',ok:{{ inf.is_realise|lower }}}{% if not forloop.last %},{% endif %}{% endfor %}],
+  },
+  {% endfor %}
+};
+
+// ══════════════════════════════════════
+// AFFICHER PROJET
+// ══════════════════════════════════════
+let projetActif = {% if projet_vedette %}'{{ projet_vedette.slug }}'{% else %}null{% endif %};
+let etapesData = {};
+let etapeSelectionnee = null;
+let galerieImages = [];
+let galerieIdx = 0;
+let galerieAutoTimer = null;
+
+async function afficherProjet(slug) {
+  if (projetActif === slug && document.getElementById('vue-detail').classList.contains('visible')) return;
+  projetActif = slug;
+
+  const p = PROJETS_DATA[slug];
+  if (!p) return;
+
+  // Mettre à jour sidebar
+  document.querySelectorAll('.sp-item').forEach(el => el.classList.remove('active'));
+  const spItem = document.getElementById(`sp-${slug}`);
+  if (spItem) { spItem.classList.add('active'); spItem.scrollIntoView({block:'nearest',behavior:'smooth'}); }
+
+  // Basculer vue
+  document.getElementById('vue-liste').classList.remove('visible');
+  document.getElementById('vue-detail').classList.add('visible');
+  document.getElementById('galerie-section').style.display = 'block';
+
+  // Rendre le détail
+  rendreDetail(p);
+
+  // Charger les étapes depuis l'API
+  try {
+    const r = await fetch(`/api/projet/${slug}/etapes/`);
+    const d = await r.json();
+    etapesData[slug] = d.etapes;
+    rendreEtapes(d.etapes);
+  } catch(e) {
+    console.log('Étapes non disponibles');
+    rendreEtapes([]);
+  }
+
+  // Galerie
+  galerieImages = p.galerie || [];
+  rendreGalerie(galerieImages);
+
+  // Scroll vers le détail
+  document.getElementById('vue-detail').scrollIntoView({behavior:'smooth', block:'start'});
+
+  // Update URL sans reload
+  const url = new URL(window.location);
+  url.searchParams.set('projet', slug);
+  window.history.pushState({}, '', url);
+}
+
+function rendreDetail(p) {
+  const statut_class = p.statut === 'en_cours'
+      ? 's-en-cours'
+      : p.statut === 'livre'
+      ? 's-livre'
+      : 's-futur';
+
+  const statut_lbl = p.statut_label;
+
+  let html = `
+
+  <!-- ================= PREMIÈRE LIGNE ================= -->
+  <div style="display:grid;grid-template-columns:1fr 340px;gap:1.2rem;align-items:start;">
+
+      <!-- Colonne gauche -->
+      <div class="pd-left">
+
+          <!-- Image -->
+          <div class="pd-hero">
+              ${p.image
+                  ? `<img src="${p.image}" alt="${p.nom}">`
+                  : `<div class="pd-hero-ph">🏗</div>`}
+
+              <span class="pd-statut-badge ${statut_class}">
+                  ${statut_lbl}
+              </span>
+
+              <div class="pd-hero-info">
+                  <div class="pd-nom">${p.nom}</div>
+                  <div class="pd-loc">📍 ${p.localisation}</div>
+              </div>
+          </div>
+
+          <!-- Description -->
+          <div class="pd-card">
+              <div class="pd-card-tit">📋 Description</div>
+              <div class="pd-desc">${p.description}</div>
+          </div>
+
+      </div>
+
+      <!-- Diagramme -->
+      <div>
+          <div class="diagramme-zone" id="diagramme-zone">
+              <div class="dz-tit">📈 Évolution du projet</div>
+
+              <div id="diagram-content">
+                  <div style="text-align:center;padding:2rem;color:#94A3B8;font-size:13px;">
+                      <div style="font-size:2rem;margin-bottom:.5rem;">⏳</div>
+                      Chargement des étapes...
+                  </div>
+              </div>
+
+              <div id="etapes-horizontales" style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--g100);">
+                  <div style="font-size:11px;font-weight:700;color:var(--g800);margin-bottom:0.8rem;">
+                      📋 Avancement par étape
+                  </div>
+                  <div id="grandes-etapes-row" style="display:flex;align-items:flex-start;width:100%;overflow-x:auto;padding-bottom:6px;">
+                  </div>
+                  <div id="sous-etapes-chapelet" style="display:none;margin-top:1rem;padding-top:0.8rem;border-top:1px solid var(--g100);">
+                      <div id="sep-tit-h" style="font-size:11px;font-weight:700;margin-bottom:0.6rem;"></div>
+                      <div id="sep-chapelet-items" style="display:flex;align-items:flex-start;overflow-x:auto;padding-bottom:4px;gap:8px;"></div>
+                  </div>
+              </div>
+
+          </div>
+      </div>
+
+  </div>
+
+  <!-- ================= DEUXIÈME LIGNE ================= -->
+  <div class="info-infra-grid">
+      <!-- Informations -->
+      <div class="pd-card">
+          <div class="pd-card-tit">📊 Informations principales</div>
+          <div class="infos-grid">
+              ${p.superficie_totale ? `
+              <div class="info-item">
+                  <div class="info-item-ico">📐</div>
+                  <div class="info-item-lbl">Superficie totale</div>
+                  <div class="info-item-val" style="font-size:1rem;">${p.superficie_totale}</div>
+              </div>` : ''}
+              ${p.nb_lots ? `
+              <div class="info-item">
+                  <div class="info-item-ico">🏘</div>
+                  <div class="info-item-lbl">Nombre de lots</div>
+                  <div class="info-item-val">${p.nb_lots}</div>
+              </div>` : ''}
+              ${p.surface_lots ? `
+              <div class="info-item">
+                  <div class="info-item-ico">📏</div>
+                  <div class="info-item-lbl">Surface des lots</div>
+                  <div class="info-item-val" style="font-size:.9rem;">${p.surface_lots}</div>
+              </div>` : ''}
+              ${p.nb_proprietaires ? `
+              <div class="info-item">
+                  <div class="info-item-ico">👥</div>
+                  <div class="info-item-lbl">Propriétaires</div>
+                  <div class="info-item-val">${p.nb_proprietaires}</div>
+              </div>` : ''}
+              ${p.annee_livraison ? `
+              <div class="info-item">
+                  <div class="info-item-ico">📅</div>
+                  <div class="info-item-lbl">Livraison</div>
+                  <div class="info-item-val" style="font-size:.9rem;">${p.annee_livraison}</div>
+              </div>` : ''}
+          </div>
+
+          <div class="lots-row">
+              <div class="lot-chip lot-dispo">
+                  <div class="lot-chip-n">${p.lots_disponibles}</div>
+                  <div class="lot-chip-l">Disponibles</div>
+              </div>
+              <div class="lot-chip lot-reserve">
+                  <div class="lot-chip-n">${p.lots_reserves}</div>
+                  <div class="lot-chip-l">Réservés</div>
+              </div>
+              <div class="lot-chip lot-vendu">
+                  <div class="lot-chip-n">${p.lots_vendus}</div>
+                  <div class="lot-chip-l">Vendus</div>
+              </div>
+          </div>
+
+          <div class="taux-bar">
+              <div class="taux-lbl">
+                  <span>Taux de commercialisation</span>
+                  <strong>${p.taux}%</strong>
+              </div>
+              <div class="taux-track">
+                  <div class="taux-fill" style="width:${p.taux}%"></div>
+              </div>
+          </div>
+      </div>
+
+      <!-- Infrastructures -->
+      ${p.infrastructures && p.infrastructures.length ? `
+      <div class="pd-card">
+          <div class="pd-card-tit">🔧 Infrastructures réalisées</div>
+          <div class="infras-grid">
+              ${p.infrastructures.map(inf=>`
+                  <div class="infra-item">
+                      <div class="infra-check ${inf.ok?'infra-ok':'infra-non'}">${inf.ok?'✓':'✗'}</div>
+                      <span>${inf.nom}</span>
+                  </div>
+              `).join('')}
+          </div>
+      </div>`:''}
+  </div>
+
+  <!-- ================= DOCUMENTS ================= -->
+  ${(p.brochure || p.plan_cadastral || p.grille_tarifaire || p.dossier_technique) ? `
+  <div class="pd-card">
+      <div class="pd-card-tit">📁 Documents téléchargeables</div>
+      <div class="docs-row">
+          ${p.brochure ? `<a href="${p.brochure}" class="doc-btn" target="_blank">📄 Brochure PDF</a>`:''}
+          ${p.plan_cadastral ? `<a href="${p.plan_cadastral}" class="doc-btn" target="_blank">🗺 Plan cadastral</a>`:''}
+          ${p.grille_tarifaire ? `<a href="${p.grille_tarifaire}" class="doc-btn" target="_blank">💰 Grille tarifaire</a>`:''}
+          ${p.dossier_technique ? `<a href="${p.dossier_technique}" class="doc-btn" target="_blank">📋 Dossier technique</a>`:''}
+      </div>
+  </div>`:''}
+
+  <!-- ================= ACTIONS ================= -->
+  <div class="pd-actions">
+      <button class="btn-reserver" onclick="showToast('📅','Notre équipe vous contactera sous 24h.')">
+          Réserver un lot
+      </button>
+      ${p.brochure ?
+      `<a href="${p.brochure}" class="btn-brochure" target="_blank">
+          📄 Télécharger la brochure
+      </a>` : ''}
+  </div>
+
+  `;
+
+  document.getElementById("vue-detail").innerHTML = html;
+}
+
+// ══════════════════════════════════════
+// DIAGRAMME CIRCULAIRE
+// ══════════════════════════════════════
+function rendreEtapes(etapes) {
+  const container = document.getElementById('diagram-content');
+  const etapesH = document.getElementById('etapes-horizontales');
+  if (!container) return;
+
+  // Barre avancement global
+  if (etapes && etapes.length > 0) {
+    const progMoy = Math.round(etapes.reduce((s,e) => s + e.progression, 0) / etapes.length);
+    const bar = document.getElementById('avancement-bar');
+    const pct = document.getElementById('avancement-pct');
+    if (bar) bar.style.width = progMoy + '%';
+    if (pct) pct.textContent = progMoy + '%';
+  }
+
+  if (!etapes || etapes.length === 0) {
+    if (container) container.innerHTML = `<div style="text-align:center;padding:2rem;color:#94A3B8;font-size:12px;"><div style="font-size:2rem;margin-bottom:0.5rem;">📋</div>Aucune étape configurée.</div>`;
+    if (etapesH) etapesH.innerHTML = '';
+    return;
+  }
+
+  // ── COL 3 HAUT : Diagramme circulaire + info étape ──
+  const cx = 100, cy = 100, r = 72;
+  const n = etapes.length;
+  const gap = 3;
+  const anglePerSeg = (360 - n * gap) / n;
+  let currentAngle = -90;
+  let svgContent = '';
+
+  etapes.forEach((etape, i) => {
+    const col = etape.couleur || '#1B4FDB';
+    const pct = etape.progression / 100;
+    const toRad = a => a * Math.PI / 180;
+    const x1 = cx + r * Math.cos(toRad(currentAngle));
+    const y1 = cy + r * Math.sin(toRad(currentAngle));
+    const x2 = cx + r * Math.cos(toRad(currentAngle + anglePerSeg));
+    const y2 = cy + r * Math.sin(toRad(currentAngle + anglePerSeg));
+    const la = anglePerSeg > 180 ? 1 : 0;
+
+    // Fond segment
+    svgContent += `<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${la} 1 ${x2},${y2} Z"
+      fill="${col}" opacity="0.15"
+      onclick="selectionnerEtape(${i})"
+      style="cursor:pointer;transition:opacity 0.2s;"
+      id="seg-bg-${i}"/>`;
+
+    // Progression remplie
+    if (pct > 0) {
+      const progAngle = anglePerSeg * pct;
+      const px2 = cx + r * Math.cos(toRad(currentAngle + progAngle));
+      const py2 = cy + r * Math.sin(toRad(currentAngle + progAngle));
+      const pla = progAngle > 180 ? 1 : 0;
+      svgContent += `<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${pla} 1 ${px2},${py2} Z"
+        fill="${col}" opacity="0.88"
+        onclick="selectionnerEtape(${i})"
+        style="cursor:pointer;"
+        id="seg-prog-${i}"/>`;
+    }
+
+    // Icône au milieu du segment
+    const midRad = toRad(currentAngle + anglePerSeg / 2);
+    const ir = r * 0.60;
+    const ix = cx + ir * Math.cos(midRad);
+    const iy = cy + ir * Math.sin(midRad);
+    svgContent += `<text x="${ix}" y="${iy+5}" text-anchor="middle" font-size="13"
+      onclick="selectionnerEtape(${i})"
+      style="cursor:pointer;user-select:none;">${etape.icone || '●'}</text>`;
+
+    currentAngle += anglePerSeg + gap;
+  });
+
+  const progMoy = Math.round(etapes.reduce((s,e) => s + e.progression, 0) / etapes.length);
+
+  // Panneau info étape (affiché à la place du diagramme au clic)
+  container.innerHTML = `
+    <div style="position:relative;">
+
+      <!-- VUE DIAGRAMME -->
+      <div id="vue-diagramme" style="display:flex;flex-direction:column;align-items:center;">
+        <svg viewBox="0 0 200 200" width="200" height="200">
+          ${svgContent}
+          <circle cx="${cx}" cy="${cy}" r="${r*0.40}" fill="white"/>
+          <text x="${cx}" y="${cy-5}" text-anchor="middle" font-size="20" font-weight="900" fill="#1E293B">${progMoy}%</text>
+          <text x="${cx}" y="${cy+12}" text-anchor="middle" font-size="8" fill="#94A3B8">AVANCEMENT</text>
+        </svg>
+        <div style="font-size:11px;color:var(--g400);margin-top:4px;font-style:italic;">
+          Cliquez sur un segment pour voir ses détails
+        </div>
+      </div>
+
+      <!-- VUE INFO ÉTAPE (cachée par défaut) -->
+      <div id="vue-etape-info" style="display:none;padding:1rem;min-height:200px;">
+        <button onclick="retourDiagramme()"
+          style="display:flex;align-items:center;gap:5px;background:none;border:none;cursor:pointer;font-size:12px;font-weight:600;color:var(--blue);margin-bottom:1rem;padding:0;font-family:'Outfit',sans-serif;">
+          ← Retour au diagramme
+        </button>
+        <div id="etape-info-content"></div>
+      </div>
+
+    </div>
+
+  `;
+
+  // ── COL 3 BAS : Grandes étapes horizontales + sous-étapes ──
+  if (etapesH) {
+    etapesH.innerHTML = `
+      <!-- GRANDES ÉTAPES — chapelet horizontal -->
+      <div id="grandes-etapes-row"
+        style="display:flex;align-items:flex-start;width:100%;overflow-x:auto;padding-bottom:6px;">
+        ${etapes.map((etape, i) => {
+          const col = etape.couleur || '#1B4FDB';
+          const done = etape.progression === 100;
+          const inProg = etape.progression > 0 && etape.progression < 100;
+          return `
+            <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:48px;cursor:pointer;"
+                 onclick="selectionnerEtape(${i})" id="eth-${i}">
+              <div style="display:flex;align-items:center;width:100%;">
+                ${i > 0
+                  ? `<div style="flex:1;height:3px;background:${etapes[i-1].progression===100 ? col : '#E2E8F0'};transition:background 0.3s;"></div>`
+                  : `<div style="flex:1;"></div>`}
+                <div id="eth-circle-${i}"
+                  style="width:34px;height:34px;border-radius:50%;flex-shrink:0;
+                    background:${done ? col : inProg ? 'white' : '#E2E8F0'};
+                    border:3px solid ${done || inProg ? col : '#E2E8F0'};
+                    display:flex;align-items:center;justify-content:center;
+                    font-size:13px;transition:all 0.3s;
+                    box-shadow:${inProg ? '0 0 0 3px '+col+'33' : 'none'};">
+                  ${done
+                    ? `<span style="color:#fff;font-weight:900;font-size:11px;">✓</span>`
+                    : etape.icone || '●'}
+                </div>
+                ${i < etapes.length - 1
+                  ? `<div style="flex:1;height:3px;background:${done ? etapes[i+1]?.couleur||col : '#E2E8F0'};transition:background 0.3s;"></div>`
+                  : `<div style="flex:1;"></div>`}
+              </div>
+              <div style="font-size:9px;font-weight:600;color:${done||inProg ? col : '#94A3B8'};
+                text-align:center;margin-top:4px;line-height:1.3;max-width:56px;
+                transition:color 0.3s;">${etape.nom}</div>
+              ${inProg
+                ? `<div style="font-size:9px;color:${col};font-weight:700;margin-top:1px;">${etape.progression}%</div>`
+                : ''}
+            </div>
+          `;
+        }).join('')}
+      </div>
+
+      <!-- SOUS-ÉTAPES — chapelet horizontal de l'étape sélectionnée -->
+      <div id="sous-etapes-chapelet" style="display:none;margin-top:1.2rem;padding-top:1rem;border-top:1px solid #F0F4FF;">
+        <div id="sep-tit-h" style="font-size:11px;font-weight:700;margin-bottom:0.8rem;"></div>
+        <div id="sep-chapelet-items" style="display:flex;align-items:flex-start;overflow-x:auto;padding-bottom:4px;"></div>
+      </div>
+    `;
+  }
+}
+
+function selectionnerEtape(idx) {
+  const etapes = etapesData[projetActif];
+  if (!etapes || !etapes[idx]) return;
+  const etape = etapes[idx];
+  const col = etape.couleur || '#1B4FDB';
+
+  // ── 1. Diagramme : basculer vers info étape ──
+  const vueDiag = document.getElementById('vue-diagramme');
+  const vueInfo = document.getElementById('vue-etape-info');
+  const infoContent = document.getElementById('etape-info-content');
+
+  if (vueDiag) vueDiag.style.display = 'none';
+  if (vueInfo) vueInfo.style.display = 'block';
+
+  if (infoContent) {
+    infoContent.innerHTML = `
+      <div style="text-align:center;margin-bottom:1rem;">
+        <div style="width:56px;height:56px;border-radius:50%;
+          background:${col}22;border:3px solid ${col};
+          display:flex;align-items:center;justify-content:center;
+          font-size:24px;margin:0 auto 10px;">
+          ${etape.icone || '●'}
+        </div>
+        <div style="font-size:15px;font-weight:800;color:var(--g800);margin-bottom:6px;">
+          ${etape.nom}
+        </div>
+        <div style="display:inline-block;padding:4px 14px;border-radius:100px;
+          background:${col}22;color:${col};font-size:12px;font-weight:700;">
+          ${etape.progression}% d'avancement
+        </div>
+      </div>
+
+      <!-- Barre de progression -->
+      <div style="margin-bottom:1.2rem;">
+        <div style="height:8px;background:#E2E8F0;border-radius:100px;overflow:hidden;">
+          <div style="height:100%;background:${col};border-radius:100px;
+            width:${etape.progression}%;transition:width 1s ease;"></div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      ${etape.description ? `
+      <div style="background:${col}0D;border-left:3px solid ${col};
+        border-radius:0 8px 8px 0;padding:12px 14px;margin-bottom:1rem;">
+        <div style="font-size:10px;font-weight:700;color:${col};
+          text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;">
+          Description
+        </div>
+        <div style="font-size:12px;color:var(--g600);line-height:1.7;">
+          ${etape.description}
+        </div>
+      </div>` : `
+      <div style="font-size:12px;color:var(--g400);text-align:center;
+        font-style:italic;padding:0.5rem 0;">
+        Aucune description pour cette étape.
+      </div>`}
+
+      <!-- Nombre de sous-étapes -->
+      <div style="font-size:11px;color:var(--g400);text-align:center;margin-top:0.5rem;">
+        ${etape.sous_etapes && etape.sous_etapes.length > 0
+          ? `${etape.sous_etapes.length} sous-étape${etape.sous_etapes.length > 1 ? 's' : ''} — voir le chapelet ci-dessous`
+          : 'Aucune sous-étape configurée'}
+      </div>
+    `;
+  }
+
+  // ── 2. Légende diagramme : highlight ──
+  document.querySelectorAll('[id^="dl-"]').forEach((el, i) => {
+    el.style.background = i === idx ? col + '18' : '';
+    el.style.borderColor = i === idx ? col + '44' : 'transparent';
+  });
+
+  // ── 3. Grandes étapes horizontales : highlight ──
+  document.querySelectorAll('[id^="eth-"]').forEach((el, i) => {
+    el.style.opacity = i === idx ? '1' : '0.5';
+    el.style.transform = i === idx ? 'scale(1.08)' : 'scale(1)';
+    el.style.transition = 'all 0.2s';
+  });
+  document.querySelectorAll('[id^="eth-circle-"]').forEach((el, i) => {
+    if (i === idx) {
+      el.style.boxShadow = `0 0 0 4px ${col}44`;
+      el.style.borderColor = col;
+    } else {
+      el.style.boxShadow = '';
+    }
+  });
+
+  // ── 4. Sous-étapes en chapelet horizontal ──
+  const chapelet = document.getElementById('sous-etapes-chapelet');
+  const chapeletItems = document.getElementById('sep-chapelet-items');
+  const sepTit = document.getElementById('sep-tit-h');
+
+  if (!chapelet || !chapeletItems) return;
+
+  if (sepTit) {
+    sepTit.textContent = `${etape.icone} ${etape.nom}`;
+    sepTit.style.color = col;
+  }
+
+  if (etape.sous_etapes && etape.sous_etapes.length > 0) {
+    chapeletItems.innerHTML = etape.sous_etapes.map((s, si) => {
+      const done = s.avancement === 100;
+      const inProg = s.avancement > 0 && s.avancement < 100;
+      return `
+        <div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:56px;">
+          <div style="display:flex;align-items:center;width:100%;">
+            ${si > 0
+              ? `<div style="flex:1;height:2px;background:${etape.sous_etapes[si-1].avancement === 100 ? col : '#E2E8F0'};transition:background 0.3s;"></div>`
+              : `<div style="flex:1;"></div>`}
+            <div style="
+              width:32px;height:32px;border-radius:50%;flex-shrink:0;
+              background:${done ? col : inProg ? '#fff' : '#E2E8F0'};
+              border:3px solid ${done || inProg ? col : '#E2E8F0'};
+              display:flex;align-items:center;justify-content:center;
+              font-size:10px;font-weight:800;
+              color:${done ? '#fff' : inProg ? col : '#94A3B8'};
+              box-shadow:${inProg ? '0 0 0 3px ' + col + '33' : 'none'};
+              transition:all 0.3s;position:relative;">
+              ${done ? '✓' : (si + 1)}
+            </div>
+            ${si < etape.sous_etapes.length - 1
+              ? `<div style="flex:1;height:2px;background:${done ? col : '#E2E8F0'};transition:background 0.3s;"></div>`
+              : `<div style="flex:1;"></div>`}
+          </div>
+          <div style="font-size:9px;font-weight:600;color:${done || inProg ? col : '#94A3B8'};
+            text-align:center;margin-top:5px;line-height:1.3;max-width:60px;
+            word-break:break-word;">
+            ${s.nom}
+          </div>
+          <div style="font-size:9px;font-weight:800;color:${inProg ? col : done ? col : '#CBD5E1'};
+            margin-top:2px;">
+            ${s.avancement > 0 ? s.avancement + '%' : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    chapelet.style.display = 'block';
+
+  } else {
+    chapeletItems.innerHTML = `
+      <div style="font-size:11px;color:#94A3B8;text-align:center;
+        padding:0.8rem;width:100%;font-style:italic;">
+        Aucune sous-étape configurée pour cette étape.
+      </div>
+    `;
+    chapelet.style.display = 'block';
+  }
+}
+
+// ══════════════════════════════════════
+// GALERIE
+// ══════════════════════════════════════
+function rendreGalerie(images) {
+  const track = document.getElementById('galerie-track');
+  if (!track) return;
+  if (!images || images.length === 0) {
+    track.innerHTML = `<div style="padding:2rem;color:#94A3B8;font-size:13px;text-align:center;width:100%;">Aucune image dans la galerie.</div>`;
+    return;
+  }
+  track.innerHTML = images.map((url, i) => `
+    <div class="galerie-img" onclick="ouvrirLightbox('${url}', ${i})">
+      <img src="${url}" alt="Photo du projet" loading="lazy">
+    </div>
+  `).join('');
+  galerieImages = images;
+  demarrerAutoGalerie();
+}
+
+let gPos = 0;
+function demarrerAutoGalerie() {
+  clearInterval(galerieAutoTimer);
+  galerieAutoTimer = setInterval(() => {
+    const track = document.getElementById('galerie-track');
+    if (!track) return;
+    const cards = track.querySelectorAll('.galerie-img').length;
+    if (cards === 0) return;
+    gPos = (gPos + 1) % Math.max(1, cards - 3);
+    track.style.transform = `translateX(-${gPos * 208}px)`;
+  }, 2500);
+}
+
+// ══════════════════════════════════════
+// LIGHTBOX
+// ══════════════════════════════════════
+function ouvrirLightbox(url, idx) {
+  galerieIdx = idx;
+  document.getElementById('lb-img').src = url;
+  document.getElementById('lightbox').classList.add('open');
+}
+function fermerLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+function navLightbox(dir) {
+  galerieIdx = (galerieIdx + dir + galerieImages.length) % galerieImages.length;
+  document.getElementById('lb-img').src = galerieImages[galerieIdx];
+}
+document.getElementById('lightbox').addEventListener('click', e => {
+  if (e.target === document.getElementById('lightbox')) fermerLightbox();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') fermerLightbox();
+  if (e.key === 'ArrowLeft') navLightbox(-1);
+  if (e.key === 'ArrowRight') navLightbox(1);
+});
+
+// ══════════════════════════════════════
+// RESET VUE (retour liste)
+// ══════════════════════════════════════
+function resetVue() {
+  projetActif = null;
+}
+
+// ══════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════
+function showToast(ico, msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('t-ico').textContent = ico;
+  document.getElementById('t-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4500);
+}
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+window.addEventListener('scroll', () => {
+  const nb = document.getElementById('navbar');
+  if (nb) nb.style.boxShadow = window.scrollY > 40 ? '0 2px 20px rgba(0,0,0,0.1)' : '0 1px 8px rgba(0,0,0,0.06)';
+});
+
+// Si projet vedette initial, charger ses étapes
+{% if projet_vedette %}
+(async () => {
+  try {
+    const r = await fetch('/api/projet/{{ projet_vedette.slug }}/etapes/');
+    const d = await r.json();
+    etapesData['{{ projet_vedette.slug }}'] = d.etapes;
+    rendreEtapes(d.etapes);
+  } catch(e) { rendreEtapes([]); }
+  rendreGalerie(PROJETS_DATA['{{ projet_vedette.slug }}']?.galerie || []);
+})();
+{% endif %}
+</script>
+</body>
+</html>

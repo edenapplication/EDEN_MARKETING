@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Statistiques manuelles — {{ site.nom }}</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+{% load humanize %}
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g800:#1F2937;--r:12px;--rl:20px;}
+body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
+.topnav{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;border-bottom:1.5px solid var(--g200);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
+.tn-em{width:36px;height:36px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:#fff;}
+.tn-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tn-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1.5px solid var(--g200);background:#fff;color:var(--g500);font-family:'Outfit',sans-serif;display:inline-flex;align-items:center;gap:5px;}
+.tn-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--bpale);}
+.wrap{padding:84px 2rem 3rem;max-width:900px;margin:0 auto;}
+.page-tit{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--g800);margin-bottom:0.3rem;}
+.page-sub{font-size:13px;color:var(--g500);margin-bottom:1.5rem;}
+.info-box{background:linear-gradient(135deg,rgba(27,79,219,0.06),rgba(200,16,46,0.04));border:1.5px solid rgba(27,79,219,0.2);border-radius:var(--r);padding:1rem 1.2rem;margin-bottom:1.5rem;font-size:13px;color:var(--blue);display:flex;align-items:flex-start;gap:10px;}
+.card{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);padding:2rem;margin-bottom:1.5rem;}
+.card-tit{font-size:13px;font-weight:700;color:var(--g800);margin-bottom:1.2rem;padding-bottom:0.8rem;border-bottom:1px solid var(--g200);}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+.form-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;}
+.fg{display:flex;flex-direction:column;gap:5px;}
+.fg label{font-size:11px;font-weight:600;color:var(--g500);}
+.fg .hint{font-size:10px;color:var(--g400);}
+input,textarea{width:100%;background:#fff;border:1.5px solid var(--g200);border-radius:10px;padding:11px 14px;color:var(--g800);font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s;}
+input:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(27,79,219,0.08);}
+input::placeholder,textarea::placeholder{color:var(--g400);}
+.stats-preview{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
+.sp-box{background:#fff;border:1.5px solid var(--g200);border-radius:var(--r);padding:1rem;text-align:center;position:relative;overflow:hidden;}
+.sp-box::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--grad);}
+.sp-n{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.sp-l{font-size:10px;color:var(--g400);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;}
+.sp-sub{font-size:10px;color:#16a34a;margin-top:2px;}
+.prog-bar{height:8px;background:var(--g200);border-radius:100px;overflow:hidden;margin:0.8rem 0;}
+.prog-fill{height:100%;background:linear-gradient(90deg,#1B4FDB,#C8102E);border-radius:100px;transition:width 0.8s ease;}
+.btn-save{background:var(--grad);color:#fff;padding:13px 28px;border-radius:var(--r);font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;}
+.btn-cancel{background:#fff;color:var(--g500);padding:13px 24px;border-radius:var(--r);font-size:14px;font-weight:500;border:1.5px solid var(--g200);cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;}
+.badge-reelles{display:inline-block;background:#dcfce7;color:#16a34a;padding:2px 10px;border-radius:100px;font-size:11px;font-weight:600;margin-left:8px;}
+.reelles-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:0.8rem;}
+.re-box{background:var(--g50);border:1px solid var(--g200);border-radius:8px;padding:8px;text-align:center;}
+.re-n{font-size:1.1rem;font-weight:700;color:var(--g800);}
+.re-l{font-size:9px;color:var(--g400);text-transform:uppercase;letter-spacing:0.3px;}
+.warning-box{background:#fef9c3;border:1.5px solid #fde68a;border-radius:var(--r);padding:1rem;font-size:13px;color:#b45309;display:flex;gap:8px;align-items:flex-start;}
+@media(max-width:768px){.form-grid,.form-grid-3,.stats-preview,.reelles-grid{grid-template-columns:1fr 1fr;}.wrap{padding:80px 1rem 2rem;}}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <div style="display:flex;align-items:center;gap:8px;"><div class="tn-em">E</div><div class="tn-name">EDEN GROUP</div></div>
+  <div style="display:flex;gap:8px;">
+    <a class="tn-btn" href="{% url 'dashboard_site_modifier' site.id %}">← Modifier le site</a>
+    <a class="tn-btn" href="{% url 'dashboard_sites' %}">Sites</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="page-tit">📊 Statistiques manuelles</div>
+  <div class="page-sub">{{ site.nom }} — {{ site.localisation }}</div>
+
+  {% if messages %}{% for msg in messages %}<div style="background:{% if msg.tags == 'error' %}#fee2e2{% else %}#dcfce7{% endif %};border:1.5px solid {% if msg.tags == 'error' %}#fca5a5{% else %}#86efac{% endif %};border-radius:var(--r);padding:12px 16px;margin-bottom:1.5rem;font-size:13px;color:{% if msg.tags == 'error' %}#dc2626{% else %}#16a34a{% endif %};">{{ msg }}</div>{% endfor %}{% endif %}
+
+  <div class="info-box">
+    <span style="font-size:1.4rem;">💡</span>
+    <div>
+      <strong>À quoi ça sert ?</strong><br>
+      Pour les grands sites avec des milliers de parcelles, il est impossible de toutes les créer une par une dans la base de données. Ces statistiques manuelles permettent d'afficher les vrais chiffres du site (total vendues, disponibles, prix...) sur la carte, le site public et le dashboard, <strong>sans créer aucune parcelle</strong>.<br>
+      <span style="margin-top:4px;display:block;">Les parcelles créées en base s'ajoutent automatiquement à ces chiffres.</span>
+    </div>
+  </div>
+
+  <!-- APERÇU ACTUEL -->
+  <div class="stats-preview">
+    <div class="sp-box">
+      <div class="sp-n" id="prev-total">{{ site.nb_parcelles_total }}</div>
+      <div class="sp-l">Total parcelles</div>
+      <div class="sp-sub">Affiché sur le site</div>
+    </div>
+    <div class="sp-box">
+      <div class="sp-n" id="prev-dispo" style="color:#16a34a;">{{ site.nb_disponibles }}</div>
+      <div class="sp-l">Disponibles</div>
+    </div>
+    <div class="sp-box">
+      <div class="sp-n" id="prev-vendues">{{ site.nb_vendues }}</div>
+      <div class="sp-l">Vendues</div>
+    </div>
+    <div class="sp-box">
+      <div class="sp-n" id="prev-pct">{{ site.pourcentage_vendu }}%</div>
+      <div class="sp-l">Taux de vente</div>
+    </div>
+  </div>
+  <div class="prog-bar"><div class="prog-fill" id="prev-bar" style="width:{{ site.pourcentage_vendu }}%"></div></div>
+
+  <!-- PARCELLES RÉELLEMENT CRÉÉES EN BASE -->
+  <div class="card">
+    <div class="card-tit">
+      📐 Parcelles réellement créées en base
+      <span class="badge-reelles">{{ stats_reelles.total }} parcelles en base</span>
+    </div>
+    <div style="font-size:13px;color:var(--g500);margin-bottom:0.8rem;">Ces chiffres sont calculés automatiquement depuis vos parcelles enregistrées. Ils s'ajoutent aux stats manuelles ci-dessous.</div>
+    <div class="reelles-grid">
+      <div class="re-box"><div class="re-n">{{ stats_reelles.total }}</div><div class="re-l">Total</div></div>
+      <div class="re-box"><div class="re-n" style="color:#16a34a;">{{ stats_reelles.disponibles }}</div><div class="re-l">Disponibles</div></div>
+      <div class="re-box"><div class="re-n" style="color:var(--blue);">{{ stats_reelles.reservees }}</div><div class="re-l">Réservées</div></div>
+      <div class="re-box"><div class="re-n" style="color:var(--red);">{{ stats_reelles.vendues }}</div><div class="re-l">Vendues</div></div>
+    </div>
+  </div>
+
+  <!-- FORMULAIRE STATS MANUELLES -->
+  <form method="post" id="stats-form">
+    {% csrf_token %}
+
+    <div class="card">
+      <div class="card-tit">✏ Saisir les statistiques manuellement</div>
+
+      {% if stats_reelles.total > 0 %}
+      <div class="warning-box" style="margin-bottom:1.2rem;">
+        ⚠️ <div>Vous avez déjà {{ stats_reelles.total }} parcelle{{ stats_reelles.total|pluralize }} créées en base. Les chiffres manuels <strong>s'ajoutent</strong> à ces parcelles. Ne doublez pas les comptages.</div>
+      </div>
+      {% endif %}
+
+      <div class="form-grid-3">
+        <div class="fg">
+          <label>Total parcelles du site *</label>
+          <input type="number" name="total_parcelles_manuel" value="{{ stats.total_parcelles_manuel }}" min="0" oninput="mettreAjourApercu()" placeholder="Ex: 20000">
+          <div class="hint">Nombre total de parcelles de ce site (hors celles en base)</div>
+        </div>
+        <div class="fg">
+          <label>Parcelles vendues</label>
+          <input type="number" name="vendues_manuel" value="{{ stats.vendues_manuel }}" min="0" oninput="mettreAjourApercu()" placeholder="0">
+        </div>
+        <div class="fg">
+          <label>Parcelles disponibles</label>
+          <input type="number" name="disponibles_manuel" value="{{ stats.disponibles_manuel }}" min="0" oninput="mettreAjourApercu()" placeholder="0">
+        </div>
+        <div class="fg">
+          <label>Parcelles réservées</label>
+          <input type="number" name="reservees_manuel" value="{{ stats.reservees_manuel }}" min="0" placeholder="0">
+        </div>
+        <div class="fg">
+          <label>Parcelles indisponibles</label>
+          <input type="number" name="indisponibles_manuel" value="{{ stats.indisponibles_manuel }}" min="0" placeholder="0">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-tit">💰 Prix & Superficies</div>
+      <div class="form-grid">
+        <div class="fg">
+          <label>Prix minimum (FCFA)</label>
+          <input type="number" name="prix_min_manuel" value="{{ stats.prix_min_manuel|default:'' }}" placeholder="Ex: 2500000" min="0">
+        </div>
+        <div class="fg">
+          <label>Prix maximum (FCFA)</label>
+          <input type="number" name="prix_max_manuel" value="{{ stats.prix_max_manuel|default:'' }}" placeholder="Ex: 15000000" min="0">
+        </div>
+        <div class="fg">
+          <label>Prix moyen (FCFA)</label>
+          <input type="number" name="prix_moyen_manuel" value="{{ stats.prix_moyen_manuel|default:'' }}" placeholder="Ex: 5000000" min="0">
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="fg">
+          <label>Superficie min (m²)</label>
+          <input type="number" name="superficie_min" value="{{ stats.superficie_min|default:'' }}" placeholder="Ex: 300" step="0.01">
+        </div>
+        <div class="fg">
+          <label>Superficie max (m²)</label>
+          <input type="number" name="superficie_max" value="{{ stats.superficie_max|default:'' }}" placeholder="Ex: 1000" step="0.01">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-tit">📝 Notes internes</div>
+      <textarea name="notes" rows="3" placeholder="Informations sur ce site, source des données...">{{ stats.notes }}</textarea>
+      {% if stats.derniere_maj and stats.updated_by %}
+      <div style="font-size:11px;color:var(--g400);margin-top:8px;">Dernière modification : {{ stats.derniere_maj|date:"d/m/Y H:i" }} par {{ stats.updated_by.username }}</div>
+      {% endif %}
+    </div>
+
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+      <button type="submit" class="btn-save">💾 Enregistrer les statistiques</button>
+      <a href="{% url 'dashboard_site_modifier' site.id %}" class="btn-cancel">Annuler</a>
+      <a href="{% url 'site_detail' site.slug %}" target="_blank" style="font-size:13px;color:var(--blue);text-decoration:none;margin-left:auto;">👁 Voir sur le site public →</a>
+    </div>
+  </form>
+</div>
+
+<script>
+const statsReelles = {
+  total: {{ stats_reelles.total }},
+  vendues: {{ stats_reelles.vendues }},
+  disponibles: {{ stats_reelles.disponibles }},
+  reservees: {{ stats_reelles.reservees }},
+};
+
+function mettreAjourApercu() {
+  const total   = parseInt(document.querySelector('[name="total_parcelles_manuel"]').value||0);
+  const vendues = parseInt(document.querySelector('[name="vendues_manuel"]').value||0);
+  const dispo   = parseInt(document.querySelector('[name="disponibles_manuel"]').value||0);
+
+  const totalFinal   = total + statsReelles.total;
+  const venduesFinal = vendues + statsReelles.vendues;
+  const dispoFinal   = dispo + statsReelles.disponibles;
+  const pct = totalFinal > 0 ? Math.round((venduesFinal / totalFinal) * 100 * 10) / 10 : 0;
+
+  document.getElementById('prev-total').textContent  = totalFinal.toLocaleString('fr-FR');
+  document.getElementById('prev-vendues').textContent = venduesFinal.toLocaleString('fr-FR');
+  document.getElementById('prev-dispo').textContent   = dispoFinal.toLocaleString('fr-FR');
+  document.getElementById('prev-pct').textContent     = pct + '%';
+  document.getElementById('prev-bar').style.width     = pct + '%';
+}
+</script>
+</body>
+</html>

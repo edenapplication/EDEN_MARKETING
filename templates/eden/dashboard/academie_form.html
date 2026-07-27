@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% if doc %}Modifier{% else %}Nouveau{% endif %} document — Académie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g800:#1F2937;--r:12px;--rl:20px;}
+body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
+.topnav{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;border-bottom:1.5px solid var(--g200);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
+.tn-em{width:36px;height:36px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:#fff;}
+.tn-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tn-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1.5px solid var(--g200);background:#fff;color:var(--g500);font-family:'Outfit',sans-serif;transition:all 0.2s;}
+.tn-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--bpale);}
+.wrap{padding:84px 2rem 3rem;max-width:800px;margin:0 auto;}
+.page-tit{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--g800);margin-bottom:1.5rem;}
+.card{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);padding:2rem;margin-bottom:1.5rem;}
+.card-tit{font-size:13px;font-weight:700;color:var(--g800);margin-bottom:1.2rem;padding-bottom:0.8rem;border-bottom:1px solid var(--g200);}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:1rem;}
+.fg label{font-size:11px;font-weight:600;color:var(--g500);}
+.fg .hint{font-size:11px;color:var(--g400);margin-top:2px;}
+input,select,textarea{width:100%;background:#fff;border:1.5px solid var(--g200);border-radius:10px;padding:11px 14px;color:var(--g800);font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s;}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(27,79,219,0.08);}
+input::placeholder,textarea::placeholder{color:var(--g400);}
+select{appearance:none;}
+.chk-row{display:flex;align-items:center;gap:10px;padding:6px 0;}
+.chk-row input[type="checkbox"]{width:18px;height:18px;cursor:pointer;}
+.chk-row label{font-size:13px;color:var(--g700);margin:0;cursor:pointer;}
+.preview-img{width:100%;height:160px;object-fit:cover;border-radius:var(--r);margin-top:8px;display:none;border:1.5px solid var(--g200);}
+.pdf-existing{background:var(--g50);border:1.5px solid var(--g200);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--g700);display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.btn-save{background:var(--grad);color:#fff;padding:13px 28px;border-radius:var(--r);font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;}
+.btn-cancel{background:#fff;color:var(--g500);padding:13px 24px;border-radius:var(--r);font-size:14px;font-weight:500;border:1.5px solid var(--g200);cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;}
+.err{background:#fee2e2;border:1.5px solid #fca5a5;border-radius:var(--r);padding:12px 16px;font-size:13px;color:#dc2626;margin-bottom:1.5rem;}
+.info-box{background:var(--bpale);border:1.5px solid rgba(27,79,219,0.2);border-radius:var(--r);padding:1rem 1.2rem;margin-bottom:1.5rem;font-size:13px;color:var(--blue);}
+@media(max-width:768px){.form-grid{grid-template-columns:1fr;}.wrap{padding:80px 1rem 2rem;}}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <div style="display:flex;align-items:center;gap:8px;"><div class="tn-em">E</div><div class="tn-name">EDEN GROUP</div></div>
+  <div style="display:flex;gap:8px;">
+    <a class="tn-btn" href="{% url 'dashboard_academie_liste' %}">← Documents</a>
+    <a class="tn-btn" href="{% url 'academie_accueil' %}" target="_blank">🎓 Voir</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="page-tit">{% if doc %}✏ Modifier le document{% else %}📄 Nouveau document Académie{% endif %}</div>
+
+  {% if messages %}{% for msg in messages %}<div class="err">{{ msg }}</div>{% endfor %}{% endif %}
+
+  <div class="info-box">
+    💡 Tous les documents sont des <strong>fichiers PDF téléchargeables</strong>. Le document "À la Une" est lié aux événements et actualités — vous pouvez y mettre un lien externe vers la page Événements/Actualités EDEN GROUP.
+  </div>
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="card">
+      <div class="card-tit">📋 Informations générales</div>
+      <div class="fg">
+        <label>Titre *</label>
+        <input type="text" name="titre" value="{{ doc.titre|default:'' }}" placeholder="Ex: Loi n° 76/155 du 27 juillet 1976 portant Code de l'Urbanisme" required>
+      </div>
+      <div class="fg">
+        <label>Sous-titre / Accroche</label>
+        <input type="text" name="sous_titre" value="{{ doc.sous_titre|default:'' }}" placeholder="Résumé en une phrase...">
+      </div>
+      <div class="form-grid">
+        <div class="fg">
+          <label>Catégorie *</label>
+          <select name="categorie">
+            {% for val, label in categories %}
+            <option value="{{ val }}" {% if doc and doc.categorie == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="fg">
+          <label>Statut</label>
+          <select name="statut">
+            <option value="brouillon" {% if not doc or doc.statut == 'brouillon' %}selected{% endif %}>📝 Brouillon</option>
+            <option value="publie" {% if doc and doc.statut == 'publie' %}selected{% endif %}>✅ Publié</option>
+            <option value="archive" {% if doc and doc.statut == 'archive' %}selected{% endif %}>📦 Archivé</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg">
+        <label>Description</label>
+        <textarea name="description" rows="3" placeholder="Description du document...">{{ doc.description|default:'' }}</textarea>
+      </div>
+      <div class="form-grid">
+        <div class="fg">
+          <label>Auteur / Source</label>
+          <input type="text" name="auteur" value="{{ doc.auteur|default:'' }}" placeholder="Ex: Ministère du Cadastre">
+        </div>
+        <div class="fg">
+          <label>Date de publication</label>
+          <input type="date" name="date_publication" value="{{ doc.date_publication|date:'Y-m-d'|default:'' }}">
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="fg">
+          <label>Référence officielle (textes de loi)</label>
+          <input type="text" name="reference_officielle" value="{{ doc.reference_officielle|default:'' }}" placeholder="Ex: Décret n° 2005/481">
+        </div>
+        <div class="fg">
+          <label>Numéro de revue</label>
+          <input type="text" name="numero_revue" value="{{ doc.numero_revue|default:'' }}" placeholder="Ex: 04">
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="fg">
+          <label>Nombre de pages</label>
+          <input type="number" name="nb_pages" value="{{ doc.nb_pages|default:'' }}" min="1">
+        </div>
+        <div class="fg">
+          <label>Temps de lecture</label>
+          <input type="text" name="temps_lecture" value="{{ doc.temps_lecture|default:'' }}" placeholder="Ex: 6 min de lecture">
+        </div>
+      </div>
+      <div class="fg">
+        <label>Ordre d'affichage</label>
+        <input type="number" name="ordre" value="{{ doc.ordre|default:'0' }}" min="0">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-tit">🖼 Image de couverture</div>
+      {% if doc and doc.image_couverture %}
+        <img src="{{ doc.image_couverture.url }}" class="preview-img" id="preview" style="display:block;" alt="">
+        <div style="margin-top:0.8rem;"></div>
+      {% else %}
+        <img class="preview-img" id="preview" alt="">
+      {% endif %}
+      <div class="fg">
+        <label>Image de couverture (optionnel)</label>
+        <input type="file" name="image_couverture" accept="image/*" onchange="previewImg(this)">
+        <div class="hint">JPG ou PNG. Recommandé : 600×400px.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-tit">📥 Fichier PDF</div>
+      {% if doc and doc.fichier_pdf %}
+        <div class="pdf-existing">
+          <span style="font-size:1.2rem;">📄</span>
+          <span>Fichier actuel : <strong>{{ doc.fichier_pdf.name|truncatechars:50 }}</strong></span>
+          <a href="{% url 'academie_telecharger' doc.pk %}" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none;margin-left:auto;">Télécharger ↗</a>
+        </div>
+        <div style="font-size:12px;color:var(--g500);margin-bottom:8px;">Choisissez un nouveau fichier pour le remplacer :</div>
+      {% endif %}
+      <div class="fg">
+        <label>Fichier PDF {% if not doc %}*{% endif %}</label>
+        <input type="file" name="fichier_pdf" accept=".pdf,application/pdf">
+        <div class="hint">Fichier PDF uniquement. Ce fichier sera téléchargeable par les visiteurs. Les téléchargements sont comptabilisés.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-tit">⚙ Options</div>
+      <div class="chk-row">
+        <input type="checkbox" name="est_a_la_une" id="est_une" {% if doc and doc.est_a_la_une %}checked{% endif %}>
+        <label for="est_une">📰 Afficher "À la Une" sur la page Académie (section principale)</label>
+      </div>
+      <div style="font-size:11px;color:var(--g400);margin-left:28px;margin-bottom:0.6rem;">Le document "À la Une" peut être lié à un événement ou actualité EDEN GROUP via un lien externe.</div>
+      <div class="chk-row">
+        <input type="checkbox" name="est_featured" id="est_feat" {% if doc and doc.est_featured %}checked{% endif %}>
+        <label for="est_feat">⭐ Mettre en avant (Guide du moment, Revue featured...)</label>
+      </div>
+      <div class="fg" style="margin-top:0.8rem;">
+        <label>Lien "En savoir plus" (optionnel — pour À la Une)</label>
+        <input type="text" name="lien_detail" value="{{ doc.lien_detail|default:'' }}" placeholder="Ex: /une-evenements/123/ ou https://...">
+        <div class="hint">Si renseigné, un clic sur ce document ouvre ce lien (événement, actualité...).</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <button type="submit" class="btn-save">💾 {% if doc %}Enregistrer{% else %}Créer le document{% endif %}</button>
+      <a href="{% url 'dashboard_academie_liste' %}" class="btn-cancel">Annuler</a>
+    </div>
+  </form>
+</div>
+
+<script>
+function previewImg(input) {
+  const img = document.getElementById('preview');
+  if (input.files && input.files[0]) { img.src = URL.createObjectURL(input.files[0]); img.style.display = 'block'; }
+}
+</script>
+</body>
+</html>

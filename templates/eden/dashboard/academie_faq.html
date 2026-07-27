@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ Académie — Dashboard EDEN GROUP</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g800:#1F2937;--r:12px;--rl:20px;}
+body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
+.topnav{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;border-bottom:1.5px solid var(--g200);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
+.tn-em{width:36px;height:36px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:#fff;}
+.tn-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tn-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1.5px solid var(--g200);background:#fff;color:var(--g500);font-family:'Outfit',sans-serif;transition:all 0.2s;}
+.tn-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--bpale);}
+.wrap{padding:84px 2rem 3rem;max-width:900px;margin:0 auto;}
+.page-tit{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--g800);margin-bottom:1.5rem;}
+.card{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);padding:2rem;margin-bottom:1.5rem;}
+.card-tit{font-size:13px;font-weight:700;color:var(--g800);margin-bottom:1.2rem;padding-bottom:0.8rem;border-bottom:1px solid var(--g200);}
+.form-row{display:flex;gap:10px;flex-wrap:wrap;}
+.fg{display:flex;flex-direction:column;gap:5px;flex:1;min-width:200px;margin-bottom:1rem;}
+.fg label{font-size:11px;font-weight:600;color:var(--g500);}
+input,select,textarea{background:#fff;border:1.5px solid var(--g200);border-radius:10px;padding:10px 14px;color:var(--g800);font-family:'Outfit',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;width:100%;}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);}
+input::placeholder,textarea::placeholder{color:var(--g400);}
+select{appearance:none;}
+.btn-add{background:var(--grad);color:#fff;padding:10px 18px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:'Outfit',sans-serif;}
+.faqs-list{display:flex;flex-direction:column;gap:10px;}
+.faq-item-card{background:var(--g50);border:1.5px solid var(--g200);border-radius:var(--r);padding:1rem;transition:all 0.15s;}
+.faq-item-card:hover{border-color:rgba(27,79,219,0.2);}
+.fiq-q{font-size:13px;font-weight:700;color:var(--g800);margin-bottom:0.4rem;display:flex;align-items:flex-start;gap:6px;}
+.fiq-q-prefix{color:var(--blue);font-size:1rem;font-weight:900;flex-shrink:0;}
+.fiq-r{font-size:12px;color:var(--g500);line-height:1.6;margin-bottom:0.6rem;padding-left:22px;}
+.fiq-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.fiq-actions{display:flex;gap:6px;margin-left:auto;}
+.btn-sm-ed{padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Outfit',sans-serif;background:var(--bpale);color:var(--blue);}
+.btn-sm-del{padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Outfit',sans-serif;background:#fee2e2;color:#dc2626;}
+.badge{padding:2px 8px;border-radius:100px;font-size:10px;font-weight:700;}
+.badge-pub{background:#dcfce7;color:#16a34a;}
+.badge-brou{background:#fef9c3;color:#b45309;}
+.badge-feat{background:rgba(200,16,46,0.1);color:var(--red);}
+.alert{background:#dcfce7;border:1.5px solid #86efac;border-radius:var(--r);padding:12px 16px;font-size:13px;color:#16a34a;margin-bottom:1.5rem;}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:2000;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:#fff;border-radius:var(--rl);padding:2rem;max-width:560px;width:100%;margin:1rem;max-height:90vh;overflow-y:auto;}
+.modal-tit{font-size:15px;font-weight:700;color:var(--g800);margin-bottom:1.2rem;}
+.btn-save{background:var(--grad);color:#fff;padding:11px 22px;border-radius:var(--r);font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;}
+.btn-cancel-m{background:#fff;color:var(--g500);padding:11px 18px;border-radius:var(--r);font-size:13px;font-weight:500;border:1.5px solid var(--g200);cursor:pointer;font-family:'Outfit',sans-serif;}
+.chk-row{display:flex;align-items:center;gap:8px;margin:6px 0;}
+.chk-row input{width:18px;height:18px;}
+.chk-row label{font-size:13px;color:var(--g700);margin:0;}
+@media(max-width:768px){.wrap{padding:80px 1rem 2rem;}.form-row{flex-direction:column;}}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <div style="display:flex;align-items:center;gap:8px;"><div class="tn-em">E</div><div class="tn-name">EDEN GROUP</div></div>
+  <div style="display:flex;gap:8px;">
+    <a class="tn-btn" href="{% url 'dashboard_academie_liste' %}">← Documents</a>
+    <a class="tn-btn" href="{% url 'academie_accueil' %}" target="_blank">🎓 Voir</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="page-tit">❓ Questions Fréquentes (FAQ)</div>
+
+  {% if messages %}{% for msg in messages %}<div class="alert">{{ msg }}</div>{% endfor %}{% endif %}
+
+  <!-- AJOUTER -->
+  <div class="card">
+    <div class="card-tit">➕ Ajouter une question/réponse</div>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="ajouter">
+      <div class="fg"><label>Question *</label><input type="text" name="question" placeholder="Ex: Combien de temps prend l'obtention d'un titre foncier ?" required></div>
+      <div class="fg"><label>Réponse *</label><textarea name="reponse" rows="4" placeholder="Réponse complète et détaillée..." required></textarea></div>
+      <div class="form-row">
+        <div class="fg"><label>Catégorie FAQ</label><input type="text" name="categorie_faq" placeholder="Ex: Procédures, Délais, Coûts..."></div>
+        <div class="fg"><label>Temps de réponse estimé</label><input type="text" name="temps_reponse" placeholder="Ex: 12 à 24 mois en général"></div>
+        <div class="fg"><label>Statut</label>
+          <select name="statut">
+            <option value="publie">✅ Publié</option>
+            <option value="brouillon">📝 Brouillon</option>
+          </select>
+        </div>
+      </div>
+      <div class="chk-row" style="margin-bottom:1rem;">
+        <input type="checkbox" name="est_featured" id="feat_add">
+        <label for="feat_add">⭐ Question featured (affichée en priorité sur la page Académie)</label>
+      </div>
+      <button type="submit" class="btn-add">Ajouter la FAQ</button>
+    </form>
+  </div>
+
+  <!-- LISTE -->
+  <div class="card">
+    <div class="card-tit">FAQs actuelles ({{ faqs.count }})</div>
+    {% if faqs %}
+    <div class="faqs-list">
+      {% for faq in faqs %}
+      <div class="faq-item-card" id="faq-{{ faq.pk }}">
+        <div class="fiq-q">
+          <span class="fiq-q-prefix">Q.</span>
+          <span>{{ faq.question }}</span>
+        </div>
+        <div class="fiq-r">{{ faq.reponse|truncatechars:200 }}</div>
+        <div class="fiq-meta">
+          {% if faq.categorie_faq %}<span class="badge" style="background:var(--g100);color:var(--g500);">{{ faq.categorie_faq }}</span>{% endif %}
+          {% if faq.temps_reponse %}<span style="font-size:10px;color:var(--g400);">⏱ {{ faq.temps_reponse }}</span>{% endif %}
+          <span class="badge {% if faq.statut == 'publie' %}badge-pub{% else %}badge-brou{% endif %}">{{ faq.get_statut_display }}</span>
+          {% if faq.est_featured %}<span class="badge badge-feat">⭐ Featured</span>{% endif %}
+          <div class="fiq-actions">
+            <button class="btn-sm-ed" onclick="ouvrirModalFAQ({{ faq.pk }},'{{ faq.question|escapejs }}','{{ faq.reponse|escapejs }}','{{ faq.categorie_faq|escapejs }}','{{ faq.temps_reponse|escapejs }}','{{ faq.statut }}',{{ faq.est_featured|lower }},{{ faq.ordre }})">✏ Modifier</button>
+            <form method="post" style="display:inline;" onsubmit="return confirm('Supprimer cette FAQ ?')">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="supprimer">
+              <input type="hidden" name="pk" value="{{ faq.pk }}">
+              <button type="submit" class="btn-sm-del">🗑</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p style="font-size:13px;color:var(--g400);text-align:center;padding:2rem;">Aucune FAQ. Ajoutez-en ci-dessus.</p>
+    {% endif %}
+  </div>
+</div>
+
+<!-- MODAL MODIFIER FAQ -->
+<div class="modal-overlay" id="modal-faq">
+  <div class="modal-box">
+    <div class="modal-tit">✏ Modifier la FAQ</div>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="modifier">
+      <input type="hidden" name="pk" id="mf-pk">
+      <div style="margin-bottom:1rem;"><label style="font-size:11px;font-weight:600;color:var(--g500);display:block;margin-bottom:5px;">Question *</label><input type="text" name="question" id="mf-q" required></div>
+      <div style="margin-bottom:1rem;"><label style="font-size:11px;font-weight:600;color:var(--g500);display:block;margin-bottom:5px;">Réponse *</label><textarea name="reponse" id="mf-r" rows="5" required></textarea></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem;">
+        <div><label style="font-size:11px;font-weight:600;color:var(--g500);display:block;margin-bottom:5px;">Catégorie</label><input type="text" name="categorie_faq" id="mf-cat"></div>
+        <div><label style="font-size:11px;font-weight:600;color:var(--g500);display:block;margin-bottom:5px;">Temps estimé</label><input type="text" name="temps_reponse" id="mf-tps"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 80px;gap:10px;margin-bottom:1rem;">
+        <div><label style="font-size:11px;font-weight:600;color:var(--g500);display:block;margin-bottom:5px;">Statut</label>
+          <select name="statut" id="mf-statut">
+            <option value="publie">✅ Publié</option>
+            <option value="brouillon">📝 Brouillon</option>
+          </select>
+        </div>
+        <div><label style="font-size:11px;font-weight:600;color:var(--g500);display:block;margin-bottom:5px;">Ordre</label><input type="number" name="ordre" id="mf-ordre" min="0"></div>
+      </div>
+      <div class="chk-row" style="margin-bottom:1.2rem;">
+        <input type="checkbox" name="est_featured" id="mf-feat">
+        <label for="mf-feat">⭐ Question featured</label>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button type="submit" class="btn-save">💾 Enregistrer</button>
+        <button type="button" class="btn-cancel-m" onclick="fermerModalFAQ()">Annuler</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function ouvrirModalFAQ(pk,q,r,cat,tps,statut,feat,ordre){
+  document.getElementById('mf-pk').value=pk;
+  document.getElementById('mf-q').value=q;
+  document.getElementById('mf-r').value=r;
+  document.getElementById('mf-cat').value=cat;
+  document.getElementById('mf-tps').value=tps;
+  document.getElementById('mf-statut').value=statut;
+  document.getElementById('mf-feat').checked=feat;
+  document.getElementById('mf-ordre').value=ordre;
+  document.getElementById('modal-faq').classList.add('open');
+}
+function fermerModalFAQ(){document.getElementById('modal-faq').classList.remove('open');}
+document.getElementById('modal-faq').addEventListener('click',e=>{if(e.target===document.getElementById('modal-faq'))fermerModalFAQ();});
+</script>
+</body>
+</html>

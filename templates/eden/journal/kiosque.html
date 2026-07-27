@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Journal EDEN GROUP — Kiosque</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --blue:#1B4FDB;--blue-d:#0A2494;--blue-pale:#EEF3FF;
+  --red:#C8102E;--red-d:#A00C24;
+  --grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
+  --grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
+  --g50:#F8FAFF;--g100:#F0F4FF;--g200:#E2E8F0;
+  --g400:#94A3B8;--g500:#64748B;--g600:#475569;--g800:#1E293B;
+  --blanc:#FFFFFF;
+  --blanc-casse:#F8F6F1;
+  --blanc-jaune:#FDFBF7;
+  --gris-clair:#F0EEEA;
+  --gris-moyen:#D1CDC5;
+  --gris-texte:#3D3A35;
+  --noir-texte:#1A1613;
+  --gold:#D4AF37;
+  --sh:0 2px 12px rgba(0,0,0,0.08);
+  --sh-lg:0 8px 40px rgba(27,79,219,0.15);
+  --r:10px;--rl:16px;--rxl:24px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:var(--gris-clair);color:var(--g800);overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-thumb{background:var(--grad-h);border-radius:100px;}
+
+/* ══ NAVBAR TRANSPARENTE ══ */
+nav{
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    z-index:1000;
+    height:70px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 2rem;
+    background:transparent;
+    border-bottom:1px solid transparent;
+    box-shadow:none;
+    transition:
+        background .4s ease,
+        backdrop-filter .4s ease,
+        border-color .4s ease,
+        box-shadow .4s ease;
+}
+
+nav.scrolled{
+    background:rgba(255,255,255,.92);
+    backdrop-filter:blur(22px);
+    -webkit-backdrop-filter:blur(22px);
+    border-bottom:1px solid rgba(226,232,240,.9);
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo-img{height:48px;width:auto;object-fit:contain;}
+.logo-box{width:42px;height:42px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#fff;}
+.logo-name{font-size:18px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.logo-tagline{font-size:9px;color:var(--g500);letter-spacing:1.5px;text-transform:uppercase;}
+.nav-links{display:flex;align-items:center;gap:0;}
+.nav-lnk{padding:6px 13px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.85);text-decoration:none;border-radius:7px;transition:all 0.18s;position:relative;}
+.nav-lnk:hover,.nav-lnk.active{color:#fff;}
+.nav-lnk.active::after{content:'';position:absolute;bottom:-4px;left:13px;right:13px;height:2px;background:var(--red);border-radius:100px;}
+nav.scrolled .nav-lnk{color:var(--g600);}
+nav.scrolled .nav-lnk:hover,
+nav.scrolled .nav-lnk.active{color:var(--blue);}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-icon-btn{width:36px;height:36px;border-radius:8px;border:1.5px solid rgba(255,255,255,0.25);background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:all 0.18s;color:#fff;text-decoration:none;}
+.nav-icon-btn:hover{border-color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.2);}
+nav.scrolled .nav-icon-btn{background:#fff;border-color:var(--g200);color:var(--g600);}
+nav.scrolled .nav-icon-btn:hover{border-color:var(--blue);background:var(--blue-pale);}
+.btn-rdv{background:var(--red);color:#fff;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:7px;text-decoration:none;}
+.btn-rdv:hover{background:var(--red-d);transform:translateY(-1px);box-shadow:0 4px 16px rgba(200,16,46,0.3);}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:none;padding:6px;}
+.hamburger span{width:22px;height:2px;background:#fff;border-radius:2px;display:block;transition:background 0.3s;}
+nav.scrolled .hamburger span{background:var(--g800);}
+.mob-menu{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(255,255,255,0.98);border-bottom:1px solid var(--g200);padding:1rem 1.5rem;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.1);backdrop-filter:blur(10px);}
+.mob-menu.open{display:flex;flex-direction:column;gap:4px;}
+.mob-menu .nav-lnk{color:var(--g600);padding:8px 0;font-size:13px;}
+.mob-menu .nav-lnk.active{color:var(--blue);}
+.mob-menu .nav-lnk.active::after{display:none;}
+
+/* ══ KIOSQUE HEADER ══ */
+.kiosque-header{padding:90px 2rem 2rem;text-align:center;position:relative;}
+.enseigne{display:inline-block;position:relative;}
+.enseigne-fond{background:linear-gradient(135deg,var(--blanc),var(--blanc-casse));border:3px solid var(--red);border-radius:12px;padding:1.5rem 3rem;box-shadow:0 12px 48px rgba(0,0,0,0.18);position:relative;}
+.enseigne-fond::before{content:'';position:absolute;inset:-6px;border-radius:16px;background:linear-gradient(135deg,var(--blue),var(--red));z-index:-1;opacity:0.3;}
+.enseigne-titre{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.8rem);font-weight:900;color:var(--noir-texte);letter-spacing:1px;}
+.enseigne-titre span{color:var(--red);}
+.enseigne-sous{font-family:'Lora',serif;font-style:italic;font-size:14px;color:var(--gris-texte);letter-spacing:2px;margin-top:4px;}
+.lampes{display:flex;gap:16px;justify-content:center;margin-top:14px;}
+.lampe{width:12px;height:12px;border-radius:50%;background:var(--red);box-shadow:0 0 12px var(--red);animation:clign 1.5s ease-in-out infinite;}
+.lampe:nth-child(2){animation-delay:0.3s;}
+.lampe:nth-child(3){animation-delay:0.6s;}
+.lampe:nth-child(4){animation-delay:0.9s;}
+.lampe:nth-child(5){animation-delay:1.2s;}
+@keyframes clign{0%,100%{opacity:1;}50%{opacity:0.2;}}
+
+/* ══ NOTIFICATION ══ */
+.notif-bar{background:linear-gradient(90deg,var(--blue),var(--blue-d));color:#fff;padding:12px 2rem;display:flex;align-items:center;gap:14px;position:sticky;top:70px;z-index:90;box-shadow:0 4px 20px rgba(27,79,219,0.2);}
+.notif-ico{font-size:18px;animation:clign 1s ease-in-out infinite;}
+.notif-txt{font-size:13px;font-weight:500;flex:1;font-family:'Outfit',sans-serif;}
+.notif-txt span{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;}
+.notif-btn{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:6px 18px;border-radius:100px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;transition:all 0.3s;}
+.notif-btn:hover{background:rgba(255,255,255,0.25);transform:scale(1.02);}
+
+/* ══ DERNIERE EDITION ══ */
+.derniere-section{padding:0 2rem 3rem;max-width:1200px;margin:0 auto;}
+.derniere-label{display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;}
+.dl-line{flex:1;height:2px;background:linear-gradient(to right,var(--red),transparent);}
+.dl-text{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--red);letter-spacing:2px;text-transform:uppercase;white-space:nowrap;}
+.une-card{display:grid;grid-template-columns:1fr 1fr;gap:0;background:var(--blanc);border-radius:8px;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,0.18);border:1px solid var(--gris-moyen);}
+.une-couverture{position:relative;min-height:500px;background:var(--blanc-casse);}
+.une-img{width:100%;height:100%;object-fit:cover;display:block;}
+.une-img-placeholder{width:100%;height:500px;background:linear-gradient(135deg,var(--blanc-jaune),var(--gris-clair));display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1rem;}
+.une-img-placeholder .ico{font-size:4rem;}
+.une-img-placeholder .label{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--gris-texte);}
+.une-bandeau-haut{position:absolute;top:0;left:0;right:0;background:linear-gradient(90deg,var(--red),var(--red-d));color:#fff;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;}
+.une-journal-nom{font-family:'Playfair Display',serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
+.une-date{font-size:11px;opacity:0.85;font-family:'Outfit',sans-serif;}
+.une-badge-new{position:absolute;top:50px;right:-8px;background:var(--gold);color:var(--noir-texte);padding:4px 16px;font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;transform:rotate(2deg);box-shadow:2px 2px 12px rgba(0,0,0,0.2);border-radius:2px;}
+.une-contenu{padding:2.5rem;display:flex;flex-direction:column;justify-content:center;}
+.une-num{font-size:11px;font-weight:700;color:var(--red);letter-spacing:3px;text-transform:uppercase;margin-bottom:0.5rem;font-family:'Outfit',sans-serif;}
+.une-titre{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3vw,2.8rem);font-weight:900;color:var(--noir-texte);line-height:1.1;margin-bottom:1rem;border-bottom:3px double var(--red);padding-bottom:1rem;}
+.une-sous{font-family:'Lora',serif;font-style:italic;font-size:1.05rem;color:var(--gris-texte);margin-bottom:1.5rem;}
+.une-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1.5rem;}
+.une-stat{background:var(--blue);color:#fff;padding:12px;text-align:center;border-radius:4px;}
+.une-stat-n{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;}
+.une-stat-l{font-size:9px;text-transform:uppercase;letter-spacing:0.5px;opacity:0.8;margin-top:2px;font-family:'Outfit',sans-serif;}
+.btn-lire-une{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:var(--red);color:#fff;padding:14px;font-family:'Playfair Display',serif;font-size:16px;font-weight:700;border:none;cursor:pointer;text-decoration:none;transition:all 0.3s;letter-spacing:1px;border-radius:4px;}
+.btn-lire-une:hover{background:var(--red-d);transform:translateY(-2px);box-shadow:0 4px 16px rgba(200,16,46,0.3);}
+
+/* ══ ARCHIVES ══ */
+.archives-section{padding:0 2rem 4rem;max-width:1200px;margin:0 auto;}
+.archives-label{display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;}
+.al-line{flex:1;height:1px;background:linear-gradient(to right,var(--blue),transparent);}
+.al-text{font-family:'Playfair Display',serif;font-size:14px;color:var(--blue);letter-spacing:2px;text-transform:uppercase;white-space:nowrap;}
+.editions-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:2rem;}
+.ed-card{cursor:pointer;transition:all 0.3s;position:relative;}
+.ed-card:hover{transform:translateY(-8px);}
+.ed-card:hover .ed-ombre{opacity:0.6;}
+.ed-ombre{position:absolute;bottom:-12px;left:10%;right:10%;height:20px;background:rgba(0,0,0,0.3);border-radius:50%;filter:blur(8px);transition:opacity 0.3s;}
+.ed-couv{background:var(--blanc);border-radius:4px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);position:relative;border:1px solid var(--gris-moyen);transition:all 0.3s;}
+.ed-card:hover .ed-couv{box-shadow:0 8px 32px rgba(0,0,0,0.15);}
+.ed-bandeau{background:linear-gradient(90deg,var(--noir-texte),var(--gris-texte));color:#fff;padding:6px 12px;display:flex;justify-content:space-between;align-items:center;}
+.ed-nom-journal{font-family:'Playfair Display',serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;}
+.ed-num{font-size:9px;color:rgba(255,255,255,0.6);font-family:'Outfit',sans-serif;}
+.ed-img{width:100%;height:160px;object-fit:cover;display:block;}
+.ed-img-placeholder{width:100%;height:160px;background:var(--blanc-casse);display:flex;align-items:center;justify-content:center;font-size:2.5rem;}
+.ed-info{padding:12px;}
+.ed-titre-ed{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--noir-texte);line-height:1.3;margin-bottom:4px;}
+.ed-date{font-size:10px;color:var(--gris-texte);font-family:'Outfit',sans-serif;}
+.ed-nb-pages{font-size:10px;color:var(--red);font-weight:600;margin-top:3px;font-family:'Outfit',sans-serif;}
+.ed-new-badge{position:absolute;top:8px;right:-4px;background:var(--red);color:#fff;padding:3px 12px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;border-radius:2px;}
+
+/* ══ VIDE ══ */
+.kiosque-vide{text-align:center;padding:6rem 2rem;color:var(--gris-texte);}
+.kiosque-vide .ico{font-size:4rem;margin-bottom:1rem;opacity:0.5;}
+.kiosque-vide .title{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--red);margin-bottom:0.5rem;}
+.kiosque-vide .sub{font-size:14px;color:var(--gris-texte);}
+
+/* ══ FOOTER ══ */
+.footer-bar{height:3px;background:var(--grad-h);}
+footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1px solid #334155;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1.5fr;gap:2rem;max-width:1280px;margin:0 auto 2rem;}
+.footer-logo-img{height:40px;object-fit:contain;}
+.footer-desc{font-size:12px;color:#94A3B8;line-height:1.75;max-width:260px;margin-bottom:1rem;margin-top:0.8rem;}
+.footer-tagline{font-size:11px;color:rgba(255,255,255,0.4);font-style:italic;}
+.footer-col h4{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.9rem;}
+.footer-lnk{display:block;font-size:12px;color:#94A3B8;text-decoration:none;margin-bottom:6px;transition:color 0.2s;}
+.footer-lnk:hover{color:#fff;}
+.footer-agences-item{display:flex;align-items:center;gap:5px;font-size:12px;color:#94A3B8;margin-bottom:6px;}
+.footer-socials{display:flex;gap:8px;margin-top:0.8rem;}
+.footer-social-btn{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;transition:all 0.2s;}
+.fs-fb{background:#1877F2;color:#fff;}
+.fs-tt{background:#010101;color:#fff;}
+.fs-yt{background:#FF0000;color:#fff;}
+.fs-li{background:#0A66C2;color:#fff;}
+.fs-ig{background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;}
+.footer-social-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.3);}
+.footer-nl-wrap{position:relative;}
+.footer-nl-input{width:100%;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);border-radius:8px;padding:9px 48px 9px 12px;font-size:12px;color:#fff;font-family:'Outfit',sans-serif;outline:none;}
+.footer-nl-input::placeholder{color:rgba(255,255,255,0.35);}
+.footer-nl-btn{position:absolute;right:0;top:0;bottom:0;background:var(--red);border:none;width:40px;border-radius:0 8px 8px 0;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;transition:background 0.2s;}
+.footer-nl-btn:hover{background:var(--red-d);}
+.footer-bot{border-top:1px solid #334155;max-width:1280px;margin:0 auto;padding-top:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.footer-copy{font-size:12px;color:#64748B;}
+.footer-links-bot{display:flex;gap:1.5rem;}
+.footer-links-bot a{font-size:12px;color:#64748B;text-decoration:none;transition:color 0.2s;}
+.footer-links-bot a:hover{color:#fff;}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:1024px){.footer-grid{grid-template-columns:1fr 1fr 1fr;}}
+@media(max-width:768px){
+  nav{padding:0 1rem;}
+  .nav-links,.nav-right .btn-rdv{display:none;}
+  .hamburger{display:flex;}
+  .kiosque-header{padding:80px 1rem 2rem;}
+  .enseigne-fond{padding:1rem 1.5rem;}
+  .une-card{grid-template-columns:1fr;}
+  .une-couverture{min-height:300px;}
+  .une-img-placeholder{height:300px;}
+  .une-contenu{padding:1.5rem;}
+  .derniere-section,.archives-section{padding-left:1rem;padding-right:1rem;}
+  .editions-grid{grid-template-columns:repeat(2,1fr);gap:1rem;}
+  .notif-bar{padding:10px 1rem;flex-wrap:wrap;}
+  .notif-txt{font-size:12px;}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+  .footer-grid>div:first-child{grid-column:1/-1;}
+}
+@media(max-width:480px){
+  .editions-grid{grid-template-columns:1fr 1fr;gap:0.8rem;}
+  .une-stats{grid-template-columns:1fr 1fr 1fr;gap:4px;}
+  .une-stat{padding:8px;}
+  .une-stat-n{font-size:1.1rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ NAVBAR TRANSPARENTE ══ -->
+<nav id="navbar">
+  <a class="nav-logo" href="{% url 'home' %}">
+    <div class="logo-box">E</div>
+    <div>
+      <div class="logo-name">EDEN GROUP</div>
+      <div class="logo-tagline">Le foncier sécurisé, notre engagement</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'sites_list' or request.resolver_match.url_name == 'site_detail' %}active{% endif %}" href="{% url 'sites_list' %}">Nos Terrains</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_projets' %}active{% endif %}" href="{% url 'nos_projets' %}">Nos Projets</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' or request.resolver_match.url_name == 'une_evenement_detail' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'journal_kiosque' or request.resolver_match.url_name == 'journal_lire' %}active{% endif %}" href="{% url 'journal_kiosque' %}">📰 Documentation</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
+    {% if user.is_staff %}
+    <a class="nav-lnk" href="{% url 'dashboard_home' %}" style="color:var(--blue);font-weight:700;">Dashboard</a>
+    {% endif %}
+  </div>
+  <div class="nav-right">
+    <button class="btn-rdv" onclick="document.getElementById('cc-form')?.scrollIntoView({behavior:'smooth'})">📅 Contact</button>
+  </div>
+  <button class="hamburger" onclick="toggleMob()"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="mob-menu" id="mob-menu">
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'sites_list' or request.resolver_match.url_name == 'site_detail' %}active{% endif %}" href="{% url 'sites_list' %}">Nos Terrains</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_projets' %}active{% endif %}" href="{% url 'nos_projets' %}">Nos Projets</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' or request.resolver_match.url_name == 'une_evenement_detail' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'journal_kiosque' or request.resolver_match.url_name == 'journal_lire' %}active{% endif %}" href="{% url 'journal_kiosque' %}">📰 Documentation</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'promotions' %}active{% endif %}" href="{% url 'promotions' %}">Promotions</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
+  {% if user.is_staff %}<a class="nav-lnk" href="{% url 'dashboard_home' %}">Dashboard</a>{% endif %}
+  <button class="btn-rdv" style="width:100%;margin-top:8px;justify-content:center;" onclick="document.getElementById('cc-form')?.scrollIntoView({behavior:'smooth'})">📅 Contact</button>
+</div>
+
+<!-- ══ NOTIFICATION ══ -->
+{% if derniere %}
+<div class="notif-bar">
+  <span class="notif-ico">📰</span>
+  <div class="notif-txt">
+    Nouvelle édition disponible ! <span>Édition #{{ derniere.numero }} — {{ derniere.titre }}</span>
+    {% if derniere.date_parution %} · {{ derniere.date_parution|date:"d F Y" }}{% endif %}
+  </div>
+  <a class="notif-btn" href="{% url 'journal_lire' derniere.numero %}">Lire maintenant →</a>
+</div>
+{% endif %}
+
+<!-- ══ ENSEIGNE ══ -->
+<div class="kiosque-header">
+  <div class="enseigne">
+    <div class="enseigne-fond">
+      <div class="enseigne-titre">Documentation <span>EDEN GROUP</span></div>
+      <div class="enseigne-sous">Decouvrir Notre Vision</div>
+      <div class="lampes">
+        <div class="lampe"></div>
+        <div class="lampe"></div>
+        <div class="lampe"></div>
+        <div class="lampe"></div>
+        <div class="lampe"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DERNIERE EDITION ══ -->
+{% if derniere %}
+<div class="derniere-section">
+  <div class="derniere-label">
+    <div class="dl-line"></div>
+    <div class="dl-text">⭐ Dernière édition</div>
+    <div class="dl-line" style="background:linear-gradient(to left,var(--red),transparent);"></div>
+  </div>
+  <a href="{% url 'journal_lire' derniere.numero %}" style="text-decoration:none;">
+    <div class="une-card">
+      <div class="une-couverture">
+        <div class="une-bandeau-haut">
+          <span class="une-journal-nom">Le Journal EDEN GROUP</span>
+          <span class="une-date">{% if derniere.date_parution %}{{ derniere.date_parution|date:"d F Y" }}{% endif %}</span>
+        </div>
+        {% if derniere.image_une %}
+        <img src="{{ derniere.image_une.url }}" class="une-img" alt="{{ derniere.titre }}">
+        {% else %}
+        <div class="une-img-placeholder">
+          <div class="ico">📰</div>
+          <div class="label">Le Journal EDEN</div>
+        </div>
+        {% endif %}
+        <div class="une-badge-new">Nouveau !</div>
+      </div>
+      <div class="une-contenu">
+        <div class="une-num">Édition N°{{ derniere.numero }}</div>
+        <div class="une-titre">{{ derniere.titre }}</div>
+        {% if derniere.sous_titre %}
+        <div class="une-sous">{{ derniere.sous_titre }}</div>
+        {% endif %}
+        <div class="une-stats">
+          <div class="une-stat"><div class="une-stat-n">{{ derniere.nb_pages }}</div><div class="une-stat-l">Pages</div></div>
+          <div class="une-stat"><div class="une-stat-n">{% if derniere.date_parution %}{{ derniere.date_parution|date:"d/m" }}{% else %}—{% endif %}</div><div class="une-stat-l">Parution</div></div>
+          <div class="une-stat"><div class="une-stat-n">#{{ derniere.numero }}</div><div class="une-stat-l">Édition</div></div>
+        </div>
+        <div class="btn-lire-une">📖 Lire cette édition →</div>
+      </div>
+    </div>
+  </a>
+</div>
+{% endif %}
+
+<!-- ══ ARCHIVES ══ -->
+{% if editions.count > 1 %}
+<div class="archives-section">
+  <div class="archives-label">
+    <div class="al-line"></div>
+    <div class="al-text">📚 Toutes les éditions</div>
+    <div class="al-line" style="background:linear-gradient(to left,var(--blue),transparent);"></div>
+  </div>
+  <div class="editions-grid">
+    {% for ed in editions %}
+    {% if not derniere or ed.numero != derniere.numero %}
+    <a href="{% url 'journal_lire' ed.numero %}" style="text-decoration:none;">
+      <div class="ed-card">
+        <div class="ed-ombre"></div>
+        <div class="ed-couv">
+          <div class="ed-bandeau">
+            <span class="ed-nom-journal">Le Journal EDEN</span>
+            <span class="ed-num">N°{{ ed.numero }}</span>
+          </div>
+          {% if ed.image_une %}
+          <img src="{{ ed.image_une.url }}" class="ed-img" alt="{{ ed.titre }}">
+          {% else %}
+          <div class="ed-img-placeholder">📰</div>
+          {% endif %}
+          {% if forloop.counter <= 2 %}<div class="ed-new-badge">Récent</div>{% endif %}
+          <div class="ed-info">
+            <div class="ed-titre-ed">{{ ed.titre }}</div>
+            <div class="ed-date">{% if ed.date_parution %}{{ ed.date_parution|date:"d F Y" }}{% endif %}</div>
+            <div class="ed-nb-pages">{{ ed.nb_pages }} page{{ ed.nb_pages|pluralize }}</div>
+          </div>
+        </div>
+      </div>
+    </a>
+    {% endif %}
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<!-- ══ VIDE ══ -->
+{% if not editions %}
+<div class="kiosque-vide">
+  <div class="ico">📰</div>
+  <div class="title">Aucune édition disponible</div>
+  <div class="sub">Le premier numéro arrive bientôt !</div>
+</div>
+{% endif %}
+
+<!-- ══ FOOTER ══ -->
+<div class="footer-bar"></div>
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;">
+        <div class="logo-box" style="width:36px;height:36px;font-size:15px;border-radius:8px;">E</div>
+        <div style="font-size:15px;font-weight:900;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">EDEN GROUP</div>
+      </div>
+      <p class="footer-desc">Votre partenaire foncier de confiance depuis 2018.</p>
+      <div class="footer-tagline">Le foncier sécurisé, notre engagement</div>
+    </div>
+    <div class="footer-col">
+      <h4>Liens rapides</h4>
+      <a class="footer-lnk" href="{% url 'home' %}">Accueil</a>
+      <a class="footer-lnk" href="{% url 'sites_list' %}">Nos Terrains</a>
+      <a class="footer-lnk" href="{% url 'nos_projets' %}">Nos Projets</a>
+      <a class="footer-lnk" href="{% url 'nos_services' %}">Nos Services</a>
+      <a class="footer-lnk" href="{% url 'nos_agences' %}">Nos Agences</a>
+      <a class="footer-lnk" href="{% url 'journal_kiosque' %}">Journal</a>
+      <a class="footer-lnk" href="{% url 'a_propos' %}">À propos</a>
+      <a class="footer-lnk" href="{% url 'contact' %}">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h4>Nos agences</h4>
+      <div class="footer-agences-item">📍 Yaoundé (Siège)</div>
+      <div class="footer-agences-item">📍 Bafoussam</div>
+      <div class="footer-agences-item">📍 Dschang</div>
+      <div class="footer-agences-item">📍 Bangangté</div>
+    </div>
+    <div class="footer-col">
+      <h4>Suivez-nous</h4>
+      <div class="footer-socials">
+        <a href="#" class="footer-social-btn fs-fb">f</a>
+        <a href="#" class="footer-social-btn fs-tt" style="color:#fff;">T</a>
+        <a href="#" class="footer-social-btn fs-yt" style="color:#fff;">▶</a>
+        <a href="#" class="footer-social-btn fs-li" style="color:#fff;">in</a>
+        <a href="#" class="footer-social-btn fs-ig" style="color:#fff;">📷</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Newsletter</h4>
+      <div style="font-size:12px;color:#94A3B8;margin-bottom:0.8rem;">Recevez nos offres et actualités</div>
+      <div class="footer-nl-wrap">
+        <input class="footer-nl-input" type="email" placeholder="Votre email" id="footer-nl">
+        <button class="footer-nl-btn" onclick="souscrireFooter()">→</button>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bot">
+    <div class="footer-copy">© 2026 EDEN GROUP ENTREPRISE. Tous droits réservés.</div>
+    <div class="footer-links-bot">
+      <a href="#">Mentions légales</a>
+      <a href="#">Politique de confidentialité</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── NAV ──
+function toggleMob() {
+  document.getElementById('mob-menu').classList.toggle('open');
+}
+
+function souscrireFooter() {
+  const e = document.getElementById('footer-nl').value;
+  if (!e) return;
+  alert('✅ Inscription confirmée !');
+  document.getElementById('footer-nl').value = '';
+}
+
+window.addEventListener('scroll', function() {
+  const nav = document.getElementById('navbar');
+  if (window.scrollY > 40) {
+    nav.classList.add('scrolled');
+  } else {
+    nav.classList.remove('scrolled');
+  }
+});
+
+// Initialisation au chargement
+document.addEventListener('DOMContentLoaded', function() {
+  const nav = document.getElementById('navbar');
+  if (window.scrollY > 40) {
+    nav.classList.add('scrolled');
+  } else {
+    nav.classList.remove('scrolled');
+  }
+});
+</script>
+</body>
+</html>

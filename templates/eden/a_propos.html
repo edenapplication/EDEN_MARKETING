@@ -18,16 +18,62 @@
 body{font-family:'Outfit',sans-serif;background:#fff;color:var(--g800);}
 h1,h2,h3{font-family:'Playfair Display',serif;}
 
-/* ── NAV ── */
-nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;background:rgba(255,255,255,0.97);border-bottom:1.5px solid var(--g200);backdrop-filter:blur(16px);}
+/* ── NAV TRANSPARENTE ── */
+nav{
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    z-index:1000;
+    height:70px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 2rem;
+    background:transparent;
+    border-bottom:1px solid transparent;
+    box-shadow:none;
+    transition:
+        background .4s ease,
+        backdrop-filter .4s ease,
+        border-color .4s ease,
+        box-shadow .4s ease;
+}
+
+nav.scrolled{
+    background:rgba(255,255,255,.92);
+    backdrop-filter:blur(22px);
+    -webkit-backdrop-filter:blur(22px);
+    border-bottom:1px solid rgba(226,232,240,.9);
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
-.logo-em{width:38px;height:38px;border-radius:9px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:17px;color:#fff;}
-.logo-eden{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.logo-sub{font-size:9px;color:var(--g400);letter-spacing:2px;text-transform:uppercase;}
-.nav-links{display:flex;align-items:center;}
-.nav-lnk{padding:8px 15px;font-size:13px;font-weight:500;color:var(--g600);text-decoration:none;border-radius:8px;transition:all 0.2s;}
-.nav-lnk:hover,.nav-lnk.active{color:var(--blue);background:var(--bpale);}
-.btn-cta{background:var(--grad);color:#fff;padding:9px 20px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;}
+.nav-logo-img{height:48px;width:auto;object-fit:contain;}
+.logo-box{width:42px;height:42px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#fff;}
+.logo-name{font-size:18px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.logo-tagline{font-size:9px;color:var(--g500);letter-spacing:1.5px;text-transform:uppercase;}
+.nav-links{display:flex;align-items:center;gap:0;}
+.nav-lnk{padding:6px 13px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.85);text-decoration:none;border-radius:7px;transition:all 0.18s;position:relative;}
+.nav-lnk:hover,.nav-lnk.active{color:#fff;}
+.nav-lnk.active::after{content:'';position:absolute;bottom:-4px;left:13px;right:13px;height:2px;background:var(--red);border-radius:100px;}
+nav.scrolled .nav-lnk{color:var(--g600);}
+nav.scrolled .nav-lnk:hover,
+nav.scrolled .nav-lnk.active{color:var(--blue);}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-icon-btn{width:36px;height:36px;border-radius:8px;border:1.5px solid rgba(255,255,255,0.25);background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:all 0.18s;color:#fff;text-decoration:none;}
+.nav-icon-btn:hover{border-color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.2);}
+nav.scrolled .nav-icon-btn{background:#fff;border-color:var(--g200);color:var(--g600);}
+nav.scrolled .nav-icon-btn:hover{border-color:var(--blue);background:var(--blue-pale);}
+.btn-rdv{background:var(--red);color:#fff;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:7px;text-decoration:none;}
+.btn-rdv:hover{background:var(--red-d);transform:translateY(-1px);box-shadow:0 4px 16px rgba(200,16,46,0.3);}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:none;padding:6px;}
+.hamburger span{width:22px;height:2px;background:#fff;border-radius:2px;display:block;transition:background 0.3s;}
+nav.scrolled .hamburger span{background:var(--g800);}
+.mob-menu{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(255,255,255,0.98);border-bottom:1px solid var(--g200);padding:1rem 1.5rem;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.1);backdrop-filter:blur(10px);}
+.mob-menu.open{display:flex;flex-direction:column;gap:4px;}
+.mob-menu .nav-lnk{color:var(--g600);padding:8px 0;font-size:13px;}
+.mob-menu .nav-lnk.active{color:var(--blue);}
+.mob-menu .nav-lnk.active::after{display:none;}
 
 /* ── HERO ── */
 .hero{min-height:65vh;display:flex;align-items:center;padding:8rem 2rem 4rem;background:linear-gradient(135deg,var(--bpale) 0%,#fff 55%,#FFF0F2 100%);position:relative;overflow:hidden;}
@@ -105,22 +151,37 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:70px;display:flex;al
 .cta-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:2rem;}
 .btn-wa{background:#25D366;color:#fff;padding:13px 28px;border-radius:var(--r);font-size:14px;font-weight:600;border:none;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:8px;}
 
-/* FOOTER */
+/* ── FOOTER ── */
 .footer-bar{height:3px;background:var(--grad-h);}
-footer{background:var(--g800);color:#fff;padding:3rem 2rem 1.5rem;border-top:1px solid #374151;}
-.footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem;margin-bottom:2rem;}
-.footer-desc{font-size:13px;color:#9ca3af;line-height:1.75;margin-top:0.8rem;}
-.footer-col h4{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.8rem;}
-.footer-lnk{display:block;font-size:13px;color:#9ca3af;text-decoration:none;margin-bottom:6px;}
+footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1px solid #334155;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1.5fr;gap:2rem;max-width:1280px;margin:0 auto 2rem;}
+.footer-logo-img{height:40px;object-fit:contain;}
+.footer-desc{font-size:12px;color:#94A3B8;line-height:1.75;max-width:260px;margin-bottom:1rem;margin-top:0.8rem;}
+.footer-tagline{font-size:11px;color:rgba(255,255,255,0.4);font-style:italic;}
+.footer-col h4{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.9rem;}
+.footer-lnk{display:block;font-size:12px;color:#94A3B8;text-decoration:none;margin-bottom:6px;transition:color 0.2s;}
 .footer-lnk:hover{color:#fff;}
-.footer-bot{border-top:1px solid #374151;padding-top:1.5rem;max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
-.footer-copy{font-size:12px;color:#6b7280;}
-.footer-copy span{background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700;}
+.footer-agences-item{display:flex;align-items:center;gap:5px;font-size:12px;color:#94A3B8;margin-bottom:6px;}
+.footer-socials{display:flex;gap:8px;margin-top:0.8rem;}
+.footer-social-btn{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;transition:all 0.2s;}
+.fs-fb{background:#1877F2;color:#fff;}
+.fs-tt{background:#010101;color:#fff;}
+.fs-yt{background:#FF0000;color:#fff;}
+.fs-li{background:#0A66C2;color:#fff;}
+.fs-ig{background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;}
+.footer-social-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.3);}
+.footer-nl-wrap{position:relative;}
+.footer-nl-input{width:100%;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);border-radius:8px;padding:9px 48px 9px 12px;font-size:12px;color:#fff;font-family:'Outfit',sans-serif;outline:none;}
+.footer-nl-input::placeholder{color:rgba(255,255,255,0.35);}
+.footer-nl-btn{position:absolute;right:0;top:0;bottom:0;background:var(--red);border:none;width:40px;border-radius:0 8px 8px 0;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;transition:background 0.2s;}
+.footer-nl-btn:hover{background:var(--red-d);}
+.footer-bot{border-top:1px solid #334155;max-width:1280px;margin:0 auto;padding-top:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.footer-copy{font-size:12px;color:#64748B;}
+.footer-links-bot{display:flex;gap:1.5rem;}
+.footer-links-bot a{font-size:12px;color:#64748B;text-decoration:none;transition:color 0.2s;}
+.footer-links-bot a:hover{color:#fff;}
 
-/* ══════════════════════════════════════
-   GROUPY CHATBOT
-══════════════════════════════════════ */
-/* Bouton flottant */
+/* GROUPY CHATBOT */
 .groupy-fab{position:fixed;bottom:2rem;right:2rem;z-index:2000;cursor:pointer;transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);}
 .groupy-fab:hover{transform:scale(1.08);}
 .groupy-fab-inner{width:62px;height:62px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(27,79,219,0.4),0 4px 16px rgba(0,0,0,0.15);position:relative;overflow:hidden;}
@@ -130,12 +191,8 @@ footer{background:var(--g800);color:#fff;padding:3rem 2rem 1.5rem;border-top:1px
 @keyframes gpulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,0.5);}50%{box-shadow:0 0 0 6px rgba(34,197,94,0);}}
 .groupy-fab-label{position:absolute;right:70px;top:50%;transform:translateY(-50%);background:var(--g800);color:#fff;padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.2);opacity:0;transition:all 0.3s;pointer-events:none;}
 .groupy-fab:hover .groupy-fab-label{opacity:1;}
-
-/* Fenêtre chat */
 .groupy-window{position:fixed;bottom:7rem;right:2rem;z-index:2000;width:380px;height:580px;background:#fff;border:1.5px solid var(--g200);border-radius:24px;box-shadow:0 24px 80px rgba(0,0,0,0.15),0 8px 32px rgba(27,79,219,0.1);display:flex;flex-direction:column;overflow:hidden;transform:scale(0.8) translateY(40px);opacity:0;pointer-events:none;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);transform-origin:bottom right;}
 .groupy-window.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all;}
-
-/* Header chatbot */
 .gw-header{background:var(--grad);padding:1.2rem 1.2rem 1rem;flex-shrink:0;position:relative;overflow:hidden;}
 .gw-header::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.1);}
 .gw-header::after{content:'';position:absolute;bottom:-20px;left:-20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.08);}
@@ -148,8 +205,6 @@ footer{background:var(--g800);color:#fff;padding:3rem 2rem 1.5rem;border-top:1px
 .gw-close{background:rgba(255,255,255,0.15);border:none;color:#fff;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;}
 .gw-close:hover{background:rgba(255,255,255,0.3);}
 .gw-tagline{font-size:11px;color:rgba(255,255,255,0.7);margin-top:0.5rem;position:relative;z-index:1;}
-
-/* Messages */
 .gw-messages{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth;}
 .gw-messages::-webkit-scrollbar{width:4px;}
 .gw-messages::-webkit-scrollbar-thumb{background:var(--g200);border-radius:100px;}
@@ -164,20 +219,14 @@ footer{background:var(--g800);color:#fff;padding:3rem 2rem 1.5rem;border-top:1px
 .msg-time{font-size:10px;color:var(--g400);margin-top:3px;text-align:center;width:100%;}
 .msg.user .msg-time{text-align:right;margin-right:8px;}
 .msg.bot .msg-time{text-align:left;margin-left:36px;}
-
-/* Typing indicator */
 .typing-indicator{display:flex;gap:4px;align-items:center;padding:10px 14px;background:var(--g50);border:1.5px solid var(--g200);border-radius:18px;border-bottom-left-radius:5px;width:fit-content;}
 .typing-dot{width:7px;height:7px;border-radius:50%;background:var(--g400);animation:tdot 1.2s ease infinite;}
 .typing-dot:nth-child(2){animation-delay:0.2s;}
 .typing-dot:nth-child(3){animation-delay:0.4s;}
 @keyframes tdot{0%,60%,100%{transform:scale(0.8);opacity:0.5;}30%{transform:scale(1.1);opacity:1;}}
-
-/* Quick replies */
 .quick-replies{display:flex;flex-wrap:wrap;gap:6px;padding:0 1rem 0.5rem;flex-shrink:0;}
 .qr-btn{padding:6px 14px;border-radius:100px;border:1.5px solid rgba(27,79,219,0.25);background:var(--bpale);color:var(--blue);font-size:12px;font-weight:500;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;white-space:nowrap;}
 .qr-btn:hover{background:var(--blue);color:#fff;border-color:var(--blue);}
-
-/* Input */
 .gw-input-area{padding:0.8rem 1rem;border-top:1.5px solid var(--g200);flex-shrink:0;background:#fff;}
 .gw-input-row{display:flex;gap:8px;align-items:flex-end;}
 .gw-textarea{flex:1;background:var(--g50);border:1.5px solid var(--g200);border-radius:14px;padding:10px 14px;font-size:13px;font-family:'Outfit',sans-serif;color:var(--g800);outline:none;resize:none;max-height:100px;min-height:40px;transition:border-color 0.2s;line-height:1.4;}
@@ -189,43 +238,68 @@ footer{background:var(--g800);color:#fff;padding:3rem 2rem 1.5rem;border-top:1px
 .gw-footer{text-align:center;font-size:10px;color:var(--g400);margin-top:6px;}
 .gw-footer span{background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700;}
 
-/* Carte info rapide dans le chat */
-.info-card-chat{background:#fff;border:1.5px solid var(--g200);border-radius:var(--r);padding:10px 12px;margin-top:6px;font-size:12px;}
-.info-card-chat .ic-tit{font-weight:700;color:var(--g800);margin-bottom:4px;}
-.info-card-chat .ic-row{display:flex;justify-content:space-between;color:var(--g500);padding:2px 0;}
-.info-card-chat .ic-val{font-weight:600;color:var(--g800);}
-.ic-btn{display:block;width:100%;margin-top:8px;background:var(--grad);color:#fff;border:none;padding:8px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;text-align:center;text-decoration:none;}
-
+/* RESPONSIVE */
+@media(max-width:1024px){.footer-grid{grid-template-columns:1fr 1fr 1fr;}}
 @media(max-width:768px){
   nav{padding:0 1rem;}
   .nav-links{display:none;}
+  .hamburger{display:flex;}
   .hero-inner{grid-template-columns:1fr;}
   .hero-vis{display:none;}
   .vals{grid-template-columns:1fr;}
-  .footer-inner{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+  .footer-grid>div:first-child{grid-column:1/-1;}
   .groupy-window{width:calc(100vw - 2rem);right:1rem;height:70vh;}
   .missions-grid,.testi-grid{grid-template-columns:1fr;}
+}
+@media(max-width:480px){
+  .footer-grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
 <body>
 
 <!-- NAV -->
-<nav>
+<nav id="navbar">
   <a class="nav-logo" href="{% url 'home' %}">
-    <div class="logo-em">E</div>
-    <div><div class="logo-eden">EDEN GROUP</div><div class="logo-sub">Immobilier &amp; Foncier</div></div>
+    <div class="logo-box">E</div>
+    <div>
+      <div class="logo-name">EDEN GROUP</div>
+      <div class="logo-tagline">Le foncier sécurisé, notre engagement</div>
+    </div>
   </a>
   <div class="nav-links">
-    <a class="nav-lnk" href="{% url 'home' %}">Accueil</a>
-    <a class="nav-lnk" href="{% url 'sites_list' %}">Nos Sites</a>
-    <a class="nav-lnk" href="{% url 'carte' %}">Carte</a>
-    <a class="nav-lnk" href="{% url 'promotions' %}">Promotions</a>
-    <a class="nav-lnk active" href="{% url 'a_propos' %}">A Propos</a>
-    {% if user.is_staff %}<a class="nav-lnk" href="{% url 'dashboard_home' %}">Dashboard</a>{% endif %}
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'sites_list' or request.resolver_match.url_name == 'site_detail' %}active{% endif %}" href="{% url 'sites_list' %}">Nos Terrains</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_projets' %}active{% endif %}" href="{% url 'nos_projets' %}">Nos Projets</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' or request.resolver_match.url_name == 'une_evenement_detail' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'journal_kiosque' or request.resolver_match.url_name == 'journal_lire' %}active{% endif %}" href="{% url 'journal_kiosque' %}">📰 Documentation</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
+    {% if user.is_staff %}
+    <a class="nav-lnk" href="{% url 'dashboard_home' %}" style="color:var(--blue);font-weight:700;">Dashboard</a>
+    {% endif %}
   </div>
-  <a class="btn-cta" href="{% url 'sites_list' %}">Voir nos terrains</a>
+  <div class="nav-right">
+    <button class="btn-rdv" onclick="document.getElementById('cc-form')?.scrollIntoView({behavior:'smooth'})">📅 Contact</button>
+  </div>
+  <button class="hamburger" onclick="toggleMob()"><span></span><span></span><span></span></button>
 </nav>
+
+<div class="mob-menu" id="mob-menu">
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'sites_list' or request.resolver_match.url_name == 'site_detail' %}active{% endif %}" href="{% url 'sites_list' %}">Nos Terrains</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_projets' %}active{% endif %}" href="{% url 'nos_projets' %}">Nos Projets</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' or request.resolver_match.url_name == 'une_evenement_detail' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'journal_kiosque' or request.resolver_match.url_name == 'journal_lire' %}active{% endif %}" href="{% url 'journal_kiosque' %}">📰 Documentation</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'promotions' %}active{% endif %}" href="{% url 'promotions' %}">Promotions</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
+  {% if user.is_staff %}<a class="nav-lnk" href="{% url 'dashboard_home' %}">Dashboard</a>{% endif %}
+  <button class="btn-rdv" style="width:100%;margin-top:8px;justify-content:center;" onclick="document.getElementById('cc-form')?.scrollIntoView({behavior:'smooth'})">📅 Contact</button>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -332,36 +406,65 @@ footer{background:var(--g800);color:#fff;padding:3rem 2rem 1.5rem;border-top:1px
   </div>
 </div>
 
+<!-- ══ FOOTER ══ -->
 <div class="footer-bar"></div>
 <footer>
-  <div class="footer-inner">
+  <div class="footer-grid">
     <div>
-      <div style="display:flex;align-items:center;gap:8px;"><div class="logo-em">E</div><div class="logo-eden" style="font-size:16px;">EDEN GROUP</div></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;">
+        <div class="logo-box" style="width:36px;height:36px;font-size:15px;border-radius:8px;">E</div>
+        <div style="font-size:15px;font-weight:900;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">EDEN GROUP</div>
+      </div>
       <p class="footer-desc">Votre partenaire foncier de confiance depuis 2018.</p>
+      <div class="footer-tagline">Le foncier sécurisé, notre engagement</div>
     </div>
-    <div class="footer-col"><h4>Navigation</h4>
+    <div class="footer-col">
+      <h4>Liens rapides</h4>
       <a class="footer-lnk" href="{% url 'home' %}">Accueil</a>
-      <a class="footer-lnk" href="{% url 'sites_list' %}">Nos sites</a>
-      <a class="footer-lnk" href="{% url 'carte' %}">Carte</a>
-      <a class="footer-lnk" href="{% url 'promotions' %}">Promotions</a>
+      <a class="footer-lnk" href="{% url 'sites_list' %}">Nos Terrains</a>
+      <a class="footer-lnk" href="{% url 'nos_projets' %}">Nos Projets</a>
+      <a class="footer-lnk" href="{% url 'nos_services' %}">Nos Services</a>
+      <a class="footer-lnk" href="{% url 'nos_agences' %}">Nos Agences</a>
+      <a class="footer-lnk" href="{% url 'journal_kiosque' %}">Journal</a>
+      <a class="footer-lnk" href="{% url 'a_propos' %}">À propos</a>
+      <a class="footer-lnk" href="{% url 'contact' %}">Contact</a>
     </div>
-    <div class="footer-col"><h4>Contact</h4>
-      <a class="footer-lnk">📞 +237 600 000 000</a>
-      <a class="footer-lnk">✉ info@edengroup.cm</a>
-      <a class="footer-lnk">📍 Yaounde, Cameroun</a>
+    <div class="footer-col">
+      <h4>Nos agences</h4>
+      <div class="footer-agences-item">📍 Yaoundé (Siège)</div>
+      <div class="footer-agences-item">📍 Bafoussam</div>
+      <div class="footer-agences-item">📍 Dschang</div>
+      <div class="footer-agences-item">📍 Bangangté</div>
+    </div>
+    <div class="footer-col">
+      <h4>Suivez-nous</h4>
+      <div class="footer-socials">
+        <a href="#" class="footer-social-btn fs-fb">f</a>
+        <a href="#" class="footer-social-btn fs-tt" style="color:#fff;">T</a>
+        <a href="#" class="footer-social-btn fs-yt" style="color:#fff;">▶</a>
+        <a href="#" class="footer-social-btn fs-li" style="color:#fff;">in</a>
+        <a href="#" class="footer-social-btn fs-ig" style="color:#fff;">📷</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Newsletter</h4>
+      <div style="font-size:12px;color:#94A3B8;margin-bottom:0.8rem;">Recevez nos offres et actualités</div>
+      <div class="footer-nl-wrap">
+        <input class="footer-nl-input" type="email" placeholder="Votre email" id="footer-nl">
+        <button class="footer-nl-btn" onclick="souscrireFooter()">→</button>
+      </div>
     </div>
   </div>
   <div class="footer-bot">
-    <div class="footer-copy">© 2025 <span>EDEN GROUP</span>. Tous droits reserves.</div>
-    <a href="{% url 'home' %}" style="font-size:13px;color:#9ca3af;text-decoration:none;">← Retour accueil</a>
+    <div class="footer-copy">© 2026 EDEN GROUP ENTREPRISE. Tous droits réservés.</div>
+    <div class="footer-links-bot">
+      <a href="#">Mentions légales</a>
+      <a href="#">Politique de confidentialité</a>
+    </div>
   </div>
 </footer>
 
-<!-- ══════════════════════════════════════
-     GROUPY CHATBOT
-══════════════════════════════════════ -->
-
-<!-- Bouton flottant -->
+<!-- GROUPY CHATBOT -->
 <div class="groupy-fab" onclick="toggleGroupy()">
   <div class="groupy-fab-inner">
     <span class="groupy-fab-ico">🤖</span>
@@ -370,33 +473,19 @@ footer{background:var(--g800);color:#fff;padding:3rem 2rem 1.5rem;border-top:1px
   <div class="groupy-fab-label">Parler a GROUPY ✨</div>
 </div>
 
-<!-- Fenêtre chat -->
 <div class="groupy-window" id="groupy-window">
-  <!-- Header -->
   <div class="gw-header">
     <div class="gw-top">
       <div class="gw-bot-info">
-        <div class="gw-bot-av">
-          🤖
-          <div class="gw-bot-status"></div>
-        </div>
-        <div>
-          <div class="gw-bot-name">GROUPY</div>
-          <div class="gw-bot-sub">Assistant EDEN GROUP · En ligne</div>
-        </div>
+        <div class="gw-bot-av">🤖<div class="gw-bot-status"></div></div>
+        <div><div class="gw-bot-name">GROUPY</div><div class="gw-bot-sub">Assistant EDEN GROUP · En ligne</div></div>
       </div>
       <button class="gw-close" onclick="toggleGroupy()">✕</button>
     </div>
     <div class="gw-tagline">Je reponds a toutes vos questions sur EDEN GROUP 24h/24 ✨</div>
   </div>
-
-  <!-- Messages -->
   <div class="gw-messages" id="gw-messages"></div>
-
-  <!-- Quick replies -->
   <div class="quick-replies" id="gw-qr"></div>
-
-  <!-- Input -->
   <div class="gw-input-area">
     <div class="gw-input-row">
       <textarea class="gw-textarea" id="gw-input" placeholder="Posez votre question a GROUPY..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
@@ -407,12 +496,37 @@ footer{background:var(--g800);color:#fff;padding:3rem 2rem 1.5rem;border-top:1px
 </div>
 
 <script>
-// ══════════════════════════════════════
-// GROUPY — Assistant EDEN GROUP
-// Version 2.0 — Detection améliorée + API Claude
-// ══════════════════════════════════════
+// ── NAV ──
+function toggleMob() {
+  document.getElementById('mob-menu').classList.toggle('open');
+}
 
-// ── Données EDEN GROUP (base locale) ──
+function souscrireFooter() {
+  const e = document.getElementById('footer-nl').value;
+  if (!e) return;
+  alert('✅ Inscription confirmée !');
+  document.getElementById('footer-nl').value = '';
+}
+
+window.addEventListener('scroll', function() {
+  const nav = document.getElementById('navbar');
+  if (window.scrollY > 40) {
+    nav.classList.add('scrolled');
+  } else {
+    nav.classList.remove('scrolled');
+  }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const nav = document.getElementById('navbar');
+  if (window.scrollY > 40) {
+    nav.classList.add('scrolled');
+  } else {
+    nav.classList.remove('scrolled');
+  }
+});
+
+// ── GROUPY CHATBOT ──
 const EDEN = {
   telephone: "+237 600 000 000",
   whatsapp: "237600000000",
@@ -425,12 +539,18 @@ const EDEN = {
   clients: "500+",
 };
 
-// Données chargées depuis l'API Django
 let SITES = [];
 let STATS = {};
 let PARCELLES = [];
+let isOpen = false;
+let isTyping = false;
+let historiqueMessages = [];
 
-// ── Charger les données temps réel ──
+const messagesEl = document.getElementById('gw-messages');
+const qrEl = document.getElementById('gw-qr');
+const inputEl = document.getElementById('gw-input');
+const sendBtn = document.getElementById('gw-send-btn');
+
 async function chargerDonnees() {
   try {
     const [sr, str, pr] = await Promise.all([
@@ -441,270 +561,21 @@ async function chargerDonnees() {
     SITES = (sr.features || []).map(f => f.properties).filter(p => p && p.nom);
     STATS = str;
     PARCELLES = (pr.features || []).map(f => f.properties).filter(p => p && p.numero);
-  } catch(e) {
-    console.log('Données API non disponibles:', e);
-  }
-}
-
-// ── Construire le contexte pour Claude ──
-function construireContexte() {
-  let ctx = `=== EDEN GROUP - DONNÉES EN TEMPS RÉEL ===\n\n`;
-
-  ctx += `ENTREPRISE:\n`;
-  ctx += `- Nom: EDEN GROUP - Plateforme Foncière Premium\n`;
-  ctx += `- Fondée en ${EDEN.fondation} à Yaoundé, Cameroun\n`;
-  ctx += `- Adresse: ${EDEN.adresse}\n`;
-  ctx += `- Téléphone: ${EDEN.telephone}\n`;
-  ctx += `- WhatsApp: ${EDEN.telephone}\n`;
-  ctx += `- Email: ${EDEN.email}\n`;
-  ctx += `- Horaires: ${EDEN.horaires}\n`;
-  ctx += `- Équipe: ${EDEN.equipe}\n`;
-  ctx += `- Satisfaction clients: ${EDEN.satisfaction}\n`;
-  ctx += `- Clients servis: ${EDEN.clients}\n\n`;
-
-  if (STATS && Object.keys(STATS).length > 0) {
-    ctx += `STATISTIQUES ACTUELLES:\n`;
-    ctx += `- Sites fonciers actifs: ${STATS.sites || 0}\n`;
-    ctx += `- Parcelles disponibles: ${STATS.disponibles || 0}\n`;
-    ctx += `- Parcelles vendues: ${STATS.vendues || 0}\n`;
-    ctx += `- Total parcelles: ${STATS.total || 0}\n`;
-    ctx += `- Taux de vente: ${STATS.pourcentage || 0}%\n\n`;
-  }
-
-  if (SITES.length > 0) {
-    ctx += `SITES FONCIERS:\n`;
-    SITES.forEach(s => {
-      ctx += `\n• ${s.nom}\n`;
-      ctx += `  - Localisation: ${s.localisation}${s.ville ? ', ' + s.ville : ''}\n`;
-      ctx += `  - Statut: ${s.statut === 'disponible' ? 'Disponible' : s.statut === 'en_cours' ? 'En cours de vente' : s.statut === 'complet' ? 'Complet' : s.statut}\n`;
-      ctx += `  - Parcelles disponibles: ${s.disponibles} sur ${s.total} au total\n`;
-      if (s.prix_min) ctx += `  - Prix minimum: ${(s.prix_min / 1000000).toFixed(1)}M FCFA\n`;
-      if (s.en_promotion) ctx += `  - ⚠ EN PROMOTION\n`;
-      if (s.description_courte) ctx += `  - Description: ${s.description_courte}\n`;
-    });
-    ctx += '\n';
-  } else {
-    ctx += `SITES FONCIERS:\nSites à Yaoundé et environs (Mfoundi, Bastos, Nkolbisson, Ekounou)\n\n`;
-  }
-
-  if (PARCELLES.length > 0) {
-    const disponibles = PARCELLES.filter(p => p.statut === 'disponible');
-    const promos = PARCELLES.filter(p => p.en_promotion);
-    ctx += `PARCELLES DISPONIBLES (${disponibles.length} au total):\n`;
-    disponibles.slice(0, 10).forEach(p => {
-      ctx += `• Parcelle ${p.numero} - ${p.site_nom}: ${p.superficie}m² à ${(p.prix / 1000000).toFixed(1)}M FCFA`;
-      if (p.en_promotion) ctx += ` 🔥 PROMO -${p.reduction}%`;
-      ctx += '\n';
-    });
-    if (promos.length > 0) {
-      ctx += `\nPARCELLES EN PROMOTION (${promos.length}):\n`;
-      promos.forEach(p => {
-        ctx += `• ${p.site_nom} - Parcelle ${p.numero}: ${p.superficie}m², était ${(p.prix * 100 / (100 - p.reduction) / 1000000).toFixed(1)}M → maintenant ${(p.prix / 1000000).toFixed(1)}M FCFA (-${p.reduction}%)\n`;
-      });
-    }
-    ctx += '\n';
-  }
-
-  ctx += `URLS IMPORTANTES:\n`;
-  ctx += `- Catalogue sites: http://127.0.0.1:8000/sites/\n`;
-  ctx += `- Carte interactive: http://127.0.0.1:8000/carte/\n`;
-  ctx += `- Promotions: http://127.0.0.1:8000/promotions/\n`;
-  ctx += `- Contact: http://127.0.0.1:8000/contact/\n`;
-
-  return ctx;
-}
-
-// ── Appel API Claude via proxy Django ──
-async function appellerClaude(question, historiqueMessages) {
-  // Construction du system prompt avec données temps réel
-  const systemPrompt = `Tu es GROUPY, l'assistant virtuel officiel d'EDEN GROUP.
-
-${construireContexte()}
-
-=== TES RÈGLES ===
-1. Tu réponds UNIQUEMENT aux questions liées à EDEN GROUP et à l'immobilier/foncier
-2. Si quelqu'un pose une question hors sujet (politique, sport, cuisine, etc.), réponds poliment : "Je suis spécialisé sur EDEN GROUP et le foncier. Je peux vous aider sur nos terrains, prix, et processus de réservation. Qu'est-ce qui vous intéresse ?"
-3. Tes réponses sont en FRANÇAIS, claires, concises (maximum 150 mots), professionnelles mais chaleureuses
-4. Utilise des emojis pertinents pour rendre tes réponses vivantes
-5. Quand tu parles de prix, cite toujours les vraies données disponibles ci-dessus
-6. Pour finaliser une réservation, oriente TOUJOURS vers le téléphone ${EDEN.telephone}
-7. Tu t'appelles GROUPY et tu es fier de représenter EDEN GROUP
-8. Si tu ne sais pas quelque chose de précis, dis-le honnêtement et oriente vers l'équipe
-9. Quand c'est pertinent, mentionne la carte interactive pour visualiser les terrains
-10. Sois toujours positif et encourage le client à faire confiance à EDEN GROUP`;
-
-  // Construire les messages avec historique
-  const messages = [];
-  historiqueMessages.slice(-6).forEach(m => {
-    messages.push({ role: m.role, content: m.content });
-  });
-  messages.push({ role: 'user', content: question });
-
-  try {
-    // Essayer le proxy Django d'abord
-    const resp = await fetch('/api/groupy/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: question,
-        historique: historiqueMessages.slice(-6),
-        contexte: construireContexte()
-      })
-    });
-    if (resp.ok) {
-      const data = await resp.json();
-      if (data.success && data.answer) return data.answer;
-    }
   } catch(e) {}
-
-  // Appel direct API Anthropic (fallback)
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 600,
-        system: systemPrompt,
-        messages: messages
-      })
-    });
-    if (resp.ok) {
-      const data = await resp.json();
-      if (data.content && data.content[0]) return data.content[0].text;
-    }
-  } catch(e) {}
-
-  // Fallback final
-  return fallbackReponse(question);
 }
-
-// ── Fallback local si API indisponible ──
-function fallbackReponse(question) {
-  const q = question.toLowerCase();
-
-  const mots = {
-    salutation: ['bonjour', 'bonsoir', 'salut', 'hello', 'bonne', 'journee', 'soiree', 'coucou', 'hi'],
-    localisation: ['trouve', 'situe', 'adresse', 'ou etes', 'ou se trouve', 'bureau', 'siege', 'venir', 'localisation', 'aller'],
-    reservation: ['reserver', 'reservation', 'acheter', 'comment faire', 'etapes', 'procedure', 'comment proceder', 'acquerir', 'acquérir', 'achat'],
-    prix: ['prix', 'tarif', 'cout', 'coute', 'combien', 'budget', 'fcfa', 'million', 'argent'],
-    sites: ['site', 'terrain', 'parcelle', 'disponible', 'catalogue', 'liste', 'lotissement', 'zone'],
-    promo: ['promo', 'promotion', 'reduction', 'remise', 'offre', 'solde'],
-    contact: ['contact', 'appeler', 'whatsapp', 'conseiller', 'agent', 'parler', 'humain', 'telephone', 'email'],
-    horaires: ['horaire', 'heure', 'ouvert', 'ferme', 'quand'],
-    titre: ['titre', 'foncier', 'document', 'papier', 'legal', 'juridique', 'certifie'],
-    paiement: ['paiement', 'payer', 'financement', 'credit', 'facilite', 'mensualite', 'acompte'],
-  };
-
-  const detecter = (categorie) => mots[categorie].some(m => q.includes(m));
-
-  if (detecter('salutation')) {
-    return `Bonjour ! 👋 Je suis **GROUPY**, l'assistant EDEN GROUP.\n\nJe peux vous renseigner sur :\n🏡 Nos sites et parcelles disponibles\n💰 Les prix et budgets\n📋 Comment réserver\n📍 Notre localisation\n🔥 Nos promotions\n\nQue souhaitez-vous savoir ?`;
-  }
-  if (detecter('localisation')) {
-    return `📍 **EDEN GROUP** est situé :\n\n🏢 ${EDEN.adresse}\n📞 ${EDEN.telephone}\n✉ ${EDEN.email}\n🕐 ${EDEN.horaires}`;
-  }
-  if (detecter('reservation')) {
-    return `📋 **Pour réserver une parcelle :**\n\n1️⃣ Choisissez sur notre catalogue ou carte\n2️⃣ Cliquez "Réserver" ou appelez-nous\n3️⃣ Notre équipe vous contacte sous 24h\n4️⃣ Signature contrat + titre foncier ✅\n\n⚡ Délai moyen : **48h**\n📞 ${EDEN.telephone}`;
-  }
-  if (detecter('prix')) {
-    let r = `💰 **Prix de nos parcelles :**\n\n`;
-    if (SITES.length > 0) {
-      SITES.filter(s => s.prix_min).forEach(s => {
-        r += `🏡 **${s.nom}** : à partir de ${(s.prix_min/1000000).toFixed(1)}M FCFA\n`;
-      });
-      r += `\n💡 Prix selon superficie et localisation.\n📞 Appelez-nous : ${EDEN.telephone}`;
-    } else {
-      r += `Nos parcelles varient de **2.5M à 15M FCFA** selon la superficie et le site.\n📞 ${EDEN.telephone}`;
-    }
-    return r;
-  }
-  if (detecter('sites')) {
-    if (SITES.length > 0) {
-      let r = `🏡 **Nos sites fonciers :**\n\n`;
-      SITES.forEach(s => {
-        const e = s.statut === 'disponible' ? '🟢' : s.statut === 'en_cours' ? '🟡' : '🔴';
-        r += `${e} **${s.nom}** — ${s.localisation}\n   ${s.disponibles} disponible(s) / ${s.total} total\n`;
-        if (s.prix_min) r += `   Dès ${(s.prix_min/1000000).toFixed(1)}M FCFA\n`;
-        r += '\n';
-      });
-      return r;
-    }
-    return `🏡 Nous proposons plusieurs sites à Yaoundé.\nConsultez notre catalogue : [Voir les sites](/sites/)`;
-  }
-  if (detecter('promo')) {
-    const promos = PARCELLES.filter(p => p.en_promotion);
-    if (promos.length > 0) {
-      let r = `🔥 **${promos.length} promotion(s) en cours :**\n\n`;
-      promos.forEach(p => { r += `• **${p.site_nom}** - Parcelle ${p.numero} : -${p.reduction}% 🔥\n   ${(p.prix/1000000).toFixed(1)}M FCFA pour ${p.superficie}m²\n`; });
-      return r;
-    }
-    return `🔥 Nous avons régulièrement des promotions jusqu'à **-20%** !\nConsultez notre page promotions pour les offres actuelles.`;
-  }
-  if (detecter('contact')) {
-    return `📞 **Contactez EDEN GROUP :**\n\n💬 WhatsApp : ${EDEN.telephone}\n📞 Tél : ${EDEN.telephone}\n✉ Email : ${EDEN.email}\n🕐 ${EDEN.horaires}`;
-  }
-  if (detecter('horaires')) {
-    return `🕐 **Horaires EDEN GROUP :**\n\n📅 Lun-Ven : 8h00 - 18h00\n📅 Samedi : 9h00 - 13h00\n📅 Dimanche : Fermé\n\n💬 GROUPY disponible 24h/24 !`;
-  }
-  if (detecter('titre')) {
-    return `📜 **Sécurité juridique EDEN GROUP :**\n\n✅ Titres fonciers certifiés\n✅ Vérification juridique complète\n✅ Enregistrement au Cadastre\n✅ Accompagnement notarial\n✅ Garantie EDEN GROUP\n\n⚖ 100% sécurisé !`;
-  }
-  if (detecter('paiement')) {
-    return `💳 **Options de paiement :**\n\n✅ Paiement comptant\n✅ Acompte + solde\n✅ Facilités selon dossier\n💰 Prix négociables\n\n📞 Étude de dossier : ${EDEN.telephone}`;
-  }
-
-  return `Je vais transmettre votre question à notre équipe.\n\nEn attendant :\n📞 **${EDEN.telephone}**\n✉ ${EDEN.email}\n💬 WhatsApp disponible !`;
-}
-
-// ── Boutons de réponse rapide dynamiques ──
-function getQuickReplies(context) {
-  const defaults = [
-    "Nos sites disponibles",
-    "Nos prix",
-    "Comment réserver ?",
-    "Où êtes-vous ?",
-    "Nos promotions",
-    "Nous contacter"
-  ];
-
-  if (context === 'sites') return ["Nos prix", "Comment réserver ?", "Voir la carte", "Promotions"];
-  if (context === 'prix') return ["Comment réserver ?", "Promotions disponibles", "Parler à un conseiller", "Nos sites"];
-  if (context === 'reservation') return ["Nos sites disponibles", "Nos prix", "Nous contacter", "Voir la carte"];
-  if (context === 'contact') return ["Réserver une parcelle", "Nos sites", "Nos horaires", "Nos prix"];
-  if (context === 'promo') return ["Voir nos sites", "Comment réserver ?", "Nos prix", "Nous contacter"];
-  return defaults;
-}
-
-// ══════════════════════════════════════
-// INTERFACE CHATBOT
-// ══════════════════════════════════════
-
-let isOpen = false;
-let isTyping = false;
-let historiqueMessages = [];
-
-const messagesEl = document.getElementById('gw-messages');
-const qrEl = document.getElementById('gw-qr');
-const inputEl = document.getElementById('gw-input');
-const sendBtn = document.getElementById('gw-send-btn');
 
 function toggleGroupy() {
   isOpen = !isOpen;
   const win = document.getElementById('groupy-window');
   win.classList.toggle('open', isOpen);
   if (isOpen && messagesEl.children.length === 0) {
-    // Message d'accueil avec données réelles
     setTimeout(() => {
       let accueil = `👋 Bonjour ! Je suis **GROUPY**, l'assistant EDEN GROUP.\n\n`;
       if (STATS && STATS.disponibles > 0) {
         accueil += `📊 En ce moment : **${STATS.disponibles} parcelles disponibles** sur **${STATS.sites || SITES.length} sites** actifs.\n\n`;
       }
       accueil += `Je peux répondre à toutes vos questions sur nos terrains, prix, processus de réservation et plus encore.\n\nQue souhaitez-vous savoir ? ✨`;
-      addBotMessage(accueil, getQuickReplies('default'));
+      addBotMessage(accueil, ["Nos sites disponibles", "Nos prix", "Comment réserver ?", "Où êtes-vous ?", "Nos promotions", "Nous contacter"]);
     }, 350);
   }
   if (isOpen) setTimeout(() => inputEl.focus(), 500);
@@ -718,39 +589,27 @@ function formatTexte(text) {
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color:var(--blue);font-weight:600;text-decoration:underline;" target="_blank">$1</a>');
 }
 
-function addBotMessage(text, quickReplies = [], extras = {}) {
+function addBotMessage(text, quickReplies = []) {
   const now = new Date().toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
   const typing = document.getElementById('typing-indicator');
   if (typing) typing.remove();
 
   const msgEl = document.createElement('div');
   msgEl.className = 'msg bot';
-
-  let extras_html = '';
-  if (extras.whatsapp) {
-    extras_html += `<div style="margin-top:8px;"><a href="https://wa.me/${EDEN.whatsapp}?text=Bonjour+EDEN+GROUP" class="ic-btn" target="_blank" style="background:#25D366;color:#fff;display:block;text-align:center;padding:8px;border-radius:8px;text-decoration:none;font-size:12px;font-weight:700;">💬 Ouvrir WhatsApp</a></div>`;
-  }
-  if (extras.link) {
-    extras_html += `<div style="margin-top:8px;"><a href="${extras.link.url}" class="ic-btn" target="${extras.link.url.startsWith('http') && !extras.link.url.includes('127.0.0.1') ? '_blank' : '_self'}" style="background:var(--grad);color:#fff;display:block;text-align:center;padding:8px;border-radius:8px;text-decoration:none;font-size:12px;font-weight:700;">${extras.link.text}</a></div>`;
-  }
-
   msgEl.innerHTML = `
     <div class="msg-av">🤖</div>
     <div style="max-width:82%;">
-      <div class="msg-bubble">${formatTexte(text)}${extras_html}</div>
+      <div class="msg-bubble">${formatTexte(text)}</div>
       <div class="msg-time">GROUPY · ${now}</div>
     </div>`;
   messagesEl.appendChild(msgEl);
 
-  // Quick replies
   qrEl.innerHTML = '';
   quickReplies.forEach(qr => {
     const btn = document.createElement('button');
     btn.className = 'qr-btn';
     btn.textContent = qr;
-    btn.onclick = () => {
-      if (!isTyping) sendMessage(qr);
-    };
+    btn.onclick = () => { if (!isTyping) sendMessage(qr); };
     qrEl.appendChild(btn);
   });
 
@@ -803,40 +662,36 @@ async function sendMessage(text = null) {
   sendBtn.disabled = true;
   showTyping();
 
-  // Délai réaliste
-  const delay = 600 + Math.random() * 700;
-  await new Promise(r => setTimeout(r, delay));
+  await new Promise(r => setTimeout(r, 600 + Math.random() * 700));
 
   try {
-    const reponse = await appellerClaude(userText, historiqueMessages.slice(0, -1));
-
-    // Détecter le contexte pour les quick replies
-    const q = userText.toLowerCase();
-    let ctx = 'default';
-    if (/site|terrain|parcelle|disponible/i.test(q)) ctx = 'sites';
-    else if (/prix|tarif|combien|cout|budget/i.test(q)) ctx = 'prix';
-    else if (/reserver|reservation|acheter|comment/i.test(q)) ctx = 'reservation';
-    else if (/contact|appeler|whatsapp|parler/i.test(q)) ctx = 'contact';
-    else if (/promo|promotion|reduction/i.test(q)) ctx = 'promo';
-
-    // Détecter si la réponse parle de WhatsApp → ajouter bouton
-    const needsWA = /whatsapp|contactez|appelez|telephone/i.test(reponse);
-    // Détecter si la réponse parle de la carte
-    const needsMap = /carte|visualiser|voir.*terrain|map/i.test(reponse);
-
-    addBotMessage(
-      reponse,
-      getQuickReplies(ctx),
-      {
-        whatsapp: needsWA,
-        link: needsMap ? { text: '🗺 Ouvrir la carte interactive', url: '/carte/' } : null
+    const resp = await fetch('/api/groupy/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: userText,
+        historique: historiqueMessages.slice(0, -1)
+      })
+    });
+    if (resp.ok) {
+      const data = await resp.json();
+      if (data.success && data.answer) {
+        addBotMessage(data.answer, ["Nos sites", "Nos prix", "Comment réserver ?", "Nous contacter"]);
+        isTyping = false;
+        sendBtn.disabled = false;
+        if (isOpen) inputEl.focus();
+        return;
       }
+    }
+    // Fallback
+    addBotMessage(
+      `Je suis désolé, je rencontre une difficulté technique. Contactez-nous directement :\n\n📞 **${EDEN.telephone}**\n✉ ${EDEN.email}`,
+      ["Nos sites", "Nos prix", "Comment réserver ?", "Nous contacter"]
     );
   } catch(e) {
     addBotMessage(
-      `Désolé, je rencontre une difficulté. Contactez-nous directement :\n\n📞 **${EDEN.telephone}**\n✉ ${EDEN.email}`,
-      ['Nos sites', 'Nos prix', 'Comment réserver ?'],
-      { whatsapp: true }
+      `Je suis désolé, je rencontre une difficulté technique. Contactez-nous directement :\n\n📞 **${EDEN.telephone}**\n✉ ${EDEN.email}`,
+      ["Nos sites", "Nos prix", "Comment réserver ?", "Nous contacter"]
     );
   }
 
@@ -854,9 +709,7 @@ function autoResize(el) {
   el.style.height = Math.min(el.scrollHeight, 100) + 'px';
 }
 
-// ── Charger les données au démarrage ──
 chargerDonnees();
-</script>
 </script>
 </body>
 </html>

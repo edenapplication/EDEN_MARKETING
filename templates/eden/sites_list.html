@@ -1,204 +1,1392 @@
+{% load static %}
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nos Sites Fonciers — EDEN GROUP</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g400:#9CA3AF;--g600:#4B5563;--g800:#1F2937;}
-body{font-family:'Segoe UI',Arial,sans-serif;background:#fff;color:var(--g800);}
-h1,h2,h3{font-family:Georgia,serif;}
-nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;background:rgba(255,255,255,0.95);border-bottom:1.5px solid var(--g200);backdrop-filter:blur(20px);}
+:root{
+  --blue:#1B4FDB;--blue-d:#0A2494;--blue-pale:#EEF3FF;
+  --red:#C8102E;--red-d:#A00C24;
+  --grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
+  --grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
+  --g50:#F8FAFF;--g100:#F0F4FF;--g200:#E2E8F0;
+  --g400:#94A3B8;--g500:#64748B;--g600:#475569;--g800:#1E293B;
+  --sh:0 2px 12px rgba(0,0,0,0.08);
+  --sh-lg:0 8px 40px rgba(27,79,219,0.15);
+  --r:10px;--rl:16px;--rxl:24px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:#fff;color:var(--g800);overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-thumb{background:var(--grad-h);border-radius:100px;}
+
+/* ══ NAV TRANSPARENTE ══ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;height:70px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 2rem;background:transparent;
+  border-bottom:1px solid transparent;box-shadow:none;
+  transition:background .4s ease,backdrop-filter .4s ease,border-color .4s ease,box-shadow .4s ease;
+}
+nav.scrolled{
+  background:rgba(255,255,255,.92);backdrop-filter:blur(22px);
+  -webkit-backdrop-filter:blur(22px);
+  border-bottom:1px solid rgba(226,232,240,.9);
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
-.logo-em{width:40px;height:40px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-weight:700;font-size:18px;color:#fff;}
-.logo-name{font-family:Georgia,serif;font-size:19px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.nav-links{display:flex;align-items:center;}
-.nav-lnk{padding:8px 16px;font-size:13px;font-weight:500;color:var(--g600);text-decoration:none;border-radius:8px;transition:all 0.2s;}
-.nav-lnk:hover,.nav-lnk.active{color:var(--blue);background:var(--bpale);}
-.btn-cta{background:var(--grad);color:#fff;padding:9px 20px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;}
-.btn-cta:hover{opacity:0.88;}
+.logo-box{width:42px;height:42px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#fff;}
+.logo-name{font-size:18px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.logo-tagline{font-size:9px;color:var(--g500);letter-spacing:1.5px;text-transform:uppercase;}
+.nav-links{display:flex;align-items:center;gap:0;}
+.nav-lnk{padding:6px 13px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.85);text-decoration:none;border-radius:7px;transition:all 0.18s;position:relative;}
+.nav-lnk:hover,.nav-lnk.active{color:#fff;}
+.nav-lnk.active::after{content:'';position:absolute;bottom:-4px;left:13px;right:13px;height:2px;background:var(--red);border-radius:100px;}
+nav.scrolled .nav-lnk{color:var(--g600);}
+nav.scrolled .nav-lnk:hover,nav.scrolled .nav-lnk.active{color:var(--blue);}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-icon-btn{width:36px;height:36px;border-radius:8px;border:1.5px solid rgba(255,255,255,0.25);background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:all 0.18s;color:#fff;text-decoration:none;}
+.nav-icon-btn:hover{border-color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.2);}
+nav.scrolled .nav-icon-btn{background:#fff;border-color:var(--g200);color:var(--g600);}
+nav.scrolled .nav-icon-btn:hover{border-color:var(--blue);background:var(--blue-pale);}
+.btn-rdv{background:var(--red);color:#fff;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:7px;text-decoration:none;}
+.btn-rdv:hover{background:var(--red-d);transform:translateY(-1px);box-shadow:0 4px 16px rgba(200,16,46,0.3);}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:none;padding:6px;}
+.hamburger span{width:22px;height:2px;background:#fff;border-radius:2px;display:block;transition:background 0.3s;}
+nav.scrolled .hamburger span{background:var(--g800);}
+.mob-menu{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(255,255,255,0.98);border-bottom:1px solid var(--g200);padding:1rem 1.5rem;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.1);backdrop-filter:blur(10px);}
+.mob-menu.open{display:flex;flex-direction:column;gap:4px;}
+.mob-menu .nav-lnk{color:var(--g600);padding:8px 0;}
+.mob-menu .nav-lnk.active{color:var(--blue);}
+.mob-menu .nav-lnk.active::after{display:none;}
 
-.page-head{padding:8rem 2rem 3rem;background:linear-gradient(to bottom,var(--bpale),#fff);border-bottom:1.5px solid var(--g200);}
-.ph-eyebrow{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.5rem;}
-.ph-title{font-family:Georgia,serif;font-size:2.4rem;font-weight:700;color:var(--g800);}
-.ph-title em{font-style:italic;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+/* ══ HERO CARROUSEL ══ */
+/* ══ HERO CARROUSEL — MÊME DIMENSION QUE NOS PROJETS ══ */
+/* ══ HERO CARROUSEL — STYLE COMME NOS PROJETS ══ */
+.hero{
+    position:relative;
+    height:400px;
+    overflow:hidden;
+}
 
-.container{max-width:1300px;margin:0 auto;padding:0 2rem;}
-.controls{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:2rem 0 1.5rem;}
-.search-wrap{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid var(--g200);border-radius:12px;padding:10px 16px;flex:1;max-width:380px;}
-.search-wrap:focus-within{border-color:var(--blue);}
-.search-wrap input{flex:1;background:none;border:none;outline:none;color:var(--g800);font-size:14px;}
-.search-wrap input::placeholder{color:var(--g400);}
+.hero-slides{
+    position:absolute;
+    inset:0;
+    z-index:0;
+}
+
+.hero-slide{
+    position:absolute;
+    inset:0;
+    opacity:0;
+    transition:opacity 1.2s ease;
+}
+
+.hero-slide.active{
+    opacity:1;
+}
+
+.hero-slide img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+.hero-slide-placeholder{
+    width:100%;
+    height:100%;
+    background:linear-gradient(135deg,#0A2494 0%,#1B4FDB 45%,#7B20B4 75%,#C8102E 100%);
+}
+
+.hero-overlay{
+    position:absolute;
+    inset:0;
+    background:linear-gradient(to right,rgba(10,22,40,0.55) 0%,rgba(10,22,40,0.3) 60%,rgba(10,22,40,0.1) 100%);
+    z-index:1;
+}
+
+.hero-inner{
+    position:absolute;
+    inset:0;
+    z-index:3;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 2rem;
+    padding-top:70px;
+    max-width:1280px;
+    margin:0 auto;
+    left:0;
+    right:0;
+}
+
+.hero-left{
+    max-width:560px;
+    position:relative;
+    z-index:20;
+}
+
+/* ═══ MESSAGE DE BIENVENUE COMME NOS PROJETS ═══ */
+.hero-p-tit{
+    font-size:clamp(2.5rem,4vw,3.8rem);
+    font-weight:900;
+    line-height:1.05;
+    color:#fff;
+    margin-bottom:0.8rem;
+    text-shadow:0 2px 12px rgba(0,0,0,0.4);
+}
+
+.hero-p-desc{
+    max-width:560px;
+    font-size:1.05rem;
+    font-weight:500;
+    color:rgba(255,255,255,0.92);
+    margin-bottom:1.5rem;
+    text-shadow:0 2px 8px rgba(0,0,0,0.3);
+    line-height:1.6;
+}
+
+/* Hero right — carte site défilant */
+.hero-right{
+    flex-shrink:0;
+    align-self:flex-start;
+    margin-top:20px;
+}
+
+.hero-site-card{
+    background:rgba(8,26,107,0.75);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    border-radius:var(--rl);
+    padding:16px 24px;
+    color:#fff;
+    min-width:220px;
+    box-shadow:0 8px 32px rgba(0,0,0,0.25);
+    border:1.5px solid rgba(255,255,255,0.12);
+    position:relative;
+    overflow:hidden;
+}
+
+.hero-site-card::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    background:linear-gradient(135deg,rgba(27,79,219,0.3),rgba(200,16,46,0.2));
+    pointer-events:none;
+}
+
+.hsc-label{
+    font-size:9px;
+    font-weight:700;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:rgba(255,255,255,0.7);
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin-bottom:0.8rem;
+}
+
+.hsc-label::before{
+    content:'📍';
+    font-size:11px;
+}
+
+.hsc-content{
+    position:relative;
+    min-height:50px;
+}
+
+.hsc-slide{
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity 0.6s ease,transform 0.6s ease;
+}
+
+.hsc-slide.active{
+    opacity:1;
+    transform:translateY(0);
+}
+
+.hsc-site{
+    font-size:16px;
+    font-weight:900;
+    color:#fff;
+    margin-bottom:3px;
+}
+
+.hsc-loc{
+    font-size:12px;
+    color:rgba(255,255,255,0.85);
+    display:flex;
+    align-items:center;
+    gap:4px;
+}
+
+.hsc-nb-lots{
+    font-size:10px;
+    color:rgba(255,255,255,0.6);
+    margin-top:5px;
+    padding-top:5px;
+    border-top:1px solid rgba(255,255,255,0.12);
+}
+
+/* Indicateurs hero */
+.hero-indicators{
+    position:absolute;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:4;
+    display:flex;
+    gap:6px;
+}
+
+.hero-dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.35);
+    cursor:pointer;
+    transition:all 0.3s;
+    border:none;
+}
+
+.hero-dot.active{
+    background:#fff;
+    width:20px;
+    border-radius:100px;
+}
+
+.hero-nav{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    z-index:4;
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.1);
+    border:1px solid rgba(255,255,255,0.15);
+    color:#fff;
+    font-size:16px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    backdrop-filter:blur(4px);
+    -webkit-backdrop-filter:blur(4px);
+    transition:all 0.2s;
+}
+
+.hero-nav:hover{
+    background:rgba(255,255,255,0.2);
+}
+
+.hero-nav.prev{
+    left:1rem;
+}
+
+.hero-nav.next{
+    right:1rem;
+}
+
+/* ═══ STATS BADGES COMME NOS PROJETS ═══ */
+.hero-stats-row{
+    display:flex;
+    gap:1rem;
+    flex-wrap:wrap;
+    margin-top:0.5rem;
+}
+
+.hero-stat-badge{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:rgba(255,255,255,0.1);
+    padding:5px 14px 5px 5px;
+    border-radius:100px;
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+.hero-stat-ico{
+    width:30px;
+    height:30px;
+    background:rgba(255,255,255,0.1);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:13px;
+}
+
+.hero-stat-n{
+    font-size:14px;
+    font-weight:800;
+    color:#fff;
+    line-height:1.2;
+}
+
+.hero-stat-l{
+    font-size:9px;
+    color:rgba(255,255,255,0.7);
+    font-weight:500;
+}
+/* ══ SEARCH BOX ══ */
+.search-section{background:transparent;padding:0 2rem;}
+.search-wrap{max-width:1500px;margin:0 auto;background:#fff;border-radius:var(--rxl);padding:1.4rem 1.6rem;box-shadow:0 4px 40px rgba(0,0,0,0.14);border:1px solid var(--g200);position:relative;z-index:10;margin-top:-40px;}
+.search-fields{display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:8px;align-items:end;}
+.sf-grp{display:flex;flex-direction:column;gap:4px;}
+.sf-lbl{font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:0.8px;display:flex;align-items:center;gap:4px;}
+.sf-inp-wrap{display:flex;align-items:center;gap:8px;border:1.5px solid var(--g200);border-radius:var(--r);padding:10px 12px;background:#fff;transition:border-color 0.2s;}
+.sf-inp-wrap:focus-within,.sf-inp-wrap:hover{border-color:var(--blue);}
+.sf-inp{border:none;outline:none;font-size:14px;font-weight:500;color:var(--g800);font-family:'Outfit',sans-serif;background:transparent;width:100%;}
+.sf-inp::placeholder{color:var(--g400);font-weight:400;}
+.sf-select{border:none;outline:none;font-size:14px;font-weight:500;color:var(--g800);font-family:'Outfit',sans-serif;background:transparent;width:100%;cursor:pointer;appearance:none;}
+.btn-rech{background:var(--red);color:#fff;border:none;border-radius:var(--r);padding:13px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;white-space:nowrap;display:flex;align-items:center;gap:8px;height:48px;transition:all 0.2s;}
+.btn-rech:hover{background:var(--red-d);transform:translateY(-1px);}
+
+/* ══ AJAX PANEL RÉSULTATS FILTRE ══ */
+/* ══ AJAX PANEL FLOTTANT ══ */
+.ajax-result-panel{
+  display:none;
+  position:fixed;
+  bottom:2rem;
+  right:2rem;
+  width:380px;
+  max-width:calc(100vw - 2rem);
+  max-height:65vh;
+  background:linear-gradient(160deg,#0A2494 0%,#1B4FDB 60%,#7B20B4 100%);
+  border-radius:var(--rl);
+  box-shadow:0 12px 48px rgba(0,0,0,0.35);
+  z-index:2000;
+  flex-direction:column;
+  overflow:hidden;
+  border:1.5px solid rgba(255,255,255,0.15);
+  animation:ajaxIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes ajaxIn{
+  from{opacity:0;transform:translateY(40px) scale(0.95);}
+  to{opacity:1;transform:none;}
+}
+.ajax-result-panel.visible{display:flex;}
+
+.arp-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;
+  background:rgba(0,0,0,0.2);
+  border-bottom:1px solid rgba(255,255,255,0.1);
+  flex-shrink:0;
+}
+.arp-tit{
+  font-size:13px;font-weight:700;color:#fff;
+  display:flex;align-items:center;gap:6px;
+  flex:1;
+}
+.arp-close{
+  background:rgba(255,255,255,0.15);border:none;color:#fff;
+  width:26px;height:26px;border-radius:50%;cursor:pointer;
+  font-size:13px;display:flex;align-items:center;justify-content:center;
+  transition:background 0.2s;flex-shrink:0;
+}
+.arp-close:hover{background:rgba(200,16,46,0.6);}
+
+.arp-items{
+  overflow-y:auto;
+  padding:10px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.arp-items::-webkit-scrollbar{width:4px;}
+.arp-items::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.3);border-radius:100px;}
+
+.arp-item{
+  background:rgba(255,255,255,0.1);
+  border:1px solid rgba(255,255,255,0.15);
+  border-radius:10px;
+  padding:10px 12px;
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.arp-item:hover{background:rgba(255,255,255,0.2);transform:translateY(-1px);}
+
+.arp-item-site{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:6px;
+}
+.arp-item-site span:first-child{font-size:13px;font-weight:800;color:#fff;}
+.arp-item-loc{font-size:10px;color:rgba(255,255,255,0.6);font-weight:500;}
+
+.arp-item-lignes{display:flex;flex-direction:column;gap:3px;margin-bottom:8px;}
+.arp-ligne{font-size:11px;color:rgba(255,255,255,0.85);line-height:1.5;}
+.arp-hl{color:#FFD700;font-weight:700;}
+
+.arp-voir{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:11px;font-weight:700;color:#FFD700;
+  text-decoration:none;transition:gap 0.2s;
+}
+.arp-voir:hover{gap:7px;}
+
+.arp-empty{
+  font-size:12px;color:rgba(255,255,255,0.7);
+  text-align:center;padding:1rem;
+  line-height:1.6;
+}
+/* ══ SITES GRID ══ */
+.sites-section{padding:0 2rem 4rem;}
+.controls{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:2rem 0 1.5rem;max-width:1300px;margin:0 auto;}
+.search-wrap-card{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid var(--g200);border-radius:12px;padding:10px 16px;flex:1;max-width:380px;transition:border-color 0.2s;}
+.search-wrap-card:focus-within{border-color:var(--blue);}
+.search-wrap-card input{flex:1;background:none;border:none;outline:none;color:var(--g800);font-size:14px;font-family:'Outfit',sans-serif;}
+.search-wrap-card input::placeholder{color:var(--g400);}
+.search-ico{color:var(--g400);font-size:16px;}
 .filter-pills{display:flex;gap:8px;flex-wrap:wrap;}
-.fpill{padding:7px 18px;border-radius:100px;border:1.5px solid var(--g200);font-size:12px;font-weight:500;color:var(--g600);cursor:pointer;transition:all 0.2s;background:#fff;text-decoration:none;}
+.fpill{padding:7px 18px;border-radius:100px;border:1.5px solid var(--g200);font-size:12px;font-weight:600;color:var(--g600);cursor:pointer;transition:all 0.2s;background:#fff;text-decoration:none;font-family:'Outfit',sans-serif;}
 .fpill:hover{border-color:var(--blue);color:var(--blue);}
 .fpill.active{background:var(--grad);border-color:transparent;color:#fff;}
-
-.sites-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.5rem;padding-bottom:4rem;}
-.site-card{background:#fff;border:1.5px solid var(--g200);border-radius:20px;overflow:hidden;transition:all 0.3s;text-decoration:none;color:inherit;display:block;}
-.site-card:hover{transform:translateY(-4px);border-color:rgba(27,79,219,0.3);box-shadow:0 8px 40px rgba(27,79,219,0.15);}
-.sc-img{height:220px;position:relative;overflow:hidden;}
-.sc-img-inner{width:100%;height:100%;transition:transform 0.4s;background:linear-gradient(135deg,var(--bpale),#F0F4FF);display:flex;align-items:center;justify-content:center;}
-.site-card:hover .sc-img-inner{transform:scale(1.04);}
-.sc-img img{width:100%;height:100%;object-fit:cover;}
+.nb-resultats{font-size:12px;color:var(--g400);white-space:nowrap;}
+.sites-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.5rem;max-width:1300px;margin:0 auto;}
+.site-card{background:#fff;border:1.5px solid var(--g200);border-radius:20px;overflow:hidden;transition:all 0.3s;text-decoration:none;color:inherit;display:block;box-shadow:var(--sh);}
+.site-card:hover{transform:translateY(-6px);border-color:rgba(27,79,219,0.3);box-shadow:var(--sh-lg);}
+.site-card.highlight-card{border-color:var(--blue);box-shadow:0 0 0 3px rgba(27,79,219,0.15);}
+.sc-img{height:220px;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--blue-pale),#F0F4FF);}
+.sc-img img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s;}
+.site-card:hover .sc-img img{transform:scale(1.04);}
 .sc-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,22,40,0.65) 0%,transparent 55%);}
-.sc-status{position:absolute;top:12px;left:12px;padding:4px 12px;border-radius:100px;font-size:10px;font-weight:700;text-transform:uppercase;}
-.st-a{background:rgba(22,163,74,0.9);color:#fff;}
-.st-p{background:rgba(27,79,219,0.9);color:#fff;}
-.st-c{background:rgba(200,16,46,0.9);color:#fff;}
-.sc-promo{position:absolute;top:12px;right:12px;background:var(--grad);color:#fff;padding:4px 10px;border-radius:100px;font-size:9px;font-weight:700;text-transform:uppercase;}
-.sc-loc{position:absolute;bottom:14px;left:14px;font-size:11px;color:rgba(255,255,255,0.9);}
-.sc-body{padding:1.3rem;}
-.sc-name{font-family:Georgia,serif;font-size:1.2rem;font-weight:700;color:var(--g800);margin-bottom:0.3rem;}
-.sc-desc{font-size:12px;color:var(--g400);line-height:1.6;margin-bottom:1rem;}
-.prog-hd{display:flex;justify-content:space-between;margin-bottom:5px;}
-.prog-lbl{font-size:11px;color:var(--g400);}
-.prog-pct{font-size:13px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.prog-bar{height:4px;background:var(--g200);border-radius:100px;overflow:hidden;margin-bottom:1rem;}
+.sc-status{position:absolute;top:12px;left:12px;padding:4px 12px;border-radius:100px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
+.st-a{background:rgba(22,163,74,0.92);color:#fff;}
+.st-p{background:rgba(27,79,219,0.92);color:#fff;}
+.st-c{background:rgba(200,16,46,0.92);color:#fff;}
+.sc-promo{position:absolute;top:12px;right:12px;background:var(--grad);color:#fff;padding:4px 10px;border-radius:100px;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
+.sc-loc{position:absolute;bottom:14px;left:14px;font-size:11px;color:rgba(255,255,255,0.9);display:flex;align-items:center;gap:5px;}
+.sc-body{padding:1.2rem;}
+.sc-name{font-size:1.2rem;font-weight:800;color:var(--g800);margin-bottom:0.3rem;}
+.sc-desc{font-size:12px;color:var(--g400);line-height:1.6;margin-bottom:0.8rem;}
+.prog-hd{display:flex;justify-content:space-between;margin-bottom:4px;}
+.prog-lbl{font-size:10px;color:var(--g400);font-weight:500;}
+.prog-pct{font-size:12px;font-weight:700;color:var(--blue);}
+.prog-bar{height:4px;background:var(--g200);border-radius:100px;overflow:hidden;margin-bottom:0.8rem;}
 .prog-fill{height:100%;background:var(--grad-h);border-radius:100px;}
 .sc-meta{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--g100);padding-top:0.8rem;margin-bottom:0.8rem;}
 .sm-i{text-align:center;}
 .sm-v{font-size:1.1rem;font-weight:700;color:var(--g800);}
-.sm-k{font-size:9px;color:var(--g400);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;}
+.sm-v.blue{color:var(--blue);}
+.sm-v.green{color:#16a34a;}
+.sm-k{font-size:8px;color:var(--g400);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;}
 .sc-btns{display:flex;gap:8px;}
-.btn-so{flex:1;background:#fff;border:1.5px solid rgba(27,79,219,0.25);color:var(--blue);padding:9px;border-radius:8px;font-size:12px;font-weight:600;text-align:center;text-decoration:none;transition:all 0.2s;}
-.btn-so:hover{background:var(--bpale);}
-.btn-sg{flex:1;background:var(--grad);border:none;color:#fff;padding:9px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;}
-.btn-sg:hover{opacity:0.88;}
+.btn-so{flex:1;background:#fff;border:1.5px solid rgba(27,79,219,0.25);color:var(--blue);padding:8px;border-radius:8px;font-size:11px;font-weight:600;text-align:center;text-decoration:none;transition:all 0.2s;cursor:pointer;font-family:'Outfit',sans-serif;}
+.btn-so:hover{background:var(--blue-pale);}
+.btn-sg{flex:1;background:var(--grad);border:none;color:#fff;padding:8px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:'Outfit',sans-serif;}
+.btn-sg:hover{opacity:0.88;transform:translateY(-1px);}
 
 .empty{text-align:center;padding:4rem;color:var(--g400);grid-column:1/-1;}
 .empty-ico{font-size:3rem;margin-bottom:1rem;}
 
-footer{background:var(--g800);color:#fff;padding:2rem;text-align:center;}
-.footer-copy{font-size:12px;color:#6b7280;}
-.footer-copy span{background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700;}
-
-.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.5);z-index:3000;display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px);}
-.modal-overlay.open{display:flex;}
-.modal{background:#fff;border-radius:24px;padding:2rem;max-width:480px;width:100%;position:relative;animation:mIn 0.3s ease;box-shadow:0 24px 80px rgba(0,0,0,0.12);}
-@keyframes mIn{from{opacity:0;transform:scale(0.95);}to{opacity:1;transform:none;}}
-.m-close{position:absolute;top:1rem;right:1rem;background:var(--g100);border:none;color:var(--g400);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:16px;}
-.m-title{font-family:Georgia,serif;font-size:1.5rem;font-weight:700;color:var(--g800);margin-bottom:0.3rem;}
-.m-desc{font-size:13px;color:var(--g400);margin-bottom:1.2rem;}
-.m-tag{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.3rem;}
+/* ══ MODAL ══ */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,0.6);z-index:3000;display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px);}
+.overlay.open{display:flex;}
+.modal{background:#fff;border-radius:var(--rxl);padding:2rem;max-width:500px;width:100%;position:relative;animation:mIn 0.3s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 24px 80px rgba(0,0,0,0.2);max-height:90vh;overflow-y:auto;}
+@keyframes mIn{from{opacity:0;transform:scale(0.92);}to{opacity:1;transform:none;}}
+.m-close{position:absolute;top:1rem;right:1rem;background:var(--g100);border:none;color:var(--g500);width:30px;height:30px;border-radius:7px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;}
+.m-close:hover{background:#fee2e2;color:#dc2626;}
+.m-tag{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);margin-bottom:0.3rem;}
+.m-tit{font-size:1.4rem;font-weight:800;color:var(--g800);margin-bottom:0.3rem;}
+.m-desc{font-size:13px;color:var(--g500);margin-bottom:1.2rem;}
 .fg{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
-.fg label{font-size:11px;font-weight:600;color:var(--g400);}
-.fi{width:100%;background:#fff;border:1.5px solid var(--g200);border-radius:10px;padding:11px 14px;color:var(--g800);font-size:14px;outline:none;transition:border-color 0.2s;}
+.fg label{font-size:11px;font-weight:600;color:var(--g500);}
+.fi{width:100%;border:1.5px solid var(--g200);border-radius:9px;padding:11px 14px;font-size:14px;font-family:'Outfit',sans-serif;outline:none;transition:border-color 0.2s;}
 .fi:focus{border-color:var(--blue);}
-.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.m-submit{width:100%;background:var(--grad);border:none;color:#fff;padding:13px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-top:6px;}
-.m-submit:hover{opacity:0.88;}
-.toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1.5px solid var(--g200);border-radius:12px;padding:14px 20px;font-size:13px;z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(80px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 8px 32px rgba(0,0,0,0.1);}
+.fi::placeholder{color:var(--g400);}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.m-submit{width:100%;background:var(--red);border:none;color:#fff;padding:13px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;margin-top:6px;transition:all 0.2s;}
+.m-submit:hover{background:var(--red-d);}
+
+/* ══ TOAST ══ */
+.toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1px solid var(--g200);border-radius:var(--r);padding:14px 20px;font-size:13px;color:var(--g800);z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(100px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.12);}
 .toast.show{transform:none;opacity:1;}
-@media(max-width:768px){nav{padding:0 1rem;}.nav-links{display:none;}.sites-grid{grid-template-columns:1fr;}.page-head{padding:6rem 1rem 2rem;}.container{padding:0 1rem;}.controls{flex-direction:column;align-items:stretch;}.search-wrap{max-width:100%;}}
+.toast-bar{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:var(--r) 0 0 var(--r);background:var(--grad-h);}
+
+/* ══ FOOTER ══ */
+.footer-bar{height:3px;background:var(--grad-h);}
+footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1px solid #334155;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1.5fr;gap:2rem;max-width:1280px;margin:0 auto 2rem;}
+.footer-logo-img{height:40px;object-fit:contain;}
+.footer-desc{font-size:12px;color:#94A3B8;line-height:1.75;max-width:260px;margin-bottom:1rem;margin-top:0.8rem;}
+.footer-tagline{font-size:11px;color:rgba(255,255,255,0.4);font-style:italic;}
+.footer-col h4{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.9rem;}
+.footer-lnk{display:block;font-size:12px;color:#94A3B8;text-decoration:none;margin-bottom:6px;transition:color 0.2s;}
+.footer-lnk:hover{color:#fff;}
+.footer-agences-item{display:flex;align-items:center;gap:5px;font-size:12px;color:#94A3B8;margin-bottom:6px;}
+.footer-socials{display:flex;gap:8px;margin-top:0.8rem;}
+.footer-social-btn{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;transition:all 0.2s;}
+.fs-fb{background:#1877F2;color:#fff;}
+.fs-tt{background:#010101;color:#fff;}
+.fs-yt{background:#FF0000;color:#fff;}
+.fs-li{background:#0A66C2;color:#fff;}
+.fs-ig{background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;}
+.footer-social-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.3);}
+.footer-nl-wrap{position:relative;}
+.footer-nl-input{width:100%;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);border-radius:8px;padding:9px 48px 9px 12px;font-size:12px;color:#fff;font-family:'Outfit',sans-serif;outline:none;}
+.footer-nl-input::placeholder{color:rgba(255,255,255,0.35);}
+.footer-nl-btn{position:absolute;right:0;top:0;bottom:0;background:var(--red);border:none;width:40px;border-radius:0 8px 8px 0;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;transition:background 0.2s;}
+.footer-nl-btn:hover{background:var(--red-d);}
+.footer-bot{border-top:1px solid #334155;max-width:1280px;margin:0 auto;padding-top:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.footer-copy{font-size:12px;color:#64748B;}
+.footer-links-bot{display:flex;gap:1.5rem;}
+.footer-links-bot a{font-size:12px;color:#64748B;text-decoration:none;transition:color 0.2s;}
+.footer-links-bot a:hover{color:#fff;}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:1200px){.search-fields{grid-template-columns:1fr 1fr;}}
+@media(max-width:1024px){.footer-grid{grid-template-columns:1fr 1fr 1fr;}}
+@media(max-width:768px){
+  nav{padding:0 1rem;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .hero-inner{flex-direction:column;justify-content:center;padding-top:80px;padding-left:1.5rem;padding-right:1.5rem;}
+  .hero-right{display:none;}
+  .hero-nav{display:none;}
+  .hero-indicators{bottom:60px;}
+  .hero-title{font-size:2rem;}
+  .hero-desc{font-size:13px;}
+  .hero-trust-row{flex-direction:column;gap:0.6rem;}
+  .search-wrap{margin:0 1rem;margin-top:-50px;padding:1rem;}
+  .search-fields{grid-template-columns:1fr;}
+  .controls{flex-direction:column;align-items:stretch;padding:1.5rem 1rem;}
+  .search-wrap-card{max-width:100%;}
+  .sites-grid{grid-template-columns:1fr;padding:1rem;}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:1.5rem;}
+  .footer-grid>div:first-child{grid-column:1/-1;}
+  .f-row{grid-template-columns:1fr;}
+  .sites-section{padding:0 1rem 4rem;}
+}
+@media(max-width:480px){
+  .hero-title{font-size:1.8rem;}
+  .sites-grid{grid-template-columns:1fr;}
+  .filter-pills{justify-content:center;}
+}
 </style>
 </head>
 <body>
-<nav>
+
+<!-- NAV -->
+<nav id="navbar">
   <a class="nav-logo" href="{% url 'home' %}">
-    <div class="logo-em">E</div>
-    <div><div class="logo-name">EDEN GROUP</div><div style="font-size:9px;font-weight:600;color:var(--g400);letter-spacing:2px;text-transform:uppercase;">Immobilier & Foncier</div></div>
+    <div class="logo-box">E</div>
+    <div>
+      <div class="logo-name">EDEN GROUP</div>
+      <div class="logo-tagline">Le foncier sécurisé, notre engagement</div>
+    </div>
   </a>
   <div class="nav-links">
-    <a class="nav-lnk" href="{% url 'home' %}">Accueil</a>
-    <a class="nav-lnk active" href="{% url 'sites_list' %}">Nos Sites</a>
-    <a class="nav-lnk" href="{% url 'carte' %}">Carte</a>
-    <a class="nav-lnk" href="{% url 'promotions' %}">Promotions</a>
-    <a class="nav-lnk" href="{% url 'a_propos' %}">A Propos</a>
-    {% if user.is_staff %}<a class="nav-lnk" href="{% url 'dashboard_home' %}">Dashboard</a>{% endif %}
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'sites_list' or request.resolver_match.url_name == 'site_detail' %}active{% endif %}" href="{% url 'sites_list' %}">Nos Terrains</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_projets' %}active{% endif %}" href="{% url 'nos_projets' %}">Nos Projets</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'journal_kiosque' %}active{% endif %}" href="{% url 'journal_kiosque' %}">📰 Documentation</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
+    {% if user.is_staff %}
+    <a class="nav-lnk" href="{% url 'dashboard_home' %}" style="color:var(--blue);font-weight:700;">Dashboard</a>
+    {% endif %}
   </div>
-  <button class="btn-cta" onclick="document.getElementById('modal').classList.add('open')">Reserver une parcelle</button>
+  <div class="nav-right">
+    <button class="btn-rdv" onclick="openModal()">📅 Contact</button>
+  </div>
+  <button class="hamburger" onclick="toggleMob()"><span></span><span></span><span></span></button>
 </nav>
 
-<div class="page-head">
-  <div class="container">
-    <div class="ph-eyebrow">✦ EDEN GROUP — Catalogue foncier</div>
-    <h1 class="ph-title">Nos <em>sites d'exception</em></h1>
+<div class="mob-menu" id="mob-menu">
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'sites_list' %}active{% endif %}" href="{% url 'sites_list' %}">Nos Terrains</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_projets' %}active{% endif %}" href="{% url 'nos_projets' %}">Nos Projets</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'journal_kiosque' %}active{% endif %}" href="{% url 'journal_kiosque' %}">📰 Documentation</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'promotions' %}active{% endif %}" href="{% url 'promotions' %}">Promotions</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
+  {% if user.is_staff %}<a class="nav-lnk" href="{% url 'dashboard_home' %}">Dashboard</a>{% endif %}
+  <button class="btn-rdv" style="width:100%;margin-top:8px;justify-content:center;" onclick="openModal()">📅 Contact</button>
+</div>
+
+<!-- ══ HERO CARROUSEL — images des sites ══ -->
+<!-- ══ HERO CARROUSEL — AVEC MESSAGE COMME NOS PROJETS ══ -->
+<section class="hero">
+    <div class="hero-slides">
+        {% for site in sites %}
+        {% if site.image_principale %}
+        <div class="hero-slide {% if forloop.first %}active{% endif %}" id="slide-{{ forloop.counter0 }}">
+            <img src="{{ site.image_principale.url }}" alt="{{ site.nom }}">
+        </div>
+        {% endif %}
+        {% empty %}
+        {% if hero_config and hero_config.image_fond %}
+        <div class="hero-slide active">
+            <img src="{{ hero_config.image_fond.url }}" alt="EDEN GROUP">
+        </div>
+        {% else %}
+        <div class="hero-slide active">
+            <div class="hero-slide-placeholder"></div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        <div class="hero-overlay"></div>
+    </div>
+
+    <button class="hero-nav prev" onclick="heroNav(-1)" aria-label="Précédent">‹</button>
+    <button class="hero-nav next" onclick="heroNav(1)" aria-label="Suivant">›</button>
+    <div class="hero-indicators" id="hero-dots">
+        {% for site in sites %}{% if site.image_principale %}
+        <button class="hero-dot {% if forloop.first %}active{% endif %}" onclick="goHeroSlide({{ forloop.counter0 }})" aria-label="Site {{ forloop.counter }}"></button>
+        {% endif %}{% endfor %}
+    </div>
+
+    <div class="hero-inner">
+        <div class="hero-left">
+            <!-- ═══ MESSAGE COMME NOS PROJETS ═══ -->
+            <h1 class="hero-p-tit">
+                {% if hero_config and hero_config.titre_ligne1 %}
+                    {{ hero_config.titre_ligne1 }}<br>
+                    <span style="color:var(--red);">{{ hero_config.titre_ligne2 }}</span>
+                {% else %}
+                    Nos Terrains<br>
+                    <span style="color:var(--red);">à portée de main</span>
+                {% endif %}
+            </h1>
+            <p class="hero-p-desc">
+                {% if hero_config and hero_config.description %}
+                    {{ hero_config.description }}
+                {% else %}
+                    EDEN GROUP vous accompagne dans l'acquisition, l'aménagement et la sécurisation de vos terrains avec <em>professionnalisme et transparence.</em>
+                {% endif %}
+            </p>
+            
+            <!-- ═══ STATS BADGES COMME NOS PROJETS ═══ -->
+            <div class="hero-stats-row">
+                <div class="hero-stat-badge">
+                    <div class="hero-stat-ico">🏘</div>
+                    <div>
+                        <div class="hero-stat-n">{{ stats.sites|default:0 }}</div>
+                        <div class="hero-stat-l">Sites disponibles</div>
+                    </div>
+                </div>
+                <div class="hero-stat-badge">
+                    <div class="hero-stat-ico">📐</div>
+                    <div>
+                        <div class="hero-stat-n">{{ stats.disponibles|default:0 }}</div>
+                        <div class="hero-stat-l">Parcelles dispo</div>
+                    </div>
+                </div>
+                <div class="hero-stat-badge">
+                    <div class="hero-stat-ico">✅</div>
+                    <div>
+                        <div class="hero-stat-n">{{ stats.vendues|default:0 }}</div>
+                        <div class="hero-stat-l">Déjà vendues</div>
+                    </div>
+                </div>
+                <div class="hero-stat-badge">
+                    <div class="hero-stat-ico">👥</div>
+                    <div>
+                        <div class="hero-stat-n">10K+</div>
+                        <div class="hero-stat-l">Clients satisfaits</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ BOUTONS ═══ -->
+            <div class="hero-btns">
+                <a href="#sites-grid" class="btn-hero-p">Découvrir nos terrains ›</a>
+                <a href="{% url 'carte' %}" class="btn-hero-o">📍 Visite des sites</a>
+            </div>
+        </div>
+
+        <!-- Carte dynamique défilant avec le carrousel -->
+        <div class="hero-right">
+            <div class="hero-site-card">
+                <div class="hsc-label">Site mis en avant</div>
+                <div class="hsc-content" id="hsc-content">
+                    {% for site in sites %}{% if site.image_principale %}
+                    <div class="hsc-slide {% if forloop.first %}active{% endif %}" id="hsc-{{ forloop.counter0 }}">
+                        <div class="hsc-site">{{ site.nom }}</div>
+                        <div class="hsc-loc">📍 {{ site.localisation }}</div>
+                        <div class="hsc-nb-lots">
+                            🏘 {{ site.nb_parcelles_total|default:0 }} lots ·
+                            <span style="color:#86efac;">{{ site.nb_disponibles|default:0 }} disponibles</span>
+                        </div>
+                    </div>
+                    {% endif %}{% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══ SEARCH BOX ══ -->
+<div class="search-section" style="margin-top:-1px;">
+  <div class="search-wrap">
+    <div class="search-fields">
+
+      <!-- 1. LOCALISATION — liste des sites -->
+      <div class="sf-grp">
+        <div class="sf-lbl">📍 Site / Localisation</div>
+        <div class="sf-inp-wrap">
+          <select class="sf-select" id="s-loc" onchange="analyserFiltre()">
+            <option value="">Tous les sites</option>
+            {% for site in sites %}
+            <option value="{{ site.slug }}"
+              data-nom="{{ site.nom }}"
+              data-loc="{{ site.localisation }}"
+              data-prix-min="{{ site.prix_min_effectif|default:0 }}"
+              data-prix-max="{{ site.prix_max_effectif|default:0 }}"
+              data-sup-min="{{ site.superficie_min_effectif|default:0 }}"
+              data-sup-max="{{ site.superficie_max_effectif|default:0 }}"
+              data-nb-dispo="{{ site.nb_disponibles|default:0 }}"
+              >
+              {{ site.nom }} — {{ site.localisation }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <!-- 2. SUPERFICIE — saisie libre -->
+      <div class="sf-grp">
+        <div class="sf-lbl">📐 Superficie souhaitée (m²)</div>
+        <div class="sf-inp-wrap">
+          <input class="sf-inp" type="number" id="s-surf"
+            placeholder="Ex: 500"
+            oninput="analyserFiltre()"
+            min="1">
+        </div>
+      </div>
+
+      <!-- 3. BUDGET — saisie libre -->
+      <div class="sf-grp">
+        <div class="sf-lbl">💰 Budget (FCFA)</div>
+        <div class="sf-inp-wrap">
+          <input class="sf-inp" type="number" id="s-budget"
+            placeholder="Ex: 5000000"
+            oninput="analyserFiltre()"
+            min="1">
+        </div>
+      </div>
+
+      <!-- 4. STATUT -->
+      <div class="sf-grp">
+        <div class="sf-lbl">✅ Statut</div>
+        <div class="sf-inp-wrap">
+          <select class="sf-select" id="s-statut" onchange="analyserFiltre()">
+            <option value="">Tous les terrains</option>
+            <option value="disponible">Disponible</option>
+            <option value="en_cours">En cours</option>
+            <option value="promo">En promotion</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="btn-rech" onclick="lancerRecherche()">🔍 Rechercher</button>
+    </div>
+    <!-- ══ AJAX PANEL FLOTTANT ══ -->
+<div class="ajax-result-panel" id="ajax-panel">
+  <div class="arp-header">
+    <div class="arp-tit" id="arp-tit">🎯 Résultats de votre recherche</div>
+    <button class="arp-close" onclick="fermerAjaxPanel()" title="Fermer">✕</button>
+  </div>
+  <div class="arp-items" id="arp-items"></div>
+</div>
+  </div>
+
+  <!-- Panel AJAX résultats filtre -->
+  <div class="ajax-result-panel" id="ajax-panel">
+    <div class="arp-header">
+      <div class="arp-tit" id="arp-tit">🎯 Résultats de votre recherche</div>
+      <button class="arp-close" onclick="fermerAjaxPanel()">✕</button>
+    </div>
+    <div class="arp-items" id="arp-items"></div>
   </div>
 </div>
 
-<div class="container">
+<!-- ══ SECTION SITES ══ -->
+<div class="sites-section">
   <div class="controls">
-    <div class="search-wrap">
-      <span style="color:var(--blue);">🔍</span>
-      <input type="text" id="search-input" placeholder="Rechercher un site, une ville..." oninput="filterCards()">
+    <div class="search-wrap-card">
+      <span class="search-ico">🔍</span>
+      <input type="text" id="search-input" placeholder="Rechercher un site..." oninput="filterCards()">
     </div>
     <div class="filter-pills">
-      <span class="fpill active" onclick="setFilter(this,'all')">Tous ({{ sites.count }})</span>
-      <span class="fpill" onclick="setFilter(this,'disponible')">Disponible</span>
-      <span class="fpill" onclick="setFilter(this,'en_cours')">En cours</span>
-      <span class="fpill" onclick="setFilter(this,'complet')">Complet</span>
+      <button class="fpill active" onclick="setFilter(this,'all')">Tous</button>
+      <button class="fpill" onclick="setFilter(this,'disponible')">✅ Disponibles</button>
+      <button class="fpill" onclick="setFilter(this,'en_cours')">🔵 En cours</button>
+      <button class="fpill" onclick="setFilter(this,'vendu')">🔴 Complets</button>
     </div>
+    <div class="nb-resultats" id="nb-resultats"></div>
   </div>
 
   <div class="sites-grid" id="sites-grid">
     {% for site in sites %}
-    <a class="site-card" href="{% url 'site_detail' site.slug %}" data-statut="{{ site.statut }}" data-nom="{{ site.nom|lower }}" data-ville="{{ site.ville|lower }}">
+    <a class="site-card"
+       href="{% url 'site_detail' site.slug %}"
+       data-statut="{{ site.statut }}"
+       data-nom="{{ site.nom|lower }}"
+       data-ville="{{ site.ville|lower }}"
+       data-localisation="{{ site.localisation|default:''|lower }}"
+       data-slug="{{ site.slug }}"
+       data-prix-min="{{ site.prix_min_effectif|default:0 }}"
+       data-prix-max="{{ site.prix_max_effectif|default:0 }}"
+       data-sup-min="{{ site.superficie_min_effectif|default:0 }}"
+       data-sup-max="{{ site.superficie_max_effectif|default:0 }}"
+       data-nb-dispo="{{ site.nb_disponibles|default:0 }}">
       <div class="sc-img">
         {% if site.image_principale %}
-        <img src="{{ site.image_principale.url }}" alt="{{ site.nom }}">
+        <img src="{{ site.image_principale.url }}" alt="{{ site.nom }}" loading="lazy">
         {% else %}
-        <div class="sc-img-inner">
-          <svg width="70" height="70" viewBox="0 0 70 70" fill="none"><rect x="8" y="18" width="22" height="18" fill="rgba(27,79,219,0.2)" rx="2"/><rect x="35" y="12" width="18" height="26" fill="rgba(200,16,46,0.15)" rx="2"/><rect x="12" y="40" width="28" height="14" fill="rgba(27,79,219,0.12)" rx="2"/></svg>
-        </div>
+        <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3rem;background:linear-gradient(135deg,var(--blue-pale),#E8EDFF);">🏡</div>
         {% endif %}
         <div class="sc-overlay"></div>
-        <span class="sc-status {% if site.statut == 'disponible' %}st-a{% elif site.statut == 'en_cours' %}st-p{% else %}st-c{% endif %}">{{ site.get_statut_display }}</span>
+        <span class="sc-status {% if site.statut == 'disponible' %}st-a{% elif site.statut == 'en_cours' %}st-p{% else %}st-c{% endif %}">
+          {{ site.get_statut_display }}
+        </span>
         {% if site.en_promotion %}<span class="sc-promo">🔥 Promo</span>{% endif %}
         <div class="sc-loc">📍 {{ site.localisation }}</div>
       </div>
       <div class="sc-body">
         <div class="sc-name">{{ site.nom }}</div>
-        <div class="sc-desc">{{ site.description_courte }}</div>
-        <div class="prog-hd"><span class="prog-lbl">Parcelles vendues</span><span class="prog-pct">{{ site.pourcentage_vendu }}%</span></div>
-        <div class="prog-bar"><div class="prog-fill" style="width:{{ site.pourcentage_vendu }}%"></div></div>
+        <div class="sc-desc">{{ site.description_courte|default:"Un site exceptionnel à découvrir." }}</div>
+        <div class="prog-hd">
+          <span class="prog-lbl">Parcelles vendues</span>
+          <span class="prog-pct">{{ site.pourcentage_vendu|default:0 }}%</span>
+        </div>
+        <div class="prog-bar"><div class="prog-fill" style="width:{{ site.pourcentage_vendu|default:0 }}%"></div></div>
         <div class="sc-meta">
-          <div class="sm-i"><div class="sm-v">{{ site.nb_parcelles_total }}</div><div class="sm-k">Total</div></div>
-          <div class="sm-i"><div class="sm-v" style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">{{ site.nb_vendues }}</div><div class="sm-k">Vendues</div></div>
-          <div class="sm-i"><div class="sm-v" style="color:#16a34a;">{{ site.nb_disponibles }}</div><div class="sm-k">Disponibles</div></div>
+          <div class="sm-i"><div class="sm-v">{{ site.nb_parcelles_total|default:0 }}</div><div class="sm-k">Total</div></div>
+          <div class="sm-i"><div class="sm-v blue">{{ site.nb_vendues|default:0 }}</div><div class="sm-k">Vendues</div></div>
+          <div class="sm-i"><div class="sm-v green">{{ site.nb_disponibles|default:0 }}</div><div class="sm-k">Disponibles</div></div>
         </div>
         <div class="sc-btns">
-          <span class="btn-so">🗺 Voir sur la carte</span>
-          <button class="btn-sg" onclick="event.preventDefault();event.stopPropagation();document.getElementById('msite').value='{{ site.nom }}';document.getElementById('modal').classList.add('open')">Reserver →</button>
+          <span class="btn-so" onclick="event.preventDefault();event.stopPropagation();window.location='{% url 'carte' %}'">🗺 Voir sur la carte</span>
+          <button class="btn-sg" onclick="event.preventDefault();event.stopPropagation();document.getElementById('msite').value='{{ site.nom }}';openModal()">Réserver →</button>
         </div>
       </div>
     </a>
     {% empty %}
-    <div class="empty"><div class="empty-ico">🏡</div><p>Aucun site foncier disponible pour le moment.</p><p style="margin-top:0.5rem;font-size:12px;">Ajoutez des sites depuis l'administration EDEN GROUP.</p></div>
+    <div class="empty">
+      <div class="empty-ico">🏡</div>
+      <p>Aucun site foncier disponible pour le moment.</p>
+      <p style="margin-top:0.5rem;font-size:12px;color:var(--g400);">Ajoutez des sites depuis l'administration EDEN GROUP.</p>
+    </div>
     {% endfor %}
   </div>
 </div>
 
-<!-- MODAL -->
-<div class="modal-overlay" id="modal">
+<!-- ══ MODAL ══ -->
+<div class="overlay" id="modal">
   <div class="modal">
-    <button class="m-close" onclick="document.getElementById('modal').classList.remove('open')">✕</button>
-    <div class="m-tag">✦ EDEN GROUP</div>
-    <div class="m-title">Reservez votre parcelle</div>
-    <div class="m-desc">Notre equipe vous contactera dans les 24 heures.</div>
-    <form method="post" action="{% url 'contact' %}" id="mform">
-      {% csrf_token %}
-      <input type="hidden" name="type_demande" value="reservation">
-      <div class="frow">
-        <div class="fg"><label>Prenom</label><input class="fi" type="text" name="nom" placeholder="Prenom Nom" required></div>
-        <div class="fg"><label>Telephone *</label><input class="fi" type="tel" name="telephone" placeholder="+237 6XX XXX XXX" required></div>
-      </div>
-      <div class="fg"><label>Email</label><input class="fi" type="email" name="email" placeholder="votre@email.com" required></div>
-      <div class="fg"><label>Site d'interet</label><input class="fi" type="text" name="message" id="msite" placeholder="Quel site vous interesse ?"></div>
-      <button type="submit" class="m-submit">Envoyer la demande →</button>
-    </form>
+    <button class="m-close" onclick="closeModal()">✕</button>
+    <div id="modal-content">
+      <div class="m-tag">✦ EDEN GROUP</div>
+      <div class="m-tit">Prendre rendez-vous</div>
+      <div class="m-desc">Notre équipe vous contactera sous 24 heures.</div>
+      <form id="mform">
+        {% csrf_token %}
+        <div class="f-row">
+          <div class="fg"><label>Prénom *</label><input class="fi" type="text" name="prenom" placeholder="Jean-Marie" required></div>
+          <div class="fg"><label>Nom *</label><input class="fi" type="text" name="nom" placeholder="Nguema" required></div>
+        </div>
+        <div class="fg"><label>Téléphone / WhatsApp *</label><input class="fi" type="tel" name="telephone" placeholder="+237 6XX XXX XXX" required></div>
+        <div class="fg"><label>Email</label><input class="fi" type="email" name="email" placeholder="votre@email.com"></div>
+        <div class="fg"><label>Site ou terrain d'intérêt</label><input class="fi" type="text" id="msite" placeholder="Ex: NTOUESSONG 5, lot 500m²"></div>
+        <div class="fg"><label>Budget (FCFA)</label>
+          <select class="fi" name="budget" style="appearance:none;">
+            <option>Moins de 3 000 000</option>
+            <option>3 000 000 – 6 000 000</option>
+            <option>6 000 000 – 12 000 000</option>
+            <option>Plus de 12 000 000</option>
+          </select>
+        </div>
+        <div class="fg"><label>Type de demande</label>
+          <select class="fi" name="type_demande" style="appearance:none;">
+            <option value="visite">Visite de site</option>
+            <option value="achat">Achat de terrain</option>
+            <option value="information">Renseignements</option>
+            <option value="reservation">Réservation</option>
+          </select>
+        </div>
+        <div class="fg"><label>Message</label><textarea class="fi" name="message" rows="2" placeholder="Vos questions..." style="resize:none;"></textarea></div>
+        <button type="button" class="m-submit" onclick="submitModal()">Envoyer la demande →</button>
+        <a href="https://wa.me/2376XXXXXXXX" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;background:#25D366;color:#fff;padding:12px;border-radius:9px;font-size:14px;font-weight:700;text-decoration:none;">💬 Ou discuter sur WhatsApp</a>
+      </form>
+    </div>
   </div>
 </div>
 
-<div class="toast" id="toast"><span>✅</span><span id="toast-msg"></span></div>
+<!-- ══ TOAST ══ -->
+<div class="toast" id="toast"><div class="toast-bar"></div><span id="t-ico" style="font-size:18px;">✅</span><span id="t-msg"></span></div>
 
+<!-- ══ FOOTER ══ -->
+<div class="footer-bar"></div>
 <footer>
-  <div class="footer-copy">© 2025 <span>EDEN GROUP</span>. Tous droits reserves.</div>
+  <div class="footer-grid">
+    <div>
+      {% if hero_config and hero_config.logo %}
+        <div style="margin-bottom:0.8rem;"><img src="{{ hero_config.logo.url }}" alt="EDEN GROUP" class="footer-logo-img"></div>
+      {% else %}
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;">
+          <div class="logo-box" style="width:36px;height:36px;font-size:15px;border-radius:8px;">E</div>
+          <div style="font-size:15px;font-weight:900;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">EDEN GROUP</div>
+        </div>
+      {% endif %}
+      <p class="footer-desc">Votre partenaire foncier de confiance depuis 2018.</p>
+      <div class="footer-tagline">Le foncier sécurisé, notre engagement</div>
+    </div>
+    <div class="footer-col"><h4>Liens rapides</h4>
+      <a class="footer-lnk" href="{% url 'home' %}">Accueil</a>
+      <a class="footer-lnk" href="{% url 'sites_list' %}">Nos Terrains</a>
+      <a class="footer-lnk" href="{% url 'nos_projets' %}">Nos Projets</a>
+      <a class="footer-lnk" href="{% url 'nos_services' %}">Nos Services</a>
+      <a class="footer-lnk" href="{% url 'nos_agences' %}">Nos Agences</a>
+      <a class="footer-lnk" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+      <a class="footer-lnk" href="{% url 'journal_kiosque' %}">Journal</a>
+      <a class="footer-lnk" href="{% url 'a_propos' %}">À propos</a>
+    </div>
+    <div class="footer-col"><h4>Nos agences</h4>
+      <div class="footer-agences-item">📍 Yaoundé (Siège)</div>
+      <div class="footer-agences-item">📍 Bafoussam</div>
+      <div class="footer-agences-item">📍 Dschang</div>
+      <div class="footer-agences-item">📍 Bangangté</div>
+    </div>
+    <div class="footer-col"><h4>Suivez-nous</h4>
+      <div class="footer-socials">
+        <a href="#" class="footer-social-btn fs-fb">f</a>
+        <a href="#" class="footer-social-btn fs-tt">T</a>
+        <a href="#" class="footer-social-btn fs-yt">▶</a>
+        <a href="#" class="footer-social-btn fs-li">in</a>
+        <a href="#" class="footer-social-btn fs-ig">📷</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Newsletter</h4>
+      <div style="font-size:12px;color:#94A3B8;margin-bottom:0.8rem;">Recevez nos offres et actualités</div>
+      <div class="footer-nl-wrap">
+        <input class="footer-nl-input" type="email" placeholder="Votre email" id="footer-nl">
+        <button class="footer-nl-btn" onclick="souscrireFooter()">→</button>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bot">
+    <div class="footer-copy">© 2026 EDEN GROUP ENTREPRISE. Tous droits réservés.</div>
+    <div class="footer-links-bot">
+      <a href="#">Mentions légales</a>
+      <a href="#">Politique de confidentialité</a>
+    </div>
+  </div>
 </footer>
 
 <script>
+// ══════════════════════════════════════════════
+// DONNÉES SITES — UNIQUEMENT prix_min du site
+// ══════════════════════════════════════════════
+const SITES_DATA = [
+  {% for site in sites %}
+  {
+    slug: '{{ site.slug }}',
+    nom: '{{ site.nom|escapejs }}',
+    localisation: '{{ site.localisation|escapejs }}',
+    statut: '{{ site.statut }}',
+    en_promotion: {{ site.en_promotion|lower }},
+    prix_m2: {{ site.prix_min|default:0 }},
+    prix_min_site: {{ site.prix_min|default:0 }},
+    nb_dispo: {{ site.nb_disponibles|default:0 }},
+    url: '{% url "site_detail" site.slug %}',
+  },
+  {% endfor %}
+];
+
+const SUPERFICIE_MIN = 500;
+
+// ══════════════════════════════════════════════
+// NAV TRANSPARENTE → OPAQUE AU SCROLL
+// ══════════════════════════════════════════════
+function toggleMob() { document.getElementById('mob-menu').classList.toggle('open'); }
+
+window.addEventListener('scroll', function() {
+  const nav = document.getElementById('navbar');
+  if (window.scrollY > 40) nav.classList.add('scrolled');
+  else nav.classList.remove('scrolled');
+});
+
+function souscrireFooter() {
+  const e = document.getElementById('footer-nl')?.value;
+  if (!e) return;
+  showToast('✅', 'Inscription confirmée !');
+  document.getElementById('footer-nl').value = '';
+}
+
+// ══════════════════════════════════════════════
+// HERO CARROUSEL — TOUTES les images des sites
+// défilent en boucle toutes les 5 secondes
+// ══════════════════════════════════════════════
+const heroSlides  = Array.from(document.querySelectorAll('.hero-slide'));
+const heroDots    = Array.from(document.querySelectorAll('.hero-dot'));
+const hscSlides   = Array.from(document.querySelectorAll('.hsc-slide'));
+let heroIdx      = 0;
+let heroTimer    = null;
+
+function goHeroSlide(idx) {
+  if (!heroSlides.length) return;
+
+  heroSlides.forEach(s => s.classList.remove('active'));
+  heroDots.forEach(d => d.classList.remove('active'));
+  hscSlides.forEach(s => s.classList.remove('active'));
+
+  heroIdx = ((idx % heroSlides.length) + heroSlides.length) % heroSlides.length;
+
+  heroSlides[heroIdx]?.classList.add('active');
+  heroDots[heroIdx]?.classList.add('active');
+  if (hscSlides[heroIdx]) hscSlides[heroIdx].classList.add('active');
+  else if (hscSlides.length) hscSlides[0].classList.add('active');
+}
+
+function heroNav(dir) {
+  goHeroSlide(heroIdx + dir);
+  resetHeroTimer();
+}
+
+function resetHeroTimer() {
+  clearInterval(heroTimer);
+  heroTimer = setInterval(() => goHeroSlide(heroIdx + 1), 5000);
+}
+
+resetHeroTimer();
+
+// ══════════════════════════════════════════════
+// AJAX FLOTTANT — PANEL RÉSULTATS
+// ══════════════════════════════════════════════
+let analyseTimer = null;
+
+['s-loc','s-surf','s-budget','s-statut'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.addEventListener('input', () => {
+      clearTimeout(analyseTimer);
+      analyseTimer = setTimeout(_analyserFiltre, 400);
+    });
+    el.addEventListener('change', () => {
+      clearTimeout(analyseTimer);
+      analyseTimer = setTimeout(_analyserFiltre, 400);
+    });
+  }
+});
+
+function _analyserFiltre() {
+  const siteSlug    = document.getElementById('s-loc')?.value || '';
+  const budgetStr   = (document.getElementById('s-budget')?.value || '').replace(/[\s,]/g,'');
+  const supStr      = (document.getElementById('s-surf')?.value || '').replace(/[\s,]/g,'');
+  const statut      = document.getElementById('s-statut')?.value || '';
+
+  const budget      = budgetStr   ? parseFloat(budgetStr)   : null;
+  const superficie  = supStr      ? parseFloat(supStr)      : null;
+
+  if (!siteSlug && !budget && !superficie && !statut) {
+    fermerAjaxPanel();
+    return;
+  }
+
+  let pool = SITES_DATA.filter(s => {
+    if (siteSlug && s.slug !== siteSlug) return false;
+    if (statut === 'disponible' && s.statut !== 'disponible') return false;
+    if (statut === 'promo' && !s.en_promotion) return false;
+    return true;
+  });
+
+  const resultats = [];
+
+  pool.forEach(site => {
+    const prixM2 = site.prix_m2 || 0;
+    const prixMinSite = site.prix_min_site || 0;
+
+    if (!prixM2 && !siteSlug) return;
+
+    // ═══ VÉRIFICATION : Budget >= prix_min du site ═══
+    if (budget !== null && budget < prixMinSite) {
+      return; // On saute ce site car budget insuffisant
+    }
+
+    const lignes = [];
+    let pertinent = false;
+
+    // ─── CAS 1 : BUDGET seul ───────────────────────────────
+    if (budget && !superficie) {
+      if (prixM2 > 0) {
+        const supPossible = budget / prixM2;
+        pertinent = true;
+        
+        if (supPossible >= SUPERFICIE_MIN) {
+          lignes.push(
+            `💰 <span class="arp-hl">${formatFCFA(budget)} FCFA</span> → ` +
+            `<span class="arp-hl">${formatSup(supPossible)} m²</span>`
+          );
+        } else {
+          const manque = (prixM2 * SUPERFICIE_MIN) - budget;
+          lignes.push(
+            `⚠️ Avec <span class="arp-hl">${formatFCFA(budget)} FCFA</span>, ` +
+            `vous ne pouvez pas atteindre ${SUPERFICIE_MIN} m²`
+          );
+          lignes.push(
+            `💡 Superficie possible : <span class="arp-hl">${formatSup(supPossible)} m²</span>`
+          );
+          lignes.push(
+            `💰 Il vous manque <span class="arp-hl">${formatFCFA(manque)} FCFA</span> ` +
+            `pour atteindre ${SUPERFICIE_MIN} m²`
+          );
+        }
+        lignes.push(`📐 Prix au m² : <span class="arp-hl">${formatFCFA(prixM2)} FCFA/m²</span>`);
+        lignes.push(`📦 ${site.nb_dispo} lot${site.nb_dispo > 1 ? 's' : ''} disponible${site.nb_dispo > 1 ? 's' : ''}`);
+      }
+    }
+
+    // ─── CAS 2 : SUPERFICIE seule ─────────────────────────
+    else if (superficie && !budget) {
+      if (prixM2 > 0) {
+        pertinent = true;
+        
+        if (superficie >= SUPERFICIE_MIN) {
+          const prixTotal = prixM2 * superficie;
+          lignes.push(
+            `📐 <span class="arp-hl">${formatSup(superficie)} m²</span> → ` +
+            `<span class="arp-hl">${formatFCFA(prixTotal)} FCFA</span>`
+          );
+        } else {
+          const prixPour500 = prixM2 * SUPERFICIE_MIN;
+          lignes.push(
+            `⚠️ La superficie minimale est de <span class="arp-hl">${SUPERFICIE_MIN} m²</span>`
+          );
+          lignes.push(
+            `💡 ${SUPERFICIE_MIN} m² → <span class="arp-hl">${formatFCFA(prixPour500)} FCFA</span>`
+          );
+        }
+        lignes.push(`📐 Prix au m² : <span class="arp-hl">${formatFCFA(prixM2)} FCFA/m²</span>`);
+        lignes.push(`📦 ${site.nb_dispo} lot${site.nb_dispo > 1 ? 's' : ''} disponible${site.nb_dispo > 1 ? 's' : ''}`);
+      }
+    }
+
+    // ─── CAS 3 : BUDGET + SUPERFICIE ──────────────────────
+    else if (budget && superficie) {
+      if (prixM2 > 0) {
+        const prixTotal = prixM2 * superficie;
+        pertinent = true;
+
+        if (superficie < SUPERFICIE_MIN) {
+          const prixPour500 = prixM2 * SUPERFICIE_MIN;
+          lignes.push(
+            `⚠️ La superficie minimale est de <span class="arp-hl">${SUPERFICIE_MIN} m²</span>`
+          );
+          lignes.push(
+            `💡 ${SUPERFICIE_MIN} m² → <span class="arp-hl">${formatFCFA(prixPour500)} FCFA</span>`
+          );
+        } else if (budget >= prixTotal) {
+          const reste = budget - prixTotal;
+          lignes.push(
+            `✅ <span class="arp-hl">${formatSup(superficie)} m²</span> = ` +
+            `<span class="arp-hl">${formatFCFA(prixTotal)} FCFA</span> ` +
+            `(reste <span class="arp-hl">${formatFCFA(reste)} FCFA</span>)`
+          );
+        } else {
+          const supPossible = budget / prixM2;
+          const manque = prixTotal - budget;
+          
+          lignes.push(
+            `⚠️ Budget insuffisant pour ${formatSup(superficie)} m²`
+          );
+          lignes.push(
+            `💡 Avec <span class="arp-hl">${formatFCFA(budget)} FCFA</span>, ` +
+            `vous pouvez avoir <span class="arp-hl">${formatSup(supPossible)} m²</span>`
+          );
+          if (supPossible < SUPERFICIE_MIN) {
+            const manquePour500 = (prixM2 * SUPERFICIE_MIN) - budget;
+            lignes.push(
+              `💰 Il vous manque <span class="arp-hl">${formatFCFA(manquePour500)} FCFA</span> ` +
+              `pour atteindre ${SUPERFICIE_MIN} m²`
+            );
+          } else {
+            lignes.push(`💰 Il vous manque <span class="arp-hl">${formatFCFA(manque)} FCFA</span>`);
+          }
+        }
+        lignes.push(`📐 Prix au m² : <span class="arp-hl">${formatFCFA(prixM2)} FCFA/m²</span>`);
+        lignes.push(`📦 ${site.nb_dispo} lot${site.nb_dispo > 1 ? 's' : ''} disponible${site.nb_dispo > 1 ? 's' : ''}`);
+      }
+    }
+
+    // ─── CAS 4 : SITE seul sélectionné ────────────────────
+    else if (siteSlug && site.slug === siteSlug) {
+      pertinent = true;
+      lignes.push(`📐 Prix au m² : <span class="arp-hl">${formatFCFA(prixM2)} FCFA/m²</span>`);
+      lignes.push(`📏 Superficie minimale : <span class="arp-hl">${SUPERFICIE_MIN} m²</span>`);
+      lignes.push(`💡 ${SUPERFICIE_MIN} m² → <span class="arp-hl">${formatFCFA(prixM2 * SUPERFICIE_MIN)} FCFA</span>`);
+      lignes.push(`💡 1000 m² → <span class="arp-hl">${formatFCFA(prixM2 * 1000)} FCFA</span>`);
+      lignes.push(`📦 ${site.nb_dispo} lot${site.nb_dispo > 1 ? 's' : ''} disponible${site.nb_dispo > 1 ? 's' : ''}`);
+    }
+
+    if (pertinent && lignes.length > 0) {
+      resultats.push({ site, lignes });
+    }
+  });
+
+  // ═══ Message si aucun résultat ═══
+  if (resultats.length === 0 && budget !== null) {
+    // Chercher le prix minimum global
+    let prixMinGlobal = Infinity;
+    pool.forEach(s => {
+      if (s.prix_min_site > 0 && s.prix_min_site < prixMinGlobal) {
+        prixMinGlobal = s.prix_min_site;
+      }
+    });
+    
+    if (prixMinGlobal !== Infinity && budget < prixMinGlobal) {
+      // Message spécifique : budget trop bas
+      const msgData = {
+        type: 'warning',
+        message: `⚠️ Votre budget de <strong>${formatFCFA(budget)} FCFA</strong> est insuffisant.`,
+        detail: `💡 Le prix minimum d'un site est de <strong>${formatFCFA(prixMinGlobal)} FCFA</strong>.`
+      };
+      afficherMessagePanel(msgData);
+    } else if (pool.length > 0) {
+      // Aucun site ne correspond
+      afficherMessagePanel({
+        type: 'info',
+        message: '😕 Aucun site ne correspond à vos critères.',
+        detail: '💡 Essayez d\'augmenter votre budget ou de modifier vos critères.'
+      });
+    }
+  }
+
+  afficherAjaxPanel(resultats, budget, superficie);
+}
+
+// ─── Affichage d'un message dans le panel ─────────────
+function afficherMessagePanel(msg) {
+  const panel = document.getElementById('ajax-panel');
+  const items = document.getElementById('arp-items');
+  const tit   = document.getElementById('arp-tit');
+
+  tit.textContent = msg.type === 'warning' ? '⚠️ Attention' : 'ℹ️ Information';
+  items.innerHTML = `
+    <div class="arp-empty" style="text-align:left;padding:1.2rem;">
+      <div style="font-size:1.1rem;margin-bottom:8px;color:#fff;">${msg.message}</div>
+      ${msg.detail ? `<div style="color:rgba(255,255,255,0.8);font-size:12px;line-height:1.6;">${msg.detail}</div>` : ''}
+      <div style="margin-top:12px;">
+        <a href="#" onclick="fermerAjaxPanel();return false;" style="color:#FFD700;text-decoration:underline;font-size:12px;">Voir tous les sites →</a>
+      </div>
+    </div>
+  `;
+  panel.classList.add('visible');
+}
+
+// ─── Affichage du panel flottant ─────────────
+function afficherAjaxPanel(resultats, budget, superficie) {
+  const panel = document.getElementById('ajax-panel');
+  const items = document.getElementById('arp-items');
+  const tit   = document.getElementById('arp-tit');
+
+  if (resultats.length === 0) {
+    // Ne pas afficher si un message est déjà affiché
+    if (items.innerHTML.includes('arp-empty')) return;
+    
+    let msg = '😕 Aucun site';
+    if (budget)     msg += ` pour ${formatFCFA(budget)} FCFA`;
+    if (superficie) msg += ` et ${formatSup(superficie)} m²`;
+    tit.textContent = msg;
+    items.innerHTML = `<div class="arp-empty">
+      Aucun résultat pour ces critères.
+      <a href="#" onclick="fermerAjaxPanel();return false;" style="color:#FFD700;text-decoration:underline;margin-left:8px;">Voir tous →</a>
+    </div>`;
+    panel.classList.add('visible');
+    return;
+  }
+
+  const msgs = [];
+  if (budget)     msgs.push(`budget <strong>${formatFCFA(budget)} FCFA</strong>`);
+  if (superficie) msgs.push(`superficie <strong>${formatSup(superficie)} m²</strong>`);
+  tit.innerHTML = `🎯 ${resultats.length} site${resultats.length > 1 ? 's' : ''} ${msgs.length ? '— ' + msgs.join(' + ') : ''}`;
+
+  items.innerHTML = resultats.map(r => `
+    <div class="arp-item" onclick="scrollToSite('${r.site.slug}')">
+      <div class="arp-item-site">
+        <span>📍 ${r.site.nom}</span>
+        <span class="arp-item-loc">${r.site.localisation}</span>
+      </div>
+      <div class="arp-item-lignes">
+        ${r.lignes.map(l => `<div class="arp-ligne">• ${l}</div>`).join('')}
+      </div>
+      <a href="${r.site.url}" class="arp-voir" onclick="event.stopPropagation()">
+        Voir ce site →
+      </a>
+    </div>
+  `).join('');
+
+  panel.classList.add('visible');
+  highlightSites(resultats.map(r => r.site.slug));
+}
+
+function fermerAjaxPanel() {
+  document.getElementById('ajax-panel').classList.remove('visible');
+  document.querySelectorAll('.site-card').forEach(c => c.classList.remove('highlight-card'));
+}
+
+function scrollToSite(slug) {
+  const card = document.querySelector(`.site-card[data-slug="${slug}"]`);
+  if (card) {
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    card.classList.add('highlight-card');
+    setTimeout(() => card.classList.remove('highlight-card'), 3000);
+  }
+}
+
+function highlightSites(slugs) {
+  document.querySelectorAll('.site-card').forEach(card => {
+    card.classList.toggle('highlight-card', slugs.includes(card.dataset.slug));
+  });
+}
+
+// ══════════════════════════════════════════════
+// RECHERCHE + FILTRES PILLS
+// ══════════════════════════════════════════════
+function lancerRecherche() {
+  const loc    = document.getElementById('s-loc')?.value    || '';
+  const budget = (document.getElementById('s-budget')?.value || '').replace(/[\s,]/g,'');
+  const statut = document.getElementById('s-statut')?.value || '';
+  const surf   = (document.getElementById('s-surf')?.value  || '').replace(/[\s,]/g,'');
+  let url = '{% url "sites_list" %}?';
+  if (loc)    url += 'slug='          + encodeURIComponent(loc) + '&';
+  if (budget) url += 'budget='        + budget + '&';
+  if (statut && statut !== 'promo') url += 'statut=' + statut + '&';
+  if (statut === 'promo')           url += 'promo=1&';
+  if (surf)   url += 'superficie_min='+ surf + '&';
+  window.location = url;
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && ['s-loc','s-surf','s-budget','s-statut'].includes(document.activeElement?.id))
+    lancerRecherche();
+});
+
 let currentFilter = 'all';
 
 function setFilter(el, f) {
@@ -209,32 +1397,77 @@ function setFilter(el, f) {
 }
 
 function filterCards() {
-  const q = document.getElementById('search-input').value.toLowerCase();
+  const q = (document.getElementById('search-input')?.value || '').toLowerCase();
+  let visible = 0;
   document.querySelectorAll('#sites-grid .site-card').forEach(card => {
-    const nom = card.dataset.nom || '';
-    const ville = card.dataset.ville || '';
-    const statut = card.dataset.statut || '';
-    const matchQ = !q || nom.includes(q) || ville.includes(q);
-    const matchF = currentFilter === 'all' || statut === currentFilter;
+    const matchQ = !q || (card.dataset.nom||'').includes(q) ||
+                         (card.dataset.ville||'').includes(q) ||
+                         (card.dataset.localisation||'').includes(q);
+    let matchF = currentFilter === 'all';
+    if (currentFilter === 'disponible') matchF = card.dataset.statut === 'disponible';
+    else if (currentFilter === 'en_cours') matchF = card.dataset.statut === 'en_cours';
+    else if (currentFilter === 'complet') matchF = card.dataset.statut === 'complet' || card.dataset.statut === 'vendue';
     card.style.display = (matchQ && matchF) ? '' : 'none';
+    if (matchQ && matchF) visible++;
   });
+  const nb = document.getElementById('nb-resultats');
+  if (nb) nb.textContent = visible + ' site' + (visible > 1 ? 's' : '');
 }
 
-document.getElementById('mform').addEventListener('submit', function(e) {
-  e.preventDefault();
-  const data = new FormData(this);
-  fetch('{% url "contact" %}', {
-    method: 'POST',
-    headers: { 'X-Requested-With': 'XMLHttpRequest' },
-    body: data
-  }).then(r => r.json()).then(d => {
-    document.getElementById('modal').classList.remove('open');
-    const t = document.getElementById('toast');
-    document.getElementById('toast-msg').textContent = 'Demande envoyee ! Nous vous contacterons sous 24h.';
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 4000);
-  });
+// ══════════════════════════════════════════════
+// MODAL
+// ══════════════════════════════════════════════
+function openModal(s) {
+  if (s) { const f = document.getElementById('msite'); if (f) f.value = s; }
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+document.getElementById('modal')?.addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
 });
+
+function submitModal() {
+  const form = document.getElementById('mform');
+  const data = new FormData(form);
+  const nom  = (data.get('prenom') || '') + ' ' + (data.get('nom') || '');
+  data.set('nom', nom.trim());
+  fetch('/contact/', { method:'POST', headers:{'X-Requested-With':'XMLHttpRequest'}, body:data })
+    .then(r => r.json()).then(() => {
+      document.getElementById('modal-content').innerHTML =
+        '<div style="text-align:center;padding:2rem 0;">'
+        +'<div style="font-size:3.5rem;margin-bottom:0.8rem;">✅</div>'
+        +'<div style="font-size:1.3rem;font-weight:800;color:var(--g800);margin-bottom:0.5rem;">Demande envoyée !</div>'
+        +'<p style="font-size:13px;color:var(--g500);margin-bottom:1.5rem;">Notre équipe vous contactera sous 24h.</p>'
+        +'<button class="m-submit" onclick="closeModal()" style="background:var(--red);">Fermer</button></div>';
+      showToast('✅','Demande envoyée ! Nous vous contacterons sous 24h.');
+    }).catch(() => showToast('⚠️','Erreur réseau.'));
+}
+
+// ══════════════════════════════════════════════
+// UTILITAIRES
+// ══════════════════════════════════════════════
+function formatFCFA(n) {
+  if (n === undefined || n === null || isNaN(n)) return '0';
+  return new Intl.NumberFormat('fr-FR').format(Math.round(n));
+}
+
+function formatSup(n) {
+  if (n === undefined || n === null || isNaN(n)) return '0';
+  if (n === Math.floor(n)) return Math.floor(n).toString();
+  return n.toFixed(2);
+}
+
+function showToast(ico, msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('t-ico').textContent = ico;
+  document.getElementById('t-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4500);
+}
+
+// Init
+filterCards();
 </script>
+
 </body>
 </html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nos Services — Dashboard EDEN GROUP</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g800:#1F2937;--r:12px;--rl:20px;}
+body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
+.topnav{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;border-bottom:1.5px solid var(--g200);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
+.tn-em{width:36px;height:36px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:#fff;}
+.tn-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tn-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1.5px solid var(--g200);background:#fff;color:var(--g500);font-family:'Outfit',sans-serif;display:inline-flex;align-items:center;gap:5px;transition:all 0.2s;}
+.tn-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--bpale);}
+.wrap{display:flex;padding-top:64px;min-height:100vh;}
+.sidebar{width:240px;background:#fff;border-right:1.5px solid var(--g200);position:fixed;top:64px;left:0;bottom:0;overflow-y:auto;z-index:900;}
+.sb-sec{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g400);padding:1.2rem 1.5rem 0.4rem;}
+.sb-lnk{display:flex;align-items:center;gap:10px;padding:10px 1.5rem;font-size:13px;font-weight:500;color:var(--g600);border-left:2px solid transparent;text-decoration:none;transition:all 0.15s;}
+.sb-lnk:hover,.sb-lnk.active{color:var(--blue);background:var(--bpale);border-left-color:var(--blue);}
+.sb-ico{font-size:15px;width:20px;text-align:center;flex-shrink:0;}
+.sb-user{padding:1.2rem 1.5rem;border-top:1px solid var(--g200);margin-top:1rem;}
+.main{flex:1;padding:2rem;margin-left:240px;}
+.page-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;flex-wrap:wrap;gap:1rem;}
+.page-tit{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--g800);}
+.page-sub{font-size:13px;color:var(--g500);margin-top:2px;}
+.btn-add{background:var(--grad);color:#fff;padding:10px 18px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+/* Quick actions */
+.quick-actions{display:flex;gap:10px;margin-bottom:1.5rem;flex-wrap:wrap;}
+.qa-btn{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:var(--r);border:1.5px solid var(--g200);background:#fff;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;color:var(--g700);transition:all 0.2s;font-family:'Outfit',sans-serif;}
+.qa-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--bpale);}
+.qa-btn .qa-n{font-size:1.1rem;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+/* Table */
+.services-table{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);overflow:hidden;}
+.table-header{display:grid;grid-template-columns:60px 50px 200px 1fr 120px 80px;gap:0;background:var(--g50);border-bottom:1.5px solid var(--g200);}
+.th{padding:10px 14px;font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:1px;}
+.table-row{display:grid;grid-template-columns:60px 50px 200px 1fr 120px 80px;gap:0;border-bottom:1px solid var(--g100);align-items:center;transition:all 0.15s;}
+.table-row:hover{background:var(--g50);}
+.table-row:last-child{border-bottom:none;}
+.td{padding:10px 14px;font-size:13px;color:var(--g700);}
+.td-ico{font-size:1.4rem;}
+.td-num{font-size:12px;font-weight:800;color:var(--g400);}
+.td-nom{font-weight:700;color:var(--g800);}
+.td-desc{font-size:12px;color:var(--g500);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.td-cat{font-size:11px;color:var(--g500);}
+.td-actions{display:flex;gap:5px;}
+.btn-sm-ed{padding:5px 9px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Outfit',sans-serif;background:var(--bpale);color:var(--blue);text-decoration:none;}
+.btn-sm-del{padding:5px 9px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Outfit',sans-serif;background:#fee2e2;color:#dc2626;}
+.badge-off{background:var(--g100);color:var(--g500);padding:2px 7px;border-radius:100px;font-size:10px;font-weight:600;}
+.alert{background:#dcfce7;border:1.5px solid #86efac;border-radius:var(--r);padding:12px 16px;font-size:13px;color:#16a34a;margin-bottom:1.5rem;}
+.toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1.5px solid var(--g200);border-radius:var(--r);padding:14px 20px;font-size:13px;color:var(--g800);z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(100px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.1);}
+.toast.show{transform:none;opacity:1;}
+.empty{text-align:center;padding:4rem;background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);}
+@media(max-width:1024px){.sidebar{display:none;}.main{margin-left:0;}}
+@media(max-width:768px){.main{padding:1rem;}.table-header{display:none;}.table-row{grid-template-columns:auto 1fr auto;gap:8px;padding:8px;}.td-desc,.td-cat{display:none;}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"><span id="t-ico">✅</span>&nbsp;<span id="t-msg"></span></div>
+
+<nav class="topnav">
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="tn-em">E</div>
+    <div class="tn-name">EDEN GROUP</div>
+    <span style="font-size:11px;color:var(--g400);margin-left:6px;letter-spacing:1px;text-transform:uppercase;">Nos Services</span>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <a class="tn-btn" href="{% url 'nos_services' %}" target="_blank">🔧 Voir</a>
+    <a class="tn-btn" href="{% url 'dashboard_home' %}">← Dashboard</a>
+    <a class="tn-btn" href="{% url 'logout' %}" style="background:#fee2e2;border-color:#fca5a5;color:#dc2626;">Déconnexion</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-sec">Principal</div>
+  <a class="sb-lnk {% if request.resolver_match.url_name == 'dashboard_home' %}active{% endif %}" href="{% url 'dashboard_home' %}"><span class="sb-ico">📊</span>Tableau de bord</a>
+  <a class="sb-lnk {% if 'dashboard_site' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_sites' %}"><span class="sb-ico">🏡</span>Sites fonciers</a>
+  <a class="sb-lnk {% if 'dashboard_parcelle' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_parcelles' %}"><span class="sb-ico">📐</span>Parcelles</a>
+  <a class="sb-lnk {% if 'dashboard_reservation' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_reservations' %}"><span class="sb-ico">📋</span>Réservations</a>
+  <a class="sb-lnk {% if 'dashboard_contact' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_contacts' %}"><span class="sb-ico">📩</span>Contacts</a>
+  <a class="sb-lnk {% if 'dashboard_visite' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_visites' %}"><span class="sb-ico">📅</span>Visites</a>
+  <a class="sb-lnk {% if 'dashboard_promotion' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_promotions' %}"><span class="sb-ico">🔥</span>Promotions</a>
+
+  <div class="sb-sec">Projets & Contenu</div>
+  <a class="sb-lnk {% if 'dashboard_projet' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_projets_liste' %}"><span class="sb-ico">🏗</span>Nos Projets</a>
+  <a class="sb-lnk {% if 'dashboard_une' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_une_liste' %}"><span class="sb-ico">📰</span>Une &amp; Événements</a>
+  <a class="sb-lnk {% if 'dashboard_journal' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_journal' %}"><span class="sb-ico">📰</span>Journal EDEN</a>
+  <a class="sb-lnk {% if 'dashboard_temoignage' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_temoignages' %}"><span class="sb-ico">💬</span>Témoignages</a>
+
+  <div class="sb-sec">Services & Agences</div>
+  <a class="sb-lnk {% if 'dashboard_services_module' in request.resolver_match.url_name or 'dashboard_service' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_services_liste' %}"><span class="sb-ico">⚡</span>Services</a>
+  <a class="sb-lnk {% if 'dashboard_agences' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_agences_liste' %}"><span class="sb-ico">📍</span>Agences</a>
+
+  <div class="sb-sec">Configuration</div>
+  <a class="sb-lnk {% if 'dashboard_home_config' in request.resolver_match.url_name or 'dashboard_hero' in request.resolver_match.url_name or 'dashboard_service' in request.resolver_match.url_name or 'dashboard_etape' in request.resolver_match.url_name or 'dashboard_livret' in request.resolver_match.url_name or 'dashboard_actualite' in request.resolver_match.url_name or 'dashboard_commentaire' in request.resolver_match.url_name or 'dashboard_stats_home' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_home_config' %}">
+    <span class="sb-ico">🏠</span>Config page d'accueil
+  </a>
+  <a class="sb-lnk {% if 'dashboard_hero_slides' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_hero_slides' %}">
+    <span class="sb-ico">🖼</span>Slides Hero
+  </a>
+  <a class="sb-lnk {% if 'dashboard_groupy' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_groupy' %}"><span class="sb-ico">🤖</span>GROUPY</a>
+  <a class="sb-lnk {% if 'dashboard_services_categories' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_services_categories' %}"><span class="sb-ico">📂</span>Catégories Services</a>
+  <a class="sb-lnk {% if 'dashboard_services_processus' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_services_processus' %}"><span class="sb-ico">🔄</span>Processus Services</a>
+  <a class="sb-lnk {% if 'dashboard_services_engagements' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_services_engagements' %}"><span class="sb-ico">🤝</span>Engagements Services</a>
+  <a class="sb-lnk {% if 'dashboard_agences_stats' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_agences_stats' %}"><span class="sb-ico">📊</span>Stats Agences</a>
+
+  <div class="sb-sec">Administration</div>
+  {% if user.is_superuser %}
+  <a class="sb-lnk {% if 'dashboard_utilisateur' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_utilisateurs' %}"><span class="sb-ico">👥</span>Utilisateurs</a>
+  <a class="sb-lnk {% if 'dashboard_utilisateur_ajouter' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_utilisateur_ajouter' %}"><span class="sb-ico">➕</span>Ajouter un utilisateur</a>
+  {% endif %}
+  <a class="sb-lnk {% if request.resolver_match.url_name == 'dashboard_parametres' %}active{% endif %}" href="{% url 'dashboard_parametres' %}"><span class="sb-ico">⚙</span>Paramètres</a>
+
+  <div class="sb-sec">Liens rapides</div>
+  <a class="sb-lnk" href="{% url 'carte' %}" target="_blank"><span class="sb-ico">🗺</span>Carte publique</a>
+  <a class="sb-lnk" href="{% url 'journal_kiosque' %}" target="_blank"><span class="sb-ico">📰</span>Voir le kiosque</a>
+  <a class="sb-lnk" href="{% url 'nos_projets' %}" target="_blank"><span class="sb-ico">🏗</span>Projets publics</a>
+  <a class="sb-lnk" href="{% url 'nos_services' %}" target="_blank"><span class="sb-ico">⚡</span>Services publics</a>
+  <a class="sb-lnk" href="{% url 'nos_agences' %}" target="_blank"><span class="sb-ico">📍</span>Agences publiques</a>
+  <a class="sb-lnk" href="{% url 'une_evenements_accueil' %}" target="_blank"><span class="sb-ico">📰</span>Une & Événements</a>
+  <a class="sb-lnk" href="{% url 'home' %}" target="_blank"><span class="sb-ico">🌐</span>Site public</a>
+
+  <div class="sb-user">
+    <div style="font-size:13px;font-weight:700;color:var(--g800);">{{ user.get_full_name|default:user.username }}</div>
+    <div style="font-size:11px;color:var(--g400);">{% if user.is_superuser %}Super Admin{% elif user.is_staff %}Administrateur{% endif %}</div>
+    <a href="{% url 'logout' %}" style="display:block;margin-top:4px;font-size:11px;color:var(--g400);text-decoration:none;">🚪 Déconnexion</a>
+  </div>
+</div>
+
+  <div class="main">
+    <div class="page-hd">
+      <div>
+        <h1 class="page-tit">🔧 Nos Services</h1>
+        <div class="page-sub">{{ services.count }} service{{ services.count|pluralize }} · {{ nb_actifs }} actif{{ nb_actifs|pluralize }}</div>
+      </div>
+      <a class="btn-add" href="{% url 'dashboard_service_ajouter' %}">+ Nouveau service</a>
+    </div>
+
+    {% if messages %}{% for msg in messages %}<div class="alert">{{ msg }}</div>{% endfor %}{% endif %}
+
+    <!-- Actions rapides -->
+    <div class="quick-actions">
+      <a class="qa-btn" href="{% url 'dashboard_services_categories' %}">
+        <span class="qa-n">📂</span> Gérer les catégories
+      </a>
+      <a class="qa-btn" href="{% url 'dashboard_services_processus' %}">
+        <span class="qa-n">🔄</span> Processus d'accompagnement
+      </a>
+      <a class="qa-btn" href="{% url 'dashboard_services_engagements' %}">
+        <span class="qa-n">🛡</span> Nos engagements
+      </a>
+      <a class="qa-btn" href="{% url 'nos_services' %}" target="_blank">
+        <span class="qa-n">👁</span> Voir la page publique
+      </a>
+    </div>
+
+    {% if services %}
+    <div class="services-table">
+      <div class="table-header">
+        <div class="th">Icône</div>
+        <div class="th">N°</div>
+        <div class="th">Nom</div>
+        <div class="th">Description</div>
+        <div class="th">Catégorie</div>
+        <div class="th">Actions</div>
+      </div>
+      {% for srv in services %}
+      <div class="table-row" id="srv-{{ srv.pk }}">
+        <div class="td td-ico">{{ srv.icone }}</div>
+        <div class="td td-num">{{ srv.numero|stringformat:"02d" }}</div>
+        <div class="td td-nom">{{ srv.nom }}{% if not srv.is_active %} <span class="badge-off">Off</span>{% endif %}</div>
+        <div class="td td-desc">{{ srv.description|truncatechars:60 }}</div>
+        <div class="td td-cat">{{ srv.categorie.nom|default:"—" }}</div>
+        <div class="td td-actions">
+          <a class="btn-sm-ed" href="{% url 'dashboard_service_modifier' srv.pk %}">✏</a>
+          <button class="btn-sm-del" onclick="supprimerService({{ srv.pk }}, '{{ srv.nom|escapejs }}')">🗑</button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty">
+      <div style="font-size:3rem;margin-bottom:1rem;">🔧</div>
+      <div style="font-size:15px;font-weight:600;color:var(--g800);margin-bottom:0.5rem;">Aucun service</div>
+      <div style="font-size:13px;color:var(--g500);margin-bottom:1.5rem;">
+        Lancez la commande <code>python manage.py init_services</code> ou créez manuellement.
+      </div>
+      <a href="{% url 'dashboard_service_ajouter' %}" class="btn-add">+ Premier service</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+function showToast(ico, msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('t-ico').textContent = ico;
+  document.getElementById('t-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+function supprimerService(pk, nom) {
+  if (!confirm(`Supprimer le service "${nom}" ?`)) return;
+  const data = new FormData();
+  data.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+  fetch(`/dashboard/services-module/${pk}/supprimer/`, {
+    method: 'POST',
+    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    body: data
+  }).then(r => r.json()).then(d => {
+    if (d.success) {
+      document.getElementById(`srv-${pk}`)?.remove();
+      showToast('🗑', `"${nom}" supprimé.`);
+    }
+  });
+}
+</script>
+</body>
+</html>

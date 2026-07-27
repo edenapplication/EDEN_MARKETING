@@ -4,61 +4,90 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{ site.nom }} — EDEN GROUP</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
 {% load humanize %}
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g400:#9CA3AF;--g600:#4B5563;--g800:#1F2937;}
-body{font-family:'Segoe UI',Arial,sans-serif;background:#fff;color:var(--g800);}
-h1,h2,h3{font-family:Georgia,serif;}
-nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;background:rgba(255,255,255,0.95);border-bottom:1.5px solid var(--g200);backdrop-filter:blur(20px);}
-.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
-.logo-em{width:40px;height:40px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-weight:700;font-size:18px;color:#fff;}
-.logo-name{font-family:Georgia,serif;font-size:19px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.nav-lnk{padding:8px 16px;font-size:13px;font-weight:500;color:var(--g600);text-decoration:none;border-radius:8px;transition:all 0.2s;}
-.nav-lnk:hover{color:var(--blue);background:var(--bpale);}
-.btn-cta{background:var(--grad);color:#fff;padding:9px 20px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;text-decoration:none;}
+:root{
+  --blue:#1B4FDB;--blue-d:#0A2494;--blue-pale:#EEF3FF;
+  --red:#C8102E;--red-d:#A00C24;
+  --grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
+  --grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
+  --g50:#F8FAFF;--g100:#F0F4FF;--g200:#E2E8F0;
+  --g400:#94A3B8;--g500:#64748B;--g600:#475569;--g800:#1E293B;
+  --sh:0 2px 12px rgba(0,0,0,0.08);
+  --sh-lg:0 8px 40px rgba(27,79,219,0.15);
+  --r:10px;--rl:16px;--rxl:24px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:#fff;color:var(--g800);overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-thumb{background:var(--grad-h);border-radius:100px;}
 
-.hero{margin-top:70px;height:500px;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--bpale),#F0F4FF);}
-.hero img{width:100%;height:100%;object-fit:cover;}
-.hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,22,40,0.8) 0%,rgba(10,22,40,0.3) 60%,transparent 100%);}
-.hero-content{position:absolute;bottom:0;left:0;right:0;padding:2.5rem 3rem;}
+/* ══ NAVBAR TRANSPARENTE ══ */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;background:transparent;transition:background 0.3s ease, box-shadow 0.3s ease;}
+nav.scrolled{background:rgba(255,255,255,.92);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);box-shadow:0 2px 20px rgba(0,0,0,0.08);}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo-img{height:48px;width:auto;object-fit:contain;}
+.logo-box{width:42px;height:42px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#fff;}
+.logo-name{font-size:18px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.logo-tagline{font-size:9px;color:var(--g500);letter-spacing:1.5px;text-transform:uppercase;}
+.nav-links{display:flex;align-items:center;gap:0;}
+.nav-lnk{padding:6px 13px;font-size:16px;font-weight:500;color:white;text-decoration:none;border-radius:7px;transition:all 0.18s;position:relative;}
+nav.scrolled .nav-lnk{color:black;}
+.nav-lnk:hover,.nav-lnk.active{color:var(--blue);}
+.nav-lnk.active::after{content:'';position:absolute;bottom:-4px;left:13px;right:13px;height:2px;background:var(--red);border-radius:100px;}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.btn-rdv{background:var(--red);color:#fff;padding:10px 18px;border-radius:50px;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:6px;}
+.btn-rdv:hover{background:var(--red-d);transform:translateY(-1px);box-shadow:0 4px 16px rgba(200,16,46,0.3);}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:none;padding:6px;}
+.hamburger span{width:22px;height:2px;background:white;border-radius:2px;display:block;transition:background 0.3s;}
+nav.scrolled .hamburger span{background:var(--g800);}
+.mob-menu{display:none;position:fixed;top:70px;left:0;right:0;background:#fff;border-bottom:1px solid var(--g200);padding:1rem 1.5rem;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.1);}
+.mob-menu.open{display:flex;flex-direction:column;gap:4px;}
+
+/* ══ HERO DETAIL ══ */
+.hero-detail{margin-top:0;height:500px;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--blue-pale),#F0F4FF);}
+.hero-detail img{width:100%;height:100%;object-fit:cover;}
+.hero-detail .hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,22,40,0.75) 0%,rgba(10,22,40,0.2) 60%,transparent 100%);}
+.hero-detail .hero-content{position:absolute;bottom:0;left:0;right:0;padding:2.5rem 3rem;}
 .hero-breadcrumb{font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:0.8rem;}
 .hero-breadcrumb a{color:rgba(255,255,255,0.7);text-decoration:none;}
 .hero-breadcrumb a:hover{color:#fff;}
 .hero-status{display:inline-flex;padding:4px 14px;border-radius:100px;font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:0.8rem;}
-.st-a{background:rgba(22,163,74,0.9);color:#fff;}.st-p{background:rgba(27,79,219,0.9);color:#fff;}.st-c{background:rgba(200,16,46,0.9);color:#fff;}
-.hero-title{font-family:Georgia,serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:700;color:#fff;margin-bottom:0.5rem;}
+.st-a{background:rgba(22,163,74,0.9);color:#fff;}
+.st-p{background:rgba(27,79,219,0.9);color:#fff;}
+.st-c{background:rgba(200,16,46,0.9);color:#fff;}
+.hero-title{font-size:clamp(2rem,4vw,3.2rem);font-weight:900;color:#fff;margin-bottom:0.5rem;}
 .hero-loc{font-size:14px;color:rgba(255,255,255,0.8);display:flex;align-items:center;gap:6px;}
 
 .container{max-width:1200px;margin:0 auto;padding:0 2rem;}
 .main-grid{display:grid;grid-template-columns:1fr 380px;gap:3rem;padding:3rem 0;}
 
-.section-title{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.5rem;}
-.block-title{font-family:Georgia,serif;font-size:1.6rem;font-weight:700;color:var(--g800);margin-bottom:1rem;}
+.section-title{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:0.5rem;}
+.block-title{font-size:1.6rem;font-weight:800;color:var(--g800);margin-bottom:1rem;}
 
 .stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:0;background:var(--g50);border:1.5px solid var(--g200);border-radius:16px;overflow:hidden;margin-bottom:2rem;}
 .stat-item{padding:1.2rem;text-align:center;border-right:1px solid var(--g200);}
 .stat-item:last-child{border-right:none;}
-.stat-n{font-family:Georgia,serif;font-size:1.8rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-n{font-size:1.8rem;font-weight:900;color:var(--blue);}
+.stat-n.green{color:#16a34a;}
 .stat-l{font-size:11px;color:var(--g400);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;}
 
 .prog-wrap{margin-bottom:2rem;}
 .prog-hd{display:flex;justify-content:space-between;margin-bottom:6px;}
 .prog-lbl{font-size:13px;font-weight:600;color:var(--g800);}
-.prog-pct{font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.prog-pct{font-size:16px;font-weight:700;color:var(--blue);}
 .prog-bar{height:8px;background:var(--g200);border-radius:100px;overflow:hidden;}
 .prog-fill{height:100%;background:var(--grad-h);border-radius:100px;}
 
 .description{font-size:14px;color:var(--g600);line-height:1.8;margin-bottom:2rem;}
 
 .gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:2rem;}
-.gallery-img{height:150px;border-radius:12px;overflow:hidden;background:var(--bpale);cursor:pointer;}
+.gallery-img{height:150px;border-radius:12px;overflow:hidden;background:var(--blue-pale);cursor:pointer;}
 .gallery-img img{width:100%;height:100%;object-fit:cover;transition:transform 0.3s;}
 .gallery-img:hover img{transform:scale(1.05);}
-
-.map-wrap{height:350px;border-radius:16px;overflow:hidden;border:1.5px solid var(--g200);margin-bottom:2rem;}
 
 .parcelles-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-bottom:2rem;}
 .parcel-card{background:#fff;border:1.5px solid var(--g200);border-radius:12px;padding:1.2rem;transition:all 0.2s;}
@@ -66,28 +95,30 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:70px;display:flex;al
 .parcel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.8rem;}
 .parcel-num{font-weight:700;font-size:14px;color:var(--g800);}
 .parcel-status{padding:3px 10px;border-radius:100px;font-size:10px;font-weight:700;text-transform:uppercase;}
-.ps-a{background:#dcfce7;color:#16a34a;}.ps-r{background:var(--bpale);color:var(--blue);}.ps-v{background:#fee2e2;color:#dc2626;}
+.ps-a{background:#dcfce7;color:#16a34a;}
+.ps-r{background:var(--blue-pale);color:var(--blue);}
+.ps-v{background:#fee2e2;color:#dc2626;}
 .parcel-info{display:flex;gap:1rem;font-size:12px;color:var(--g400);margin-bottom:0.8rem;}
-.parcel-price{font-family:Georgia,serif;font-size:1.2rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.8rem;}
-.parcel-btn{width:100%;background:var(--grad);border:none;color:#fff;padding:8px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;}
+.parcel-price{font-size:1.2rem;font-weight:700;color:var(--red);margin-bottom:0.8rem;}
+.parcel-btn{width:100%;background:var(--grad);border:none;color:#fff;padding:8px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;}
 .parcel-btn:hover{opacity:0.88;}
-.parcel-btn-dis{width:100%;background:var(--g100);border:none;color:var(--g400);padding:8px;border-radius:8px;font-size:12px;font-weight:600;cursor:not-allowed;}
+.parcel-btn-dis{width:100%;background:var(--g100);border:none;color:var(--g400);padding:8px;border-radius:8px;font-size:12px;font-weight:600;cursor:not-allowed;font-family:'Outfit',sans-serif;}
 
 /* Sidebar */
 .sidebar{position:sticky;top:90px;}
-.contact-card{background:#fff;border:1.5px solid var(--g200);border-radius:20px;padding:1.5rem;margin-bottom:1.5rem;box-shadow:0 4px 16px rgba(0,0,0,0.06);}
-.cc-title{font-family:Georgia,serif;font-size:1.2rem;font-weight:700;color:var(--g800);margin-bottom:0.3rem;}
+.contact-card{background:#fff;border:1.5px solid var(--g200);border-radius:20px;padding:1.5rem;margin-bottom:1.5rem;box-shadow:var(--sh);}
+.cc-title{font-size:1.2rem;font-weight:800;color:var(--g800);margin-bottom:0.3rem;}
 .cc-sub{font-size:13px;color:var(--g400);margin-bottom:1.2rem;}
 .fg{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
-.fg label{font-size:11px;font-weight:600;color:var(--g400);}
-.fi{width:100%;background:#fff;border:1.5px solid var(--g200);border-radius:10px;padding:10px 13px;color:var(--g800);font-size:13px;outline:none;transition:border-color 0.2s;}
+.fg label{font-size:11px;font-weight:600;color:var(--g500);}
+.fi{width:100%;background:#fff;border:1.5px solid var(--g200);border-radius:10px;padding:10px 13px;color:var(--g800);font-size:13px;font-family:'Outfit',sans-serif;outline:none;transition:border-color 0.2s;}
 .fi:focus{border-color:var(--blue);}
 .fi::placeholder{color:var(--g400);}
-.btn-submit{width:100%;background:var(--grad);border:none;color:#fff;padding:12px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-top:6px;}
+.btn-submit{width:100%;background:var(--grad);border:none;color:#fff;padding:12px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;margin-top:6px;}
 .btn-submit:hover{opacity:0.88;}
-.btn-wa{width:100%;background:#25D366;color:#fff;border:none;padding:11px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;}
+.btn-wa{width:100%;background:#25D366;color:#fff;border:none;padding:11px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Outfit',sans-serif;margin-top:8px;}
 .btn-wa:hover{background:#1daa52;}
-.btn-map{width:100%;background:var(--bpale);border:1.5px solid rgba(27,79,219,0.25);color:var(--blue);padding:10px;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;margin-top:8px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-map{width:100%;background:var(--blue-pale);border:1.5px solid rgba(27,79,219,0.25);color:var(--blue);padding:10px;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;margin-top:8px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Outfit',sans-serif;}
 .btn-map:hover{background:rgba(27,79,219,0.12);}
 
 .info-card{background:var(--g50);border:1.5px solid var(--g200);border-radius:16px;padding:1.2rem;}
@@ -96,44 +127,108 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:70px;display:flex;al
 .info-lbl{color:var(--g400);}
 .info-val{font-weight:600;color:var(--g800);}
 
-.toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1.5px solid var(--g200);border-radius:12px;padding:14px 20px;font-size:13px;z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(80px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 8px 32px rgba(0,0,0,0.1);}
+.toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1px solid var(--g200);border-radius:var(--r);padding:14px 20px;font-size:13px;color:var(--g800);z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(100px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.12);}
 .toast.show{transform:none;opacity:1;}
+.toast-bar{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:var(--r) 0 0 var(--r);background:var(--grad-h);}
 
-.similaires{padding:3rem 0;}
-.sim-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.2rem;}
+/* Similaires */
+.similaires{padding:2rem 0 3rem;}
+.sim-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem;}
 .sim-card{background:#fff;border:1.5px solid var(--g200);border-radius:16px;overflow:hidden;text-decoration:none;color:inherit;display:block;transition:all 0.2s;}
-.sim-card:hover{transform:translateY(-3px);border-color:rgba(27,79,219,0.3);box-shadow:0 8px 24px rgba(27,79,219,0.1);}
-.sim-img{height:160px;background:var(--bpale);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.sim-card:hover{transform:translateY(-4px);border-color:rgba(27,79,219,0.3);box-shadow:var(--sh-lg);}
+.sim-img{height:160px;background:var(--blue-pale);display:flex;align-items:center;justify-content:center;overflow:hidden;}
 .sim-img img{width:100%;height:100%;object-fit:cover;}
 .sim-body{padding:1rem;}
-.sim-name{font-family:Georgia,serif;font-size:1rem;font-weight:700;color:var(--g800);margin-bottom:0.3rem;}
+.sim-name{font-size:1rem;font-weight:800;color:var(--g800);margin-bottom:0.3rem;}
 .sim-loc{font-size:12px;color:var(--g400);}
 
-footer{background:var(--g800);color:#fff;padding:2rem;text-align:center;margin-top:2rem;}
-.footer-copy{font-size:12px;color:#6b7280;}
-.footer-copy span{background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700;}
+/* ══ FOOTER ══ */
+.footer-bar{height:3px;background:var(--grad-h);}
+footer{background:var(--g800);color:#fff;padding:3rem 2rem 1.5rem;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1.5fr;gap:2rem;max-width:1280px;margin:0 auto 2rem;}
+.footer-logo-img{height:40px;object-fit:contain;}
+.footer-desc{font-size:12px;color:#94A3B8;line-height:1.75;max-width:260px;margin-bottom:1rem;margin-top:0.8rem;}
+.footer-tagline{font-size:11px;color:rgba(255,255,255,0.4);font-style:italic;}
+.footer-col h4{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.9rem;}
+.footer-lnk{display:block;font-size:12px;color:#94A3B8;text-decoration:none;margin-bottom:6px;transition:color 0.2s;}
+.footer-lnk:hover{color:#fff;}
+.footer-socials{display:flex;gap:8px;margin-top:0.8rem;}
+.footer-social-btn{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;transition:all 0.2s;}
+.fs-fb{background:#1877F2;color:#fff;}
+.fs-tt{background:#010101;color:#fff;}
+.fs-yt{background:#FF0000;color:#fff;}
+.fs-li{background:#0A66C2;color:#fff;}
+.fs-ig{background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;}
+.footer-social-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.3);}
+.footer-bot{border-top:1px solid #334155;max-width:1280px;margin:0 auto;padding-top:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.footer-copy{font-size:12px;color:#64748B;}
+.footer-links-bot{display:flex;gap:1.5rem;}
+.footer-links-bot a{font-size:12px;color:#64748B;text-decoration:none;transition:color 0.2s;}
+.footer-links-bot a:hover{color:#fff;}
+
 @media(max-width:1024px){.main-grid{grid-template-columns:1fr;}.sidebar{position:static;}}
-@media(max-width:768px){nav{padding:0 1rem;}.container{padding:0 1rem;}.hero{height:350px;}.hero-content{padding:1.5rem;}.hero-title{font-size:1.6rem;}.stats-bar{grid-template-columns:1fr 1fr;}.parcelles-list{grid-template-columns:1fr;}}
+@media(max-width:768px){
+  nav{padding:0 1rem;}
+  .nav-links,.nav-right .btn-rdv{display:none;}
+  .hamburger{display:flex;}
+  .container{padding:0 1rem;}
+  .hero-detail{height:350px;}
+  .hero-detail .hero-content{padding:1.5rem;}
+  .hero-title{font-size:1.6rem;}
+  .stats-bar{grid-template-columns:1fr 1fr;}
+  .parcelles-list{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:1.5rem;}
+  .footer-grid>div:first-child{grid-column:1/-1;}
+}
+@media(max-width:480px){.hero-title{font-size:1.4rem;}}
 </style>
 </head>
 <body>
-<nav>
+
+<!-- ══ NAVBAR TRANSPARENTE ══ -->
+<nav id="navbar">
   <a class="nav-logo" href="{% url 'home' %}">
-    <div class="logo-em">E</div>
-    <div><div class="logo-name">EDEN GROUP</div><div style="font-size:9px;font-weight:600;color:var(--g400);letter-spacing:2px;text-transform:uppercase;">Immobilier & Foncier</div></div>
+    <div class="logo-box">E</div>
+    <div>
+      <div class="logo-name">EDEN GROUP</div>
+      <div class="logo-tagline">Le foncier sécurisé, notre engagement</div>
+    </div>
   </a>
-  <div style="display:flex;align-items:center;gap:4px;">
-    <a class="nav-lnk" href="{% url 'home' %}">Accueil</a>
-    <a class="nav-lnk" href="{% url 'sites_list' %}">Nos Sites</a>
-    <a class="nav-lnk" href="{% url 'carte' %}">Carte</a>
-    <a class="nav-lnk" href="{% url 'promotions' %}">Promotions</a>
-    {% if user.is_staff %}<a class="nav-lnk" href="{% url 'dashboard_home' %}">Dashboard</a>{% endif %}
+  <div class="nav-links">
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'sites_list' or request.resolver_match.url_name == 'site_detail' %}active{% endif %}" href="{% url 'sites_list' %}">Nos Terrains</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_projets' %}active{% endif %}" href="{% url 'nos_projets' %}">Nos Projets</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' or request.resolver_match.url_name == 'une_evenement_detail' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'journal_kiosque' or request.resolver_match.url_name == 'journal_lire' %}active{% endif %}" href="{% url 'journal_kiosque' %}">📰 Documentation</a>
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
+    {% if user.is_staff %}
+    <a class="nav-lnk" href="{% url 'dashboard_home' %}" style="color:var(--blue);font-weight:700;">Dashboard</a>
+    {% endif %}
   </div>
-  <button class="btn-cta" onclick="document.getElementById('cc-form').scrollIntoView({behavior:'smooth'})">Reserver →</button>
+  <div class="nav-right">
+    <button class="btn-rdv" onclick="document.getElementById('cc-form')?.scrollIntoView({behavior:'smooth'})">📅 Contact</button>
+  </div>
+  <button class="hamburger" onclick="toggleMob()"><span></span><span></span><span></span></button>
 </nav>
 
-<!-- HERO -->
-<div class="hero">
+<div class="mob-menu" id="mob-menu">
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'sites_list' or request.resolver_match.url_name == 'site_detail' %}active{% endif %}" href="{% url 'sites_list' %}">Nos Terrains</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_projets' %}active{% endif %}" href="{% url 'nos_projets' %}">Nos Projets</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' or request.resolver_match.url_name == 'une_evenement_detail' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'journal_kiosque' or request.resolver_match.url_name == 'journal_lire' %}active{% endif %}" href="{% url 'journal_kiosque' %}">📰 Documentation</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'promotions' %}active{% endif %}" href="{% url 'promotions' %}">Promotions</a>
+  <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
+  {% if user.is_staff %}<a class="nav-lnk" href="{% url 'dashboard_home' %}">Dashboard</a>{% endif %}
+  <button class="btn-rdv" style="width:100%;margin-top:8px;justify-content:center;" onclick="document.getElementById('cc-form')?.scrollIntoView({behavior:'smooth'})">📅 Contact</button>
+</div>
+
+<!-- ══ HERO DETAIL ══ -->
+<div class="hero-detail">
   {% if site.image_principale %}
   <img src="{{ site.image_principale.url }}" alt="{{ site.nom }}">
   {% endif %}
@@ -146,14 +241,15 @@ footer{background:var(--g800);color:#fff;padding:2rem;text-align:center;margin-t
   </div>
 </div>
 
+<!-- ══ CONTENU PRINCIPAL ══ -->
 <div class="container">
   <div class="main-grid">
     <!-- LEFT CONTENT -->
     <div>
       <!-- Stats -->
-      <div class="stats-bar" style="margin-top:0;">
+      <div class="stats-bar">
         <div class="stat-item"><div class="stat-n">{{ site.nb_parcelles_total }}</div><div class="stat-l">Total parcelles</div></div>
-        <div class="stat-item"><div class="stat-n" style="color:#16a34a;">{{ site.nb_disponibles }}</div><div class="stat-l">Disponibles</div></div>
+        <div class="stat-item"><div class="stat-n green">{{ site.nb_disponibles }}</div><div class="stat-l">Disponibles</div></div>
         <div class="stat-item"><div class="stat-n">{{ site.nb_vendues }}</div><div class="stat-l">Vendues</div></div>
         <div class="stat-item"><div class="stat-n">{{ site.pourcentage_vendu }}%</div><div class="stat-l">% Vendu</div></div>
       </div>
@@ -171,15 +267,15 @@ footer{background:var(--g800);color:#fff;padding:2rem;text-align:center;margin-t
 
       {% if site.prix_min %}
       <div style="background:linear-gradient(135deg,rgba(27,79,219,0.06),rgba(200,16,46,0.04));border:1.5px solid var(--g200);border-radius:16px;padding:1.2rem;margin-bottom:2rem;display:flex;gap:2rem;flex-wrap:wrap;">
-        {% if site.prix_min %}<div><div style="font-family:Georgia,serif;font-size:1.3rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">{{ site.prix_min|intcomma }} FCFA</div><div style="font-size:11px;color:var(--g400);text-transform:uppercase;letter-spacing:0.5px;">Prix a partir de</div></div>{% endif %}
-        {% if site.superficie_totale %}<div><div style="font-family:Georgia,serif;font-size:1.3rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">{{ site.superficie_totale|floatformat:0 }} m²</div><div style="font-size:11px;color:var(--g400);text-transform:uppercase;letter-spacing:0.5px;">Superficie totale</div></div>{% endif %}
+        {% if site.prix_min %}<div><div style="font-size:1.3rem;font-weight:700;color:var(--red);">{{ site.prix_min|intcomma }} FCFA</div><div style="font-size:11px;color:var(--g400);text-transform:uppercase;letter-spacing:0.5px;">Prix à partir de</div></div>{% endif %}
+        {% if site.superficie_totale %}<div><div style="font-size:1.3rem;font-weight:700;color:var(--blue);">{{ site.superficie_totale|floatformat:0 }} m²</div><div style="font-size:11px;color:var(--g400);text-transform:uppercase;letter-spacing:0.5px;">Superficie totale</div></div>{% endif %}
       </div>
       {% endif %}
 
       <!-- Galerie -->
       {% if site.images.all %}
       <div class="section-title">Galerie photos</div>
-      <h3 style="font-family:Georgia,serif;font-size:1.3rem;font-weight:700;color:var(--g800);margin-bottom:1rem;">Photos du site</h3>
+      <h3 style="font-size:1.3rem;font-weight:800;color:var(--g800);margin-bottom:1rem;">Photos du site</h3>
       <div class="gallery-grid">
         {% for img in site.images.all %}
         <div class="gallery-img"><img src="{{ img.url }}" alt="{{ img.legende|default:site.nom }}" loading="lazy"></div>
@@ -187,17 +283,10 @@ footer{background:var(--g800);color:#fff;padding:2rem;text-align:center;margin-t
       </div>
       {% endif %}
 
-      <!-- Carte -->
-      {% if site.latitude %}
-      <div class="section-title">Localisation</div>
-      <h3 style="font-family:Georgia,serif;font-size:1.3rem;font-weight:700;color:var(--g800);margin-bottom:1rem;">Voir sur la carte</h3>
-      <div class="map-wrap" id="site-map"></div>
-      {% endif %}
-
       <!-- Parcelles disponibles -->
       {% if parcelles %}
       <div class="section-title">Parcelles disponibles</div>
-      <h3 style="font-family:Georgia,serif;font-size:1.3rem;font-weight:700;color:var(--g800);margin-bottom:1rem;">{{ site.nb_disponibles }} parcelle(s) disponible(s)</h3>
+      <h3 style="font-size:1.3rem;font-weight:800;color:var(--g800);margin-bottom:1rem;">{{ site.nb_disponibles }} parcelle(s) disponible(s)</h3>
       <div class="parcelles-list">
         {% for p in parcelles %}
         <div class="parcel-card">
@@ -211,7 +300,7 @@ footer{background:var(--g800);color:#fff;padding:2rem;text-align:center;margin-t
           </div>
           <div class="parcel-price">{{ p.prix_affiche|intcomma }} FCFA</div>
           {% if p.statut == 'disponible' %}
-          <button class="parcel-btn" onclick="document.getElementById('cc-form').scrollIntoView({behavior:'smooth'});document.getElementById('msg-field').value='Je suis interesse par la Parcelle {{ p.numero }} - {{ site.nom }}'">Reserver cette parcelle →</button>
+          <button class="parcel-btn" onclick="document.getElementById('cc-form').scrollIntoView({behavior:'smooth'});document.getElementById('msg-field').value='Je suis intéressé par la Parcelle {{ p.numero }} - {{ site.nom }}'">Réserver cette parcelle →</button>
           {% else %}
           <button class="parcel-btn-dis">Non disponible</button>
           {% endif %}
@@ -224,19 +313,18 @@ footer{background:var(--g800);color:#fff;padding:2rem;text-align:center;margin-t
     <!-- SIDEBAR -->
     <div class="sidebar">
       <div class="contact-card" id="cc-form">
-        <div class="cc-title">Reserver une parcelle</div>
-        <div class="cc-sub">Notre equipe vous contacte sous 24h</div>
+        <div class="cc-title">Réserver une parcelle</div>
+        <div class="cc-sub">Notre équipe vous contacte sous 24h</div>
         <form id="contact-form">
           {% csrf_token %}
           <input type="hidden" name="type_demande" value="reservation">
           <input type="hidden" name="site" value="{{ site.id }}">
           <div class="fg"><label>Nom complet *</label><input class="fi" type="text" name="nom" placeholder="Votre nom" required></div>
-          <div class="fg"><label>Telephone *</label><input class="fi" type="tel" name="telephone" placeholder="+237 6XX XXX XXX" required></div>
+          <div class="fg"><label>Téléphone *</label><input class="fi" type="tel" name="telephone" placeholder="+237 6XX XXX XXX" required></div>
           <div class="fg"><label>Email</label><input class="fi" type="email" name="email" placeholder="votre@email.com" required></div>
-          <div class="fg"><label>Message</label><textarea class="fi" name="message" id="msg-field" rows="3" placeholder="Vos questions ou la parcelle souhaitee..."></textarea></div>
+          <div class="fg"><label>Message</label><textarea class="fi" name="message" id="msg-field" rows="3" placeholder="Vos questions ou la parcelle souhaitée..."></textarea></div>
           <button type="button" class="btn-submit" onclick="submitContact()">Envoyer la demande →</button>
-          <button type="button" class="btn-wa" onclick="window.open('https://wa.me/237600000000?text=Bonjour+EDEN+GROUP%2C+je+suis+interesse+par+{{ site.nom }}','_blank')">💬 Contacter sur WhatsApp</button>
-          <a class="btn-map" href="{% url 'carte' %}">🗺 Voir sur la carte interactive</a>
+          <button type="button" class="btn-wa" onclick="window.open('https://wa.me/237600000000?text=Bonjour%20EDEN%20GROUP%2C%20je%20suis%20intéressé%20par%20{{ site.nom|urlencode }}','_blank')">💬 Contacter sur WhatsApp</button>
         </form>
       </div>
 
@@ -245,11 +333,10 @@ footer{background:var(--g800);color:#fff;padding:2rem;text-align:center;margin-t
         <div class="info-row"><span class="info-lbl">Ville</span><span class="info-val">{{ site.ville }}</span></div>
         <div class="info-row"><span class="info-lbl">Localisation</span><span class="info-val">{{ site.localisation }}</span></div>
         {% if site.superficie_totale %}<div class="info-row"><span class="info-lbl">Superficie totale</span><span class="info-val">{{ site.superficie_totale|floatformat:0 }} m²</span></div>{% endif %}
-        {% if site.prix_min %}<div class="info-row"><span class="info-lbl">Prix a partir de</span><span class="info-val">{{ site.prix_min|intcomma }} FCFA</span></div>{% endif %}
+        {% if site.prix_min %}<div class="info-row"><span class="info-lbl">Prix à partir de</span><span class="info-val">{{ site.prix_min|intcomma }} FCFA</span></div>{% endif %}
         <div class="info-row"><span class="info-lbl">Total parcelles</span><span class="info-val">{{ site.nb_parcelles_total }}</span></div>
         <div class="info-row"><span class="info-lbl">Disponibles</span><span class="info-val" style="color:#16a34a;">{{ site.nb_disponibles }}</span></div>
         <div class="info-row"><span class="info-lbl">Avancement</span><span class="info-val">{{ site.pourcentage_vendu }}% vendu</span></div>
-        {% if site.latitude %}<div class="info-row"><span class="info-lbl">Coordonnees GPS</span><span class="info-val" style="font-size:11px;">{{ site.latitude }}, {{ site.longitude }}</span></div>{% endif %}
       </div>
     </div>
   </div>
@@ -257,13 +344,13 @@ footer{background:var(--g800);color:#fff;padding:2rem;text-align:center;margin-t
   <!-- SITES SIMILAIRES -->
   {% if similaires %}
   <div class="similaires">
-    <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.5rem;">✦ Autres sites</div>
-    <h2 style="font-family:Georgia,serif;font-size:1.8rem;font-weight:700;color:var(--g800);margin-bottom:1.5rem;">Sites <em style="font-style:italic;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">similaires</em></h2>
+    <div class="section-title">✦ Autres sites</div>
+    <h2 style="font-size:1.8rem;font-weight:800;color:var(--g800);margin-bottom:1.5rem;">Sites <em style="font-style:italic;color:var(--blue);">similaires</em></h2>
     <div class="sim-grid">
       {% for s in similaires %}
       <a class="sim-card" href="{% url 'site_detail' s.slug %}">
         <div class="sim-img">
-          {% if s.image_principale %}<img src="{{ s.image_principale.url }}" alt="{{ s.nom }}">{% endif %}
+          {% if s.image_principale %}<img src="{{ s.image_principale.url }}" alt="{{ s.nom }}" loading="lazy">{% endif %}
         </div>
         <div class="sim-body">
           <div class="sim-name">{{ s.nom }}</div>
@@ -276,45 +363,101 @@ footer{background:var(--g800);color:#fff;padding:2rem;text-align:center;margin-t
   {% endif %}
 </div>
 
-<div class="toast" id="toast"><span>✅</span><span id="tmsg"></span></div>
+<!-- ══ TOAST ══ -->
+<div class="toast" id="toast"><div class="toast-bar"></div><span id="t-ico" style="font-size:18px;">✅</span><span id="t-msg"></span></div>
 
-<footer><div class="footer-copy">© 2025 <span>EDEN GROUP</span>. Tous droits reserves.</div></footer>
+<!-- ══ FOOTER ══ -->
+<div class="footer-bar"></div>
+<footer>
+  <div class="footer-grid">
+    <div>
+      {% if hero_config and hero_config.logo %}
+        <div style="margin-bottom:0.8rem;"><img src="{{ hero_config.logo.url }}" alt="EDEN GROUP" class="footer-logo-img"></div>
+      {% else %}
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;">
+          <div class="logo-box" style="width:36px;height:36px;font-size:15px;border-radius:8px;">E</div>
+          <div style="font-size:15px;font-weight:900;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">EDEN GROUP</div>
+        </div>
+      {% endif %}
+      <p class="footer-desc">Votre partenaire foncier de confiance depuis 2018.</p>
+      <div class="footer-tagline">Le foncier sécurisé, notre engagement</div>
+    </div>
+    <div class="footer-col"><h4>Liens rapides</h4>
+      <a class="footer-lnk" href="{% url 'home' %}">Accueil</a>
+      <a class="footer-lnk" href="{% url 'sites_list' %}">Nos Terrains</a>
+      <a class="footer-lnk" href="#">Nos Services</a>
+      <a class="footer-lnk" href="#">Projets</a>
+      <a class="footer-lnk" href="#">Académie</a>
+      <a class="footer-lnk" href="{% url 'journal_kiosque' %}">Actualités</a>
+      <a class="footer-lnk" href="{% url 'a_propos' %}">À propos</a>
+      <a class="footer-lnk" href="#">Contact</a>
+    </div>
+    <div class="footer-col"><h4>Nos agences</h4>
+      <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:#94A3B8;margin-bottom:6px;">📍 Yaoundé (Siège)</div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:#94A3B8;margin-bottom:6px;">📍 Bafoussam</div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:#94A3B8;margin-bottom:6px;">📍 Dschang</div>
+      <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:#94A3B8;margin-bottom:6px;">📍 Bangangté</div>
+    </div>
+    <div class="footer-col"><h4>Suivez-nous</h4>
+      <div class="footer-socials">
+        <a href="#" class="footer-social-btn fs-fb">f</a>
+        <a href="#" class="footer-social-btn fs-tt" style="color:#fff;">T</a>
+        <a href="#" class="footer-social-btn fs-yt" style="color:#fff;">▶</a>
+        <a href="#" class="footer-social-btn fs-li" style="color:#fff;">in</a>
+        <a href="#" class="footer-social-btn fs-ig" style="color:#fff;">📷</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bot">
+    <div class="footer-copy">© 2026 EDEN GROUP ENTREPRISE. Tous droits réservés.</div>
+    <div class="footer-links-bot">
+      <a href="#">Mentions légales</a>
+      <a href="#">Politique de confidentialité</a>
+    </div>
+  </div>
+</footer>
 
-{% if site.latitude %}
 <script>
-const map = L.map('site-map').setView([{{ site.latitude }}, {{ site.longitude }}], {{ site.zoom_carte }});
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:'© OpenStreetMap', maxZoom:19}).addTo(map);
-const icon = L.divIcon({
-  html: '<div style="background:linear-gradient(135deg,#1B4FDB,#C8102E);color:#fff;padding:6px 12px;border-radius:18px;font-size:11px;font-weight:800;font-family:Segoe UI,Arial,sans-serif;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.2);">📍 {{ site.nom }}</div>',
-  className:'', iconAnchor:[0,0]
-});
-L.marker([{{ site.latitude }}, {{ site.longitude }}], {icon}).addTo(map);
-{% for p in parcelles %}
-{% if p.latitude and p.longitude %}
-const pIcon{{ forloop.counter }} = L.divIcon({
-  html: '<div style="background:{{ p.couleur_statut }};color:#fff;padding:3px 8px;border-radius:10px;font-size:9px;font-weight:800;font-family:Segoe UI,sans-serif;">{{ p.numero }}</div>',
-  className:'', iconAnchor:[0,0]
-});
-L.marker([{{ p.latitude }}, {{ p.longitude }}], {icon:pIcon{{ forloop.counter }}}).addTo(map).bindPopup('<b>Parcelle {{ p.numero }}</b><br>{{ p.superficie }}m² · {{ p.get_statut_display }}<br><b>{{ p.prix_affiche|intcomma }} FCFA</b>');
-{% endif %}
-{% endfor %}
-</script>
-{% endif %}
+// ── NAV ──
+function toggleMob(){
+  document.getElementById('mob-menu').classList.toggle('open');
+}
 
-<script>
+window.addEventListener('scroll', function() {
+  const nav = document.getElementById('navbar');
+  if (window.scrollY > 40) {
+    nav.classList.add('scrolled');
+  } else {
+    nav.classList.remove('scrolled');
+  }
+});
+
+// ── CONTACT ──
 function submitContact() {
   const form = document.getElementById('contact-form');
   const data = new FormData(form);
   fetch('{% url "contact" %}', {
-    method: 'POST', headers: {'X-Requested-With': 'XMLHttpRequest'}, body: data
-  }).then(r => r.json()).then(d => {
+    method: 'POST',
+    headers: {'X-Requested-With': 'XMLHttpRequest'},
+    body: data
+  })
+  .then(r => r.json())
+  .then(d => {
     if (d.success) {
-      const t = document.getElementById('toast');
-      document.getElementById('tmsg').textContent = 'Demande envoyee ! Nous vous contacterons sous 24h.';
-      t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 4000);
+      showToast('✅','Demande envoyée ! Nous vous contacterons sous 24h.');
       form.reset();
     }
-  });
+  })
+  .catch(() => showToast('⚠️','Erreur réseau.'));
+}
+
+// ── TOAST ──
+function showToast(ico, msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('t-ico').textContent = ico;
+  document.getElementById('t-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4500);
 }
 </script>
 </body>

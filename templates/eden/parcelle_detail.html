@@ -112,7 +112,6 @@ footer{background:var(--g800);color:#fff;padding:2rem;text-align:center;margin-t
   <div style="display:flex;align-items:center;gap:4px;">
     <a class="nav-lnk" href="{% url 'home' %}">Accueil</a>
     <a class="nav-lnk" href="{% url 'sites_list' %}">Nos Sites</a>
-    <a class="nav-lnk" href="{% url 'carte' %}">Carte</a>
     {% if user.is_staff %}<a class="nav-lnk" href="{% url 'dashboard_home' %}">Dashboard</a>{% endif %}
   </div>
   {% if parcelle.statut == 'disponible' %}

@@ -1,0 +1,1057 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EDEN GROUP Académie — Le savoir foncier à votre portée</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --blue:#1B4FDB;--blue-d:#0A2494;--blue-pale:#EEF3FF;
+  --red:#C8102E;--red-d:#A00C24;
+  --grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
+  --grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
+  --g50:#F8FAFF;--g100:#F0F4FF;--g200:#E2E8F0;
+  --g400:#94A3B8;--g500:#64748B;--g600:#475569;--g800:#1E293B;
+  --sh:0 2px 12px rgba(0,0,0,0.08);
+  --sh-lg:0 8px 32px rgba(27,79,219,0.15);
+  --r:8px;--rl:12px;--rxl:20px;
+  --topbar:54px;--sidebar:200px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:#f5f6fa;color:var(--g800);overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-thumb{background:var(--grad-h);border-radius:100px;}
+
+/* ══ TOPBAR ══ */
+.topbar{
+  position:fixed;top:0;left:0;right:0;height:var(--topbar);
+  background:var(--blue-d);z-index:1000;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 1.5rem;gap:1rem;
+  border-bottom:1px solid rgba(255,255,255,0.1);
+}
+.tb-left{display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.tb-logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.tb-logo-box{width:34px;height:34px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#fff;}
+.tb-logo-name{font-size:14px;font-weight:900;color:#fff;}
+.tb-logo-tag{font-size:9px;color:rgba(255,255,255,0.6);letter-spacing:0.5px;}
+.tb-div{width:1px;height:32px;background:rgba(255,255,255,0.2);}
+.tb-academie{display:flex;flex-direction:column;}
+.tb-ac-name{font-size:16px;font-weight:800;color:#fff;letter-spacing:0.5px;}
+.tb-ac-tag{font-size:10px;color:rgba(255,255,255,0.65);font-style:italic;}
+/* Search bar */
+.tb-search{flex:1;max-width:480px;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:100px;padding:6px 16px;transition:all 0.2s;}
+.tb-search:focus-within{background:rgba(255,255,255,0.18);border-color:rgba(255,255,255,0.4);}
+.tb-search input{flex:1;background:none;border:none;outline:none;font-size:13px;color:#fff;font-family:'Outfit',sans-serif;}
+.tb-search input::placeholder{color:rgba(255,255,255,0.5);}
+.tb-search-ico{color:rgba(255,255,255,0.6);font-size:14px;cursor:pointer;}
+.tb-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.tb-btn{padding:7px 16px;border-radius:100px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;display:flex;align-items:center;gap:6px;transition:all 0.2s;text-decoration:none;border:none;}
+.tb-btn-primary{background:var(--blue);color:#fff;border:1.5px solid rgba(255,255,255,0.3);}
+.tb-btn-primary:hover{background:#2563EB;}
+.tb-btn-ghost{background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2);}
+.tb-btn-ghost:hover{background:rgba(255,255,255,0.2);}
+.tb-back{color:rgba(255,255,255,0.7);font-size:12px;text-decoration:none;display:flex;align-items:center;gap:4px;transition:color 0.2s;}
+.tb-back:hover{color:#fff;}
+
+/* ══ LAYOUT ══ */
+.layout{display:flex;padding-top:var(--topbar);min-height:100vh;}
+
+/* ══ SIDEBAR ══ */
+.sidebar{
+  width:var(--sidebar);
+  background:#fff;
+  border-right:1px solid var(--g200);
+  position:fixed;top:var(--topbar);left:0;bottom:0;
+  overflow-y:auto;z-index:900;
+  display:flex;flex-direction:column;
+}
+.sidebar::-webkit-scrollbar{width:3px;}
+.sidebar::-webkit-scrollbar-thumb{background:var(--blue);border-radius:100px;}
+.sb-nav{flex:1;padding:0.5rem 0;}
+.sb-item{display:flex;align-items:center;gap:9px;padding:9px 1rem;font-size:12.5px;font-weight:500;color:var(--g600);cursor:pointer;transition:all 0.15s;border-left:3px solid transparent;text-decoration:none;border-right:none;}
+.sb-item:hover{color:var(--blue);background:var(--blue-pale);border-left-color:var(--blue);}
+.sb-item.active{color:var(--blue);background:var(--blue-pale);border-left-color:var(--blue);font-weight:700;}
+.sb-item.active-cat{background:var(--red);color:#fff;border-left-color:var(--red);}
+.sb-ico{font-size:14px;width:18px;text-align:center;flex-shrink:0;}
+.sb-nb{margin-left:auto;background:var(--g200);color:var(--g500);font-size:10px;font-weight:700;padding:1px 6px;border-radius:100px;}
+.sb-item.active .sb-nb,.sb-item.active-cat .sb-nb{background:rgba(255,255,255,0.3);color:#fff;}
+.sb-divider{height:1px;background:var(--g100);margin:4px 0;}
+/* Box bas sidebar */
+.sb-info-box{margin:0.8rem;background:var(--blue-pale);border-radius:var(--rl);padding:0.8rem;}
+.sib-tit{font-size:11px;font-weight:700;color:var(--blue);margin-bottom:0.3rem;}
+.sib-desc{font-size:10px;color:var(--g500);line-height:1.5;margin-bottom:0.6rem;}
+.sib-btn{background:var(--blue);color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;width:100%;display:flex;align-items:center;justify-content:center;gap:5px;}
+
+/* ══ CONTENU PRINCIPAL ══ */
+.main-content{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;}
+
+/* ══ HERO ══ */
+.hero-ac{
+  position:relative;height:180px;overflow:hidden;
+  background:linear-gradient(135deg,var(--blue-d) 0%,#1B4FDB 50%,#7B20B4 100%);
+}
+.hero-ac-bg{position:absolute;inset:0;}
+.hero-ac-bg img{width:100%;height:100%;object-fit:cover;opacity:0.3;display:block;}
+.hero-ac-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(10,20,80,0.85) 0%,rgba(10,20,80,0.5) 100%);}
+.hero-ac-content{position:absolute;inset:0;display:flex;align-items:center;padding:0 2rem;gap:3rem;}
+.hero-ac-left{max-width:500px;}
+.hero-ac-tit{font-size:clamp(1.4rem,2.5vw,2rem);font-weight:900;color:#fff;margin-bottom:0.3rem;}
+.hero-ac-sub{font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5;margin-bottom:0.8rem;max-width:420px;}
+.hero-ac-line{width:48px;height:3px;background:var(--red);border-radius:100px;margin-bottom:0.8rem;}
+.hero-ac-desc{font-size:12px;color:rgba(255,255,255,0.65);line-height:1.65;max-width:420px;}
+.hero-ac-right{flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+
+/* ══ STATS BAND ══ */
+.stats-band{
+  background:#fff;border-bottom:1px solid var(--g200);
+  display:flex;align-items:stretch;
+  overflow-x:auto;
+}
+.stats-band::-webkit-scrollbar{height:2px;}
+.stat-chip{
+  display:flex;align-items:center;gap:10px;
+  padding:1rem 1.4rem;border-right:1px solid var(--g100);
+  flex:1;min-width:140px;
+}
+.stat-chip:last-child{border-right:none;}
+.sc-ico{font-size:1.6rem;flex-shrink:0;}
+.sc-n{font-size:1.3rem;font-weight:900;color:var(--blue);line-height:1;}
+.sc-l{font-size:10px;color:var(--g400);line-height:1.3;margin-top:2px;}
+
+/* ══ SECTION TAGS ══ */
+.section-tag{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g400);margin-bottom:0.3rem;}
+.section-tit{font-size:1.1rem;font-weight:800;color:var(--g800);}
+.voir-tout{font-size:12px;font-weight:700;color:var(--blue);text-decoration:none;display:flex;align-items:center;gap:4px;transition:gap 0.2s;}
+.voir-tout:hover{gap:7px;}
+.section-hd{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:1rem;}
+
+/* ══ GRILLE PRINCIPALE ══ */
+.content-body{padding:1.5rem;}
+
+/* Section: A LA UNE + REVUE + PARCOURS */
+.top-grid{display:grid;grid-template-columns:1fr 280px 260px;gap:1.2rem;margin-bottom:1.5rem;}
+
+/* À LA UNE */
+.une-card{
+  border-radius:var(--rl);overflow:hidden;
+  background:#fff;box-shadow:var(--sh);cursor:pointer;
+  transition:all 0.3s;text-decoration:none;display:block;
+}
+.une-card:hover{transform:translateY(-3px);box-shadow:var(--sh-lg);}
+.une-img{height:180px;position:relative;overflow:hidden;}
+.une-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s;}
+.une-card:hover .une-img img{transform:scale(1.04);}
+.une-img-ph{width:100%;height:100%;background:linear-gradient(135deg,var(--blue-d),#7B20B4);display:flex;align-items:center;justify-content:center;font-size:3rem;}
+.une-cat-tag{position:absolute;top:10px;left:10px;background:var(--blue);color:#fff;padding:3px 10px;border-radius:100px;font-size:9px;font-weight:700;text-transform:uppercase;}
+.une-body{padding:1rem;}
+.une-tit{font-size:14px;font-weight:800;color:var(--g800);line-height:1.35;margin-bottom:0.5rem;}
+.une-desc{font-size:11px;color:var(--g500);line-height:1.6;margin-bottom:0.6rem;}
+.une-meta{display:flex;align-items:center;gap:8px;font-size:10px;color:var(--g400);}
+.une-btn{display:inline-flex;align-items:center;gap:5px;background:var(--blue);color:#fff;padding:7px 14px;border-radius:6px;font-size:12px;font-weight:700;text-decoration:none;margin-top:0.8rem;transition:all 0.2s;}
+.une-btn:hover{background:var(--blue-d);}
+
+/* REVUE FEATURED */
+.revue-card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);overflow:hidden;display:flex;flex-direction:column;}
+.revue-img{height:120px;overflow:hidden;background:linear-gradient(135deg,var(--blue-pale),#E8EDFF);}
+.revue-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.revue-body{padding:0.8rem;flex:1;}
+.revue-num{font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
+.revue-tit{font-size:12px;font-weight:700;color:var(--g800);line-height:1.35;margin-bottom:0.5rem;}
+.revue-btns{display:flex;gap:6px;margin-top:auto;}
+.btn-lire{display:flex;align-items:center;gap:4px;padding:6px 10px;border-radius:6px;font-size:11px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;transition:all 0.2s;}
+.btn-lire-ol{background:var(--blue);color:#fff;}
+.btn-lire-dl{background:var(--g50);border:1.5px solid var(--g200);color:var(--g600);}
+.btn-lire-ol:hover{background:var(--blue-d);}
+.btn-lire-dl:hover{border-color:var(--blue);color:var(--blue);}
+
+/* PARCOURS */
+.parcours-card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);padding:1rem;}
+.parcours-steps{display:flex;flex-direction:column;gap:6px;margin-bottom:0.8rem;}
+.ps-item{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--g700);}
+.ps-num{width:20px;height:20px;border-radius:50%;background:var(--blue-pale);border:1.5px solid var(--blue);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:var(--blue);flex-shrink:0;}
+.ps-ico{font-size:14px;flex-shrink:0;}
+.ps-tit{font-size:11px;font-weight:600;color:var(--g800);}
+.ps-sub{font-size:10px;color:var(--g400);}
+.ps-line{flex:1;height:1px;background:var(--g200);margin-left:26px;}
+.btn-parcours{width:100%;background:var(--grad);color:#fff;border:none;padding:9px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;display:flex;align-items:center;justify-content:center;gap:5px;transition:all 0.2s;}
+.btn-parcours:hover{opacity:0.88;}
+
+/* ══ SECTIONS SECONDAIRES (grille 4 colonnes) ══ */
+.bottom-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1.2rem;margin-bottom:1.5rem;}
+
+/* Card document générique */
+.doc-mini{display:flex;gap:8px;padding:0.6rem 0;border-bottom:1px solid var(--g100);cursor:pointer;transition:all 0.15s;text-decoration:none;}
+.doc-mini:last-child{border-bottom:none;padding-bottom:0;}
+.doc-mini:hover .dm-tit{color:var(--blue);}
+.dm-ico{font-size:1.2rem;flex-shrink:0;margin-top:1px;}
+.dm-body{flex:1;min-width:0;}
+.dm-tit{font-size:11.5px;font-weight:600;color:var(--g800);line-height:1.4;transition:color 0.2s;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+.dm-meta{font-size:10px;color:var(--g400);margin-top:2px;}
+.dm-dl{font-size:10px;font-weight:600;color:var(--blue);display:flex;align-items:center;gap:3px;margin-top:3px;}
+
+.mini-section{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);padding:1rem;display:flex;flex-direction:column;}
+.ms-docs{flex:1;}
+
+/* Vidéo du moment */
+.video-card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);overflow:hidden;}
+.video-player-wrap{position:relative;background:#000;height:140px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.video-player-wrap video{width:100%;height:100%;object-fit:cover;}
+.video-play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);cursor:pointer;transition:all 0.2s;}
+.video-play-overlay:hover{background:rgba(0,0,0,0.2);}
+.play-btn{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;font-size:18px;transition:transform 0.2s;}
+.video-play-overlay:hover .play-btn{transform:scale(1.1);}
+.video-duree{position:absolute;bottom:6px;right:8px;background:rgba(0,0,0,0.7);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;}
+.video-body{padding:0.8rem;}
+.video-tit{font-size:12px;font-weight:700;color:var(--g800);line-height:1.4;margin-bottom:4px;}
+.video-desc{font-size:10px;color:var(--g500);line-height:1.5;}
+
+/* Guide pratique */
+.guide-card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);padding:1rem;display:flex;flex-direction:column;}
+.guide-img{height:80px;border-radius:var(--r);overflow:hidden;margin-bottom:0.8rem;background:var(--blue-pale);}
+.guide-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.guide-tit{font-size:13px;font-weight:700;color:var(--g800);line-height:1.35;margin-bottom:0.4rem;}
+.guide-desc{font-size:10px;color:var(--g500);line-height:1.5;flex:1;margin-bottom:0.6rem;}
+.btn-telecharger{display:flex;align-items:center;gap:5px;background:var(--blue-pale);border:1.5px solid rgba(27,79,219,0.2);color:var(--blue);padding:7px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;transition:all 0.2s;}
+.btn-telecharger:hover{background:var(--blue);color:#fff;}
+
+/* FAQ featured */
+.faq-card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);padding:1rem;display:flex;flex-direction:column;}
+.faq-q-prefix{font-size:1rem;font-weight:900;color:var(--blue);margin-right:4px;}
+.faq-q{font-size:12px;font-weight:700;color:var(--g800);line-height:1.4;margin-bottom:0.6rem;}
+.faq-r{font-size:11px;color:var(--g500);line-height:1.65;flex:1;margin-bottom:0.6rem;}
+.faq-voir{font-size:11px;font-weight:700;color:var(--blue);text-decoration:none;display:flex;align-items:center;gap:4px;transition:gap 0.2s;}
+.faq-voir:hover{gap:7px;}
+
+/* ══ SECTION COMPLÈTE (affichage au clic sidebar) ══ */
+.full-section{display:none;padding:1.5rem;background:#f5f6fa;}
+.full-section.visible{display:block;}
+.fs-header{background:#fff;border-radius:var(--rl);padding:1rem 1.2rem;margin-bottom:1.2rem;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--sh);}
+.fs-tit{font-size:1.1rem;font-weight:800;color:var(--g800);display:flex;align-items:center;gap:8px;}
+.fs-back{background:var(--blue-pale);border:1.5px solid rgba(27,79,219,0.2);color:var(--blue);padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;display:flex;align-items:center;gap:5px;}
+.fs-back:hover{background:var(--blue);color:#fff;}
+.fs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem;}
+
+/* Card document complet */
+.doc-card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);overflow:hidden;transition:all 0.3s;cursor:pointer;}
+.doc-card:hover{transform:translateY(-3px);box-shadow:var(--sh-lg);}
+.dc-img{height:120px;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--blue-pale),#E8EDFF);}
+.dc-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.dc-img-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;}
+.dc-cat{position:absolute;top:8px;left:8px;background:var(--blue);color:#fff;padding:2px 8px;border-radius:100px;font-size:9px;font-weight:700;text-transform:uppercase;}
+.dc-body{padding:0.8rem;}
+.dc-tit{font-size:13px;font-weight:700;color:var(--g800);line-height:1.35;margin-bottom:4px;}
+.dc-meta{font-size:10px;color:var(--g400);margin-bottom:0.6rem;display:flex;gap:8px;flex-wrap:wrap;}
+.dc-desc{font-size:11px;color:var(--g500);line-height:1.55;margin-bottom:0.6rem;}
+.dc-btn{display:flex;align-items:center;gap:5px;background:var(--blue);color:#fff;padding:7px 12px;border-radius:6px;font-size:11px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;width:100%;justify-content:center;transition:all 0.2s;}
+.dc-btn:hover{background:var(--blue-d);}
+
+/* Card vidéo complète */
+.video-card-full{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);overflow:hidden;transition:all 0.3s;}
+.video-card-full:hover{transform:translateY(-3px);box-shadow:var(--sh-lg);}
+.vcf-player{position:relative;height:160px;background:#000;}
+.vcf-player video{width:100%;height:100%;object-fit:cover;}
+.vcf-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.25);cursor:pointer;transition:all 0.2s;}
+.vcf-overlay:hover{background:rgba(0,0,0,0.15);}
+.vcf-play{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;font-size:16px;}
+.vcf-duree{position:absolute;bottom:6px;right:8px;background:rgba(0,0,0,0.7);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;}
+.vcf-body{padding:0.8rem;}
+.vcf-tit{font-size:12px;font-weight:700;color:var(--g800);line-height:1.4;margin-bottom:3px;}
+.vcf-meta{font-size:10px;color:var(--g400);}
+
+/* FAQ liste */
+.faq-item{background:#fff;border-radius:var(--r);box-shadow:var(--sh);margin-bottom:8px;overflow:hidden;}
+.faq-q-row{display:flex;align-items:center;gap:10px;padding:0.8rem 1rem;cursor:pointer;transition:background 0.2s;}
+.faq-q-row:hover{background:var(--blue-pale);}
+.faq-q-ico{font-size:1rem;font-weight:900;color:var(--blue);flex-shrink:0;}
+.faq-q-txt{font-size:12px;font-weight:600;color:var(--g800);flex:1;}
+.faq-arrow{color:var(--g400);font-size:12px;transition:transform 0.2s;flex-shrink:0;}
+.faq-item.open .faq-arrow{transform:rotate(180deg);}
+.faq-r-body{display:none;padding:0 1rem 0.8rem 2.4rem;font-size:12px;color:var(--g600);line-height:1.7;}
+.faq-item.open .faq-r-body{display:block;}
+.faq-r-meta{font-size:10px;color:var(--g400);margin-top:6px;}
+
+/* Lexique */
+.lexique-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;}
+.lex-item{background:#fff;border-radius:var(--r);padding:0.7rem 0.9rem;box-shadow:var(--sh);cursor:pointer;transition:all 0.15s;}
+.lex-item:hover{border-color:var(--blue);box-shadow:var(--sh-lg);transform:translateY(-1px);}
+.lex-terme{font-size:12px;font-weight:700;color:var(--blue);margin-bottom:2px;}
+.lex-def{font-size:10px;color:var(--g500);line-height:1.5;}
+
+/* ══ VIDÉO MODALE ══ */
+.video-modal{position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:3000;display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(6px);}
+.video-modal.open{display:flex;}
+.vm-box{background:#000;border-radius:var(--rl);max-width:800px;width:100%;overflow:hidden;position:relative;}
+.vm-close{position:absolute;top:10px;right:10px;z-index:10;background:rgba(255,255,255,0.15);border:none;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background 0.2s;}
+.vm-close:hover{background:rgba(200,16,46,0.8);}
+.vm-video{width:100%;max-height:70vh;display:block;}
+.vm-info{background:#111;padding:0.8rem 1rem;}
+.vm-tit{font-size:13px;font-weight:700;color:#fff;margin-bottom:2px;}
+.vm-meta{font-size:11px;color:rgba(255,255,255,0.5);}
+
+/* Toast */
+.toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1px solid var(--g200);border-radius:var(--r);padding:12px 18px;font-size:13px;color:var(--g800);z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(80px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);max-width:320px;box-shadow:0 8px 32px rgba(0,0,0,0.12);}
+.toast.show{transform:none;opacity:1;}
+
+/* RESPONSIVE */
+@media(max-width:1100px){.top-grid{grid-template-columns:1fr 260px;}.bottom-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:900px){.top-grid{grid-template-columns:1fr;}.bottom-grid{grid-template-columns:1fr 1fr;}.parcours-card{display:none;}}
+@media(max-width:768px){
+  .sidebar{display:none;}
+  .main-content{margin-left:0;}
+  .bottom-grid{grid-template-columns:1fr;}
+  .tb-search{display:none;}
+  .hero-ac-right{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ TOPBAR ══ -->
+<div class="topbar">
+  <div class="tb-left">
+    <a class="tb-logo" href="{% url 'home' %}">
+      <div class="tb-logo-box">E</div>
+      <div>
+        <div class="tb-logo-name">EDEN GROUP</div>
+      </div>
+    </a>
+    <div class="tb-div"></div>
+    <div class="tb-academie">
+      <div class="tb-ac-name">ACADÉMIE</div>
+      <div class="tb-ac-tag">Le savoir foncier à votre portée</div>
+    </div>
+  </div>
+
+  <div class="tb-search">
+    <span class="tb-search-ico">🔍</span>
+    <input type="text" id="search-academie" placeholder="Rechercher un sujet, un article, un document..." oninput="rechercherAcademie(this.value)">
+  </div>
+
+  <div class="tb-right">
+    <a class="tb-btn tb-btn-primary" href="{% url 'dashboard_academie_liste' %}" style="{% if not user.is_staff %}display:none{% endif %}">
+      ⚙ Gestion
+    </a>
+    <a class="tb-btn tb-btn-ghost" href="#">💬 Poser une question</a>
+    <a class="tb-btn tb-btn-ghost" href="#">👤 Mon espace ↓</a>
+    <a class="tb-back" href="{% url 'home' %}">← Site principal</a>
+  </div>
+</div>
+
+<!-- ══ MODAL VIDÉO ══ -->
+<div class="video-modal" id="video-modal">
+  <div class="vm-box">
+    <button class="vm-close" onclick="fermerVideo()">✕</button>
+    <video class="vm-video" id="vm-video" controls controlsList="nodownload">
+      Votre navigateur ne supporte pas la vidéo HTML5.
+    </video>
+    <div class="vm-info">
+      <div class="vm-tit" id="vm-tit"></div>
+      <div class="vm-meta" id="vm-meta"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><span id="t-ico">✅</span>&nbsp;<span id="t-msg"></span></div>
+
+<!-- ══ LAYOUT ══ -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <nav class="sb-nav">
+      <a class="sb-item active-cat" onclick="afficherAccueil(this)" href="#">
+        <span class="sb-ico">🏠</span>Accueil
+      </a>
+      <div class="sb-divider"></div>
+      <a class="sb-item" onclick="afficherSection('texte_loi','📜 Textes de loi',this)" href="#">
+        <span class="sb-ico">📜</span>Textes de loi
+        <span class="sb-nb">{{ nb_textes }}</span>
+      </a>
+      <a class="sb-item" onclick="afficherSection('article','📄 Articles',this)" href="#">
+        <span class="sb-ico">📄</span>Articles
+        <span class="sb-nb">{{ nb_articles }}</span>
+      </a>
+      <a class="sb-item" onclick="afficherSection('revue','📕 Revues',this)" href="#">
+        <span class="sb-ico">📕</span>Revues
+        <span class="sb-nb">{{ nb_revues }}</span>
+      </a>
+      <a class="sb-item" onclick="afficherSection('guide','📚 Guides pratiques',this)" href="#">
+        <span class="sb-ico">📚</span>Guides pratiques
+        <span class="sb-nb">{{ nb_guides }}</span>
+      </a>
+      <a class="sb-item" onclick="afficherSection('lexique','🔤 Lexique',this)" href="#">
+        <span class="sb-ico">🔤</span>Lexique du foncier
+      </a>
+      <div class="sb-divider"></div>
+      <a class="sb-item" onclick="afficherSection('video','🎬 Vidéothèque',this)" href="#">
+        <span class="sb-ico">🎬</span>Vidéothèque
+        <span class="sb-nb">{{ nb_videos }}</span>
+      </a>
+      <a class="sb-item" onclick="afficherSection('infographie','📊 Infographies',this)" href="#">
+        <span class="sb-ico">📊</span>Infographies
+        <span class="sb-nb">{{ nb_infographies }}</span>
+      </a>
+      <div class="sb-divider"></div>
+      <a class="sb-item" onclick="afficherSection('faq','❓ FAQ',this)" href="#">
+        <span class="sb-ico">❓</span>Questions fréquentes
+        <span class="sb-nb">{{ nb_faqs }}</span>
+      </a>
+      <a class="sb-item" onclick="afficherSection('ressource','📦 Ressources',this)" href="#">
+        <span class="sb-ico">📦</span>Centre de ressources
+        <span class="sb-nb">{{ nb_ressources }}</span>
+      </a>
+      <a class="sb-item" onclick="afficherSection('faq_poser','💬 Poser une question',this)" href="#">
+        <span class="sb-ico">💬</span>Poser une question
+      </a>
+    </nav>
+
+    <div class="sb-info-box">
+      <div class="sib-tit">EDEN GROUP Académie</div>
+      <div class="sib-desc">est un centre d'information, de sensibilisation et de partage d'expertise foncière ouverte à tous.</div>
+      <a href="#" class="sib-btn" style="color:#fff;text-decoration:none;">En savoir plus →</a>
+    </div>
+  </div>
+
+  <!-- CONTENU PRINCIPAL -->
+  <div class="main-content">
+
+    <!-- HERO -->
+    <div class="hero-ac">
+      <div class="hero-ac-bg">
+        <img src="{% static 'images/academie-hero.jpg' %}" alt="Académie EDEN GROUP" onerror="this.style.display='none'">
+      </div>
+      <div class="hero-ac-overlay"></div>
+      <div class="hero-ac-content">
+        <div class="hero-ac-left">
+          <div class="hero-ac-tit">EDEN GROUP ACADÉMIE</div>
+          <div class="hero-ac-line"></div>
+          <div class="hero-ac-sub">Comprendre le foncier pour investir en toute sécurité.</div>
+          <div class="hero-ac-desc">Un espace dédié à l'information, à la sensibilisation et au partage d'expertise pour mieux comprendre l'environnement foncier et prendre des décisions éclairées.</div>
+        </div>
+        <div class="hero-ac-right">
+          <img src="{% static 'images/code-foncier.png' %}" alt="Code Foncier" style="height:120px;object-fit:contain;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.3));" onerror="this.style.display='none'">
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    {% if stats %}
+    <div class="stats-band">
+      {% for s in stats %}
+      <div class="stat-chip">
+        <div class="sc-ico">{{ s.icone }}</div>
+        <div><div class="sc-n">{{ s.valeur }}</div><div class="sc-l">{{ s.label }}</div></div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="stats-band">
+      <div class="stat-chip"><div class="sc-ico">📜</div><div><div class="sc-n">150+</div><div class="sc-l">Textes de loi disponibles</div></div></div>
+      <div class="stat-chip"><div class="sc-ico">📄</div><div><div class="sc-n">350+</div><div class="sc-l">Articles et analyses à votre disposition</div></div></div>
+      <div class="stat-chip"><div class="sc-ico">🎬</div><div><div class="sc-n">200+</div><div class="sc-l">Vidéos pédagogiques et explicatives</div></div></div>
+      <div class="stat-chip"><div class="sc-ico">📦</div><div><div class="sc-n">1000+</div><div class="sc-l">Ressources à télécharger gratuitement</div></div></div>
+      <div class="stat-chip"><div class="sc-ico">👥</div><div><div class="sc-n">20+</div><div class="sc-l">Experts à votre écoute et vous conseillent</div></div></div>
+    </div>
+    {% endif %}
+
+    <!-- ══ VUE ACCUEIL (par défaut) ══ -->
+    <div id="vue-accueil" class="content-body">
+
+      <!-- TOP GRID : À la une + Revue + Parcours -->
+      <div class="top-grid">
+
+        <!-- À LA UNE -->
+        <div>
+          <div class="section-hd">
+            <div><div class="section-tag">À LA UNE</div><div class="section-tit">Actualités &amp; Événements</div></div>
+            <a href="{% url 'une_evenements_accueil' %}" class="voir-tout">Voir tout →</a>
+          </div>
+          {% if a_la_une %}
+          <a class="une-card" href="{{ a_la_une.lien_detail|default:'#' }}" {% if a_la_une.lien_detail and a_la_une.lien_detail != '#' %}target="_blank"{% endif %}>
+            <div class="une-img">
+              {% if a_la_une.image_couverture %}
+                <img src="{{ a_la_une.image_couverture.url }}" alt="{{ a_la_une.titre }}">
+              {% else %}
+                <div class="une-img-ph">📰</div>
+              {% endif %}
+              <span class="une-cat-tag">{{ a_la_une.get_categorie_display }}</span>
+            </div>
+            <div class="une-body">
+              <div class="une-tit">{{ a_la_une.titre }}</div>
+              {% if a_la_une.description %}
+              <div class="une-desc">{{ a_la_une.description|truncatechars:120 }}</div>
+              {% endif %}
+              <div class="une-meta">
+                {% if a_la_une.auteur %}<span>✍ {{ a_la_une.auteur }}</span>{% endif %}
+                {% if a_la_une.date_publication %}<span>📅 {{ a_la_une.date_publication|date:"d M Y" }}</span>{% endif %}
+                {% if a_la_une.temps_lecture %}<span>⏱ {{ a_la_une.temps_lecture }}</span>{% endif %}
+              </div>
+              {% if a_la_une.fichier_pdf %}
+              <a href="{% url 'academie_telecharger' a_la_une.pk %}" class="une-btn" onclick="event.stopPropagation()">
+                📥 Télécharger le PDF
+              </a>
+              {% endif %}
+            </div>
+          </a>
+          {% else %}
+          <!-- Fallback: événements et actualités EDEN -->
+          <a class="une-card" href="{% url 'une_evenements_accueil' %}">
+            <div class="une-img" style="background:linear-gradient(135deg,var(--blue-d),#7B20B4);display:flex;align-items:center;justify-content:center;height:180px;">
+              <div style="text-align:center;color:#fff;"><div style="font-size:3rem;margin-bottom:0.5rem;">📰</div><div style="font-size:13px;font-weight:700;">Actualités &amp; Événements EDEN GROUP</div></div>
+            </div>
+            <div class="une-body">
+              <div class="une-tit">Découvrez nos dernières actualités</div>
+              <div class="une-desc">Événements, conférences, nouvelles du secteur foncier camerounais.</div>
+              <a href="{% url 'une_evenements_accueil' %}" class="une-btn">Voir les actualités →</a>
+            </div>
+          </a>
+          {% endif %}
+        </div>
+
+        <!-- REVUE EDEN GROUP -->
+        <div>
+          <div class="section-hd">
+            <div><div class="section-tag">REVUE EDEN GROUP</div><div class="section-tit">Publication officielle</div></div>
+            <a class="voir-tout" href="#" onclick="afficherSection('revue','📕 Revues',null);return false;">Voir tout →</a>
+          </div>
+          {% if revue_featured %}
+          <div class="revue-card">
+            <div class="revue-img">
+              {% if revue_featured.image_couverture %}
+                <img src="{{ revue_featured.image_couverture.url }}" alt="{{ revue_featured.titre }}">
+              {% else %}
+                <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--grad);"><span style="font-size:2.5rem;">📕</span></div>
+              {% endif %}
+            </div>
+            <div class="revue-body">
+              <div class="revue-num">
+                {% if revue_featured.numero_revue %}N°{{ revue_featured.numero_revue }}{% endif %}
+                {% if revue_featured.date_publication %} · {{ revue_featured.date_publication|date:"M Y"|upper }}{% endif %}
+              </div>
+              <div class="revue-tit">{{ revue_featured.titre }}</div>
+              {% if revue_featured.description %}
+              <div style="font-size:10px;color:var(--g500);line-height:1.5;margin-bottom:0.6rem;">{{ revue_featured.description|truncatechars:100 }}</div>
+              {% endif %}
+            </div>
+            <div class="revue-btns" style="padding:0 0.8rem 0.8rem;">
+              {% if revue_featured.fichier_pdf %}
+              <a href="#" class="btn-lire btn-lire-ol" onclick="ouvrirPDFViewer('{% url 'academie_telecharger' revue_featured.pk %}','{{ revue_featured.titre|escapejs }}');return false;">📖 Lire en ligne</a>
+              <a href="{% url 'academie_telecharger' revue_featured.pk %}" class="btn-lire btn-lire-dl">📥 Télécharger</a>
+              {% else %}
+              <span style="font-size:11px;color:var(--g400);">PDF bientôt disponible</span>
+              {% endif %}
+            </div>
+          </div>
+          {% else %}
+          <div class="revue-card" style="padding:1rem;">
+            <div style="text-align:center;padding:1.5rem;color:var(--g400);">
+              <div style="font-size:2rem;margin-bottom:0.5rem;">📕</div>
+              <div style="font-size:12px;">Aucune revue publiée pour le moment.</div>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- PARCOURS DE L'INVESTISSEUR -->
+        <div>
+          <div class="section-hd">
+            <div><div class="section-tag">PARCOURS DE L'INVESTISSEUR</div><div class="section-tit">Votre guide étape par étape</div></div>
+          </div>
+          <div class="parcours-card">
+            <div class="parcours-steps">
+              {% if etapes_parcours %}
+                {% for etape in etapes_parcours %}
+                <div>
+                  <div class="ps-item">
+                    <div class="ps-num">{{ etape.numero }}</div>
+                    <span class="ps-ico">{{ etape.icone }}</span>
+                    <div>
+                      <div class="ps-tit">{{ etape.titre }}</div>
+                      {% if etape.description %}<div class="ps-sub">{{ etape.description }}</div>{% endif %}
+                    </div>
+                  </div>
+                  {% if not forloop.last %}<div class="ps-line"></div>{% endif %}
+                </div>
+                {% endfor %}
+              {% else %}
+              {% for step in "1234567"|make_list %}
+              <div class="ps-item">
+                <div class="ps-num">{{ forloop.counter }}</div>
+                <span class="ps-ico">{% if forloop.counter == 1 %}🔍{% elif forloop.counter == 2 %}📋{% elif forloop.counter == 3 %}🏡{% elif forloop.counter == 4 %}📝{% elif forloop.counter == 5 %}🔒{% elif forloop.counter == 6 %}📐{% else %}🏆{% endif %}</span>
+                <div class="ps-tit">{% if forloop.counter == 1 %}Découvrir le foncier{% elif forloop.counter == 2 %}Comprendre les documents{% elif forloop.counter == 3 %}Choisir son terrain{% elif forloop.counter == 4 %}Suivre les procédures{% elif forloop.counter == 5 %}Recevoir son achat{% elif forloop.counter == 6 %}Valoriser son patrimoine{% else %}Finaliser{% endif %}</div>
+              </div>
+              {% endfor %}
+              {% endif %}
+            </div>
+            <button class="btn-parcours" onclick="afficherSection('guide','📚 Guides pratiques',null)">
+              Voir tout le parcours →
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTTOM GRID : Textes loi + Vidéo + Guide + FAQ -->
+      <div class="bottom-grid">
+
+        <!-- TEXTES DE LOI RÉCENTS -->
+        <div>
+          <div class="section-hd">
+            <div><div class="section-tag">TEXTES DE LOI RÉCENTS</div></div>
+            <a class="voir-tout" href="#" onclick="afficherSection('texte_loi','📜 Textes de loi',null);return false;">Voir tout →</a>
+          </div>
+          <div class="mini-section">
+            {% if textes_loi %}
+              {% for doc in textes_loi %}
+              <a class="doc-mini" href="{% url 'academie_telecharger' doc.pk %}">
+                <span class="dm-ico">📜</span>
+                <div class="dm-body">
+                  <div class="dm-tit">{% if doc.reference_officielle %}{{ doc.reference_officielle }}{% else %}{{ doc.titre }}{% endif %}</div>
+                  <div class="dm-meta">{% if doc.date_publication %}{{ doc.date_publication|date:"d M Y" }}{% endif %}</div>
+                  <div class="dm-dl">📥 Télécharger PDF</div>
+                </div>
+              </a>
+              {% endfor %}
+            {% else %}
+              <div style="text-align:center;padding:1rem;color:var(--g400);font-size:12px;">Aucun texte de loi publié.</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- VIDÉO DU MOMENT -->
+        <div>
+          <div class="section-hd">
+            <div><div class="section-tag">VIDÉO DU MOMENT</div></div>
+            <a class="voir-tout" href="#" onclick="afficherSection('video','🎬 Vidéothèque',null);return false;">Voir tout →</a>
+          </div>
+          {% if video_moment %}
+          <div class="video-card">
+            <div class="video-player-wrap">
+              {% if video_moment.image_miniature %}
+                <img src="{{ video_moment.image_miniature.url }}" alt="{{ video_moment.titre }}" style="width:100%;height:100%;object-fit:cover;">
+              {% else %}
+                <div style="width:100%;height:100%;background:#111;display:flex;align-items:center;justify-content:center;">🎬</div>
+              {% endif %}
+              <div class="video-play-overlay" onclick="ouvrirVideo('{% url 'academie_voir_video' video_moment.pk %}','{{ video_moment.titre|escapejs }}','{% if video_moment.auteur %}{{ video_moment.auteur|escapejs }}{% endif %} {% if video_moment.duree %}· {{ video_moment.duree }}{% endif %}')">
+                <div class="play-btn">▶</div>
+              </div>
+              {% if video_moment.duree %}<div class="video-duree">{{ video_moment.duree }}</div>{% endif %}
+            </div>
+            <div class="video-body">
+              <div class="video-tit">{{ video_moment.titre }}</div>
+              {% if video_moment.description %}<div class="video-desc">{{ video_moment.description|truncatechars:100 }}</div>{% endif %}
+            </div>
+          </div>
+          {% else %}
+          <div class="video-card">
+            <div class="video-player-wrap" style="background:#111;height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+              <div style="font-size:2rem;margin-bottom:0.5rem;">🎬</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.5);">Aucune vidéo disponible</div>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- GUIDE PRATIQUE -->
+        <div>
+          <div class="section-hd">
+            <div><div class="section-tag">GUIDE PRATIQUE</div></div>
+            <a class="voir-tout" href="#" onclick="afficherSection('guide','📚 Guides pratiques',null);return false;">Voir tout →</a>
+          </div>
+          {% if guide_featured %}
+          <div class="guide-card">
+            {% if guide_featured.image_couverture %}
+            <div class="guide-img"><img src="{{ guide_featured.image_couverture.url }}" alt="{{ guide_featured.titre }}"></div>
+            {% else %}
+            <div class="guide-img" style="display:flex;align-items:center;justify-content:center;font-size:2rem;">📚</div>
+            {% endif %}
+            <div class="guide-tit">{{ guide_featured.titre }}</div>
+            {% if guide_featured.description %}
+            <div class="guide-desc">{{ guide_featured.description|truncatechars:150 }}</div>
+            {% endif %}
+            {% if guide_featured.fichier_pdf %}
+            <a href="{% url 'academie_telecharger' guide_featured.pk %}" class="btn-telecharger">
+              📥 Télécharger
+            </a>
+            {% endif %}
+          </div>
+          {% else %}
+          <div class="guide-card">
+            <div style="text-align:center;padding:1.5rem;color:var(--g400);font-size:12px;"><div style="font-size:2rem;margin-bottom:0.5rem;">📚</div>Aucun guide publié.</div>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- QUESTION FRÉQUENTE -->
+        <div>
+          <div class="section-hd">
+            <div><div class="section-tag">QUESTION FRÉQUENTE</div></div>
+            <a class="voir-tout" href="#" onclick="afficherSection('faq','❓ FAQ',null);return false;">Voir tout →</a>
+          </div>
+          {% if faq_featured %}
+          <div class="faq-card">
+            <div class="faq-q">
+              <span class="faq-q-prefix">Q.</span>
+              {{ faq_featured.question }}
+            </div>
+            <div class="faq-r">{{ faq_featured.reponse|truncatechars:280 }}</div>
+            {% if faq_featured.temps_reponse %}
+            <div style="font-size:10px;color:var(--g400);margin-bottom:0.5rem;">⏱ {{ faq_featured.temps_reponse }}</div>
+            {% endif %}
+            <a class="faq-voir" href="#" onclick="afficherSection('faq','❓ FAQ',null);return false;">Voir la réponse complète →</a>
+          </div>
+          {% else %}
+          <div class="faq-card">
+            <div style="text-align:center;padding:1.5rem;color:var(--g400);font-size:12px;"><div style="font-size:2rem;margin-bottom:0.5rem;">❓</div>Aucune FAQ publiée.</div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+    </div><!-- fin vue-accueil -->
+
+    <!-- ══ VUE SECTION COMPLÈTE ══ -->
+    <div id="vue-section" class="full-section">
+      <div class="fs-header">
+        <div class="fs-tit" id="fs-tit">Documents</div>
+        <button class="fs-back" onclick="afficherAccueil(null)">← Retour à l'accueil</button>
+      </div>
+      <div id="fs-content"></div>
+    </div>
+
+  </div><!-- fin main-content -->
+</div><!-- fin layout -->
+
+<!-- Données JSON pour le JS -->
+<script>
+// ════════════════════════════════════════
+// DONNÉES
+// ════════════════════════════════════════
+const DOCS_DATA = {
+  texte_loi: [
+    {% for doc in textes_loi %}
+    {pk:{{ doc.pk }},titre:'{{ doc.titre|escapejs }}',ref:'{{ doc.reference_officielle|escapejs }}',auteur:'{{ doc.auteur|escapejs }}',date:'{% if doc.date_publication %}{{ doc.date_publication|date:"d M Y" }}{% endif %}',desc:'{{ doc.description|escapejs|truncatechars:150 }}',image:'{% if doc.image_couverture %}{{ doc.image_couverture.url }}{% endif %}',hasPdf:{{ doc.fichier_pdf|yesno:"true,false" }},urlDl:'{% url "academie_telecharger" doc.pk %}',type:'doc'},
+    {% endfor %}
+  ],
+  article: [
+    {% for doc in articles %}
+    {pk:{{ doc.pk }},titre:'{{ doc.titre|escapejs }}',auteur:'{{ doc.auteur|escapejs }}',date:'{% if doc.date_publication %}{{ doc.date_publication|date:"d M Y" }}{% endif %}',tps:'{{ doc.temps_lecture|escapejs }}',desc:'{{ doc.description|escapejs|truncatechars:150 }}',image:'{% if doc.image_couverture %}{{ doc.image_couverture.url }}{% endif %}',hasPdf:{{ doc.fichier_pdf|yesno:"true,false" }},urlDl:'{% url "academie_telecharger" doc.pk %}',type:'doc'},
+    {% endfor %}
+  ],
+  revue: [
+    {% for doc in revues %}
+    {pk:{{ doc.pk }},titre:'{{ doc.titre|escapejs }}',num:'{{ doc.numero_revue|escapejs }}',auteur:'{{ doc.auteur|escapejs }}',date:'{% if doc.date_publication %}{{ doc.date_publication|date:"M Y" }}{% endif %}',desc:'{{ doc.description|escapejs|truncatechars:150 }}',image:'{% if doc.image_couverture %}{{ doc.image_couverture.url }}{% endif %}',hasPdf:{{ doc.fichier_pdf|yesno:"true,false" }},urlDl:'{% url "academie_telecharger" doc.pk %}',type:'revue'},
+    {% endfor %}
+  ],
+  guide: [
+    {% for doc in guides %}
+    {pk:{{ doc.pk }},titre:'{{ doc.titre|escapejs }}',auteur:'{{ doc.auteur|escapejs }}',date:'{% if doc.date_publication %}{{ doc.date_publication|date:"d M Y" }}{% endif %}',desc:'{{ doc.description|escapejs|truncatechars:150 }}',image:'{% if doc.image_couverture %}{{ doc.image_couverture.url }}{% endif %}',hasPdf:{{ doc.fichier_pdf|yesno:"true,false" }},urlDl:'{% url "academie_telecharger" doc.pk %}',type:'doc'},
+    {% endfor %}
+  ],
+  lexique: [
+    {% for doc in lexique %}
+    {pk:{{ doc.pk }},titre:'{{ doc.titre|escapejs }}',desc:'{{ doc.description|escapejs }}',hasPdf:{{ doc.fichier_pdf|yesno:"true,false" }},urlDl:'{% url "academie_telecharger" doc.pk %}',type:'lexique'},
+    {% endfor %}
+  ],
+  infographie: [
+    {% for doc in infographies %}
+    {pk:{{ doc.pk }},titre:'{{ doc.titre|escapejs }}',date:'{% if doc.date_publication %}{{ doc.date_publication|date:"d M Y" }}{% endif %}',desc:'{{ doc.description|escapejs|truncatechars:150 }}',image:'{% if doc.image_couverture %}{{ doc.image_couverture.url }}{% endif %}',hasPdf:{{ doc.fichier_pdf|yesno:"true,false" }},urlDl:'{% url "academie_telecharger" doc.pk %}',type:'infographie'},
+    {% endfor %}
+  ],
+  ressource: [
+    {% for doc in ressources %}
+    {pk:{{ doc.pk }},titre:'{{ doc.titre|escapejs }}',auteur:'{{ doc.auteur|escapejs }}',date:'{% if doc.date_publication %}{{ doc.date_publication|date:"d M Y" }}{% endif %}',desc:'{{ doc.description|escapejs|truncatechars:150 }}',image:'{% if doc.image_couverture %}{{ doc.image_couverture.url }}{% endif %}',hasPdf:{{ doc.fichier_pdf|yesno:"true,false" }},urlDl:'{% url "academie_telecharger" doc.pk %}',type:'doc'},
+    {% endfor %}
+  ],
+};
+
+const VIDEOS_DATA = [
+  {% for v in videos %}
+  {pk:{{ v.pk }},titre:'{{ v.titre|escapejs }}',desc:'{{ v.description|escapejs|truncatechars:120 }}',duree:'{{ v.duree|escapejs }}',auteur:'{{ v.auteur|escapejs }}',miniature:'{% if v.image_miniature %}{{ v.image_miniature.url }}{% endif %}',urlStream:'{% url "academie_voir_video" v.pk %}'},
+  {% endfor %}
+];
+
+const FAQS_DATA = [
+  {% for f in faqs %}
+  {pk:{{ f.pk }},question:'{{ f.question|escapejs }}',reponse:'{{ f.reponse|escapejs }}',tps:'{{ f.temps_reponse|escapejs }}',cat:'{{ f.categorie_faq|escapejs }}'},
+  {% endfor %}
+];
+
+// ════════════════════════════════════════
+// NAVIGATION SIDEBAR
+// ════════════════════════════════════════
+function afficherAccueil(el) {
+  document.getElementById('vue-accueil').style.display = 'block';
+  document.getElementById('vue-section').classList.remove('visible');
+  document.querySelectorAll('.sb-item').forEach(i => {
+    i.classList.remove('active');
+    i.classList.remove('active-cat');
+  });
+  if (el) {
+    el.classList.add('active-cat');
+  } else {
+    document.querySelector('.sb-item:first-child')?.classList.add('active-cat');
+  }
+}
+
+function afficherSection(cat, label, el) {
+  document.getElementById('vue-accueil').style.display = 'none';
+  const sec = document.getElementById('vue-section');
+  sec.classList.add('visible');
+  document.getElementById('fs-tit').textContent = label;
+
+  // Activer lien sidebar
+  document.querySelectorAll('.sb-item').forEach(i => {
+    i.classList.remove('active');
+    i.classList.remove('active-cat');
+  });
+  if (el) el.classList.add('active');
+
+  // Rendre le contenu
+  const content = document.getElementById('fs-content');
+  if (cat === 'video') {
+    content.innerHTML = rendreVideos();
+  } else if (cat === 'faq') {
+    content.innerHTML = rendreFAQ();
+  } else if (cat === 'faq_poser') {
+    content.innerHTML = rendrePoseQuestion();
+  } else if (cat === 'lexique') {
+    content.innerHTML = rendreLexique();
+  } else {
+    content.innerHTML = rendreDocs(cat);
+  }
+  sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ════════════════════════════════════════
+// RENDUS HTML
+// ════════════════════════════════════════
+function rendreDocs(cat) {
+  const items = DOCS_DATA[cat] || [];
+  if (!items.length) return `<div style="text-align:center;padding:4rem;color:#94A3B8;font-size:14px;"><div style="font-size:3rem;margin-bottom:1rem;">📂</div>Aucun document disponible dans cette catégorie.</div>`;
+
+  return `<div class="fs-grid">
+    ${items.map(d => `
+      <div class="doc-card">
+        <div class="dc-img">
+          ${d.image
+            ? `<img src="${d.image}" alt="${d.titre}">`
+            : `<div class="dc-img-ph">📄</div>`}
+          <span class="dc-cat">${cat === 'texte_loi' ? 'TEXTE DE LOI' : cat === 'guide' ? 'GUIDE' : cat === 'revue' ? 'REVUE' : cat === 'ressource' ? 'RESSOURCE' : 'DOCUMENT'}</span>
+        </div>
+        <div class="dc-body">
+          <div class="dc-tit">${d.ref || d.titre}${d.num ? ' — N°'+d.num : ''}</div>
+          <div class="dc-meta">
+            ${d.auteur ? `<span>✍ ${d.auteur}</span>` : ''}
+            ${d.date ? `<span>📅 ${d.date}</span>` : ''}
+            ${d.tps ? `<span>⏱ ${d.tps}</span>` : ''}
+          </div>
+          ${d.desc ? `<div class="dc-desc">${d.desc}</div>` : ''}
+          ${d.hasPdf
+            ? `<a href="${d.urlDl}" class="dc-btn" download>📥 Télécharger le PDF</a>`
+            : `<div class="dc-btn" style="background:var(--g200);color:var(--g500);cursor:default;">PDF non disponible</div>`}
+        </div>
+      </div>
+    `).join('')}
+  </div>`;
+}
+
+function rendreVideos() {
+  if (!VIDEOS_DATA.length) return `<div style="text-align:center;padding:4rem;color:#94A3B8;font-size:14px;"><div style="font-size:3rem;margin-bottom:1rem;">🎬</div>Aucune vidéo disponible.</div>`;
+
+  return `<div class="fs-grid">
+    ${VIDEOS_DATA.map(v => `
+      <div class="video-card-full">
+        <div class="vcf-player">
+          ${v.miniature
+            ? `<img src="${v.miniature}" alt="${v.titre}" style="width:100%;height:100%;object-fit:cover;">`
+            : `<div style="width:100%;height:100%;background:#111;display:flex;align-items:center;justify-content:center;font-size:2rem;">🎬</div>`}
+          <div class="vcf-overlay" onclick="ouvrirVideo('${v.urlStream}','${v.titre}','${v.auteur}${v.duree ? ' · '+v.duree : ''}')">
+            <div class="vcf-play">▶</div>
+          </div>
+          ${v.duree ? `<div class="vcf-duree">${v.duree}</div>` : ''}
+        </div>
+        <div class="vcf-body">
+          <div class="vcf-tit">${v.titre}</div>
+          <div class="vcf-meta">${v.auteur ? '✍ '+v.auteur : ''} ${v.duree ? '· ⏱ '+v.duree : ''}</div>
+          ${v.desc ? `<div style="font-size:11px;color:var(--g500);margin-top:4px;line-height:1.5;">${v.desc}</div>` : ''}
+        </div>
+      </div>
+    `).join('')}
+  </div>`;
+}
+
+function rendreFAQ() {
+  if (!FAQS_DATA.length) return `<div style="text-align:center;padding:4rem;color:#94A3B8;font-size:14px;"><div style="font-size:3rem;margin-bottom:1rem;">❓</div>Aucune FAQ disponible.</div>`;
+
+  return `<div style="max-width:860px;margin:0 auto;">
+    ${FAQS_DATA.map((f, i) => `
+      <div class="faq-item" id="faq-${i}">
+        <div class="faq-q-row" onclick="toggleFAQ(${i})">
+          <span class="faq-q-ico">Q.</span>
+          <span class="faq-q-txt">${f.question}</span>
+          <span class="faq-arrow">▼</span>
+        </div>
+        <div class="faq-r-body">
+          <p>${f.reponse}</p>
+          ${f.tps ? `<div class="faq-r-meta">⏱ ${f.tps}</div>` : ''}
+        </div>
+      </div>
+    `).join('')}
+  </div>`;
+}
+
+function rendreLexique() {
+  const items = DOCS_DATA['lexique'] || [];
+  if (!items.length) return `<div style="text-align:center;padding:4rem;color:#94A3B8;font-size:14px;"><div style="font-size:3rem;margin-bottom:1rem;">🔤</div>Aucune entrée dans le lexique.</div>`;
+
+  return `<div class="lexique-grid">
+    ${items.map(d => `
+      <div class="lex-item">
+        <div class="lex-terme">${d.titre}</div>
+        <div class="lex-def">${d.desc || 'Définition à venir.'}</div>
+        ${d.hasPdf ? `<a href="${d.urlDl}" style="font-size:10px;font-weight:700;color:var(--blue);text-decoration:none;display:flex;align-items:center;gap:3px;margin-top:4px;">📥 Fiche PDF</a>` : ''}
+      </div>
+    `).join('')}
+  </div>`;
+}
+
+function rendrePoseQuestion() {
+  return `<div style="max-width:600px;margin:0 auto;background:#fff;border-radius:var(--rl);box-shadow:var(--sh);padding:2rem;">
+    <div style="font-size:1rem;font-weight:800;color:var(--g800);margin-bottom:0.5rem;">💬 Poser une question à nos experts</div>
+    <div style="font-size:12px;color:var(--g500);margin-bottom:1.5rem;">Nos experts fonciers vous répondront sous 48h ouvrées.</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <label style="font-size:11px;font-weight:600;color:var(--g500);">Votre nom *</label>
+        <input type="text" placeholder="Jean-Marie Nguema" style="border:1.5px solid var(--g200);border-radius:8px;padding:10px 14px;font-size:13px;font-family:'Outfit',sans-serif;outline:none;">
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <label style="font-size:11px;font-weight:600;color:var(--g500);">Email / WhatsApp *</label>
+        <input type="text" placeholder="+237 6XX XXX XXX" style="border:1.5px solid var(--g200);border-radius:8px;padding:10px 14px;font-size:13px;font-family:'Outfit',sans-serif;outline:none;">
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <label style="font-size:11px;font-weight:600;color:var(--g500);">Sujet *</label>
+        <input type="text" placeholder="Ex: Procédure d'immatriculation" style="border:1.5px solid var(--g200);border-radius:8px;padding:10px 14px;font-size:13px;font-family:'Outfit',sans-serif;outline:none;">
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <label style="font-size:11px;font-weight:600;color:var(--g500);">Votre question *</label>
+        <textarea rows="5" placeholder="Décrivez votre question en détail..." style="border:1.5px solid var(--g200);border-radius:8px;padding:10px 14px;font-size:13px;font-family:'Outfit',sans-serif;outline:none;resize:vertical;"></textarea>
+      </div>
+      <button onclick="showToast('✅','Votre question a été envoyée ! Réponse sous 48h.')" style="background:var(--blue);color:#fff;border:none;padding:12px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;">
+        Envoyer ma question →
+      </button>
+    </div>
+  </div>`;
+}
+
+// ════════════════════════════════════════
+// FAQ TOGGLE
+// ════════════════════════════════════════
+function toggleFAQ(idx) {
+  const item = document.getElementById(`faq-${idx}`);
+  if (!item) return;
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+// ════════════════════════════════════════
+// VIDÉO MODALE
+// ════════════════════════════════════════
+function ouvrirVideo(url, titre, meta) {
+  const modal = document.getElementById('video-modal');
+  const video = document.getElementById('vm-video');
+  document.getElementById('vm-tit').textContent = titre;
+  document.getElementById('vm-meta').textContent = meta || '';
+  video.src = url;
+  video.load();
+  modal.classList.add('open');
+}
+
+function fermerVideo() {
+  const video = document.getElementById('vm-video');
+  video.pause();
+  video.src = '';
+  document.getElementById('video-modal').classList.remove('open');
+}
+
+document.getElementById('video-modal').addEventListener('click', function(e) {
+  if (e.target === this) fermerVideo();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') fermerVideo();
+});
+
+// ════════════════════════════════════════
+// PDF VIEWER (nouvelle fenêtre)
+// ════════════════════════════════════════
+function ouvrirPDFViewer(url, titre) {
+  window.open(url, '_blank');
+  showToast('📄', `Ouverture de "${titre}"…`);
+}
+
+// ════════════════════════════════════════
+// RECHERCHE
+// ════════════════════════════════════════
+function rechercherAcademie(q) {
+  if (!q || q.length < 2) return;
+  const ql = q.toLowerCase();
+  const resultats = [];
+  Object.entries(DOCS_DATA).forEach(([cat, items]) => {
+    items.forEach(d => {
+      if ((d.titre||'').toLowerCase().includes(ql) || (d.desc||'').toLowerCase().includes(ql)) {
+        resultats.push({ ...d, cat });
+      }
+    });
+  });
+  VIDEOS_DATA.forEach(v => {
+    if (v.titre.toLowerCase().includes(ql)) resultats.push({ ...v, cat: 'video' });
+  });
+  if (resultats.length > 0 && q.length >= 3) {
+    afficherSection('_search_', `🔍 Résultats pour "${q}"`, null);
+    const content = document.getElementById('fs-content');
+    // Mélanger résultats (max 20)
+    const limited = resultats.slice(0, 20);
+    content.innerHTML = `<div class="fs-grid">
+      ${limited.map(r => r.cat === 'video'
+        ? `<div class="video-card-full">
+            <div class="vcf-player">
+              ${r.miniature ? `<img src="${r.miniature}" style="width:100%;height:100%;object-fit:cover;">` : `<div style="background:#111;width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;">🎬</div>`}
+              <div class="vcf-overlay" onclick="ouvrirVideo('${r.urlStream}','${r.titre}','')"><div class="vcf-play">▶</div></div>
+              ${r.duree ? `<div class="vcf-duree">${r.duree}</div>` : ''}
+            </div>
+            <div class="vcf-body"><div class="vcf-tit">${r.titre}</div></div>
+          </div>`
+        : `<div class="doc-card">
+            <div class="dc-img">${r.image ? `<img src="${r.image}" alt="${r.titre}">` : '<div class="dc-img-ph">📄</div>'}</div>
+            <div class="dc-body">
+              <div class="dc-tit">${r.ref || r.titre}</div>
+              <div class="dc-meta">${r.date || ''}</div>
+              ${r.desc ? `<div class="dc-desc">${r.desc}</div>` : ''}
+              ${r.hasPdf ? `<a href="${r.urlDl}" class="dc-btn" download>📥 Télécharger</a>` : ''}
+            </div>
+          </div>`
+      ).join('')}
+    </div>`;
+  }
+}
+
+// ════════════════════════════════════════
+// TOAST
+// ════════════════════════════════════════
+function showToast(ico, msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('t-ico').textContent = ico;
+  document.getElementById('t-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+</script>
+</body>
+</html>

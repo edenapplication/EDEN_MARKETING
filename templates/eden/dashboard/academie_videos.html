@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vidéos Académie — Dashboard EDEN GROUP</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g800:#1F2937;--r:12px;--rl:20px;}
+body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
+.topnav{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;border-bottom:1.5px solid var(--g200);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
+.tn-em{width:36px;height:36px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:#fff;}
+.tn-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tn-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1.5px solid var(--g200);background:#fff;color:var(--g500);font-family:'Outfit',sans-serif;transition:all 0.2s;}
+.tn-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--bpale);}
+.wrap{padding:84px 2rem 3rem;max-width:1000px;margin:0 auto;}
+.page-tit{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--g800);margin-bottom:1.5rem;}
+.page-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;}
+.btn-add{background:var(--grad);color:#fff;padding:10px 18px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+.videos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem;}
+.v-card{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);overflow:hidden;transition:all 0.2s;}
+.v-card:hover{box-shadow:0 4px 16px rgba(0,0,0,0.08);}
+.v-preview{height:150px;background:#111;position:relative;overflow:hidden;}
+.v-preview video{width:100%;height:100%;object-fit:cover;}
+.v-preview img{width:100%;height:100%;object-fit:cover;}
+.v-preview-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:linear-gradient(135deg,#1a1a2e,#16213e);}
+.v-duree{position:absolute;bottom:6px;right:8px;background:rgba(0,0,0,0.7);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;}
+.v-moment-badge{position:absolute;top:8px;left:8px;background:var(--red);color:#fff;font-size:9px;font-weight:800;padding:3px 8px;border-radius:100px;text-transform:uppercase;}
+.v-body{padding:1rem;}
+.v-tit{font-size:13px;font-weight:700;color:var(--g800);margin-bottom:3px;}
+.v-meta{font-size:11px;color:var(--g400);margin-bottom:0.6rem;}
+.v-actions{display:flex;gap:6px;}
+.btn-sm-ed{padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Outfit',sans-serif;background:var(--bpale);color:var(--blue);text-decoration:none;}
+.btn-sm-del{padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Outfit',sans-serif;background:#fee2e2;color:#dc2626;}
+.badge-pub{background:#dcfce7;color:#16a34a;padding:3px 8px;border-radius:100px;font-size:10px;font-weight:700;}
+.badge-brou{background:#fef9c3;color:#b45309;padding:3px 8px;border-radius:100px;font-size:10px;font-weight:700;}
+.alert{background:#dcfce7;border:1.5px solid #86efac;border-radius:var(--r);padding:12px 16px;font-size:13px;color:#16a34a;margin-bottom:1.5rem;}
+.empty{text-align:center;padding:4rem;background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);}
+.toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1.5px solid var(--g200);border-radius:var(--r);padding:14px 20px;font-size:13px;color:var(--g800);z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(100px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.1);}
+.toast.show{transform:none;opacity:1;}
+@media(max-width:768px){.wrap{padding:80px 1rem 2rem;}.videos-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"><span id="t-ico">✅</span>&nbsp;<span id="t-msg"></span></div>
+
+<nav class="topnav">
+  <div style="display:flex;align-items:center;gap:8px;"><div class="tn-em">E</div><div class="tn-name">EDEN GROUP</div></div>
+  <div style="display:flex;gap:8px;">
+    <a class="tn-btn" href="{% url 'dashboard_academie_liste' %}">← Documents</a>
+    <a class="tn-btn" href="{% url 'academie_accueil' %}" target="_blank">🎓 Voir</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="page-hd">
+    <div>
+      <h1 class="page-tit">🎬 Vidéothèque Académie</h1>
+      <div style="font-size:13px;color:var(--g500);">{{ videos.count }} vidéo{{ videos.count|pluralize }} — fichiers stockés localement</div>
+    </div>
+    <a class="btn-add" href="{% url 'dashboard_academie_video_ajouter' %}">+ Ajouter une vidéo</a>
+  </div>
+
+  {% if messages %}{% for msg in messages %}<div class="alert">{{ msg }}</div>{% endfor %}{% endif %}
+
+  <div style="background:var(--bpale);border:1.5px solid rgba(27,79,219,0.2);border-radius:var(--r);padding:1rem 1.2rem;margin-bottom:1.5rem;font-size:13px;color:var(--blue);">
+    💡 Les vidéos sont des fichiers uploadés directement sur le serveur (MP4, WebM...). Elles sont lues en streaming depuis le serveur EDEN GROUP, sans dépendance à YouTube ou Vimeo.
+  </div>
+
+  {% if videos %}
+  <div class="videos-grid">
+    {% for v in videos %}
+    <div class="v-card" id="v-{{ v.pk }}">
+      <div class="v-preview">
+        {% if v.image_miniature %}
+          <img src="{{ v.image_miniature.url }}" alt="{{ v.titre }}">
+        {% elif v.fichier_video %}
+          <div class="v-preview-ph">🎬</div>
+        {% else %}
+          <div class="v-preview-ph">🎬</div>
+        {% endif %}
+        {% if v.est_video_moment %}<div class="v-moment-badge">⭐ Vidéo du moment</div>{% endif %}
+        {% if v.duree %}<div class="v-duree">{{ v.duree }}</div>{% endif %}
+      </div>
+      <div class="v-body">
+        <div class="v-tit">{{ v.titre }}</div>
+        <div class="v-meta">
+          {% if v.auteur %}✍ {{ v.auteur }} ·{% endif %}
+          👁 {{ v.nb_vues }} vue{{ v.nb_vues|pluralize }} ·
+          <span class="{% if v.statut == 'publie' %}badge-pub{% else %}badge-brou{% endif %}">{{ v.get_statut_display }}</span>
+        </div>
+        <div class="v-actions">
+          <a class="btn-sm-ed" href="{% url 'dashboard_academie_video_modifier' v.pk %}">✏ Modifier</a>
+          {% if v.fichier_video %}
+          <a class="btn-sm-ed" href="{% url 'academie_voir_video' v.pk %}" target="_blank" style="background:#f0fdf4;color:#16a34a;">▶ Voir</a>
+          {% endif %}
+          <button class="btn-sm-del" onclick="supprimerVideo({{ v.pk }},'{{ v.titre|escapejs }}')">🗑</button>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty">
+    <div style="font-size:3rem;margin-bottom:1rem;">🎬</div>
+    <div style="font-size:15px;font-weight:600;color:var(--g800);margin-bottom:0.5rem;">Aucune vidéo</div>
+    <div style="font-size:13px;color:var(--g500);margin-bottom:1.5rem;">Uploadez votre première vidéo pédagogique.</div>
+    <a href="{% url 'dashboard_academie_video_ajouter' %}" class="btn-add">+ Première vidéo</a>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+function showToast(ico,msg){const t=document.getElementById('toast');document.getElementById('t-ico').textContent=ico;document.getElementById('t-msg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),4000);}
+function supprimerVideo(pk,titre){
+  if(!confirm(`Supprimer la vidéo "${titre}" ?`))return;
+  const data=new FormData();data.append('csrfmiddlewaretoken','{{ csrf_token }}');
+  fetch(`/dashboard/academie/videos/${pk}/supprimer/`,{method:'POST',headers:{'X-Requested-With':'XMLHttpRequest'},body:data})
+    .then(r=>r.json()).then(d=>{if(d.success){document.getElementById(`v-${pk}`)?.remove();showToast('🗑',`"${titre}" supprimée.`);}});
+}
+</script>
+</body>
+</html>

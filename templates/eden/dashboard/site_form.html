@@ -132,6 +132,12 @@ textarea.fi{resize:vertical;}
 
     <div class="actions">
       <button type="submit" class="btn-save">💾 {% if site %}Sauvegarder les modifications{% else %}Creer le site{% endif %}</button>
+      {% if site %}
+<a href="{% url 'dashboard_site_stats_manuelles' site.id %}"
+   style="background:var(--bpale);border:1.5px solid rgba(27,79,219,0.25);color:var(--blue);padding:13px 24px;border-radius:var(--r);font-size:14px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:8px;">
+  📊 Statistiques manuelles
+</a>
+{% endif %}
       <a href="{% url 'dashboard_sites' %}" class="btn-cancel">Annuler</a>
     </div>
   </form>

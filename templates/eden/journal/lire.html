@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ edition.titre }} — Le Journal EDEN GROUP</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Outfit:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --blanc:#FFFFFF;
+  --blanc-casse:#F8F6F1;
+  --blanc-jaune:#FDFBF7;
+  --gris-clair:#F0EEEA;
+  --gris-moyen:#D1CDC5;
+  --gris-texte:#3D3A35;
+  --noir-texte:#1A1613;
+  --rouge:#C8102E;
+  --rouge-fonce:#9C0C24;
+  --rouge-clair:#E8D0D5;
+  --bleu:#1B4FDB;
+  --bleu-fonce:#1239A3;
+  --bleu-clair:#D4E0F7;
+  --bleu-tres-clair:#EEF3FC;
+  --filet:#C4BDB3;
+  --gold:#D4AF37;
+  --ombre:0 8px 40px rgba(0,0,0,0.15);
+  --transition:0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+html,body{height:100%;overflow:hidden;background:var(--gris-clair);font-family:'Lora',serif;}
+
+/* ── TOPBAR ── */
+.topbar{
+  position:fixed;top:0;left:0;right:0;height:56px;
+  background:var(--blanc);
+  border-bottom:2px solid var(--rouge);
+  z-index:1000;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 1.5rem;gap:1rem;
+  box-shadow:0 2px 8px rgba(200,16,46,0.08);
+}
+.tb-logo{
+  display:flex;align-items:center;gap:10px;
+  text-decoration:none;
+}
+.tb-em{
+  width:34px;height:34px;border-radius:6px;
+  background:linear-gradient(135deg,var(--bleu),var(--rouge));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-weight:900;font-size:15px;
+  color:#fff;
+}
+.tb-nom{
+  font-family:'Playfair Display',serif;font-size:15px;
+  color:var(--noir-texte);font-weight:700;
+  letter-spacing:0.5px;
+}
+.tb-nom span{color:var(--rouge);}
+.tb-titre{
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:13px;color:var(--gris-texte);
+  flex:1;text-align:center;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  background:var(--gris-clair);
+  padding:4px 16px;
+  border-radius:20px;
+  max-width:500px;
+}
+.tb-btns{display:flex;align-items:center;gap:8px;}
+.tb-btn{
+  padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;
+  cursor:pointer;font-family:'Outfit',sans-serif;
+  border:1px solid var(--gris-moyen);
+  background:var(--blanc);
+  color:var(--gris-texte);
+  text-decoration:none;transition:all 0.2s;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.tb-btn:hover{background:var(--rouge);color:var(--blanc);border-color:var(--rouge);}
+.tb-btn.primary{background:var(--bleu);color:var(--blanc);border-color:var(--bleu);}
+.tb-btn.primary:hover{background:var(--bleu-fonce);border-color:var(--bleu-fonce);}
+.tb-page-info{
+  font-size:12px;color:var(--gris-texte);
+  font-family:'Outfit',sans-serif;font-weight:500;
+  background:var(--blanc-casse);
+  padding:4px 14px;border-radius:20px;
+  border:1px solid var(--gris-moyen);
+}
+
+/* ── VIEWER ── */
+.viewer-wrap{
+  position:fixed;top:56px;left:0;right:0;bottom:56px;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(180deg,var(--gris-clair) 0%,var(--blanc-casse) 100%);
+  padding:20px;
+}
+.book{
+  position:relative;
+  transform-style:preserve-3d;
+  box-shadow:var(--ombre);
+  border-radius:2px;
+}
+
+/* ── PAGES ── */
+.page-outer{
+  position:absolute;top:0;width:50%;height:100%;
+  transform-style:preserve-3d;
+  transition:transform 0.7s cubic-bezier(0.645,0.045,0.355,1);
+}
+.page-outer.left{left:0;transform-origin:right center;}
+.page-outer.right{left:50%;transform-origin:left center;}
+.page-outer.turning-left{transform:rotateY(180deg);}
+.page-outer.turning-right{transform:rotateY(-180deg);}
+.page-face{
+  position:absolute;inset:0;
+  backface-visibility:hidden;
+  overflow:hidden;
+}
+.page-face.back{transform:rotateY(180deg);}
+
+/* ── PAGE PAPIER ── */
+.page-paper{
+  width:100%;height:100%;
+  background:var(--blanc-jaune);
+  position:relative;overflow:hidden;
+}
+.page-paper::before{
+  content:'';position:absolute;inset:0;
+  background:
+    linear-gradient(rgba(200,16,46,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200,16,46,0.02) 1px, transparent 1px);
+  background-size:100% 28px, 100% 28px;
+  pointer-events:none;
+}
+.page-paper.sombre{background:var(--blanc-casse);}
+.page-paper.fonce{background:var(--noir-texte);color:var(--blanc);}
+
+/* ── NUMÉROS ── */
+.page-num{
+  position:absolute;bottom:14px;
+  font-family:'Outfit',sans-serif;font-size:11px;
+  color:var(--gris-moyen);font-weight:500;
+  letter-spacing:0.5px;
+}
+.page-num.left{left:20px;}
+.page-num.right{right:20px;}
+.page-nom-journal{
+  position:absolute;bottom:14px;left:50%;
+  transform:translateX(-50%);
+  font-family:'Outfit',sans-serif;font-size:9px;
+  color:var(--gris-moyen);
+  letter-spacing:3px;text-transform:uppercase;
+}
+
+/* ── OMBRES ── */
+.page-shadow-left{
+  position:absolute;top:0;right:0;width:30px;height:100%;
+  background:linear-gradient(to right,transparent,rgba(0,0,0,0.06));
+  pointer-events:none;
+}
+.page-shadow-right{
+  position:absolute;top:0;left:0;width:30px;height:100%;
+  background:linear-gradient(to left,transparent,rgba(0,0,0,0.06));
+  pointer-events:none;
+}
+
+/* ── RELIURE ── */
+.book-spine{
+  position:absolute;top:0;left:50%;width:4px;height:100%;
+  background:linear-gradient(to bottom,var(--rouge),var(--bleu));
+  transform:translateX(-50%);
+  z-index:5;
+  opacity:0.3;
+}
+.book-spine::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to right,transparent,rgba(255,255,255,0.3),transparent);
+}
+
+/* ── COUVERTURE ── */
+.couverture{
+  width:100%;height:100%;
+  background:linear-gradient(135deg,var(--noir-texte) 0%,#1a1a2e 50%,var(--rouge-fonce) 100%);
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;
+}
+.couverture::before{
+  content:'';position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(45deg, transparent, transparent 20px,
+    rgba(255,255,255,0.02) 20px, rgba(255,255,255,0.02) 21px);
+  pointer-events:none;
+}
+.couv-bandeau-top{
+  background:linear-gradient(90deg,var(--rouge),var(--rouge-fonce));
+  padding:12px 24px;
+  display:flex;justify-content:space-between;align-items:center;
+  border-bottom:2px solid var(--gold);
+}
+.couv-nom{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.2rem,2.5vw,2rem);
+  color:var(--gold);
+  font-weight:700;
+  letter-spacing:1px;
+}
+.couv-nom span{font-weight:300;opacity:0.7;}
+.couv-num{
+  font-family:'Outfit',sans-serif;font-size:12px;
+  color:rgba(255,255,255,0.8);
+  font-weight:500;
+  background:rgba(255,255,255,0.1);
+  padding:4px 14px;border-radius:20px;
+  border:1px solid rgba(255,255,255,0.15);
+}
+.couv-img-zone{flex:1;position:relative;overflow:hidden;}
+.couv-img{
+  width:100%;height:100%;object-fit:cover;
+  display:block;
+  opacity:0.9;
+}
+.couv-img-placeholder{
+  width:100%;height:100%;
+  background:linear-gradient(135deg,#1a1a2e,#2d1f0e);
+  display:flex;align-items:center;justify-content:center;
+  font-size:4rem;
+}
+.couv-titre-zone{
+  padding:20px 24px;
+  background:linear-gradient(to bottom,transparent,rgba(0,0,0,0.8));
+}
+.couv-surtitre{
+  font-size:10px;
+  color:var(--rouge);
+  text-transform:uppercase;
+  letter-spacing:3px;
+  font-family:'Outfit',sans-serif;
+  font-weight:600;
+  margin-bottom:4px;
+}
+.couv-titre{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.2rem,3vw,2.2rem);
+  font-weight:900;
+  color:var(--blanc);
+  line-height:1.15;
+}
+.couv-sous-titre{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-size:clamp(0.8rem,1.5vw,1.1rem);
+  color:rgba(255,255,255,0.7);
+  margin-top:6px;
+}
+.couv-date-pied{
+  background:rgba(255,255,255,0.05);
+  padding:10px 24px;
+  font-family:'Outfit',sans-serif;
+  font-size:10px;
+  color:rgba(255,255,255,0.5);
+  letter-spacing:2px;
+  text-align:center;
+  border-top:1px solid rgba(255,255,255,0.05);
+}
+
+/* ── CONTENU PAGE ── */
+.page-content{padding:16px 20px;height:100%;display:flex;flex-direction:column;gap:8px;overflow:hidden;}
+.layout-une .blocs-zone{display:block;}
+.layout-col1 .blocs-zone{display:flex;flex-direction:column;gap:10px;}
+.layout-col2 .blocs-zone{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.layout-col3 .blocs-zone{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+
+.bloc{position:relative;overflow:hidden;}
+
+/* TITRES */
+.bloc-titre h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.1rem,2.5vw,1.8rem);
+  font-weight:900;
+  color:var(--noir-texte);
+  line-height:1.1;
+  border-bottom:3px double var(--rouge);
+  padding-bottom:8px;
+  margin-bottom:8px;
+}
+.bloc-titre h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(0.9rem,2vw,1.4rem);
+  font-weight:700;
+  color:var(--noir-texte);
+  line-height:1.2;
+  border-bottom:2px solid var(--bleu);
+  padding-bottom:6px;
+  margin-bottom:6px;
+}
+.bloc-titre h3{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(0.8rem,1.5vw,1.1rem);
+  font-weight:600;
+  font-style:italic;
+  color:var(--rouge);
+  margin-bottom:4px;
+}
+.bloc-titre .surtitre{
+  font-size:9px;
+  color:var(--rouge);
+  text-transform:uppercase;
+  letter-spacing:3px;
+  font-family:'Outfit',sans-serif;
+  font-weight:600;
+  margin-bottom:4px;
+}
+
+/* TEXTES */
+.bloc-texte p{
+  font-family:'Lora',serif;
+  font-size:clamp(0.7rem,1.2vw,0.85rem);
+  color:var(--gris-texte);
+  line-height:1.7;
+  text-align:justify;
+  hyphens:auto;
+  margin-bottom:0.5em;
+}
+.bloc-texte p:last-child{margin-bottom:0;}
+.bloc-texte p::first-letter{
+  font-size:2.8em;
+  font-family:'Playfair Display',serif;
+  font-weight:900;
+  float:left;
+  line-height:0.8;
+  margin:4px 6px 0 0;
+  color:var(--rouge);
+}
+.bloc-texte .chapeau{
+  font-family:'Lora',serif;
+  font-style:italic;
+  font-size:clamp(0.75rem,1.3vw,0.95rem);
+  color:var(--bleu-fonce);
+  border-left:4px solid var(--rouge);
+  padding-left:12px;
+  margin-bottom:8px;
+  line-height:1.6;
+}
+
+/* IMAGES */
+.bloc-image figure{margin:0;}
+.bloc-image img{
+  width:100%;height:auto;display:block;
+  border-radius:2px;
+  cursor:pointer;
+  transition:opacity 0.3s;
+}
+.bloc-image img:hover{opacity:0.9;}
+.bloc-image figcaption{
+  font-family:'Outfit',sans-serif;
+  font-size:9px;
+  color:var(--gris-moyen);
+  text-align:center;
+  margin-top:4px;
+  font-style:italic;
+}
+
+/* CITATIONS */
+.bloc-citation blockquote{
+  border-left:4px solid var(--rouge);
+  padding:12px 16px;
+  background:var(--blanc-casse);
+}
+.bloc-citation blockquote p{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-size:clamp(0.8rem,1.4vw,1rem);
+  color:var(--noir-texte);
+  line-height:1.6;
+}
+.bloc-citation .auteur{
+  font-size:10px;
+  font-family:'Outfit',sans-serif;
+  font-weight:600;
+  color:var(--bleu);
+  text-transform:uppercase;
+  letter-spacing:1px;
+  margin-top:6px;
+  text-align:right;
+}
+
+/* FILETS */
+.bloc-filet hr{
+  border:none;height:2px;
+  background:linear-gradient(to right,var(--rouge),var(--bleu),var(--rouge));
+  margin:6px 0;
+}
+.bloc-filet.double hr{height:1px;box-shadow:0 3px 0 var(--rouge),0 3px 0 var(--bleu);}
+.bloc-filet.ornement{
+  text-align:center;
+  color:var(--rouge);
+  font-size:16px;
+  padding:6px 0;
+  letter-spacing:8px;
+}
+
+/* ENCARTS */
+.bloc-encart{
+  background:var(--bleu-tres-clair);
+  border:2px solid var(--bleu);
+  padding:12px 14px;
+  border-radius:2px;
+}
+.bloc-encart .encart-titre{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(0.7rem,1.3vw,0.9rem);
+  font-weight:700;
+  color:var(--bleu-fonce);
+  border-bottom:2px solid var(--bleu);
+  padding-bottom:6px;
+  margin-bottom:8px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+.bloc-encart p{
+  font-family:'Lora',serif;
+  font-size:clamp(0.65rem,1.1vw,0.78rem);
+  line-height:1.6;
+  color:var(--gris-texte);
+}
+.bloc-encart p::first-letter{font-size:1em;float:none;}
+
+/* PUBLICITÉS */
+.bloc-pub{
+  background:linear-gradient(135deg,var(--bleu-fonce),var(--noir-texte));
+  color:var(--blanc);
+  padding:16px;
+  text-align:center;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:6px;
+  border:3px double var(--gold);
+  border-radius:2px;
+}
+.pub-titre{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1rem,2vw,1.5rem);
+  color:var(--gold);
+  font-weight:700;
+}
+.pub-texte{
+  font-family:'Lora',serif;
+  font-size:clamp(0.7rem,1.2vw,0.85rem);
+  line-height:1.4;
+}
+.pub-tel{
+  font-family:'Outfit',sans-serif;
+  font-weight:700;
+  font-size:clamp(0.75rem,1.3vw,0.9rem);
+  color:var(--rouge);
+}
+
+/* ── NAV BAR ── */
+.nav-bar{
+  position:fixed;bottom:0;left:0;right:0;height:56px;
+  background:var(--blanc);
+  border-top:2px solid var(--rouge);
+  z-index:1000;
+  display:flex;align-items:center;justify-content:center;
+  gap:1.2rem;
+  box-shadow:0 -2px 8px rgba(200,16,46,0.08);
+}
+.nav-bar-btn{
+  padding:8px 20px;
+  border-radius:20px;
+  font-size:13px;font-weight:600;
+  cursor:pointer;
+  font-family:'Outfit',sans-serif;
+  border:1px solid var(--gris-moyen);
+  background:var(--blanc);
+  color:var(--gris-texte);
+  transition:all 0.2s;
+  display:flex;align-items:center;gap:6px;
+}
+.nav-bar-btn:hover:not(:disabled){
+  background:var(--rouge);
+  color:var(--blanc);
+  border-color:var(--rouge);
+}
+.nav-bar-btn:disabled{
+  opacity:0.3;cursor:not-allowed;
+}
+.nav-bar-btn.primary{
+  background:var(--bleu);
+  color:var(--blanc);
+  border-color:var(--bleu);
+}
+.nav-bar-btn.primary:hover:not(:disabled){
+  background:var(--bleu-fonce);
+  border-color:var(--bleu-fonce);
+}
+.nav-progress{
+  display:flex;align-items:center;gap:6px;
+}
+.nav-dot{
+  width:8px;height:8px;
+  border-radius:50%;
+  background:var(--gris-moyen);
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.nav-dot.active{
+  background:var(--rouge);
+  transform:scale(1.4);
+}
+.nav-dot:hover{background:var(--rouge);}
+.nav-page-label{
+  font-family:'Outfit',sans-serif;
+  font-size:11px;
+  color:var(--gris-texte);
+  font-weight:500;
+  min-width:80px;
+  text-align:center;
+}
+
+/* ── MEDIA OVERLAY ── */
+.media-overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.92);
+  z-index:2000;
+  display:none;
+  align-items:center;justify-content:center;
+  backdrop-filter:blur(8px);
+}
+.media-overlay.open{display:flex;}
+.media-close{
+  position:absolute;top:1.5rem;right:1.5rem;
+  background:rgba(255,255,255,0.1);
+  border:1px solid rgba(255,255,255,0.2);
+  color:#fff;
+  width:44px;height:44px;
+  border-radius:50%;
+  cursor:pointer;
+  font-size:20px;
+  transition:all 0.2s;
+  display:flex;align-items:center;justify-content:center;
+}
+.media-close:hover{background:var(--rouge);}
+.media-inner{max-width:90vw;max-height:85vh;}
+.media-inner img{max-width:90vw;max-height:85vh;object-fit:contain;border-radius:4px;}
+.media-inner iframe{width:80vw;height:45vw;border-radius:4px;}
+
+@media(max-width:768px){
+  .topbar{padding:0 1rem;height:50px;}
+  .tb-titre{display:none;}
+  .viewer-wrap{top:50px;bottom:50px;padding:10px;}
+  .nav-bar{height:50px;gap:0.6rem;padding:0 0.5rem;}
+  .nav-bar-btn{padding:6px 12px;font-size:11px;}
+  .page-content{padding:10px 12px;}
+  .layout-col2 .blocs-zone,.layout-col3 .blocs-zone{grid-template-columns:1fr;}
+  .couv-titre-zone{padding:12px 16px;}
+  .couv-bandeau-top{padding:8px 16px;}
+  .page-num{bottom:8px;font-size:9px;}
+  .page-nom-journal{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a class="tb-logo" href="{% url 'journal_kiosque' %}">
+    <div class="tb-em">E</div>
+    <div class="tb-nom">Journal <span>EDEN</span></div>
+  </a>
+  <div class="tb-titre">{{ edition.titre }} — Édition #{{ edition.numero }}</div>
+  <div class="tb-btns">
+    <span class="tb-page-info" id="page-info">Couverture</span>
+    <a class="tb-btn" href="{% url 'journal_kiosque' %}">← Kiosque</a>
+    <a class="tb-btn" href="{% url 'home' %}">🏠</a>
+  </div>
+</div>
+
+<!-- VIEWER -->
+<div class="viewer-wrap" id="viewer">
+  <div class="book" id="book"></div>
+</div>
+
+<!-- MEDIA OVERLAY -->
+<div class="media-overlay" id="media-overlay">
+  <button class="media-close" onclick="fermerMedia()">✕</button>
+  <div class="media-inner" id="media-inner"></div>
+</div>
+
+<!-- NAV -->
+<div class="nav-bar">
+  <button class="nav-bar-btn" id="btn-prev" onclick="pagePrecedente()" disabled>
+    ← Précédent
+  </button>
+  <div class="nav-progress" id="nav-dots"></div>
+  <span class="nav-page-label" id="nav-label">Couverture</span>
+  <button class="nav-bar-btn primary" id="btn-next" onclick="pageSuivante()">
+    Suivant →
+  </button>
+</div>
+
+<script>
+const PAGES_DATA = {{ pages_json|safe }};
+const EDITION = {
+  numero: {{ edition.numero }},
+  titre: "{{ edition.titre|escapejs }}",
+  sous_titre: "{{ edition.sous_titre|escapejs }}",
+  date: "{% if edition.date_parution %}{{ edition.date_parution|date:'d F Y' }}{% endif %}",
+  image_une: "{% if edition.image_une %}{{ edition.image_une.url }}{% endif %}",
+  nb_pages: {{ edition.nb_pages }},
+};
+
+let pageCourante = 0;
+const totalEtapes = PAGES_DATA.length + 1;
+
+// ── RENDU COUVERTURE ──
+function renderCouverture() {
+  return `<div class="couverture">
+    <div class="couv-bandeau-top">
+      <span class="couv-nom">Le Journal <span>EDEN</span></span>
+      <span class="couv-num">N°${EDITION.numero}</span>
+    </div>
+    <div class="couv-img-zone">
+      ${EDITION.image_une
+        ? `<img src="${EDITION.image_une}" class="couv-img" alt="Une" onclick="ouvrirMedia('image','${EDITION.image_une}','Couverture')">`
+        : `<div class="couv-img-placeholder">📰</div>`}
+    </div>
+    <div class="couv-titre-zone">
+      <div class="couv-surtitre">EDEN GROUP · Gazette Foncière</div>
+      <div class="couv-titre">${EDITION.titre}</div>
+      ${EDITION.sous_titre ? `<div class="couv-sous-titre">${EDITION.sous_titre}</div>` : ''}
+    </div>
+    <div class="couv-date-pied">${EDITION.date} · Édition N°${EDITION.numero}</div>
+  </div>`;
+}
+
+// ── RENDU BLOC ──
+function renderBloc(bloc) {
+  const type = bloc.type || 'texte';
+  switch(type) {
+    case 'titre':
+      return `<div class="bloc bloc-titre">
+        ${bloc.surtitre ? `<div class="surtitre">${bloc.surtitre}</div>` : ''}
+        ${bloc.niveau === 1 ? `<h1>${bloc.contenu || ''}</h1>` :
+          bloc.niveau === 3 ? `<h3>${bloc.contenu || ''}</h3>` :
+          `<h2>${bloc.contenu || ''}</h2>`}
+      </div>`;
+    case 'texte':
+      return `<div class="bloc bloc-texte">
+        ${bloc.chapeau ? `<p class="chapeau">${bloc.chapeau}</p>` : ''}
+        <p>${(bloc.contenu || '').replace(/\n/g,'</p><p>')}</p>
+      </div>`;
+    case 'image':
+      return `<div class="bloc bloc-image">
+        <figure>
+          <img src="${bloc.url || ''}" alt="${bloc.legende || ''}"
+            onclick="ouvrirMedia('image','${bloc.url || ''}','${(bloc.legende||'').replace(/'/g,"\\'")}')">
+          ${bloc.legende ? `<figcaption>${bloc.legende}</figcaption>` : ''}
+        </figure>
+      </div>`;
+    case 'citation':
+      return `<div class="bloc bloc-citation">
+        <blockquote>
+          <p>${bloc.contenu || ''}</p>
+          ${bloc.auteur ? `<div class="auteur">— ${bloc.auteur}</div>` : ''}
+        </blockquote>
+      </div>`;
+    case 'filet':
+      return `<div class="bloc bloc-filet ${bloc.style || ''}">
+        ${bloc.style === 'ornement' ? `<div>✦ ✦ ✦</div>` : `<hr>`}
+      </div>`;
+    case 'encart':
+      return `<div class="bloc bloc-encart">
+        ${bloc.titre_encart ? `<div class="encart-titre">${bloc.titre_encart}</div>` : ''}
+        <p>${(bloc.contenu || '').replace(/\n/g,'</p><p>')}</p>
+      </div>`;
+    case 'pub':
+      return `<div class="bloc bloc-pub">
+        <div class="pub-titre">EDEN GROUP</div>
+        <div class="pub-texte">${bloc.contenu || ''}</div>
+        ${bloc.telephone ? `<div class="pub-tel">📞 ${bloc.telephone}</div>` : ''}
+      </div>`;
+    default:
+      return `<div class="bloc" style="padding:8px;font-size:12px;color:#999;">Bloc inconnu</div>`;
+  }
+}
+
+function renderPage(pageData, numero) {
+  const layout = pageData.layout || 'col2';
+  const fond = pageData.couleur_fond || '#FDFBF7';
+  const blocs = pageData.contenu || [];
+  const isGauche = numero % 2 === 1;
+
+  return `<div class="page-paper layout-${layout}" style="background:${fond};">
+    <div class="page-content">
+      <div class="blocs-zone">
+        ${blocs.map(b => renderBloc(b)).join('')}
+      </div>
+    </div>
+    <div class="page-num ${isGauche ? 'left' : 'right'}">${pageData.numero}</div>
+    <div class="page-nom-journal">Journal EDEN</div>
+    ${isGauche ? '<div class="page-shadow-left"></div>' : '<div class="page-shadow-right"></div>'}
+  </div>`;
+}
+
+// ── DIMENSIONS ──
+function calculerDimensions() {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight - 112;
+  const ratio = 210/297;
+  let pageH = Math.min(vh * 0.9, 750);
+  let pageW = pageH * ratio;
+  if (pageW * 2 > vw * 0.92) {
+    pageW = (vw * 0.92) / 2;
+    pageH = pageW / ratio;
+  }
+  return { pageW, pageH };
+}
+
+// ── AFFICHAGE ──
+function afficherPage(index, animate = true) {
+  pageCourante = Math.max(0, Math.min(index, totalEtapes - 1));
+  const { pageW, pageH } = calculerDimensions();
+  const book = document.getElementById('book');
+  book.style.width = (pageW * 2) + 'px';
+  book.style.height = pageH + 'px';
+
+  let htmlGauche, htmlDroite;
+
+  if (pageCourante === 0) {
+    htmlGauche = `<div class="page-paper fonce" style="background:#1a1a2e;border-right:1px solid rgba(255,255,255,0.05);"></div>`;
+    htmlDroite = renderCouverture();
+  } else {
+    const idx = pageCourante - 1;
+    if (idx < PAGES_DATA.length) {
+      htmlGauche = renderPage(PAGES_DATA[idx], idx + 1);
+    } else {
+      htmlGauche = `<div class="page-paper" style="background:#FDFBF7;"></div>`;
+    }
+    if (idx + 1 < PAGES_DATA.length) {
+      htmlDroite = renderPage(PAGES_DATA[idx + 1], idx + 2);
+    } else {
+      htmlDroite = `<div class="page-paper fonce" style="background:#1a1a2e;"></div>`;
+    }
+  }
+
+  book.innerHTML = `
+    <div class="page-outer left" id="page-left">
+      <div class="page-face front">${htmlGauche}</div>
+    </div>
+    <div class="page-outer right" id="page-right">
+      <div class="page-face front">${htmlDroite}</div>
+    </div>
+    <div class="book-spine"></div>
+  `;
+
+  mettreAjourNav();
+}
+
+// ── NAVIGATION ──
+function pageSuivante() {
+  if (pageCourante >= totalEtapes - 1) return;
+  const pr = document.getElementById('page-right');
+  if (pr) {
+    pr.style.transition = 'transform 0.7s cubic-bezier(0.645,0.045,0.355,1)';
+    pr.style.transform = 'rotateY(-180deg)';
+    setTimeout(() => afficherPage(pageCourante + 1), 350);
+  } else {
+    afficherPage(pageCourante + 1);
+  }
+}
+
+function pagePrecedente() {
+  if (pageCourante <= 0) return;
+  const pl = document.getElementById('page-left');
+  if (pl) {
+    pl.style.transition = 'transform 0.7s cubic-bezier(0.645,0.045,0.355,1)';
+    pl.style.transform = 'rotateY(180deg)';
+    setTimeout(() => afficherPage(pageCourante - 1), 350);
+  } else {
+    afficherPage(pageCourante - 1);
+  }
+}
+
+function allerPage(index) { afficherPage(index); }
+
+function mettreAjourNav() {
+  document.getElementById('btn-prev').disabled = pageCourante === 0;
+  document.getElementById('btn-next').disabled = pageCourante >= totalEtapes - 1;
+  document.getElementById('page-info').textContent =
+    pageCourante === 0 ? 'Couverture' :
+    `Page ${pageCourante * 2 - 1} / ${PAGES_DATA.length}`;
+
+  const labels = ['Couverture', ...PAGES_DATA.map(p => `Page ${p.numero}`)];
+  document.getElementById('nav-label').textContent = labels[pageCourante] || '';
+
+  const dotsEl = document.getElementById('nav-dots');
+  dotsEl.innerHTML = Array.from({length: totalEtapes}, (_, i) =>
+    `<div class="nav-dot ${i === pageCourante ? 'active' : ''}" onclick="allerPage(${i})" title="${i === 0 ? 'Couverture' : 'Page ' + i}"></div>`
+  ).join('');
+}
+
+// ── MEDIA ──
+function ouvrirMedia(type, url, legende) {
+  const overlay = document.getElementById('media-overlay');
+  const inner = document.getElementById('media-inner');
+  overlay.classList.add('open');
+  if (type === 'image') {
+    inner.innerHTML = `<img src="${url}" alt="${legende}">`;
+  } else {
+    inner.innerHTML = `<iframe src="${url}" frameborder="0" allowfullscreen></iframe>`;
+  }
+}
+
+function fermerMedia() {
+  document.getElementById('media-overlay').classList.remove('open');
+  document.getElementById('media-inner').innerHTML = '';
+}
+
+// ── CLAVIER ──
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') pageSuivante();
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') pagePrecedente();
+  if (e.key === 'Escape') fermerMedia();
+});
+
+// ── SWIPE ──
+let touchStartX = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+document.addEventListener('touchend', e => {
+  const diff = touchStartX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 50) {
+    if (diff > 0) pageSuivante();
+    else pagePrecedente();
+  }
+});
+
+window.addEventListener('resize', () => afficherPage(pageCourante, false));
+
+// ── INIT ──
+afficherPage(0);
+</script>
+</body>
+</html>

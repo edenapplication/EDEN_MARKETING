@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Étapes d'acquisition — EDEN GROUP</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g800:#1F2937;--r:12px;--rl:20px;}
+body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
+.topnav{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;border-bottom:1.5px solid var(--g200);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
+.tn-em{width:36px;height:36px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:#fff;}
+.tn-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tn-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1.5px solid var(--g200);background:#fff;color:var(--g500);font-family:'Outfit',sans-serif;transition:all 0.2s;}
+.tn-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--bpale);}
+.wrap{padding:84px 2rem 3rem;max-width:900px;margin:0 auto;}
+.page-tit{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--g800);margin-bottom:1.5rem;}
+.card{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);padding:2rem;margin-bottom:1.5rem;}
+.card-tit{font-size:13px;font-weight:700;color:var(--g800);margin-bottom:1.2rem;padding-bottom:0.8rem;border-bottom:1px solid var(--g200);}
+.form-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;}
+.fg{display:flex;flex-direction:column;gap:5px;flex:1;}
+.fg label{font-size:11px;font-weight:600;color:var(--g500);}
+.fg .hint{font-size:11px;color:var(--g400);margin-top:2px;}
+input,select,textarea{width:100%;background:#fff;border:1.5px solid var(--g200);border-radius:10px;padding:10px 14px;color:var(--g800);font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s;}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);}
+input::placeholder{color:var(--g400);}
+select{appearance:none;}
+.btn-add{background:var(--grad);color:#fff;padding:11px 22px;border-radius:9px;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;white-space:nowrap;}
+.btn-danger{background:#fee2e2;color:#dc2626;border:1.5px solid #fca5a5;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;}
+.btn-danger:hover{background:#dc2626;color:#fff;border-color:#dc2626;}
+/* Image technicien */
+.technicien-zone{display:grid;grid-template-columns:auto 1fr;gap:1.5rem;align-items:start;}
+.tech-img-preview{position:relative;width:160px;flex-shrink:0;}
+.tech-img-preview img{width:160px;height:200px;object-fit:cover;border-radius:var(--rl);border:1.5px solid var(--g200);display:block;}
+.tech-img-placeholder{width:160px;height:200px;border-radius:var(--rl);border:2px dashed var(--g200);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;background:var(--g50);}
+.tech-img-placeholder .ico{font-size:2.5rem;}
+.tech-img-placeholder .lbl{font-size:11px;color:var(--g400);text-align:center;}
+.tech-info h3{font-size:14px;font-weight:700;color:var(--g800);margin-bottom:0.4rem;}
+.tech-info p{font-size:13px;color:var(--g500);line-height:1.6;margin-bottom:1rem;}
+.tech-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:1rem;}
+/* Étapes liste */
+.etapes-list{display:flex;flex-direction:column;gap:10px;}
+.etape-item{background:var(--g50);border:1.5px solid var(--g200);border-radius:var(--r);padding:1rem;display:grid;grid-template-columns:auto 1fr auto;gap:1rem;align-items:center;transition:all 0.2s;}
+.etape-item:hover{border-color:rgba(27,79,219,0.2);}
+.etape-num-box{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;flex-shrink:0;}
+.etape-info .et-tit{font-size:14px;font-weight:700;color:var(--g800);}
+.etape-info .et-desc{font-size:12px;color:var(--g500);margin-top:2px;}
+.etape-actions{display:flex;gap:6px;flex-shrink:0;}
+.btn-sm-ed{padding:6px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Outfit',sans-serif;background:var(--bpale);color:var(--blue);}
+.btn-sm-del{padding:6px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Outfit',sans-serif;background:#fee2e2;color:#dc2626;}
+.info-box{background:var(--bpale);border:1.5px solid rgba(27,79,219,0.2);border-radius:var(--r);padding:1rem 1.2rem;margin-bottom:1.5rem;font-size:13px;color:var(--blue);display:flex;align-items:flex-start;gap:8px;}
+.alert{background:#dcfce7;border:1.5px solid #86efac;border-radius:var(--r);padding:12px 16px;font-size:13px;color:#16a34a;margin-bottom:1.5rem;}
+.preview-img-new{width:100%;height:140px;object-fit:cover;border-radius:var(--r);margin-top:8px;display:none;border:1.5px solid var(--g200);}
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:2000;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:#fff;border-radius:var(--rl);padding:2rem;max-width:480px;width:100%;margin:1rem;}
+.modal-tit{font-size:15px;font-weight:700;color:var(--g800);margin-bottom:1.2rem;}
+.btn-save{background:var(--grad);color:#fff;padding:11px 22px;border-radius:var(--r);font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;}
+.btn-cancel-m{background:#fff;color:var(--g500);padding:11px 18px;border-radius:var(--r);font-size:13px;font-weight:500;border:1.5px solid var(--g200);cursor:pointer;font-family:'Outfit',sans-serif;}
+.chk-row{display:flex;align-items:center;gap:8px;margin:8px 0;}
+.chk-row input{width:18px;height:18px;}
+.chk-row label{font-size:13px;color:var(--g700);margin:0;}
+@media(max-width:768px){.wrap{padding:80px 1rem 2rem;}.form-row{flex-direction:column;}.technicien-zone{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <div style="display:flex;align-items:center;gap:8px;"><div class="tn-em">E</div><div class="tn-name">EDEN GROUP</div></div>
+  <div style="display:flex;gap:8px;">
+    <a class="tn-btn" href="{% url 'dashboard_home_config' %}">← Config home</a>
+    <a class="tn-btn" href="{% url 'home' %}" target="_blank">🌐 Voir le site</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="page-tit">🔢 Étapes d'acquisition</div>
+
+  <div class="info-box">
+    💡 Les étapes s'affichent dans l'ordre numérique sur la page d'accueil. Les couleurs alternent automatiquement (bleu / rouge). L'image du technicien apparaît à droite avec un effet dégradé.
+  </div>
+
+  {% if messages %}{% for msg in messages %}<div class="alert">{{ msg }}</div>{% endfor %}{% endif %}
+
+  <!-- IMAGE TECHNICIEN -->
+  <div class="card">
+    <div class="card-tit">👷 Image du technicien (à côté des étapes)</div>
+    <div class="technicien-zone">
+      <div class="tech-img-preview">
+        {% if hero and hero.etapes_image %}
+          <img src="{{ hero.etapes_image.url }}" alt="Technicien EDEN GROUP" id="tech-current-img">
+        {% else %}
+          <div class="tech-img-placeholder" id="tech-placeholder">
+            <div class="ico">👷</div>
+            <div class="lbl">Aucune image<br>configurée</div>
+          </div>
+        {% endif %}
+        <img class="preview-img-new" id="tech-preview-new" alt="">
+      </div>
+      <div class="tech-info">
+        <h3>Photo du technicien / terrain</h3>
+        <p>Cette image apparaît à droite des étapes d'acquisition sur la page d'accueil, avec un effet dégradé qui la fait sortir naturellement du fond. Recommandé : photo verticale d'un technicien sur le terrain, 400×600px minimum.</p>
+        <form method="post" enctype="multipart/form-data" id="form-tech">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="upload_technicien">
+          <div class="fg" style="margin-bottom:1rem;">
+            <label>Choisir une image</label>
+            <input type="file" name="etapes_image" accept="image/*" onchange="previewTech(this)" required>
+            <div class="hint">JPG ou PNG. Image verticale recommandée (portrait). La photo sera affichée avec un dégradé sur les bords.</div>
+          </div>
+          <div class="tech-actions">
+            <button type="submit" class="btn-add">📷 Enregistrer l'image</button>
+            {% if hero and hero.etapes_image %}
+            <button type="button" class="btn-danger" onclick="supprimerTechnicien()">🗑 Supprimer l'image</button>
+            {% endif %}
+          </div>
+        </form>
+
+        {% if hero and hero.etapes_image %}
+        <form method="post" id="form-del-tech" style="display:none;">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="supprimer_technicien">
+        </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- AJOUTER UNE ÉTAPE -->
+  <div class="card">
+    <div class="card-tit">➕ Ajouter une étape</div>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="ajouter">
+      <div class="form-row" style="margin-bottom:1rem;">
+        <div class="fg" style="max-width:90px;">
+          <label>N°</label>
+          <input type="number" name="numero" value="{{ etapes.count|add:1 }}" min="1" required>
+        </div>
+        <div class="fg">
+          <label>Titre de l'étape *</label>
+          <input type="text" name="titre" placeholder="Visite du site" required>
+        </div>
+        <div class="fg" style="max-width:130px;">
+          <label>Couleur du cercle</label>
+          <select name="couleur">
+            <option value="blue">🔵 Bleu</option>
+            <option value="red">🔴 Rouge</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="fg">
+          <label>Description courte (optionnel)</label>
+          <input type="text" name="description" placeholder="Choisissez le site qui vous convient">
+        </div>
+        <button type="submit" class="btn-add" style="align-self:flex-end;">Ajouter</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- LISTE DES ÉTAPES -->
+  <div class="card">
+    <div class="card-tit">Liste des étapes ({{ etapes.count }})</div>
+    {% if etapes %}
+    <div class="etapes-list">
+      {% for e in etapes %}
+      <div class="etape-item" id="etape-{{ e.pk }}">
+        <div class="etape-num-box" style="background:{% if e.couleur == 'red' %}#C8102E{% else %}#1B4FDB{% endif %};">{{ e.numero }}</div>
+        <div class="etape-info">
+          <div class="et-tit">{{ e.titre }}{% if not e.is_active %} <span style="background:var(--g100);color:var(--g500);font-size:10px;padding:2px 8px;border-radius:100px;font-weight:600;margin-left:6px;">Inactif</span>{% endif %}</div>
+          {% if e.description %}<div class="et-desc">{{ e.description }}</div>{% endif %}
+        </div>
+        <div class="etape-actions">
+          <button class="btn-sm-ed" onclick="ouvrirModifier(
+            {{ e.pk }},{{ e.numero }},
+            '{{ e.titre|escapejs }}',
+            '{{ e.description|escapejs }}',
+            '{{ e.couleur }}',
+            {{ e.is_active|lower }}
+          )">✏ Modifier</button>
+          <form method="post" onsubmit="return confirm('Supprimer l\'étape {{ e.numero }} ?')" style="display:inline;">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="supprimer">
+            <input type="hidden" name="pk" value="{{ e.pk }}">
+            <button type="submit" class="btn-sm-del">🗑</button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align:center;padding:2.5rem;color:var(--g400);">
+      <div style="font-size:2.5rem;margin-bottom:0.8rem;">🔢</div>
+      <div style="font-size:14px;font-weight:600;color:var(--g800);margin-bottom:0.4rem;">Aucune étape configurée</div>
+      <div style="font-size:13px;">Les étapes par défaut s'afficheront (Visite → Choix → Paiement → Implantation → Dossier → Titre Foncier).</div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- MODAL MODIFIER -->
+<div class="modal-overlay" id="modal-edit">
+  <div class="modal-box">
+    <div class="modal-tit">✏ Modifier l'étape</div>
+    <form method="post" id="form-edit">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="modifier">
+      <input type="hidden" name="pk" id="edit-pk">
+      <div style="display:flex;gap:10px;margin-bottom:1rem;">
+        <div class="fg" style="max-width:90px;">
+          <label>N°</label>
+          <input type="number" name="numero" id="edit-num" min="1" required>
+        </div>
+        <div class="fg">
+          <label>Titre *</label>
+          <input type="text" name="titre" id="edit-tit" required>
+        </div>
+        <div class="fg" style="max-width:130px;">
+          <label>Couleur</label>
+          <select name="couleur" id="edit-col">
+            <option value="blue">🔵 Bleu</option>
+            <option value="red">🔴 Rouge</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg" style="margin-bottom:1rem;">
+        <label>Description</label>
+        <input type="text" name="description" id="edit-desc" placeholder="Description courte...">
+      </div>
+      <div class="chk-row" style="margin-bottom:1.2rem;">
+        <input type="checkbox" name="is_active" id="edit-active">
+        <label for="edit-active">Étape active (visible sur le site)</label>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button type="submit" class="btn-save">💾 Enregistrer</button>
+        <button type="button" class="btn-cancel-m" onclick="fermerModal()">Annuler</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function ouvrirModifier(pk, num, tit, desc, col, active) {
+  document.getElementById('edit-pk').value = pk;
+  document.getElementById('edit-num').value = num;
+  document.getElementById('edit-tit').value = tit;
+  document.getElementById('edit-desc').value = desc;
+  document.getElementById('edit-col').value = col;
+  document.getElementById('edit-active').checked = active;
+  document.getElementById('modal-edit').classList.add('open');
+}
+function fermerModal() {
+  document.getElementById('modal-edit').classList.remove('open');
+}
+document.getElementById('modal-edit').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-edit')) fermerModal();
+});
+
+function previewTech(input) {
+  const newPreview = document.getElementById('tech-preview-new');
+  const placeholder = document.getElementById('tech-placeholder');
+  const currentImg = document.getElementById('tech-current-img');
+  if (input.files && input.files[0]) {
+    newPreview.src = URL.createObjectURL(input.files[0]);
+    newPreview.style.display = 'block';
+    if (placeholder) placeholder.style.display = 'none';
+    if (currentImg) currentImg.style.display = 'none';
+  }
+}
+
+function supprimerTechnicien() {
+  if (!confirm('Supprimer l\'image du technicien ?')) return;
+  document.getElementById('form-del-tech').submit();
+}
+</script>
+</body>
+</html>

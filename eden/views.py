@@ -9,10 +9,17 @@ from django.db.models import Q, Sum
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
+from django.db import models
+from .models import HeroConfig
 
 from .models import (
     SiteFoncier, ImageSite, Parcelle, ImageParcelle,
-    Temoignage, DemandeContact, Reservation, VisiteProgrammee
+    Temoignage, DemandeContact, Reservation, VisiteProgrammee, HeroConfig, ServiceItem, EtapeAcquisition,
+    SectionLivret, ActualiteHome, CommentaireHome, StatistiqueHome,UneEvenement, UneEvenementCategorie, 
+Projet, ProjetImage, ProjetInfrastructure, EtapeProjet, SousEtapeProjet, Agence, AgenceService, StatAgence,ServiceCategorie, Service,
+    EtapeProcessus, EngagementService, AcademieDocument, AcademieVideo, AcademieEtapeParcours,
+    AcademieFAQ, AcademieStatistique, AcademieCategorie
+
 )
 from .forms import (
     DemandeContactForm, ReservationForm, VisiteForm,
@@ -29,9 +36,18 @@ def is_agent(user):
 # ═══════════════════════════════════════════════
 
 def home(request):
+    from .models import (
+        HeroConfig, HeroSlide, ServiceItem, EtapeAcquisition,
+        SectionLivret, ActualiteHome, CommentaireHome,
+        StatistiqueHome, JournalEdition, UneEvenement
+    )
+
     sites = SiteFoncier.objects.filter(is_active=True).prefetch_related('images', 'parcelles')
-    temoignages = Temoignage.objects.filter(is_active=True).order_by('ordre', '-created_at')[:6]
-    promos = Parcelle.objects.filter(is_active=True, en_promotion=True, statut='disponible').select_related('site')[:4]
+    temoignages = Temoignage.objects.filter(is_active=True).order_by('ordre', '-created_at')[:5]
+    promos = Parcelle.objects.filter(
+        is_active=True, en_promotion=True, statut='disponible'
+    ).select_related('site')[:3]
+
     total_p = Parcelle.objects.filter(is_active=True).count()
     vendues = Parcelle.objects.filter(statut='vendue').count()
     stats = {
@@ -40,6 +56,40 @@ def home(request):
         'disponibles': Parcelle.objects.filter(statut='disponible').count(),
         'pourcentage': round((vendues / total_p * 100), 1) if total_p else 0,
     }
+
+    hero_config = HeroConfig.objects.filter(pk=1).first()
+    hero_slides = HeroSlide.objects.filter(is_active=True).order_by('ordre')
+    services = ServiceItem.objects.filter(is_active=True).order_by('ordre')[:6]
+    etapes = EtapeAcquisition.objects.filter(is_active=True).order_by('numero')
+    livret = SectionLivret.objects.filter(is_active=True).first()
+    actualites = ActualiteHome.objects.filter(is_active=True).order_by('-date_evenement')
+    stats_home = StatistiqueHome.objects.filter(is_active=True).order_by('ordre')
+    journaux = JournalEdition.objects.filter(statut='publie').order_by('-numero')
+    villes = SiteFoncier.objects.filter(is_active=True).values_list('ville', flat=True).distinct()
+
+    # ═══ Récupérer les actualités du module Une & Événements ═══
+    articles_une = UneEvenement.objects.filter(
+        categorie='une', statut='publie'
+    ).order_by('ordre', '-created_at')[:4]
+    
+    evenements_avenir = UneEvenement.objects.filter(
+        categorie='evenement_avenir', statut='publie'
+    ).order_by('date_evenement')[:4]
+    
+    actualites_recentes = UneEvenement.objects.filter(
+        categorie='actualite', statut='publie'
+    ).order_by('-date_evenement', '-created_at')[:4]
+    
+    evenements_passes = UneEvenement.objects.filter(
+        categorie='evenement_passe', statut='publie'
+    ).order_by('-date_evenement')[:4]
+    
+    # Combiner toutes les actualités
+    actualites_une = list(articles_une) + list(evenements_avenir) + list(actualites_recentes) + list(evenements_passes)
+    
+    # Trier par date (les plus récentes d'abord)
+    actualites_une = sorted(actualites_une, key=lambda x: x.date_evenement or x.created_at, reverse=True)[:8]
+
     if request.method == 'POST':
         form = DemandeContactForm(request.POST)
         if form.is_valid():
@@ -48,28 +98,94 @@ def home(request):
             obj.save()
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({'success': True})
-            messages.success(request, 'Votre demande a ete envoyee !')
+            messages.success(request, 'Votre demande a été envoyée !')
             return redirect('home')
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return JsonResponse({'success': False, 'errors': str(form.errors)})
+
     form = DemandeContactForm()
     return render(request, 'eden/home.html', {
-        'sites': sites, 'temoignages': temoignages, 'promos': promos,
-        'stats': stats, 'form': form, 'WHATSAPP_NUMBER': '237600000000',
+        'sites': sites,
+        'temoignages': temoignages,
+        'promos': promos,
+        'stats': stats,
+        'form': form,
+        'hero_config': hero_config,
+        'hero_slides': hero_slides,
+        'services': services,
+        'etapes': etapes,
+        'livret': livret,
+        'actualites': actualites,
+        'actualites_une': actualites_une,  # ⬅️ NOUVELLE VARIABLE
+        'stats_home': stats_home,
+        'journaux': journaux,
+        'villes': villes,
     })
 
 
 def sites_list(request):
-    qs = SiteFoncier.objects.filter(is_active=True).prefetch_related('images', 'parcelles')
-    q = request.GET.get('q', '')
-    statut = request.GET.get('statut', '')
-    if q:
-        qs = qs.filter(Q(nom__icontains=q) | Q(ville__icontains=q) | Q(localisation__icontains=q))
-    if statut:
-        qs = qs.filter(statut=statut)
-    villes = SiteFoncier.objects.filter(is_active=True).values_list('ville', flat=True).distinct()
-    return render(request, 'eden/sites_list.html', {'sites': qs, 'villes': villes, 'q': q, 'statut': statut})
+    from .models import HeroConfig, HeroSlide
+    sites = SiteFoncier.objects.filter(is_active=True).prefetch_related('images', 'parcelles', 'stats_manuelles')
 
+    # Filtre par slug de site
+    slug = request.GET.get('slug', '')
+    if slug:
+        sites = sites.filter(slug=slug)
+
+    # Filtre par budget (prix >= budget)
+    budget = request.GET.get('budget', '')
+    if budget:
+        try:
+            b = float(budget)
+            # Sites dont le prix minimum est <= budget (accessibles)
+            sites = sites.filter(
+                Q(parcelles__prix__lte=b) |
+                Q(stats_manuelles__prix_min__lte=b)
+            ).distinct()
+        except ValueError:
+            pass
+
+    # Filtre par statut
+    statut = request.GET.get('statut', '')
+    if statut:
+        sites = sites.filter(statut=statut)
+
+    # Filtre promo
+    if request.GET.get('promo'):
+        sites = sites.filter(en_promotion=True)
+
+    # Filtre superficie minimum
+    sup_min = request.GET.get('superficie_min', '')
+    if sup_min:
+        try:
+            s = float(sup_min)
+            sites = sites.filter(
+                Q(parcelles__superficie__gte=s) |
+                Q(stats_manuelles__superficie_min__gte=s)
+            ).distinct()
+        except ValueError:
+            pass
+
+    # Recherche texte
+    q = request.GET.get('q', '')
+    if q:
+        sites = sites.filter(
+            Q(nom__icontains=q) |
+            Q(localisation__icontains=q) |
+            Q(ville__icontains=q)
+        )
+
+    hero_config = HeroConfig.objects.filter(pk=1).first()
+    hero_slides = HeroSlide.objects.filter(is_active=True).order_by('ordre')
+
+    return render(request, 'eden/sites_list.html', {
+        'sites': sites,
+        'hero_config': hero_config,
+        'hero_slides': hero_slides,
+        'q': q,
+        'budget': budget,
+        'statut': statut,
+    })
 
 def site_detail(request, slug):
     site = get_object_or_404(SiteFoncier, slug=slug, is_active=True)
@@ -1144,3 +1260,2042 @@ def api_groupy_toggle(request):
             qr.save()
             return JsonResponse({'success': True, 'is_active': qr.is_active})
     return JsonResponse({'success': False})
+
+# ══════════════════════════════════════════════
+# JOURNAL EDEN GROUP
+# ══════════════════════════════════════════════
+
+def journal_kiosque(request):
+    """Kiosque à journaux — page d'accueil."""
+    from .models import JournalEdition
+    editions = JournalEdition.objects.filter(statut='publie').order_by('-numero')
+    derniere = editions.first()
+    return render(request, 'eden/journal/kiosque.html', {
+        'editions': editions,
+        'derniere': derniere,
+    })
+
+
+def journal_lire(request, numero):
+    """Visionneuse flipbook d'une édition."""
+    from .models import JournalEdition
+    edition = get_object_or_404(JournalEdition, numero=numero, statut='publie')
+    pages = edition.pages.order_by('numero')
+    return render(request, 'eden/journal/lire.html', {
+        'edition': edition,
+        'pages': pages,
+        'pages_json': json.dumps([
+            {'numero': p.numero, 'layout': p.layout,
+             'contenu': p.contenu, 'couleur_fond': p.couleur_fond}
+            for p in pages
+        ])
+    })
+
+
+def journal_page_json(request, numero, page):
+    from .models import JournalEdition, JournalPage
+    edition = get_object_or_404(JournalEdition, numero=numero, statut='publie')
+    p = get_object_or_404(JournalPage, edition=edition, numero=page)
+    return JsonResponse({'layout': p.layout, 'contenu': p.contenu, 'couleur_fond': p.couleur_fond})
+
+
+# ── Dashboard Journal ──
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_journal(request):
+    from .models import JournalEdition
+    editions = JournalEdition.objects.all().order_by('-numero')
+    return render(request, 'eden/dashboard/journal.html', {'editions': editions})
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_journal_edition_form(request, pk=None):
+    from .models import JournalEdition
+    edition = get_object_or_404(JournalEdition, pk=pk) if pk else None
+    if request.method == 'POST':
+        titre = request.POST.get('titre', '').strip()
+        sous_titre = request.POST.get('sous_titre', '').strip()
+        numero_str = request.POST.get('numero', '')
+        date_str = request.POST.get('date_parution', '')
+        statut = request.POST.get('statut', 'brouillon')
+        if not titre or not numero_str:
+            messages.error(request, 'Le titre et le numéro sont obligatoires.')
+            return render(request, 'eden/dashboard/journal_edition_form.html', {'edition': edition})
+        if edition:
+            obj = edition
+        else:
+            obj = JournalEdition()
+        obj.titre = titre
+        obj.sous_titre = sous_titre
+        obj.statut = statut
+        obj.created_by = request.user
+        try:
+            obj.numero = int(numero_str)
+        except ValueError:
+            messages.error(request, 'Numéro invalide.')
+            return render(request, 'eden/dashboard/journal_edition_form.html', {'edition': edition})
+        if date_str:
+            from datetime import date
+            try:
+                obj.date_parution = date.fromisoformat(date_str)
+            except Exception:
+                pass
+        if request.FILES.get('image_une'):
+            obj.image_une = request.FILES['image_une']
+        obj.save()
+        messages.success(request, f'Édition #{obj.numero} enregistrée.')
+        return redirect('dashboard_journal')
+    # Prochain numéro auto
+    from .models import JournalEdition as JE
+    prochain = (JE.objects.aggregate(m=models.Max('numero'))['m'] or 0) + 1
+    return render(request, 'eden/dashboard/journal_edition_form.html', {
+        'edition': edition, 'prochain': prochain
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_journal_edition_supprimer(request, pk):
+    from .models import JournalEdition
+    edition = get_object_or_404(JournalEdition, pk=pk)
+    if request.method == 'POST':
+        num = edition.numero
+        edition.delete()
+        messages.success(request, f'Édition #{num} supprimée.')
+        return redirect('dashboard_journal')
+    return render(request, 'eden/dashboard/confirm_delete.html', {
+        'objet': edition, 'retour': 'dashboard_journal'
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_journal_publier(request, pk):
+    from .models import JournalEdition
+    from datetime import date
+    edition = get_object_or_404(JournalEdition, pk=pk)
+    if request.method == 'POST':
+        if edition.statut == 'publie':
+            edition.statut = 'brouillon'
+        else:
+            edition.statut = 'publie'
+            if not edition.date_parution:
+                edition.date_parution = date.today()
+        edition.save()
+        return JsonResponse({'success': True, 'statut': edition.statut})
+    return JsonResponse({'success': False})
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_journal_page_editer(request, edition_pk, page_num):
+    from .models import JournalEdition, JournalPage, JournalMedia
+    edition = get_object_or_404(JournalEdition, pk=edition_pk)
+    page, _ = JournalPage.objects.get_or_create(
+        edition=edition, numero=page_num,
+        defaults={'contenu': [], 'layout': 'col2'}
+    )
+    medias = JournalMedia.objects.filter(edition=edition).order_by('-created_at')
+    return render(request, 'eden/dashboard/journal_editeur.html', {
+        'edition': edition,
+        'page': page,
+        'page_json': json.dumps(page.contenu),
+        'medias': medias,
+        'total_pages': edition.pages.count(),
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_journal_page_ajouter(request, edition_pk):
+    from .models import JournalEdition, JournalPage
+    edition = get_object_or_404(JournalEdition, pk=edition_pk)
+    dernier = edition.pages.aggregate(m=models.Max('numero'))['m'] or 0
+    nouveau_num = dernier + 1
+    JournalPage.objects.create(edition=edition, numero=nouveau_num)
+    return redirect('dashboard_journal_page_editer', edition_pk=edition_pk, page_num=nouveau_num)
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_journal_page_supprimer(request, edition_pk, page_num):
+    from .models import JournalEdition, JournalPage
+    edition = get_object_or_404(JournalEdition, pk=edition_pk)
+    page = get_object_or_404(JournalPage, edition=edition, numero=page_num)
+    if request.method == 'POST':
+        page.delete()
+        # Renuméroter
+        for i, p in enumerate(edition.pages.order_by('numero'), 1):
+            if p.numero != i:
+                p.numero = i
+                p.save()
+        messages.success(request, f'Page {page_num} supprimée.')
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True})
+        return redirect('dashboard_journal')
+    return JsonResponse({'success': False})
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_journal_media_upload(request):
+    from .models import JournalMedia, JournalEdition
+    if request.method == 'POST':
+        edition_id = request.POST.get('edition_id')
+        legende = request.POST.get('legende', '')
+        url_externe = request.POST.get('url_externe', '').strip()
+        edition = JournalEdition.objects.filter(pk=edition_id).first() if edition_id else None
+        if request.FILES.get('fichier'):
+            f = request.FILES['fichier']
+            t = 'image' if f.content_type.startswith('image') else 'video'
+            m = JournalMedia.objects.create(
+                edition=edition, type=t,
+                fichier=f, legende=legende
+            )
+            url = request.build_absolute_uri(m.fichier.url)
+            return JsonResponse({'success': True, 'id': m.pk, 'url': url, 'type': t, 'legende': legende})
+        elif url_externe:
+            m = JournalMedia.objects.create(
+                edition=edition, type='video',
+                url_externe=url_externe, legende=legende
+            )
+            return JsonResponse({'success': True, 'id': m.pk, 'url': url_externe, 'type': 'video', 'legende': legende})
+    return JsonResponse({'success': False})
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_journal_media_liste(request):
+    from .models import JournalMedia
+    edition_id = request.GET.get('edition_id')
+    qs = JournalMedia.objects.all().order_by('-created_at')
+    if edition_id:
+        qs = qs.filter(edition_id=edition_id)
+    data = []
+    for m in qs[:50]:
+        url = request.build_absolute_uri(m.fichier.url) if m.fichier else m.url_externe
+        data.append({'id': m.pk, 'type': m.type, 'url': url, 'legende': m.legende})
+    return JsonResponse({'medias': data})
+
+
+@csrf_exempt
+@login_required
+@user_passes_test(is_agent)
+def api_journal_sauvegarder_page(request):
+    from .models import JournalPage
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            page_id = data.get('page_id')
+            contenu = data.get('contenu', [])
+            layout = data.get('layout', 'col2')
+            couleur_fond = data.get('couleur_fond', '#FFFEF7')
+            page = get_object_or_404(JournalPage, pk=page_id)
+            page.contenu = contenu
+            page.layout = layout
+            page.couleur_fond = couleur_fond
+            page.save()
+            return JsonResponse({'success': True})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False})
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_site_stats_manuelles(request, pk):
+    """Gestion des statistiques manuelles d'un site."""
+    from .models import SiteStatistiquesManuelle
+    site = get_object_or_404(SiteFoncier, pk=pk)
+    stats, created = SiteStatistiquesManuelle.objects.get_or_create(site=site)
+
+    if request.method == 'POST':
+        try:
+            stats.total_parcelles_manuel = int(request.POST.get('total_parcelles_manuel', 0))
+            stats.vendues_manuel         = int(request.POST.get('vendues_manuel', 0))
+            stats.disponibles_manuel     = int(request.POST.get('disponibles_manuel', 0))
+            stats.reservees_manuel       = int(request.POST.get('reservees_manuel', 0))
+            stats.indisponibles_manuel   = int(request.POST.get('indisponibles_manuel', 0))
+            stats.notes                  = request.POST.get('notes', '')
+            stats.updated_by             = request.user
+
+            prix_min = request.POST.get('prix_min_manuel', '').strip()
+            prix_max = request.POST.get('prix_max_manuel', '').strip()
+            prix_moy = request.POST.get('prix_moyen_manuel', '').strip()
+            sup_min  = request.POST.get('superficie_min', '').strip()
+            sup_max  = request.POST.get('superficie_max', '').strip()
+
+            stats.prix_min_manuel  = float(prix_min.replace(' ','').replace(',','')) if prix_min else None
+            stats.prix_max_manuel  = float(prix_max.replace(' ','').replace(',','')) if prix_max else None
+            stats.prix_moyen_manuel = float(prix_moy.replace(' ','').replace(',','')) if prix_moy else None
+            stats.superficie_min   = float(sup_min) if sup_min else None
+            stats.superficie_max   = float(sup_max) if sup_max else None
+
+            # Mise à jour auto du site parent
+            if stats.prix_min_manuel and not site.prix_min:
+                site.prix_min = stats.prix_min_manuel
+            if stats.prix_max_manuel and not site.prix_max:
+                site.prix_max = stats.prix_max_manuel
+            if stats.total_parcelles_manuel and not site.superficie_totale and stats.superficie_max:
+                pass  # calcul optionnel
+            site.save()
+            stats.save()
+
+            messages.success(request, f'Statistiques de "{site.nom}" mises à jour.')
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': True,
+                    'total': site.nb_parcelles_total,
+                    'vendues': site.nb_vendues,
+                    'disponibles': site.nb_disponibles,
+                    'pourcentage': site.pourcentage_vendu,
+                })
+            return redirect('dashboard_site_stats_manuelles', pk=pk)
+        except Exception as e:
+            messages.error(request, f'Erreur : {e}')
+
+    # Stats réelles des parcelles créées
+    stats_reelles = {
+        'total': site.parcelles.filter(is_active=True).count(),
+        'vendues': site.parcelles.filter(statut='vendue').count(),
+        'disponibles': site.parcelles.filter(statut='disponible').count(),
+        'reservees': site.parcelles.filter(statut='reservee').count(),
+    }
+
+    return render(request, 'eden/dashboard/site_stats_manuelles.html', {
+        'site': site,
+        'stats': stats,
+        'stats_reelles': stats_reelles,
+    })
+
+# ══════════════════════════════════════════════
+# HOME CONFIG DASHBOARD
+# ══════════════════════════════════════════════
+
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_home_config(request):
+    """Vue d'ensemble de la configuration de la page d'accueil."""
+    return render(request, 'eden/dashboard/home_config.html', {
+        'hero': HeroConfig.get_config(),
+        'nb_services': ServiceItem.objects.filter(is_active=True).count(),
+        'nb_etapes': EtapeAcquisition.objects.filter(is_active=True).count(),
+        'nb_actualites': ActualiteHome.objects.filter(is_active=True).count(),
+        'nb_commentaires': CommentaireHome.objects.filter(is_active=True).count(),
+        'nb_stats': StatistiqueHome.objects.filter(is_active=True).count(),
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_hero_form(request):
+    """Modifier le hero de la page d'accueil."""
+    hero = HeroConfig.get_config()
+    if request.method == 'POST':
+        for field in ['eyebrow', 'titre_ligne1', 'titre_ligne2', 'description',
+                      'badge_site_nom', 'badge_site_lieu', 'btn1_texte', 'btn2_texte']:
+            val = request.POST.get(field, '').strip()
+            if val:
+                setattr(hero, field, val)
+        if request.FILES.get('image_fond'):
+            hero.image_fond = request.FILES['image_fond']
+        hero.save()
+        messages.success(request, 'Hero mis à jour avec succès !')
+        return redirect('dashboard_hero_form')
+    return render(request, 'eden/dashboard/hero_form.html', {'hero': hero})
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_services(request):
+    services = ServiceItem.objects.all().order_by('ordre')
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'ajouter':
+            ServiceItem.objects.create(
+                titre=request.POST.get('titre', 'Nouveau service'),
+                description=request.POST.get('description', ''),
+                icone=request.POST.get('icone', '🏡'),
+                ordre=ServiceItem.objects.count(),
+            )
+            messages.success(request, 'Service ajouté.')
+        elif action == 'supprimer':
+            pk = request.POST.get('pk')
+            ServiceItem.objects.filter(pk=pk).delete()
+            messages.success(request, 'Service supprimé.')
+        elif action == 'modifier':
+            pk = request.POST.get('pk')
+            s = get_object_or_404(ServiceItem, pk=pk)
+            s.titre = request.POST.get('titre', s.titre)
+            s.description = request.POST.get('description', s.description)
+            s.icone = request.POST.get('icone', s.icone)
+            s.ordre = int(request.POST.get('ordre', s.ordre))
+            s.is_active = request.POST.get('is_active') == 'on'
+            s.save()
+            messages.success(request, 'Service modifié.')
+        return redirect('dashboard_services')
+    return render(request, 'eden/dashboard/services.html', {'services': services})
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_etapes(request):
+    from .models import EtapeAcquisition, HeroConfig
+    etapes = EtapeAcquisition.objects.all().order_by('numero')
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+
+        # Gestion de l'image technicien séparée
+        if action == 'upload_technicien':
+            if request.FILES.get('etapes_image'):
+                hero = HeroConfig.get_config()
+                hero.etapes_image = request.FILES['etapes_image']
+                hero.save()
+                messages.success(request, 'Image du technicien mise à jour.')
+            return redirect('dashboard_etapes')
+
+        if action == 'supprimer_technicien':
+            hero = HeroConfig.get_config()
+            if hero.etapes_image:
+                hero.etapes_image.delete(save=True)
+            messages.success(request, 'Image supprimée.')
+            return redirect('dashboard_etapes')
+
+        if action == 'ajouter':
+            dernier = etapes.last()
+            EtapeAcquisition.objects.create(
+                numero=int(request.POST.get('numero', (dernier.numero + 1) if dernier else 1)),
+                titre=request.POST.get('titre', 'Nouvelle étape'),
+                description=request.POST.get('description', ''),
+                couleur=request.POST.get('couleur', 'blue'),
+            )
+            messages.success(request, 'Étape ajoutée.')
+
+        elif action == 'supprimer':
+            pk = request.POST.get('pk')
+            EtapeAcquisition.objects.filter(pk=pk).delete()
+            messages.success(request, 'Étape supprimée.')
+
+        elif action == 'modifier':
+            pk = request.POST.get('pk')
+            e = get_object_or_404(EtapeAcquisition, pk=pk)
+            e.titre = request.POST.get('titre', e.titre)
+            e.description = request.POST.get('description', e.description)
+            e.numero = int(request.POST.get('numero', e.numero))
+            e.couleur = request.POST.get('couleur', e.couleur)
+            e.is_active = request.POST.get('is_active') == 'on'
+            e.save()
+            messages.success(request, 'Étape modifiée.')
+
+        return redirect('dashboard_etapes')
+
+    hero = HeroConfig.get_config()
+    return render(request, 'eden/dashboard/etapes.html', {
+        'etapes': etapes,
+        'hero': hero,
+    })
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_livret_form(request):
+    livret, _ = SectionLivret.objects.get_or_create(pk=1)
+    if request.method == 'POST':
+        for field in ['titre_principal', 'sous_titre', 'badge_texte', 'btn_texte', 'btn_lien']:
+            val = request.POST.get(field, '').strip()
+            if val:
+                setattr(livret, field, val)
+        livret.is_active = request.POST.get('is_active') == 'on'
+        if request.FILES.get('image'):
+            livret.image = request.FILES['image']
+        livret.save()
+        # Avantages
+        avantages = request.POST.getlist('avantage')
+        livret.avantages.all().delete()
+        for i, a in enumerate(avantages):
+            if a.strip():
+                from .models import AvantagesLivret
+                AvantagesLivret.objects.create(livret=livret, texte=a.strip(), ordre=i)
+        messages.success(request, 'Section Livret mise à jour.')
+        return redirect('dashboard_livret_form')
+    avantages = list(livret.avantages.values_list('texte', flat=True))
+    return render(request, 'eden/dashboard/livret_form.html', {
+        'livret': livret, 'avantages': avantages
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_actualites(request):
+    actualites = ActualiteHome.objects.all().order_by('-date_evenement')
+    return render(request, 'eden/dashboard/actualites.html', {'actualites': actualites})
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_actualite_form(request, pk=None):
+    obj = get_object_or_404(ActualiteHome, pk=pk) if pk else None
+    if request.method == 'POST':
+        titre = request.POST.get('titre', '').strip()
+        if not titre:
+            messages.error(request, 'Le titre est obligatoire.')
+        else:
+            if not obj:
+                obj = ActualiteHome()
+            obj.titre = titre
+            obj.description = request.POST.get('description', '').strip()
+            obj.lien = request.POST.get('lien', '#').strip()
+            obj.ordre = int(request.POST.get('ordre', 0))
+            obj.is_active = request.POST.get('is_active') == 'on'
+            date_str = request.POST.get('date_evenement', '')
+            if date_str:
+                from datetime import date
+                try:
+                    obj.date_evenement = date.fromisoformat(date_str)
+                except Exception:
+                    pass
+            if request.FILES.get('image'):
+                obj.image = request.FILES['image']
+            obj.save()
+            messages.success(request, 'Actualité enregistrée.')
+            return redirect('dashboard_actualites')
+    return render(request, 'eden/dashboard/actualite_form.html', {'obj': obj})
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_actualite_supprimer(request, pk):
+    obj = get_object_or_404(ActualiteHome, pk=pk)
+    if request.method == 'POST':
+        obj.delete()
+        messages.success(request, 'Actualité supprimée.')
+        return redirect('dashboard_actualites')
+    return render(request, 'eden/dashboard/confirm_delete.html', {
+        'objet': obj, 'retour': 'dashboard_actualites'
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_commentaires(request):
+    commentaires = CommentaireHome.objects.all().order_by('ordre')
+    return render(request, 'eden/dashboard/commentaires.html', {'commentaires': commentaires})
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_commentaire_form(request, pk=None):
+    obj = get_object_or_404(CommentaireHome, pk=pk) if pk else None
+    if request.method == 'POST':
+        nom = request.POST.get('nom', '').strip()
+        texte = request.POST.get('texte', '').strip()
+        if not nom or not texte:
+            messages.error(request, 'Nom et commentaire obligatoires.')
+        else:
+            if not obj:
+                obj = CommentaireHome()
+            obj.nom = nom
+            obj.role = request.POST.get('role', '').strip()
+            obj.texte = texte
+            obj.note = int(request.POST.get('note', 5))
+            obj.ordre = int(request.POST.get('ordre', 0))
+            obj.is_active = request.POST.get('is_active') == 'on'
+            if request.FILES.get('avatar'):
+                obj.avatar = request.FILES['avatar']
+            obj.save()
+            messages.success(request, 'Commentaire enregistré.')
+            return redirect('dashboard_commentaires')
+    return render(request, 'eden/dashboard/commentaire_form.html', {'obj': obj})
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_commentaire_supprimer(request, pk):
+    obj = get_object_or_404(CommentaireHome, pk=pk)
+    if request.method == 'POST':
+        obj.delete()
+        messages.success(request, 'Commentaire supprimé.')
+        return redirect('dashboard_commentaires')
+    return render(request, 'eden/dashboard/confirm_delete.html', {
+        'objet': obj, 'retour': 'dashboard_commentaires'
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_stats_home(request):
+    stats = StatistiqueHome.objects.all().order_by('ordre')
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'ajouter':
+            StatistiqueHome.objects.create(
+                valeur=request.POST.get('valeur', '0'),
+                label=request.POST.get('label', ''),
+                icone=request.POST.get('icone', '📊'),
+                ordre=StatistiqueHome.objects.count(),
+            )
+            messages.success(request, 'Statistique ajoutée.')
+        elif action == 'supprimer':
+            StatistiqueHome.objects.filter(pk=request.POST.get('pk')).delete()
+            messages.success(request, 'Statistique supprimée.')
+        elif action == 'modifier':
+            pk = request.POST.get('pk')
+            s = get_object_or_404(StatistiqueHome, pk=pk)
+            s.valeur = request.POST.get('valeur', s.valeur)
+            s.label = request.POST.get('label', s.label)
+            s.icone = request.POST.get('icone', s.icone)
+            s.ordre = int(request.POST.get('ordre', s.ordre))
+            s.is_active = request.POST.get('is_active') == 'on'
+            s.save()
+            messages.success(request, 'Statistique modifiée.')
+        return redirect('dashboard_stats_home')
+    return render(request, 'eden/dashboard/stats_home.html', {'stats': stats})
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_hero_slides(request):
+    from .models import HeroSlide
+    slides = HeroSlide.objects.all().order_by('ordre')
+    if request.method == 'POST':
+        if request.FILES.get('image'):
+            HeroSlide.objects.create(
+                image=request.FILES['image'],
+                titre=request.POST.get('titre', '').strip(),
+                sous_titre=request.POST.get('sous_titre', '').strip(),
+                ordre=HeroSlide.objects.count(),
+                is_active=True,
+            )
+            messages.success(request, 'Slide ajoutée.')
+        return redirect('dashboard_hero_slides')
+    return render(request, 'eden/dashboard/hero_slides.html', {'slides': slides})
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_hero_slide_supprimer(request, pk):
+    from .models import HeroSlide
+    slide = get_object_or_404(HeroSlide, pk=pk)
+    if request.method == 'POST':
+        slide.delete()
+        messages.success(request, 'Slide supprimée.')
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True})
+    return redirect('dashboard_hero_slides')
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_hero_slide_toggle(request, pk):
+    from .models import HeroSlide
+    if request.method == 'POST':
+        slide = get_object_or_404(HeroSlide, pk=pk)
+        slide.is_active = not slide.is_active
+        slide.save()
+        return JsonResponse({'success': True, 'is_active': slide.is_active})
+    return JsonResponse({'success': False})
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_journal_page_supprimer(request, edition_pk, page_num):
+    from .models import JournalEdition, JournalPage
+    edition = get_object_or_404(JournalEdition, pk=edition_pk)
+    page = get_object_or_404(JournalPage, edition=edition, numero=page_num)
+    if request.method == 'POST':
+        page.delete()
+        # Renuméroter les pages restantes
+        for i, p in enumerate(edition.pages.order_by('numero'), 1):
+            if p.numero != i:
+                p.numero = i
+                p.save(update_fields=['numero'])
+        messages.success(request, f'Page {page_num} supprimée.')
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True, 'total': edition.pages.count()})
+        return redirect('dashboard_journal')
+    return JsonResponse({'success': False}, status=405)
+
+
+# ══════════════════════════════════════════════
+# MODULE UNE & ÉVÉNEMENTS
+# ══════════════════════════════════════════════
+
+
+def une_evenements_accueil(request):
+    """Page d'accueil du module Une & Événements."""
+    a_la_une = UneEvenement.objects.filter(
+        categorie='une', statut='publie'
+    ).order_by('ordre', '-created_at').first()
+
+    evenements_avenir = UneEvenement.objects.filter(
+        categorie='evenement_avenir', statut='publie'
+    ).order_by('date_evenement')[:12]
+
+    evenements_passes = UneEvenement.objects.filter(
+        categorie='evenement_passe', statut='publie'
+    ).order_by('-date_evenement')[:12]
+
+    actualites = UneEvenement.objects.filter(
+        categorie='actualite', statut='publie'
+    ).order_by('-date_evenement', '-created_at')[:4]
+
+    return render(request, 'eden/une_evenements/accueil.html', {
+        'a_la_une': a_la_une,
+        'evenements_avenir': evenements_avenir,
+        'evenements_passes': evenements_passes,
+        'actualites': actualites,
+    })
+
+
+def une_evenement_detail(request, pk):
+    """Lecture d'un article."""
+    article = get_object_or_404(UneEvenement, pk=pk, statut='publie')
+    return render(request, 'eden/une_evenements/detail.html', {
+        'article': article,
+        'contenu_json': json.dumps(article.contenu),
+    })
+
+
+def une_evenements_liste(request, cat):
+    """Liste d'une catégorie complète."""
+    labels = {
+        'une': 'À la Une',
+        'evenement_avenir': 'Événements à venir',
+        'evenement_passe': 'Événements passés',
+        'actualite': 'Actualités',
+    }
+    articles = UneEvenement.objects.filter(
+        categorie=cat, statut='publie'
+    ).order_by('-date_evenement', '-created_at')
+    return render(request, 'eden/une_evenements/liste.html', {
+        'articles': articles,
+        'categorie': cat,
+        'categorie_label': labels.get(cat, cat),
+    })
+
+
+# ── Dashboard ──
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_une_liste(request):
+    from .models import UneEvenement
+    articles = UneEvenement.objects.all().order_by('-created_at')
+    cat_f = request.GET.get('cat', '')
+    q = request.GET.get('q', '')
+    if cat_f:
+        articles = articles.filter(categorie=cat_f)
+    if q:
+        articles = articles.filter(Q(titre__icontains=q))
+    paginator = Paginator(articles, 20)
+    page = paginator.get_page(request.GET.get('page'))
+    return render(request, 'eden/dashboard/une_liste.html', {
+        'articles': page,
+        'cat_f': cat_f, 'q': q,
+        'total': UneEvenement.objects.count(),
+        'nb_une': UneEvenement.objects.filter(categorie='une').count(),
+        'nb_avenir': UneEvenement.objects.filter(categorie='evenement_avenir').count(),
+        'nb_passe': UneEvenement.objects.filter(categorie='evenement_passe').count(),
+        'nb_actu': UneEvenement.objects.filter(categorie='actualite').count(),
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_une_form(request, pk=None):
+    from .models import UneEvenement
+    article = get_object_or_404(UneEvenement, pk=pk) if pk else None
+    if request.method == 'POST':
+        titre = request.POST.get('titre', '').strip()
+        if not titre:
+            messages.error(request, 'Le titre est obligatoire.')
+            return render(request, 'eden/dashboard/une_form.html', {'article': article})
+        if not article:
+            article = UneEvenement()
+        article.titre = titre
+        article.sous_titre = request.POST.get('sous_titre', '').strip()
+        article.categorie = request.POST.get('categorie', 'actualite')
+        article.lieu = request.POST.get('lieu', '').strip()
+        article.statut = request.POST.get('statut', 'brouillon')
+        article.ordre = int(request.POST.get('ordre', 0))
+        article.created_by = request.user
+        date_str = request.POST.get('date_evenement', '')
+        date_fin_str = request.POST.get('date_fin_evenement', '')
+        if date_str:
+            from datetime import date
+            try:
+                article.date_evenement = date.fromisoformat(date_str)
+            except Exception:
+                pass
+        else:
+            article.date_evenement = None
+        if date_fin_str:
+            from datetime import date
+            try:
+                article.date_fin_evenement = date.fromisoformat(date_fin_str)
+            except Exception:
+                pass
+        else:
+            article.date_fin_evenement = None
+        if request.FILES.get('image_couverture'):
+            article.image_couverture = request.FILES['image_couverture']
+        article.save()
+        messages.success(request, f'Article "{article.titre}" enregistré.')
+        if request.POST.get('action') == 'editeur':
+            return redirect('dashboard_une_editeur', pk=article.pk)
+        return redirect('dashboard_une_liste')
+    return render(request, 'eden/dashboard/une_form.html', {'article': article})
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_une_supprimer(request, pk):
+    from .models import UneEvenement
+    article = get_object_or_404(UneEvenement, pk=pk)
+    if request.method == 'POST':
+        titre = article.titre
+        article.delete()
+        messages.success(request, f'"{titre}" supprimé.')
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True})
+        return redirect('dashboard_une_liste')
+    return render(request, 'eden/dashboard/confirm_delete.html', {
+        'objet': article, 'retour': 'dashboard_une_liste'
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_une_publier(request, pk):
+    from .models import UneEvenement
+    article = get_object_or_404(UneEvenement, pk=pk)
+    if request.method == 'POST':
+        if article.statut == 'publie':
+            article.statut = 'brouillon'
+        else:
+            article.statut = 'publie'
+        article.save()
+        return JsonResponse({'success': True, 'statut': article.statut})
+    return JsonResponse({'success': False})
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_une_editeur(request, pk):
+    from .models import UneEvenement
+    article = get_object_or_404(UneEvenement, pk=pk)
+    return render(request, 'eden/dashboard/une_editeur.html', {
+        'article': article,
+        'contenu_json': json.dumps(article.contenu),
+    })
+
+
+@csrf_exempt
+@login_required
+@user_passes_test(is_agent)
+def api_une_sauvegarder(request):
+    from .models import UneEvenement
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            pk = data.get('pk')
+            article = get_object_or_404(UneEvenement, pk=pk)
+            article.contenu = data.get('contenu', [])
+            article.save()
+            return JsonResponse({'success': True})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False})
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_une_media_upload(request):
+    if request.method == 'POST' and request.FILES.get('fichier'):
+        f = request.FILES['fichier']
+        import os
+        from django.core.files.storage import default_storage
+        path = default_storage.save(f'une_evenements/medias/{f.name}', f)
+        url = request.build_absolute_uri(default_storage.url(path))
+        t = 'image' if f.content_type.startswith('image') else 'video'
+        return JsonResponse({'success': True, 'url': url, 'type': t})
+    return JsonResponse({'success': False})
+
+# ══════════════════════════════════════════════
+# MODULE NOS PROJETS
+# ══════════════════════════════════════════════
+
+def nos_projets(request):
+    """Page principale Nos Projets."""
+    from .models import Projet, ProjetImage, ProjetInfrastructure, EtapeProjet, SousEtapeProjet
+
+    filtre = request.GET.get('filtre', '')
+
+    # Tous les projets actifs
+    tous_actifs = Projet.objects.filter(is_active=True)
+
+    # Projets filtrés pour l'affichage de la grille
+    if filtre and filtre in ['en_cours', 'livre', 'futur']:
+        projets = tous_actifs.filter(statut=filtre).order_by('ordre', '-created_at')
+    else:
+        # Par défaut : afficher EN COURS uniquement
+        projets = tous_actifs.filter(statut='en_cours').order_by('ordre', '-created_at')
+        filtre = 'en_cours'  # forcer pour que le filtre actif soit bien affiché
+
+    # Stats globales (toujours sur tous les projets)
+    stats = {
+        'en_cours': tous_actifs.filter(statut='en_cours').count(),
+        'livres': tous_actifs.filter(statut='livre').count(),
+        'futurs': tous_actifs.filter(statut='futur').count(),
+        'proprietaires': sum(p.nb_proprietaires for p in tous_actifs),
+    }
+
+    # Projet vedette (détail à afficher)
+    projet_vedette = None
+    slug_detail = request.GET.get('projet', '')
+    if slug_detail:
+        projet_vedette = Projet.objects.filter(
+            slug=slug_detail, is_active=True
+        ).prefetch_related(
+            'galerie', 'etapes__sous_etapes', 'infrastructures'
+        ).first()
+
+    return render(request, 'eden/nos_projets.html', {
+        'projets': projets,
+        'projet_vedette': projet_vedette,
+        'stats': stats,
+        'filtre': filtre,
+        'tous_projets': tous_actifs.order_by('ordre', '-created_at'),
+    })
+
+
+def projet_detail(request, slug):
+    """Page détail d'un projet (redirection vers nos_projets avec param)."""
+    from django.shortcuts import redirect
+    return redirect(f"{request.build_absolute_uri('/projets/')}?projet={slug}")
+
+
+def api_projet_etapes(request, slug):
+    projet = get_object_or_404(Projet, slug=slug, is_active=True)
+    data = []
+    for etape in projet.etapes.all().prefetch_related('sous_etapes'):
+        data.append({
+            'id': etape.pk,
+            'nom': etape.nom,
+            'description': etape.description,   # ← AJOUTEZ
+            'icone': etape.icone,
+            'couleur': etape.couleur,
+            'progression': etape.progression_globale,
+            'sous_etapes': [
+                {'nom': s.nom, 'avancement': s.avancement}
+                for s in etape.sous_etapes.all()
+            ]
+        })
+    return JsonResponse({'etapes': data})
+
+
+# ── Dashboard Projets ──
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_projets_liste(request):
+    projets = Projet.objects.all().order_by('ordre', '-created_at')
+    return render(request, 'eden/dashboard/projets_liste.html', {
+        'projets': projets,
+        'nb_en_cours': Projet.objects.filter(statut='en_cours').count(),
+        'nb_livres': Projet.objects.filter(statut='livre').count(),
+        'nb_futurs': Projet.objects.filter(statut='futur').count(),
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_projet_form(request, pk=None):
+    projet = get_object_or_404(Projet, pk=pk) if pk else None
+    if request.method == 'POST':
+        nom = request.POST.get('nom', '').strip()
+        if not nom:
+            messages.error(request, 'Le nom est obligatoire.')
+            return render(request, 'eden/dashboard/projet_form.html', {'projet': projet})
+        if not projet:
+            projet = Projet()
+        projet.nom = nom
+        projet.statut = request.POST.get('statut', 'en_cours')
+        projet.type_projet = request.POST.get('type_projet', 'lotissement')
+        projet.localisation = request.POST.get('localisation', '').strip()
+        projet.description = request.POST.get('description', '').strip()
+        projet.description_courte = request.POST.get('description_courte', '').strip()
+        projet.superficie_totale = request.POST.get('superficie_totale', '').strip()
+        projet.nb_lots = int(request.POST.get('nb_lots', 0) or 0)
+        projet.surface_lots = request.POST.get('surface_lots', '').strip()
+        projet.lots_disponibles = int(request.POST.get('lots_disponibles', 0) or 0)
+        projet.lots_reserves = int(request.POST.get('lots_reserves', 0) or 0)
+        projet.lots_vendus = int(request.POST.get('lots_vendus', 0) or 0)
+        projet.nb_proprietaires = int(request.POST.get('nb_proprietaires', 0) or 0)
+        projet.annee_livraison = request.POST.get('annee_livraison', '').strip()
+        projet.ordre = int(request.POST.get('ordre', 0) or 0)
+        projet.is_active = request.POST.get('is_active') == 'on'
+        prix = request.POST.get('prix_min', '').strip()
+        if prix:
+            try:
+                projet.prix_min = float(prix.replace(' ', '').replace(',', ''))
+            except Exception:
+                pass
+        for field in ['brochure', 'plan_cadastral', 'grille_tarifaire', 'dossier_technique']:
+            if request.FILES.get(field):
+                setattr(projet, field, request.FILES[field])
+        if request.FILES.get('image_principale'):
+            projet.image_principale = request.FILES['image_principale']
+        projet.save()
+        messages.success(request, f'Projet "{projet.nom}" enregistré.')
+        return redirect('dashboard_projets_liste')
+    return render(request, 'eden/dashboard/projet_form.html', {'projet': projet})
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_projet_supprimer(request, pk):
+    projet = get_object_or_404(Projet, pk=pk)
+    if request.method == 'POST':
+        nom = projet.nom
+        projet.delete()
+        messages.success(request, f'Projet "{nom}" supprimé.')
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True})
+        return redirect('dashboard_projets_liste')
+    return render(request, 'eden/dashboard/confirm_delete.html', {
+        'objet': projet, 'retour': 'dashboard_projets_liste'
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_projet_etapes(request, pk):
+    """Gestion des étapes et sous-étapes d'un projet."""
+    projet = get_object_or_404(Projet, pk=pk)
+    if request.method == 'POST':
+        action = request.POST.get('action')
+
+        if action == 'ajouter_etape':
+            EtapeProjet.objects.create(
+                projet=projet,
+                nom=request.POST.get('nom', 'Nouvelle étape'),
+                description=request.POST.get('description', ''),
+                icone=request.POST.get('icone', '🔵'),
+                couleur=request.POST.get('couleur', '#1B4FDB'),
+                ordre=projet.etapes.count(),
+            )
+            messages.success(request, 'Étape ajoutée.')
+
+        elif action == 'modifier_etape':
+            etape = get_object_or_404(EtapeProjet, pk=request.POST.get('etape_pk'), projet=projet)
+            etape.nom = request.POST.get('nom', etape.nom)
+            etape.description = request.POST.get('description', etape.description)
+            etape.icone = request.POST.get('icone', etape.icone)
+            etape.couleur = request.POST.get('couleur', etape.couleur)
+            etape.ordre = int(request.POST.get('ordre', etape.ordre))
+            etape.save()
+            messages.success(request, 'Étape modifiée.')
+
+        elif action == 'supprimer_etape':
+            EtapeProjet.objects.filter(pk=request.POST.get('etape_pk'), projet=projet).delete()
+            messages.success(request, 'Étape supprimée.')
+
+        elif action == 'ajouter_sous_etape':
+            etape = get_object_or_404(EtapeProjet, pk=request.POST.get('etape_pk'), projet=projet)
+            SousEtapeProjet.objects.create(
+                etape=etape,
+                nom=request.POST.get('nom', 'Nouvelle sous-étape'),
+                avancement=int(request.POST.get('avancement', 0)),
+                ordre=etape.sous_etapes.count(),
+            )
+            messages.success(request, 'Sous-étape ajoutée.')
+
+        elif action == 'modifier_sous_etape':
+            sous = get_object_or_404(SousEtapeProjet, pk=request.POST.get('sous_pk'))
+            sous.nom = request.POST.get('nom', sous.nom)
+            sous.avancement = int(request.POST.get('avancement', sous.avancement))
+            sous.ordre = int(request.POST.get('ordre', sous.ordre))
+            sous.save()
+            messages.success(request, 'Sous-étape modifiée.')
+
+        elif action == 'supprimer_sous_etape':
+            SousEtapeProjet.objects.filter(pk=request.POST.get('sous_pk')).delete()
+            messages.success(request, 'Sous-étape supprimée.')
+
+        return redirect('dashboard_projet_etapes', pk=pk)
+
+    etapes = projet.etapes.all().prefetch_related('sous_etapes')
+    return render(request, 'eden/dashboard/projet_etapes.html', {
+        'projet': projet, 'etapes': etapes
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_projet_galerie(request, pk):
+    projet = get_object_or_404(Projet, pk=pk)
+    if request.method == 'POST' and request.FILES.getlist('images'):
+        ordre_start = projet.galerie.count()
+        for i, img in enumerate(request.FILES.getlist('images')):
+            ProjetImage.objects.create(
+                projet=projet,
+                image=img,
+                legende=request.POST.get(f'legende_{i}', ''),
+                ordre=ordre_start + i,
+            )
+        messages.success(request, f'{len(request.FILES.getlist("images"))} image(s) ajoutée(s).')
+        return redirect('dashboard_projet_galerie', pk=pk)
+    return render(request, 'eden/dashboard/projet_galerie.html', {
+        'projet': projet,
+        'images': projet.galerie.order_by('ordre'),
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_projet_image_supprimer(request, pk, img_pk):
+    projet = get_object_or_404(Projet, pk=pk)
+    img = get_object_or_404(ProjetImage, pk=img_pk, projet=projet)
+    if request.method == 'POST':
+        img.delete()
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True})
+        messages.success(request, 'Image supprimée.')
+    return redirect('dashboard_projet_galerie', pk=pk)
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_projet_infrastructures(request, pk):
+    projet = get_object_or_404(Projet, pk=pk)
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'ajouter':
+            ProjetInfrastructure.objects.create(
+                projet=projet,
+                nom=request.POST.get('nom', '').strip(),
+                is_realise=request.POST.get('is_realise') == 'on',
+                ordre=projet.infrastructures.count(),
+            )
+            messages.success(request, 'Infrastructure ajoutée.')
+        elif action == 'modifier':
+            infra = get_object_or_404(ProjetInfrastructure, pk=request.POST.get('infra_pk'), projet=projet)
+            infra.nom = request.POST.get('nom', infra.nom)
+            infra.is_realise = request.POST.get('is_realise') == 'on'
+            infra.ordre = int(request.POST.get('ordre', infra.ordre))
+            infra.save()
+            messages.success(request, 'Infrastructure modifiée.')
+        elif action == 'supprimer':
+            ProjetInfrastructure.objects.filter(pk=request.POST.get('infra_pk'), projet=projet).delete()
+            messages.success(request, 'Infrastructure supprimée.')
+        return redirect('dashboard_projet_infrastructures', pk=pk)
+    return render(request, 'eden/dashboard/projet_infrastructures.html', {
+        'projet': projet,
+        'infrastructures': projet.infrastructures.order_by('ordre'),
+    })
+
+# ══════════════════════════════════════════════
+# MODULE NOS AGENCES
+# ══════════════════════════════════════════════
+
+
+def nos_agences(request):
+    agences = Agence.objects.filter(is_active=True).prefetch_related('services').order_by('ordre')
+    stats = StatAgence.objects.filter(is_active=True).order_by('ordre')
+
+    # Stats par défaut si aucune en base
+    stats_defaults = [
+        {'valeur': str(agences.filter(type_agence__in=['siege','agence']).count()), 'label': 'Agences principales', 'icone': '🏢'},
+        {'valeur': str(agences.filter(type_agence='bureau').count()) + '+', 'label': 'Bureaux relais', 'icone': '🏪'},
+        {'valeur': '50+', 'label': 'Collaborateurs à votre service', 'icone': '👥'},
+        {'valeur': '20+', 'label': 'Ans d\'expérience dans le foncier', 'icone': '🏆'},
+    ]
+
+    return render(request, 'eden/nos_agences.html', {
+        'agences': agences,
+        'siege': agences.filter(type_agence='siege').first(),
+        'agences_principales': agences.filter(type_agence='agence'),
+        'bureaux_relais': agences.filter(type_agence='bureau'),
+        'stats': stats if stats.exists() else stats_defaults,
+        'stats_are_objects': stats.exists(),
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_agences_liste(request):
+    agences = Agence.objects.all().order_by('ordre')
+    return render(request, 'eden/dashboard/agences_liste.html', {
+        'agences': agences,
+        'nb_siege': agences.filter(type_agence='siege').count(),
+        'nb_agence': agences.filter(type_agence='agence').count(),
+        'nb_bureau': agences.filter(type_agence='bureau').count(),
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_agence_form(request, pk=None):
+    agence = get_object_or_404(Agence, pk=pk) if pk else None
+    if request.method == 'POST':
+        nom = request.POST.get('nom', '').strip()
+        if not nom:
+            messages.error(request, 'Le nom est obligatoire.')
+            return render(request, 'eden/dashboard/agence_form.html', {'agence': agence})
+        if not agence:
+            agence = Agence()
+        agence.nom = nom
+        agence.type_agence = request.POST.get('type_agence', 'agence')
+        agence.ville = request.POST.get('ville', '').strip()
+        agence.adresse = request.POST.get('adresse', '').strip()
+        agence.telephone = request.POST.get('telephone', '').strip()
+        agence.whatsapp = request.POST.get('whatsapp', '').strip()
+        agence.email = request.POST.get('email', '').strip()
+        agence.horaires = request.POST.get('horaires', '').strip()
+        agence.description = request.POST.get('description', '').strip()
+        agence.lien_itineraire = request.POST.get('lien_itineraire', '').strip()
+        agence.ordre = int(request.POST.get('ordre', 0) or 0)
+        agence.is_active = request.POST.get('is_active') == 'on'
+        lat = request.POST.get('latitude', '').strip()
+        lng = request.POST.get('longitude', '').strip()
+        if lat:
+            try:
+                agence.latitude = float(lat)
+            except Exception:
+                pass
+        if lng:
+            try:
+                agence.longitude = float(lng)
+            except Exception:
+                pass
+        if request.FILES.get('image'):
+            agence.image = request.FILES['image']
+        agence.save()
+
+        # Services
+        agence.services.all().delete()
+        services = request.POST.getlist('service')
+        for i, s in enumerate(services):
+            if s.strip():
+                AgenceService.objects.create(agence=agence, nom=s.strip(), ordre=i)
+
+        messages.success(request, f'Agence "{agence.nom}" enregistrée.')
+        return redirect('dashboard_agences_liste')
+    services = list(agence.services.values_list('nom', flat=True)) if agence else []
+    return render(request, 'eden/dashboard/agence_form.html', {
+        'agence': agence,
+        'services': services,
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_agence_supprimer(request, pk):
+    agence = get_object_or_404(Agence, pk=pk)
+    if request.method == 'POST':
+        nom = agence.nom
+        agence.delete()
+        messages.success(request, f'Agence "{nom}" supprimée.')
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True})
+        return redirect('dashboard_agences_liste')
+    return redirect('dashboard_agences_liste')
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_agences_stats(request):
+    stats = StatAgence.objects.all().order_by('ordre')
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'ajouter':
+            StatAgence.objects.create(
+                valeur=request.POST.get('valeur', '0'),
+                label=request.POST.get('label', ''),
+                icone=request.POST.get('icone', '🏢'),
+                ordre=StatAgence.objects.count(),
+            )
+            messages.success(request, 'Statistique ajoutée.')
+        elif action == 'supprimer':
+            StatAgence.objects.filter(pk=request.POST.get('pk')).delete()
+            messages.success(request, 'Statistique supprimée.')
+        elif action == 'modifier':
+            s = get_object_or_404(StatAgence, pk=request.POST.get('pk'))
+            s.valeur = request.POST.get('valeur', s.valeur)
+            s.label = request.POST.get('label', s.label)
+            s.icone = request.POST.get('icone', s.icone)
+            s.ordre = int(request.POST.get('ordre', s.ordre))
+            s.is_active = request.POST.get('is_active') == 'on'
+            s.save()
+            messages.success(request, 'Statistique modifiée.')
+        return redirect('dashboard_agences_stats')
+    return render(request, 'eden/dashboard/agences_stats.html', {'stats': stats})
+
+# ══════════════════════════════════════════════
+# MODULE NOS SERVICES
+# ══════════════════════════════════════════════
+
+def nos_services(request):
+    cat_slug = request.GET.get('cat', '')
+    categories = ServiceCategorie.objects.filter(is_active=True).order_by('ordre')
+    if cat_slug and cat_slug != 'tous':
+        services = Service.objects.filter(
+            is_active=True,
+            categorie__slug=cat_slug
+        ).order_by('ordre', 'numero')
+    else:
+        services = Service.objects.filter(is_active=True).order_by('ordre', 'numero')
+
+    etapes = EtapeProcessus.objects.filter(is_active=True).order_by('ordre', 'numero')
+    engagements = EngagementService.objects.filter(is_active=True).order_by('ordre')
+
+    # Engagements par défaut si vide
+    engagements_defaults = [
+        {'icone': '🔒', 'titre': 'Sécurité garantie', 'description': 'Tous nos terrains sont sécurisés avec titres fonciers authentiques.', 'couleur': 'blue'},
+        {'icone': '👤', 'titre': 'Accompagnement personnalisé', 'description': 'Un conseiller dédié pour un suivi rigoureux de votre projet.', 'couleur': 'red'},
+        {'icone': '📊', 'titre': 'Transparence totale', 'description': 'Des informations claires et des procédures transparentes.', 'couleur': 'green'},
+        {'icone': '⭐', 'titre': 'Qualité & Professionnalisme', 'description': 'Une équipe d\'experts à votre service.', 'couleur': 'purple'},
+    ]
+
+    return render(request, 'eden/nos_services.html', {
+        'categories': categories,
+        'services': services,
+        'etapes': etapes,
+        'engagements': engagements if engagements.exists() else engagements_defaults,
+        'engagements_are_objects': engagements.exists(),
+        'cat_actif': cat_slug or 'tous',
+    })
+
+
+def service_detail(request, slug):
+    cat = get_object_or_404(ServiceCategorie, slug=slug, is_active=True)
+    services = cat.services.filter(is_active=True).order_by('ordre', 'numero')
+    return render(request, 'eden/nos_services.html', {
+        'categories': ServiceCategorie.objects.filter(is_active=True).order_by('ordre'),
+        'services': services,
+        'etapes': EtapeProcessus.objects.filter(is_active=True).order_by('ordre'),
+        'engagements': EngagementService.objects.filter(is_active=True).order_by('ordre'),
+        'engagements_are_objects': True,
+        'cat_actif': slug,
+    })
+
+
+# ── Dashboard ──
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_services_liste(request):
+    services = Service.objects.all().order_by('ordre', 'numero')
+    return render(request, 'eden/dashboard/services_liste.html', {
+        'services': services,
+        'nb_actifs': services.filter(is_active=True).count(),
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_service_form(request, pk=None):
+    service = get_object_or_404(Service, pk=pk) if pk else None
+    categories = ServiceCategorie.objects.filter(is_active=True).order_by('ordre')
+    if request.method == 'POST':
+        nom = request.POST.get('nom', '').strip()
+        if not nom:
+            messages.error(request, 'Le nom est obligatoire.')
+            return render(request, 'eden/dashboard/service_form.html', {
+                'service': service, 'categories': categories
+            })
+        if not service:
+            service = Service()
+        service.nom = nom
+        service.numero = int(request.POST.get('numero', 0) or 0)
+        service.icone = request.POST.get('icone', '🏠').strip()
+        service.description = request.POST.get('description', '').strip()
+        service.description_longue = request.POST.get('description_longue', '').strip()
+        service.lien_detail = request.POST.get('lien_detail', '#').strip()
+        service.ordre = int(request.POST.get('ordre', 0) or 0)
+        service.is_active = request.POST.get('is_active') == 'on'
+        cat_pk = request.POST.get('categorie', '')
+        if cat_pk:
+            service.categorie = ServiceCategorie.objects.filter(pk=cat_pk).first()
+        if request.FILES.get('image'):
+            service.image = request.FILES['image']
+        service.save()
+        messages.success(request, f'Service "{service.nom}" enregistré.')
+        return redirect('dashboard_services_liste')
+    return render(request, 'eden/dashboard/service_form.html', {
+        'service': service, 'categories': categories
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_service_supprimer(request, pk):
+    service = get_object_or_404(Service, pk=pk)
+    if request.method == 'POST':
+        nom = service.nom
+        service.delete()
+        messages.success(request, f'Service "{nom}" supprimé.')
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True})
+        return redirect('dashboard_services_liste')
+    return redirect('dashboard_services_liste')
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_services_categories(request):
+    categories = ServiceCategorie.objects.all().order_by('ordre')
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'ajouter':
+            from django.utils.text import slugify
+            nom = request.POST.get('nom', '').strip()
+            if nom:
+                slug = slugify(nom)
+                base = slug
+                i = 1
+                while ServiceCategorie.objects.filter(slug=slug).exists():
+                    slug = f"{base}-{i}"; i += 1
+                ServiceCategorie.objects.create(
+                    nom=nom, icone=request.POST.get('icone', '🔵'),
+                    slug=slug, ordre=ServiceCategorie.objects.count()
+                )
+                messages.success(request, 'Catégorie ajoutée.')
+        elif action == 'modifier':
+            cat = get_object_or_404(ServiceCategorie, pk=request.POST.get('pk'))
+            cat.nom = request.POST.get('nom', cat.nom)
+            cat.icone = request.POST.get('icone', cat.icone)
+            cat.ordre = int(request.POST.get('ordre', cat.ordre))
+            cat.is_active = request.POST.get('is_active') == 'on'
+            cat.save()
+            messages.success(request, 'Catégorie modifiée.')
+        elif action == 'supprimer':
+            ServiceCategorie.objects.filter(pk=request.POST.get('pk')).delete()
+            messages.success(request, 'Catégorie supprimée.')
+        return redirect('dashboard_services_categories')
+    return render(request, 'eden/dashboard/services_categories.html', {'categories': categories})
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_services_processus(request):
+    etapes = EtapeProcessus.objects.all().order_by('ordre', 'numero')
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'ajouter':
+            EtapeProcessus.objects.create(
+                numero=int(request.POST.get('numero', 0) or 0),
+                titre=request.POST.get('titre', '').strip(),
+                description=request.POST.get('description', '').strip(),
+                icone=request.POST.get('icone', '✅'),
+                ordre=EtapeProcessus.objects.count(),
+            )
+            messages.success(request, 'Étape ajoutée.')
+        elif action == 'modifier':
+            e = get_object_or_404(EtapeProcessus, pk=request.POST.get('pk'))
+            e.numero = int(request.POST.get('numero', e.numero) or e.numero)
+            e.titre = request.POST.get('titre', e.titre)
+            e.description = request.POST.get('description', e.description)
+            e.icone = request.POST.get('icone', e.icone)
+            e.ordre = int(request.POST.get('ordre', e.ordre))
+            e.is_active = request.POST.get('is_active') == 'on'
+            e.save()
+            messages.success(request, 'Étape modifiée.')
+        elif action == 'supprimer':
+            EtapeProcessus.objects.filter(pk=request.POST.get('pk')).delete()
+            messages.success(request, 'Étape supprimée.')
+        return redirect('dashboard_services_processus')
+    return render(request, 'eden/dashboard/services_processus.html', {'etapes': etapes})
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_services_engagements(request):
+    engagements = EngagementService.objects.all().order_by('ordre')
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'ajouter':
+            EngagementService.objects.create(
+                icone=request.POST.get('icone', '🔒'),
+                titre=request.POST.get('titre', '').strip(),
+                description=request.POST.get('description', '').strip(),
+                couleur=request.POST.get('couleur', 'blue'),
+                ordre=EngagementService.objects.count(),
+            )
+            messages.success(request, 'Engagement ajouté.')
+        elif action == 'modifier':
+            eng = get_object_or_404(EngagementService, pk=request.POST.get('pk'))
+            eng.icone = request.POST.get('icone', eng.icone)
+            eng.titre = request.POST.get('titre', eng.titre)
+            eng.description = request.POST.get('description', eng.description)
+            eng.couleur = request.POST.get('couleur', eng.couleur)
+            eng.ordre = int(request.POST.get('ordre', eng.ordre))
+            eng.is_active = request.POST.get('is_active') == 'on'
+            eng.save()
+            messages.success(request, 'Engagement modifié.')
+        elif action == 'supprimer':
+            EngagementService.objects.filter(pk=request.POST.get('pk')).delete()
+            messages.success(request, 'Engagement supprimé.')
+        return redirect('dashboard_services_engagements')
+    return render(request, 'eden/dashboard/services_engagements.html', {'engagements': engagements})
+
+# =============================================
+# API AJAX - Calcul dynamique pour le panneau flottant
+# =============================================
+
+def api_calcul_parcelles(request):
+    """
+    API AJAX pour le panneau flottant.
+    Reçoit : budget, superficie, site_slug, statut
+    Retourne : résultats calculés par site basés UNIQUEMENT sur prix_min du site
+    """
+    from .models import SiteFoncier
+
+    budget = request.GET.get('budget', '').strip()
+    superficie = request.GET.get('superficie', '').strip()
+    site_slug = request.GET.get('site', '').strip()
+    statut = request.GET.get('statut', '').strip()
+
+    results = []
+    messages_info = []
+
+    # Récupérer les sites actifs
+    sites_qs = SiteFoncier.objects.filter(is_active=True)
+
+    if site_slug:
+        sites_qs = sites_qs.filter(slug=site_slug)
+
+    if statut == 'disponible':
+        sites_qs = sites_qs.filter(statut='disponible')
+    elif statut == 'en_cours':
+        sites_qs = sites_qs.filter(statut='en_cours')
+    elif statut == 'promo':
+        sites_qs = sites_qs.filter(en_promotion=True)
+
+    # Convertir les valeurs
+    budget_val = float(budget) if budget else None
+    superficie_val = float(superficie) if superficie else None
+
+    # ═══ SUPERFICIE MINIMALE = 500 m² ═══
+    SUPERFICIE_MIN = 500
+
+    # Si superficie saisie < 500, afficher un message
+    if superficie_val is not None and superficie_val < SUPERFICIE_MIN:
+        messages_info.append({
+            'type': 'info',
+            'message': f"📐 La superficie minimale est de <strong>{SUPERFICIE_MIN} m²</strong>. Veuillez saisir une superficie d'au moins {SUPERFICIE_MIN} m²."
+        })
+        # On ne bloque pas, on continue mais on affiche le message
+
+    # Si aucun critère n'est fourni, retourner vide
+    if not budget_val and not superficie_val and not site_slug and not statut:
+        return JsonResponse({
+            'results': [],
+            'count': 0,
+            'messages': []
+        })
+
+    for site in sites_qs:
+        # ═══ PRIX AU M² = prix_min DU SITE ═══
+        prix_m2 = float(site.prix_min) if site.prix_min else 0
+        prix_min_site = float(site.prix_min) if site.prix_min else 0
+
+        if prix_m2 == 0:
+            continue
+
+        # ═══ VÉRIFICATION : Budget >= prix_min du site ═══
+        if budget_val is not None and budget_val < prix_min_site:
+            # Le budget est insuffisant pour ce site, on ne l'affiche pas
+            continue
+
+        # Préparer les infos de base
+        info = {
+            'nom': site.nom,
+            'slug': site.slug,
+            'url': site.get_absolute_url(),
+            'prix_m2': round(prix_m2, 0),
+            'prix_min_site': round(prix_min_site, 0),
+            'nb_dispo': site.nb_disponibles,
+            'statut': site.statut,
+            'en_promotion': site.en_promotion,
+        }
+
+        # ─── CAS 1 : Budget seul ───────────────────────────────
+        if budget_val and not superficie_val:
+            superficie_possible = budget_val / prix_m2
+            
+            # Vérifier si la superficie possible est >= 500 m²
+            if superficie_possible >= SUPERFICIE_MIN:
+                info['superficie_possible'] = round(superficie_possible, 2)
+                info['message'] = (
+                    f"💰 Avec <strong>{format_fcfa(budget_val)} FCFA</strong> → "
+                    f"<strong>{format_sup(superficie_possible)} m²</strong>"
+                )
+                info['detail'] = f"📐 Prix au m² : {format_fcfa(prix_m2)} FCFA/m²"
+                results.append(info)
+            else:
+                # Superficie possible < 500 m², on affiche un message explicatif
+                info['superficie_possible'] = round(superficie_possible, 2)
+                info['message'] = (
+                    f"⚠️ Avec <strong>{format_fcfa(budget_val)} FCFA</strong>, "
+                    f"vous ne pouvez pas atteindre la superficie minimale de <strong>{SUPERFICIE_MIN} m²</strong>"
+                )
+                info['detail'] = (
+                    f"💡 Superficie possible : {format_sup(superficie_possible)} m²\n"
+                    f"💰 Il vous manque <strong>{format_fcfa(prix_m2 * SUPERFICIE_MIN - budget_val)} FCFA</strong> "
+                    f"pour atteindre {SUPERFICIE_MIN} m²"
+                )
+                results.append(info)
+
+        # ─── CAS 2 : Superficie seule ─────────────────────────
+        elif superficie_val and not budget_val:
+            # Vérifier si la superficie saisie est >= 500 m²
+            if superficie_val >= SUPERFICIE_MIN:
+                prix_total = superficie_val * prix_m2
+                info['prix_total'] = round(prix_total, 0)
+                info['message'] = (
+                    f"📐 <strong>{format_sup(superficie_val)} m²</strong> → "
+                    f"<strong>{format_fcfa(prix_total)} FCFA</strong>"
+                )
+                info['detail'] = f"📐 Prix au m² : {format_fcfa(prix_m2)} FCFA/m²"
+                results.append(info)
+            else:
+                # Superficie < 500 m², on affiche un message
+                prix_pour_500 = SUPERFICIE_MIN * prix_m2
+                info['message'] = (
+                    f"⚠️ La superficie minimale est de <strong>{SUPERFICIE_MIN} m²</strong>"
+                )
+                info['detail'] = (
+                    f"💡 {SUPERFICIE_MIN} m² → <strong>{format_fcfa(prix_pour_500)} FCFA</strong> "
+                    f"(prix au m² : {format_fcfa(prix_m2)} FCFA/m²)"
+                )
+                results.append(info)
+
+        # ─── CAS 3 : Budget + Superficie ──────────────────────
+        elif budget_val and superficie_val:
+            # Vérifier si la superficie saisie est >= 500 m²
+            if superficie_val < SUPERFICIE_MIN:
+                prix_pour_500 = SUPERFICIE_MIN * prix_m2
+                info['message'] = (
+                    f"⚠️ La superficie minimale est de <strong>{SUPERFICIE_MIN} m²</strong>"
+                )
+                info['detail'] = (
+                    f"💡 {SUPERFICIE_MIN} m² → <strong>{format_fcfa(prix_pour_500)} FCFA</strong> "
+                    f"(prix au m² : {format_fcfa(prix_m2)} FCFA/m²)"
+                )
+                results.append(info)
+            else:
+                prix_total = superficie_val * prix_m2
+                if budget_val >= prix_total:
+                    reste = budget_val - prix_total
+                    info['compatible'] = True
+                    info['prix_total'] = round(prix_total, 0)
+                    info['reste'] = round(reste, 0)
+                    info['message'] = (
+                        f"✅ <strong>{format_sup(superficie_val)} m²</strong> = "
+                        f"<strong>{format_fcfa(prix_total)} FCFA</strong> "
+                        f"(reste {format_fcfa(reste)} FCFA)"
+                    )
+                else:
+                    superficie_possible = budget_val / prix_m2
+                    manque = prix_total - budget_val
+                    info['compatible'] = False
+                    info['superficie_possible'] = round(superficie_possible, 2)
+                    info['manque'] = round(manque, 0)
+                    
+                    if superficie_possible >= SUPERFICIE_MIN:
+                        info['message'] = (
+                            f"⚠️ Budget insuffisant pour {format_sup(superficie_val)} m²"
+                        )
+                        info['detail'] = (
+                            f"💡 Avec <strong>{format_fcfa(budget_val)} FCFA</strong>, "
+                            f"vous pouvez avoir <strong>{format_sup(superficie_possible)} m²</strong>\n"
+                            f"💰 Il vous manque <strong>{format_fcfa(manque)} FCFA</strong>"
+                        )
+                    else:
+                        info['message'] = (
+                            f"⚠️ Budget insuffisant pour atteindre la superficie minimale de {SUPERFICIE_MIN} m²"
+                        )
+                        info['detail'] = (
+                            f"💡 Avec <strong>{format_fcfa(budget_val)} FCFA</strong>, "
+                            f"vous pouvez avoir <strong>{format_sup(superficie_possible)} m²</strong>\n"
+                            f"💰 Il vous manque <strong>{format_fcfa(prix_m2 * SUPERFICIE_MIN - budget_val)} FCFA</strong> "
+                            f"pour atteindre {SUPERFICIE_MIN} m²"
+                        )
+                    results.append(info)
+
+        # ─── CAS 4 : Site seul sélectionné ────────────────────
+        elif site_slug and site.slug == site_slug:
+            info['message'] = f"📐 Prix au m² : <strong>{format_fcfa(prix_m2)} FCFA/m²</strong>"
+            info['detail'] = (
+                f"📏 Superficie minimale : <strong>{SUPERFICIE_MIN} m²</strong>\n"
+                f"💡 {SUPERFICIE_MIN} m² → <strong>{format_fcfa(prix_m2 * SUPERFICIE_MIN)} FCFA</strong>\n"
+                f"💡 1000 m² → <strong>{format_fcfa(prix_m2 * 1000)} FCFA</strong>"
+            )
+            results.append(info)
+
+    # Ajouter un message si aucun site n'est affiché à cause du budget
+    if budget_val is not None and len(results) == 0:
+        # Vérifier si c'est à cause du budget
+        sites_avec_prix = [s for s in sites_qs if s.prix_min]
+        if sites_avec_prix:
+            prix_min_global = min(float(s.prix_min) for s in sites_avec_prix if s.prix_min)
+            if budget_val < prix_min_global:
+                messages_info.append({
+                    'type': 'warning',
+                    'message': f"⚠️ Votre budget de <strong>{format_fcfa(budget_val)} FCFA</strong> est insuffisant.",
+                    'detail': f"💡 Le prix minimum d'un site est de <strong>{format_fcfa(prix_min_global)} FCFA</strong>."
+                })
+
+    # Trier : d'abord les compatibles, puis par prix_m2 croissant
+    if budget_val and superficie_val:
+        results.sort(key=lambda x: (
+            not x.get('compatible', False),
+            x.get('prix_m2', float('inf'))
+        ))
+    else:
+        results.sort(key=lambda x: x.get('prix_m2', float('inf')))
+
+    return JsonResponse({
+        'results': results,
+        'count': len(results),
+        'budget': budget_val,
+        'superficie': superficie_val,
+        'superficie_min': SUPERFICIE_MIN,
+        'messages': messages_info
+    })
+
+
+def format_fcfa(n):
+    """Formatte un nombre en FCFA avec séparateur d'espaces."""
+    try:
+        return f"{int(round(n)):,}".replace(',', ' ')
+    except (ValueError, TypeError):
+        return "0"
+
+
+def format_sup(n):
+    """Formatte une superficie avec 2 décimales max."""
+    try:
+        if n == int(n):
+            return f"{int(n)}"
+        return f"{round(n, 2)}"
+    except (ValueError, TypeError):
+        return "0"
+    
+# ══════════════════════════════════════════════
+# MODULE ACADÉMIE
+# ══════════════════════════════════════════════
+
+def academie_accueil(request):
+    """Page principale de l'Académie."""
+    docs_publie = AcademieDocument.objects.filter(statut='publie')
+
+    contexte = {
+        'a_la_une': docs_publie.filter(est_a_la_une=True).first(),
+        'textes_loi': docs_publie.filter(categorie='texte_loi').order_by('ordre')[:3],
+        'articles': docs_publie.filter(categorie='article').order_by('-date_publication')[:6],
+        'revues': docs_publie.filter(categorie='revue').order_by('ordre')[:4],
+        'guides': docs_publie.filter(categorie='guide').order_by('ordre')[:6],
+        'lexique': docs_publie.filter(categorie='lexique').order_by('ordre')[:10],
+        'infographies': docs_publie.filter(categorie='infographie').order_by('ordre')[:6],
+        'ressources': docs_publie.filter(categorie='ressource').order_by('ordre')[:6],
+        'video_moment': AcademieVideo.objects.filter(statut='publie', est_video_moment=True).first(),
+        'videos': AcademieVideo.objects.filter(statut='publie').order_by('ordre')[:6],
+        'faq_featured': AcademieFAQ.objects.filter(statut='publie', est_featured=True).first(),
+        'faqs': AcademieFAQ.objects.filter(statut='publie').order_by('ordre')[:8],
+        'etapes_parcours': AcademieEtapeParcours.objects.filter(is_active=True).order_by('ordre'),
+        'stats': AcademieStatistique.objects.filter(is_active=True).order_by('ordre'),
+        'guide_featured': docs_publie.filter(categorie='guide', est_featured=True).first(),
+        'revue_featured': docs_publie.filter(categorie='revue').order_by('ordre').first(),
+        # Compteurs pour sidebar
+        'nb_textes': docs_publie.filter(categorie='texte_loi').count(),
+        'nb_articles': docs_publie.filter(categorie='article').count(),
+        'nb_revues': docs_publie.filter(categorie='revue').count(),
+        'nb_guides': docs_publie.filter(categorie='guide').count(),
+        'nb_videos': AcademieVideo.objects.filter(statut='publie').count(),
+        'nb_infographies': docs_publie.filter(categorie='infographie').count(),
+        'nb_faqs': AcademieFAQ.objects.filter(statut='publie').count(),
+        'nb_ressources': docs_publie.filter(categorie='ressource').count(),
+    }
+    return render(request, 'eden/academie/accueil.html', contexte)
+
+
+def academie_categorie(request, cat):
+    """Affiche tous les documents d'une catégorie."""
+    labels = {v: k for k, v in AcademieCategorie.choices}
+    if cat == 'videos':
+        items = AcademieVideo.objects.filter(statut='publie').order_by('ordre')
+        return render(request, 'eden/academie/liste_videos.html', {
+            'items': items, 'categorie': 'videos', 'categorie_label': 'Vidéothèque'
+        })
+    if cat == 'faq':
+        items = AcademieFAQ.objects.filter(statut='publie').order_by('ordre')
+        return render(request, 'eden/academie/liste_faq.html', {
+            'items': items, 'categorie': 'faq', 'categorie_label': 'Questions fréquentes'
+        })
+    docs = AcademieDocument.objects.filter(statut='publie', categorie=cat).order_by('ordre', '-date_publication')
+    label = dict(AcademieCategorie.choices).get(cat, cat)
+    return render(request, 'eden/academie/liste_documents.html', {
+        'documents': docs, 'categorie': cat, 'categorie_label': label
+    })
+
+
+def academie_telecharger(request, pk):
+    """Incrémente le compteur et sert le PDF."""
+    from django.http import FileResponse, Http404
+    doc = get_object_or_404(AcademieDocument, pk=pk, statut='publie')
+    if not doc.fichier_pdf:
+        raise Http404("Fichier non disponible.")
+    doc.incrementer_telechargements()
+    response = FileResponse(doc.fichier_pdf.open('rb'), content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{doc.fichier_pdf.name.split("/")[-1]}"'
+    return response
+
+
+def academie_voir_video(request, pk):
+    """Incrémente le compteur de vues et sert la vidéo en streaming."""
+    from django.http import FileResponse, Http404
+    video = get_object_or_404(AcademieVideo, pk=pk, statut='publie')
+    if not video.fichier_video:
+        raise Http404("Vidéo non disponible.")
+    video.nb_vues += 1
+    video.save(update_fields=['nb_vues'])
+    response = FileResponse(video.fichier_video.open('rb'), content_type='video/mp4')
+    response['Content-Disposition'] = f'inline; filename="{video.fichier_video.name.split("/")[-1]}"'
+    return response
+
+
+# ── Dashboard Académie ──
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_academie_liste(request):
+    docs = AcademieDocument.objects.all().order_by('-created_at')
+    cat = request.GET.get('cat', '')
+    if cat:
+        docs = docs.filter(categorie=cat)
+    return render(request, 'eden/dashboard/academie_liste.html', {
+        'docs': docs,
+        'cat': cat,
+        'categories': AcademieCategorie.choices,
+        'nb_total': AcademieDocument.objects.count(),
+        'nb_publie': AcademieDocument.objects.filter(statut='publie').count(),
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_academie_form(request, pk=None):
+    doc = get_object_or_404(AcademieDocument, pk=pk) if pk else None
+    if request.method == 'POST':
+        titre = request.POST.get('titre', '').strip()
+        if not titre:
+            messages.error(request, 'Le titre est obligatoire.')
+            return render(request, 'eden/dashboard/academie_form.html', {
+                'doc': doc, 'categories': AcademieCategorie.choices
+            })
+        if not doc:
+            doc = AcademieDocument()
+        doc.titre = titre
+        doc.sous_titre = request.POST.get('sous_titre', '').strip()
+        doc.categorie = request.POST.get('categorie', 'article')
+        doc.description = request.POST.get('description', '').strip()
+        doc.auteur = request.POST.get('auteur', '').strip()
+        doc.reference_officielle = request.POST.get('reference_officielle', '').strip()
+        doc.numero_revue = request.POST.get('numero_revue', '').strip()
+        doc.temps_lecture = request.POST.get('temps_lecture', '').strip()
+        doc.statut = request.POST.get('statut', 'brouillon')
+        doc.est_a_la_une = request.POST.get('est_a_la_une') == 'on'
+        doc.est_featured = request.POST.get('est_featured') == 'on'
+        doc.ordre = int(request.POST.get('ordre', 0) or 0)
+        date_str = request.POST.get('date_publication', '')
+        if date_str:
+            from datetime import date
+            try:
+                doc.date_publication = date.fromisoformat(date_str)
+            except Exception:
+                pass
+        nb_p = request.POST.get('nb_pages', '')
+        if nb_p:
+            try:
+                doc.nb_pages = int(nb_p)
+            except Exception:
+                pass
+        if request.FILES.get('image_couverture'):
+            doc.image_couverture = request.FILES['image_couverture']
+        if request.FILES.get('fichier_pdf'):
+            doc.fichier_pdf = request.FILES['fichier_pdf']
+        doc.save()
+        messages.success(request, f'"{doc.titre}" enregistré.')
+        return redirect('dashboard_academie_liste')
+    return render(request, 'eden/dashboard/academie_form.html', {
+        'doc': doc, 'categories': AcademieCategorie.choices
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_academie_supprimer(request, pk):
+    doc = get_object_or_404(AcademieDocument, pk=pk)
+    if request.method == 'POST':
+        doc.delete()
+        messages.success(request, 'Document supprimé.')
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True})
+        return redirect('dashboard_academie_liste')
+    return redirect('dashboard_academie_liste')
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_academie_videos(request):
+    videos = AcademieVideo.objects.all().order_by('ordre', '-created_at')
+    return render(request, 'eden/dashboard/academie_videos.html', {'videos': videos})
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_academie_video_form(request, pk=None):
+    video = get_object_or_404(AcademieVideo, pk=pk) if pk else None
+    if request.method == 'POST':
+        titre = request.POST.get('titre', '').strip()
+        if not titre:
+            messages.error(request, 'Le titre est obligatoire.')
+            return render(request, 'eden/dashboard/academie_video_form.html', {'video': video})
+        if not video:
+            video = AcademieVideo()
+        video.titre = titre
+        video.description = request.POST.get('description', '').strip()
+        video.auteur = request.POST.get('auteur', '').strip()
+        video.duree = request.POST.get('duree', '').strip()
+        video.statut = request.POST.get('statut', 'brouillon')
+        video.est_video_moment = request.POST.get('est_video_moment') == 'on'
+        video.ordre = int(request.POST.get('ordre', 0) or 0)
+        date_str = request.POST.get('date_publication', '')
+        if date_str:
+            from datetime import date
+            try:
+                video.date_publication = date.fromisoformat(date_str)
+            except Exception:
+                pass
+        if request.FILES.get('fichier_video'):
+            video.fichier_video = request.FILES['fichier_video']
+        if request.FILES.get('image_miniature'):
+            video.image_miniature = request.FILES['image_miniature']
+        video.save()
+        messages.success(request, f'Vidéo "{video.titre}" enregistrée.')
+        return redirect('dashboard_academie_videos')
+    return render(request, 'eden/dashboard/academie_video_form.html', {'video': video})
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_academie_video_supprimer(request, pk):
+    video = get_object_or_404(AcademieVideo, pk=pk)
+    if request.method == 'POST':
+        video.delete()
+        messages.success(request, 'Vidéo supprimée.')
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True})
+        return redirect('dashboard_academie_videos')
+    return redirect('dashboard_academie_videos')
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_academie_faq(request):
+    faqs = AcademieFAQ.objects.all().order_by('ordre')
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'ajouter':
+            AcademieFAQ.objects.create(
+                question=request.POST.get('question', '').strip(),
+                reponse=request.POST.get('reponse', '').strip(),
+                categorie_faq=request.POST.get('categorie_faq', '').strip(),
+                temps_reponse=request.POST.get('temps_reponse', '').strip(),
+                est_featured=request.POST.get('est_featured') == 'on',
+                statut=request.POST.get('statut', 'publie'),
+                ordre=AcademieFAQ.objects.count(),
+            )
+            messages.success(request, 'FAQ ajoutée.')
+        elif action == 'modifier':
+            faq = get_object_or_404(AcademieFAQ, pk=request.POST.get('pk'))
+            faq.question = request.POST.get('question', faq.question)
+            faq.reponse = request.POST.get('reponse', faq.reponse)
+            faq.categorie_faq = request.POST.get('categorie_faq', faq.categorie_faq)
+            faq.temps_reponse = request.POST.get('temps_reponse', faq.temps_reponse)
+            faq.est_featured = request.POST.get('est_featured') == 'on'
+            faq.statut = request.POST.get('statut', faq.statut)
+            faq.ordre = int(request.POST.get('ordre', faq.ordre))
+            faq.save()
+            messages.success(request, 'FAQ modifiée.')
+        elif action == 'supprimer':
+            AcademieFAQ.objects.filter(pk=request.POST.get('pk')).delete()
+            messages.success(request, 'FAQ supprimée.')
+        return redirect('dashboard_academie_faq')
+    return render(request, 'eden/dashboard/academie_faq.html', {'faqs': faqs})
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_academie_parcours(request):
+    etapes = AcademieEtapeParcours.objects.all().order_by('ordre', 'numero')
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'ajouter':
+            AcademieEtapeParcours.objects.create(
+                numero=int(request.POST.get('numero', 0) or 0),
+                titre=request.POST.get('titre', '').strip(),
+                icone=request.POST.get('icone', '📋'),
+                description=request.POST.get('description', '').strip(),
+                ordre=AcademieEtapeParcours.objects.count(),
+            )
+            messages.success(request, 'Étape ajoutée.')
+        elif action == 'modifier':
+            e = get_object_or_404(AcademieEtapeParcours, pk=request.POST.get('pk'))
+            e.numero = int(request.POST.get('numero', e.numero) or e.numero)
+            e.titre = request.POST.get('titre', e.titre)
+            e.icone = request.POST.get('icone', e.icone)
+            e.description = request.POST.get('description', e.description)
+            e.ordre = int(request.POST.get('ordre', e.ordre))
+            e.is_active = request.POST.get('is_active') == 'on'
+            e.save()
+            messages.success(request, 'Étape modifiée.')
+        elif action == 'supprimer':
+            AcademieEtapeParcours.objects.filter(pk=request.POST.get('pk')).delete()
+            messages.success(request, 'Étape supprimée.')
+        return redirect('dashboard_academie_parcours')
+    return render(request, 'eden/dashboard/academie_parcours.html', {'etapes': etapes})
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_academie_stats(request):
+    stats = AcademieStatistique.objects.all().order_by('ordre')
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'ajouter':
+            AcademieStatistique.objects.create(
+                valeur=request.POST.get('valeur', '0'),
+                label=request.POST.get('label', ''),
+                icone=request.POST.get('icone', '📋'),
+                ordre=AcademieStatistique.objects.count(),
+            )
+            messages.success(request, 'Stat ajoutée.')
+        elif action == 'modifier':
+            s = get_object_or_404(AcademieStatistique, pk=request.POST.get('pk'))
+            s.valeur = request.POST.get('valeur', s.valeur)
+            s.label = request.POST.get('label', s.label)
+            s.icone = request.POST.get('icone', s.icone)
+            s.ordre = int(request.POST.get('ordre', s.ordre))
+            s.is_active = request.POST.get('is_active') == 'on'
+            s.save()
+            messages.success(request, 'Stat modifiée.')
+        elif action == 'supprimer':
+            AcademieStatistique.objects.filter(pk=request.POST.get('pk')).delete()
+            messages.success(request, 'Stat supprimée.')
+        return redirect('dashboard_academie_stats')
+    return render(request, 'eden/dashboard/academie_stats.html', {'stats': stats})
