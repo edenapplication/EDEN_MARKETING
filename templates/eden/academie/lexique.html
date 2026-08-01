@@ -1,0 +1,311 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lexique Foncier — EDEN GROUP Académie</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --blue:#1B4FDB;--blue-d:#0A2494;--blue-pale:#EEF3FF;
+  --red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
+  --grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
+  --g50:#F8FAFF;--g100:#F0F4FF;--g200:#E2E8F0;
+  --g400:#94A3B8;--g500:#64748B;--g600:#475569;--g800:#1E293B;
+  --sh:0 2px 12px rgba(0,0,0,0.08);--sh-lg:0 8px 32px rgba(27,79,219,0.15);
+  --r:8px;--rl:14px;--rxl:20px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:#f5f6fa;color:var(--g800);}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-thumb{background:var(--grad-h);border-radius:100px;}
+
+/* ══ TOPBAR ══ */
+.topbar{background:var(--blue-d);height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;gap:1rem;position:sticky;top:0;z-index:100;}
+.tb-left{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.tb-logo-box{width:32px;height:32px;border-radius:7px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#fff;}
+.tb-logo-name{font-size:14px;font-weight:800;color:#fff;}
+.tb-div{width:1px;height:28px;background:rgba(255,255,255,0.2);}
+.tb-ac{font-size:13px;font-weight:700;color:rgba(255,255,255,0.9);letter-spacing:0.5px;}
+.tb-ac-sub{font-size:10px;color:rgba(255,255,255,0.55);font-style:italic;}
+.tb-right{display:flex;align-items:center;gap:8px;}
+.tb-btn{padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;text-decoration:none;font-family:'Outfit',sans-serif;transition:all 0.2s;border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.8);}
+.tb-btn:hover{background:rgba(255,255,255,0.1);color:#fff;}
+
+/* ══ HERO ══ */
+.hero{position:relative;padding:3rem 2rem 2.5rem;background:linear-gradient(135deg,var(--blue-d) 0%,#1B4FDB 60%,#7B20B4 100%);overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,0.04) 1px,transparent 1px);background-size:32px 32px;pointer-events:none;}
+.hero-content{position:relative;max-width:860px;margin:0 auto;text-align:center;}
+.hero-ico{font-size:2.8rem;margin-bottom:0.6rem;}
+.hero-tit{font-size:clamp(1.6rem,3vw,2.4rem);font-weight:900;color:#fff;margin-bottom:0.5rem;letter-spacing:-0.5px;}
+.hero-line{width:50px;height:3px;background:var(--red);border-radius:100px;margin:0 auto 0.8rem;}
+.hero-desc{font-size:14px;color:rgba(255,255,255,0.75);line-height:1.65;margin-bottom:1.8rem;max-width:560px;margin-left:auto;margin-right:auto;}
+.hero-nb{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:100px;padding:5px 16px;font-size:12px;color:rgba(255,255,255,0.85);backdrop-filter:blur(4px);}
+.hero-nb strong{color:#fff;font-weight:700;}
+
+/* ══ RECHERCHE ══ */
+.search-wrap{max-width:860px;margin:-1.5rem auto 0;padding:0 2rem;position:relative;z-index:10;}
+.search-box{display:flex;align-items:center;gap:10px;background:#fff;border-radius:var(--rxl);padding:12px 20px;box-shadow:0 8px 40px rgba(0,0,0,0.14);border:1.5px solid var(--g200);}
+.search-box:focus-within{border-color:var(--blue);}
+.search-ico{font-size:16px;color:var(--g400);}
+.search-input{flex:1;border:none;outline:none;font-size:15px;font-family:'Outfit',sans-serif;color:var(--g800);background:transparent;}
+.search-input::placeholder{color:var(--g400);}
+.search-clear{background:var(--g100);border:none;color:var(--g500);width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;}
+.search-clear:hover{background:#fee2e2;color:var(--red);}
+
+/* ══ NAV ALPHABETIQUE ══ */
+.alpha-nav-wrap{max-width:900px;margin:2.5rem auto 0;padding:0 2rem;}
+.alpha-nav{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);padding:0.8rem 1rem;display:flex;flex-wrap:wrap;gap:4px;align-items:center;justify-content:center;border:1.5px solid var(--g200);}
+.alpha-lbl{font-size:10px;font-weight:700;color:var(--g400);letter-spacing:1.5px;text-transform:uppercase;margin-right:8px;white-space:nowrap;}
+.alpha-btn{width:34px;height:34px;border-radius:var(--r);border:1.5px solid var(--g200);font-size:13px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;background:#fff;color:var(--g600);transition:all 0.15s;text-decoration:none;display:flex;align-items:center;justify-content:center;}
+.alpha-btn:hover{background:var(--blue-pale);border-color:var(--blue);color:var(--blue);}
+.alpha-btn.active{background:var(--blue);border-color:var(--blue);color:#fff;}
+.alpha-btn.disabled{opacity:0.3;cursor:default;pointer-events:none;}
+.alpha-all{padding:0 12px;width:auto;font-size:11px;}
+.alpha-all.active{background:var(--grad);border-color:transparent;color:#fff;}
+
+/* ══ CONTENU ══ */
+.content{max-width:900px;margin:2rem auto;padding:0 2rem 4rem;}
+
+/* Section lettre */
+.letter-section{margin-bottom:2.5rem;scroll-margin-top:80px;}
+.letter-header{display:flex;align-items:center;gap:1rem;margin-bottom:1rem;}
+.letter-badge{width:52px;height:52px;border-radius:var(--rl);background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:900;color:#fff;flex-shrink:0;font-family:'Playfair Display',serif;box-shadow:0 4px 16px rgba(27,79,219,0.3);}
+.letter-meta{display:flex;flex-direction:column;}
+.letter-txt{font-size:1.1rem;font-weight:800;color:var(--g800);}
+.letter-count{font-size:11px;color:var(--g400);}
+
+/* Grille termes */
+.terms-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;}
+
+/* Card terme */
+.term-card{background:#fff;border-radius:var(--rl);border:1.5px solid var(--g200);padding:1rem 1.1rem;transition:all 0.2s;cursor:default;position:relative;overflow:hidden;}
+.term-card:hover{border-color:rgba(27,79,219,0.3);box-shadow:var(--sh-lg);transform:translateY(-2px);}
+.term-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--grad-h);border-radius:3px 0 0 3px;opacity:0;transition:opacity 0.2s;}
+.term-card:hover::before{opacity:1;}
+.term-name{font-size:14px;font-weight:800;color:var(--blue);margin-bottom:6px;line-height:1.3;display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+.term-badge-cat{font-size:9px;font-weight:700;background:var(--blue-pale);color:var(--blue);padding:2px 7px;border-radius:100px;white-space:nowrap;flex-shrink:0;}
+.term-def{font-size:12px;color:var(--g600);line-height:1.65;}
+.term-syno{font-size:11px;color:var(--g400);margin-top:6px;font-style:italic;}
+.term-pdf{display:inline-flex;align-items:center;gap:4px;margin-top:8px;font-size:10px;font-weight:700;color:var(--blue);text-decoration:none;background:var(--blue-pale);padding:3px 10px;border-radius:100px;transition:all 0.2s;}
+.term-pdf:hover{background:var(--blue);color:#fff;}
+
+/* Lettre accent (A, B...) dans la définition */
+.term-letter-accent{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:5px;background:var(--grad);color:#fff;font-size:10px;font-weight:800;margin-right:5px;flex-shrink:0;}
+
+/* Empty state */
+.empty-state{text-align:center;padding:4rem 2rem;background:#fff;border-radius:var(--rxl);border:1.5px solid var(--g200);box-shadow:var(--sh);}
+.empty-ico{font-size:3rem;margin-bottom:1rem;}
+.empty-tit{font-size:1rem;font-weight:700;color:var(--g800);margin-bottom:0.4rem;}
+.empty-desc{font-size:13px;color:var(--g400);margin-bottom:1.5rem;}
+.empty-btn{display:inline-flex;align-items:center;gap:6px;background:var(--blue);color:#fff;padding:10px 20px;border-radius:var(--r);font-size:13px;font-weight:600;text-decoration:none;}
+
+/* Toast */
+.toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1.5px solid var(--g200);border-radius:var(--r);padding:12px 18px;font-size:13px;color:var(--g800);z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(80px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);max-width:320px;box-shadow:var(--sh);}
+.toast.show{transform:none;opacity:1;}
+
+/* Bandeau proposer */
+.propose-band{background:linear-gradient(135deg,var(--blue-pale),#F0F4FF);border:1.5px solid rgba(27,79,219,0.15);border-radius:var(--rl);padding:1.2rem 1.5rem;margin-bottom:2rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
+.pb-ico{font-size:1.6rem;flex-shrink:0;}
+.pb-txt{flex:1;}
+.pb-tit{font-size:13px;font-weight:700;color:var(--g800);}
+.pb-sub{font-size:12px;color:var(--g500);margin-top:2px;}
+.pb-btn{background:var(--blue);color:#fff;border:none;padding:8px 16px;border-radius:var(--r);font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:5px;flex-shrink:0;}
+
+/* Résultats recherche */
+.search-result-header{background:#fff;border-radius:var(--rl);padding:0.8rem 1.2rem;border:1.5px solid var(--g200);box-shadow:var(--sh);margin-bottom:1.5rem;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--g600);}
+.sr-nb{font-weight:800;color:var(--blue);}
+.sr-q{font-weight:700;color:var(--g800);}
+.sr-clear{margin-left:auto;font-size:12px;color:var(--red);text-decoration:none;font-weight:600;}
+
+@media(max-width:768px){
+  .hero{padding:2rem 1.5rem 2rem;}
+  .search-wrap{padding:0 1rem;}
+  .alpha-nav-wrap{padding:0 1rem;}
+  .content{padding:0 1rem 3rem;}
+  .terms-grid{grid-template-columns:1fr;}
+  .alpha-btn{width:28px;height:28px;font-size:11px;}
+  .tb-ac-sub{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"><span id="t-ico">✅</span>&nbsp;<span id="t-msg"></span></div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a class="tb-left" href="{% url 'academie_accueil' %}">
+    <div class="tb-logo-box">E</div>
+    <div class="tb-logo-name">EDEN GROUP</div>
+    <div class="tb-div"></div>
+    <div>
+      <div class="tb-ac">ACADÉMIE</div>
+      <div class="tb-ac-sub">Lexique Foncier</div>
+    </div>
+  </a>
+  <div class="tb-right">
+    {% if user.is_staff %}
+    <a class="tb-btn" href="{% url 'dashboard_lexique' %}">⚙ Gérer</a>
+    {% endif %}
+    <a class="tb-btn" href="{% url 'academie_accueil' %}">← Académie</a>
+    <a class="tb-btn" href="{% url 'home' %}">Site principal</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-ico">🔤</div>
+    <h1 class="hero-tit">Lexique Foncier du Cameroun</h1>
+    <div class="hero-line"></div>
+    <p class="hero-desc">Tous les termes juridiques, administratifs et techniques du secteur foncier expliqués clairement. Votre référence pour comprendre et sécuriser vos investissements.</p>
+    <div class="hero-nb">
+      <strong>{{ nb_total }}</strong> terme{{ nb_total|pluralize }} défini{{ nb_total|pluralize }} · Mis à jour régulièrement
+    </div>
+  </div>
+</div>
+
+<!-- RECHERCHE -->
+<div class="search-wrap">
+  <form method="get" action="{% url 'academie_lexique' %}">
+    <div class="search-box">
+      <span class="search-ico">🔍</span>
+      <input class="search-input" type="text" name="q"
+        value="{{ q }}"
+        placeholder="Rechercher un terme foncier... ex: Titre foncier, Bornage, Cadastre"
+        autofocus>
+      {% if q %}
+      <a class="search-clear" href="{% url 'academie_lexique' %}" title="Effacer">✕</a>
+      {% endif %}
+    </div>
+  </form>
+</div>
+
+<!-- NAV ALPHABÉTIQUE -->
+{% if not q %}
+<div class="alpha-nav-wrap">
+  <div class="alpha-nav">
+    <span class="alpha-lbl">Naviguer :</span>
+    <a class="alpha-btn alpha-all {% if not lettre %}active{% endif %}"
+       href="{% url 'academie_lexique' %}">Tout</a>
+    {% for l in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
+    <a class="alpha-btn {% if lettre == l %}active{% endif %} {% if l not in lettres_dispo %}disabled{% endif %}"
+       href="?lettre={{ l }}"
+       {% if l not in lettres_dispo %}aria-disabled="true"{% endif %}>{{ l }}</a>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<!-- CONTENU PRINCIPAL -->
+<div class="content">
+
+  {% if q %}
+  <!-- RÉSULTATS DE RECHERCHE -->
+  <div class="search-result-header">
+    🔍
+    <span class="sr-nb">{{ nb_total }}</span>
+    résultat{{ nb_total|pluralize }} pour
+    <span class="sr-q">"{{ q }}"</span>
+    <a class="sr-clear" href="{% url 'academie_lexique' %}">✕ Effacer</a>
+  </div>
+  {% endif %}
+
+  <!-- BANDEAU PROPOSER UN TERME -->
+  <div class="propose-band">
+    <div class="pb-ico">💡</div>
+    <div class="pb-txt">
+      <div class="pb-tit">Vous ne trouvez pas un terme ?</div>
+      <div class="pb-sub">Proposez un mot à ajouter au lexique — notre équipe juridique le définira.</div>
+    </div>
+    <a class="pb-btn" href="{% url 'academie_accueil' %}#proposer">✉ Proposer un terme</a>
+  </div>
+
+  {% if grouped %}
+    {% for lettre_g, termes in grouped.items %}
+    <div class="letter-section" id="lettre-{{ lettre_g }}">
+      <!-- En-tête de lettre -->
+      <div class="letter-header">
+        <div class="letter-badge">{{ lettre_g }}</div>
+        <div class="letter-meta">
+          <div class="letter-txt">Termes commençant par « {{ lettre_g }} »</div>
+          <div class="letter-count">{{ termes|length }} terme{{ termes|length|pluralize }}</div>
+        </div>
+      </div>
+
+      <!-- Grille des termes -->
+      <div class="terms-grid">
+        {% for terme in termes %}
+        <div class="term-card" id="terme-{{ terme.pk }}">
+          <div class="term-name">
+            <span>{{ terme.titre }}</span>
+            {% if terme.sous_titre %}
+            <span class="term-badge-cat">{{ terme.sous_titre }}</span>
+            {% endif %}
+          </div>
+          {% if terme.description %}
+          <div class="term-def">{{ terme.description }}</div>
+          {% else %}
+          <div class="term-def" style="color:var(--g400);font-style:italic;">Définition en cours de rédaction...</div>
+          {% endif %}
+          {% if terme.auteur %}
+          <div class="term-syno">Source : {{ terme.auteur }}</div>
+          {% endif %}
+          {% if terme.fichier_pdf %}
+          <a class="term-pdf" href="{% url 'academie_telecharger' terme.pk %}" download>
+            📥 Fiche PDF
+          </a>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+
+  {% else %}
+  <!-- ÉTAT VIDE -->
+  <div class="empty-state">
+    <div class="empty-ico">🔤</div>
+    {% if q %}
+    <div class="empty-tit">Aucun résultat pour "{{ q }}"</div>
+    <div class="empty-desc">Ce terme n'est pas encore dans notre lexique. Vous pouvez le proposer à notre équipe.</div>
+    <a class="empty-btn" href="{% url 'academie_lexique' %}">← Voir tout le lexique</a>
+    {% elif lettre %}
+    <div class="empty-tit">Aucun terme pour la lettre « {{ lettre }} »</div>
+    <div class="empty-desc">Cette lettre n'a pas encore de termes définis.</div>
+    <a class="empty-btn" href="{% url 'academie_lexique' %}">← Voir tout le lexique</a>
+    {% else %}
+    <div class="empty-tit">Le lexique est vide</div>
+    <div class="empty-desc">Aucun terme n'a encore été ajouté. Commencez par en créer dans le dashboard.</div>
+    {% if user.is_staff %}
+    <a class="empty-btn" href="{% url 'dashboard_lexique_ajouter' %}">+ Ajouter un premier terme</a>
+    {% endif %}
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+
+<script>
+// Scroll fluide vers la lettre
+document.querySelectorAll('.alpha-btn:not(.disabled)').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    const href = this.getAttribute('href');
+    if (!href || href === '#') return;
+    // Laisser le navigateur gérer la nav
+  });
+});
+
+function showToast(ico, msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('t-ico').textContent = ico;
+  document.getElementById('t-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+</script>
+</body>
+</html>

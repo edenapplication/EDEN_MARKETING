@@ -1,0 +1,179 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recherche — Académie EDEN GROUP</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1B4FDB;--blue-d:#0A2494;--blue-pale:#EEF3FF;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--g50:#F8FAFF;--g200:#E2E8F0;--g400:#94A3B8;--g500:#64748B;--g800:#1E293B;--sh:0 2px 12px rgba(0,0,0,0.08);--r:8px;--rl:12px;}
+body{font-family:'Outfit',sans-serif;background:#f5f6fa;color:var(--g800);}
+.topbar{background:var(--blue-d);height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;gap:1rem;}
+.tb-logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.tb-logo-box{width:32px;height:32px;border-radius:7px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#fff;}
+.tb-logo-name{font-size:14px;font-weight:800;color:#fff;}
+.tb-search-form{flex:1;max-width:500px;display:flex;align-items:center;gap:0;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:100px;overflow:hidden;}
+.tb-search-form input{flex:1;background:none;border:none;outline:none;font-size:13px;color:#fff;font-family:'Outfit',sans-serif;padding:8px 16px;}
+.tb-search-form input::placeholder{color:rgba(255,255,255,0.5);}
+.tb-search-form button{background:var(--red);border:none;color:#fff;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;}
+.tb-back{color:rgba(255,255,255,0.7);font-size:12px;text-decoration:none;display:flex;align-items:center;gap:4px;}
+.tb-back:hover{color:#fff;}
+.wrap{max-width:1100px;margin:0 auto;padding:2rem 1.5rem;}
+.rech-header{margin-bottom:2rem;}
+.rech-tit{font-size:1.3rem;font-weight:800;color:var(--g800);margin-bottom:4px;}
+.rech-sub{font-size:13px;color:var(--g500);}
+.rech-section{margin-bottom:2rem;}
+.rs-tit{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g400);margin-bottom:0.8rem;padding-bottom:6px;border-bottom:1px solid var(--g200);}
+.rs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;}
+.rs-card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);padding:1rem;cursor:pointer;transition:all 0.2s;text-decoration:none;display:block;border:1.5px solid transparent;}
+.rs-card:hover{border-color:rgba(27,79,219,0.2);transform:translateY(-2px);box-shadow:0 4px 20px rgba(27,79,219,0.1);}
+.rs-card-ico{font-size:1.2rem;margin-bottom:6px;}
+.rs-card-type{font-size:9px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
+.rs-card-tit{font-size:13px;font-weight:700;color:var(--g800);line-height:1.35;margin-bottom:4px;}
+.rs-card-meta{font-size:10px;color:var(--g400);}
+.rs-card-desc{font-size:11px;color:var(--g500);line-height:1.5;margin-top:4px;}
+.rs-card-btn{display:inline-flex;align-items:center;gap:4px;margin-top:8px;font-size:11px;font-weight:700;color:var(--blue);text-decoration:none;}
+.no-result{text-align:center;padding:4rem;color:var(--g400);}
+.no-result .ico{font-size:3rem;margin-bottom:1rem;}
+/* Lexique résultat */
+.lex-result{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);padding:0.8rem 1rem;border-left:3px solid var(--blue);}
+.lex-terme{font-size:13px;font-weight:800;color:var(--blue);margin-bottom:3px;}
+.lex-def{font-size:11px;color:var(--g500);line-height:1.6;}
+.lex-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;}
+/* FAQ résultat */
+.faq-result{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);padding:0.8rem 1rem;}
+.faq-q{font-size:13px;font-weight:700;color:var(--g800);margin-bottom:4px;}
+.faq-r{font-size:11px;color:var(--g500);line-height:1.6;}
+.nb-tag{background:var(--blue-pale);color:var(--blue);font-size:11px;font-weight:700;padding:2px 8px;border-radius:100px;display:inline-block;margin-left:6px;}
+@media(max-width:768px){.wrap{padding:1.5rem 1rem;}.rs-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="tb-logo" href="{% url 'academie_accueil' %}">
+    <div class="tb-logo-box">E</div>
+    <div><div class="tb-logo-name">EDEN GROUP ACADÉMIE</div></div>
+  </a>
+  <form class="tb-search-form" action="{% url 'academie_recherche' %}" method="get">
+    <input type="text" name="q" value="{{ q }}" placeholder="Rechercher dans l'Académie...">
+    <button type="submit">🔍 Chercher</button>
+  </form>
+  <a class="tb-back" href="{% url 'academie_accueil' %}">← Retour à l'Académie</a>
+</div>
+
+<div class="wrap">
+  {% if q %}
+  <div class="rech-header">
+    <div class="rech-tit">Résultats pour "{{ q }}"</div>
+    <div class="rech-sub">
+      {% with total=docs|length|add:editions|length|add:videos|length|add:faqs|length|add:lexique|length %}
+      {{ total }} résultat{{ total|pluralize }} trouvé{{ total|pluralize }} dans l'Académie
+      {% endwith %}
+    </div>
+  </div>
+
+  {% if editions %}
+  <div class="rech-section">
+    <div class="rs-tit">📚 Publications <span class="nb-tag">{{ editions|length }}</span></div>
+    <div class="rs-grid">
+      {% for ed in editions %}
+      <a class="rs-card" href="{% url 'journal_lire' ed.numero %}?from=academie">
+        <div class="rs-card-ico">{% if ed.type_academie == 'article' %}📄{% elif ed.type_academie == 'revue' %}📕{% else %}📚{% endif %}</div>
+        <div class="rs-card-type">{{ ed.get_type_academie_display }}</div>
+        <div class="rs-card-tit">{{ ed.titre }}</div>
+        <div class="rs-card-meta">{% if ed.date_parution %}📅 {{ ed.date_parution|date:"d M Y" }}{% endif %}</div>
+        {% if ed.sous_titre %}<div class="rs-card-desc">{{ ed.sous_titre|truncatechars:100 }}</div>{% endif %}
+        <div class="rs-card-btn">📖 Lire →</div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {% if docs %}
+  <div class="rech-section">
+    <div class="rs-tit">📜 Documents <span class="nb-tag">{{ docs|length }}</span></div>
+    <div class="rs-grid">
+      {% for doc in docs %}
+      <div class="rs-card" {% if doc.fichier_pdf %}onclick="window.location='{% url 'academie_telecharger' doc.pk %}'"{% endif %}>
+        <div class="rs-card-ico">{% if doc.categorie == 'texte_loi' %}📜{% elif doc.categorie == 'galerie' %}🖼{% else %}📄{% endif %}</div>
+        <div class="rs-card-type">{{ doc.get_categorie_display }}</div>
+        <div class="rs-card-tit">{% if doc.reference_officielle %}{{ doc.reference_officielle }}{% else %}{{ doc.titre }}{% endif %}</div>
+        {% if doc.date_publication %}<div class="rs-card-meta">📅 {{ doc.date_publication|date:"d M Y" }}</div>{% endif %}
+        {% if doc.description %}<div class="rs-card-desc">{{ doc.description|truncatechars:100 }}</div>{% endif %}
+        {% if doc.fichier_pdf %}<div class="rs-card-btn">📥 Télécharger PDF →</div>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {% if videos %}
+  <div class="rech-section">
+    <div class="rs-tit">🎬 Vidéos <span class="nb-tag">{{ videos|length }}</span></div>
+    <div class="rs-grid">
+      {% for v in videos %}
+      <a class="rs-card" href="{% url 'academie_voir_video' v.pk %}">
+        <div class="rs-card-ico">🎬</div>
+        <div class="rs-card-type">Vidéo{% if v.duree %} · {{ v.duree }}{% endif %}</div>
+        <div class="rs-card-tit">{{ v.titre }}</div>
+        {% if v.auteur %}<div class="rs-card-meta">✍ {{ v.auteur }}</div>{% endif %}
+        {% if v.description %}<div class="rs-card-desc">{{ v.description|truncatechars:100 }}</div>{% endif %}
+        <div class="rs-card-btn">▶ Regarder →</div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {% if lexique %}
+  <div class="rech-section">
+    <div class="rs-tit">🔤 Lexique <span class="nb-tag">{{ lexique|length }}</span></div>
+    <div class="lex-grid">
+      {% for doc in lexique %}
+      <div class="lex-result">
+        <div class="lex-terme">{{ doc.titre }}</div>
+        <div class="lex-def">{{ doc.description|default:"Définition à venir."|truncatechars:150 }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {% if faqs %}
+  <div class="rech-section">
+    <div class="rs-tit">❓ Questions fréquentes <span class="nb-tag">{{ faqs|length }}</span></div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      {% for f in faqs %}
+      <div class="faq-result">
+        <div class="faq-q">Q. {{ f.question }}</div>
+        <div class="faq-r">{{ f.reponse|truncatechars:200 }}</div>
+        {% if f.temps_reponse %}<div style="font-size:10px;color:var(--g400);margin-top:4px;">⏱ {{ f.temps_reponse }}</div>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {% if not editions and not docs and not videos and not lexique and not faqs %}
+  <div class="no-result">
+    <div class="ico">🔍</div>
+    <div style="font-size:16px;font-weight:700;color:var(--g800);margin-bottom:0.5rem;">Aucun résultat pour "{{ q }}"</div>
+    <div style="font-size:13px;margin-bottom:1.5rem;">Essayez d'autres mots-clés ou parcourez les catégories.</div>
+    <a href="{% url 'academie_accueil' %}" style="background:var(--blue);color:#fff;padding:10px 24px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;">← Retour à l'Académie</a>
+  </div>
+  {% endif %}
+
+  {% else %}
+  <div class="no-result">
+    <div class="ico">🔍</div>
+    <div style="font-size:16px;font-weight:700;color:var(--g800);margin-bottom:0.5rem;">Que recherchez-vous ?</div>
+    <div style="font-size:13px;">Saisissez un mot-clé dans la barre de recherche ci-dessus.</div>
+  </div>
+  {% endif %}
+</div>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galerie Académie — Dashboard EDEN GROUP</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g800:#1F2937;--r:12px;--rl:20px;}
+body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
+.topnav{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;border-bottom:1.5px solid var(--g200);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
+.tn-em{width:36px;height:36px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:#fff;}
+.tn-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tn-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1.5px solid var(--g200);background:#fff;color:var(--g500);font-family:'Outfit',sans-serif;display:inline-flex;align-items:center;gap:5px;transition:all 0.2s;}
+.tn-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--bpale);}
+.wrap{padding:84px 2rem 3rem;max-width:1100px;margin:0 auto;}
+.page-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;}
+.page-tit{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--g800);}
+.page-sub{font-size:13px;color:var(--g500);margin-top:2px;}
+.btn-add{background:var(--grad);color:#fff;padding:10px 18px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+.info-box{background:var(--bpale);border:1.5px solid rgba(27,79,219,0.2);border-radius:var(--r);padding:1rem 1.2rem;margin-bottom:1.5rem;font-size:13px;color:var(--blue);}
+.galerie-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.2rem;}
+.gal-card{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);overflow:hidden;transition:all 0.2s;position:relative;}
+.gal-card:hover{box-shadow:0 4px 20px rgba(0,0,0,0.1);transform:translateY(-2px);}
+.gal-img{height:180px;overflow:hidden;position:relative;background:var(--bpale);}
+.gal-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s;}
+.gal-card:hover .gal-img img{transform:scale(1.04);}
+.gal-img-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3rem;}
+/* Overlay avec titre/desc sur l'image */
+.gal-img-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,transparent 50%);display:flex;flex-direction:column;justify-content:flex-end;padding:12px;}
+.gal-img-tit{font-size:13px;font-weight:700;color:#fff;line-height:1.35;}
+.gal-img-desc{font-size:11px;color:rgba(255,255,255,0.8);margin-top:3px;line-height:1.4;}
+.gal-badge-off{position:absolute;top:8px;left:8px;background:rgba(100,116,139,0.9);color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:100px;text-transform:uppercase;}
+.gal-actions{padding:0.8rem;display:flex;gap:6px;align-items:center;}
+.gal-ordre{font-size:10px;color:var(--g400);margin-right:auto;}
+.btn-sm-ed{padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Outfit',sans-serif;background:var(--bpale);color:var(--blue);text-decoration:none;}
+.btn-sm-del{padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Outfit',sans-serif;background:#fee2e2;color:#dc2626;}
+.alert{background:#dcfce7;border:1.5px solid #86efac;border-radius:var(--r);padding:12px 16px;font-size:13px;color:#16a34a;margin-bottom:1.5rem;}
+.empty{text-align:center;padding:4rem;background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);}
+.toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1.5px solid var(--g200);border-radius:var(--r);padding:14px 20px;font-size:13px;color:var(--g800);z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(100px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.1);}
+.toast.show{transform:none;opacity:1;}
+@media(max-width:768px){.wrap{padding:80px 1rem 2rem;}.galerie-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:480px){.galerie-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"><span id="t-ico">✅</span>&nbsp;<span id="t-msg"></span></div>
+
+<nav class="topnav">
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="tn-em">E</div>
+    <div class="tn-name">EDEN GROUP</div>
+    <span style="font-size:11px;color:var(--g400);margin-left:6px;letter-spacing:1px;text-transform:uppercase;">Galerie Académie</span>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <a class="tn-btn" href="{% url 'dashboard_academie_liste' %}">← Académie</a>
+    <a class="tn-btn" href="{% url 'academie_accueil' %}" target="_blank">🎓 Voir</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="page-hd">
+    <div>
+      <h1 class="page-tit">🖼 Galerie Académie</h1>
+      <div class="page-sub">{{ nb }} image{{ nb|pluralize }} — titre et description affichés directement sur l'image</div>
+    </div>
+    <a class="btn-add" href="{% url 'dashboard_academie_galerie_ajouter' %}">+ Ajouter une image</a>
+  </div>
+
+  {% if messages %}{% for msg in messages %}<div class="alert">{{ msg }}</div>{% endfor %}{% endif %}
+
+  <div class="info-box">
+    🖼 Les images de la galerie sont affichées avec leur <strong>titre et description superposés directement sur l'image</strong>, comme un overlay foncé. Elles s'affichent en carrousel sur la page Académie et en grille dans la vue complète. Cliquez sur une image pour l'agrandir.
+  </div>
+
+  {% if items %}
+  <div class="galerie-grid">
+    {% for item in items %}
+    <div class="gal-card" id="gal-{{ item.pk }}">
+      <div class="gal-img">
+        {% if item.image_couverture %}
+          <img src="{{ item.image_couverture.url }}" alt="{{ item.titre }}">
+          <div class="gal-img-overlay">
+            <div class="gal-img-tit">{{ item.titre }}</div>
+            {% if item.description %}
+            <div class="gal-img-desc">{{ item.description|truncatechars:80 }}</div>
+            {% endif %}
+          </div>
+        {% else %}
+          <div class="gal-img-ph">🖼</div>
+          <div class="gal-img-overlay">
+            <div class="gal-img-tit">{{ item.titre }}</div>
+          </div>
+        {% endif %}
+        {% if item.statut != 'publie' %}
+        <div class="gal-badge-off">{{ item.get_statut_display }}</div>
+        {% endif %}
+      </div>
+      <div class="gal-actions">
+        <span class="gal-ordre">Ordre : {{ item.ordre }}</span>
+        <a class="btn-sm-ed" href="{% url 'dashboard_academie_galerie_modifier' item.pk %}">✏ Modifier</a>
+        <button class="btn-sm-del" onclick="supprimerImage({{ item.pk }},'{{ item.titre|escapejs }}')">🗑</button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty">
+    <div style="font-size:3rem;margin-bottom:1rem;">🖼</div>
+    <div style="font-size:15px;font-weight:600;color:var(--g800);margin-bottom:0.5rem;">Aucune image dans la galerie</div>
+    <div style="font-size:13px;color:var(--g500);margin-bottom:1.5rem;">
+      Ajoutez des photos avec un titre et une description.<br>
+      Ils seront affichés directement sur l'image dans un overlay.
+    </div>
+    <a href="{% url 'dashboard_academie_galerie_ajouter' %}" class="btn-add">+ Première image</a>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+function showToast(ico,msg){
+  const t=document.getElementById('toast');
+  document.getElementById('t-ico').textContent=ico;
+  document.getElementById('t-msg').textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),4000);
+}
+
+function supprimerImage(pk, titre) {
+  if (!confirm(`Supprimer l'image "${titre}" ?`)) return;
+  const data = new FormData();
+  data.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+  fetch(`/dashboard/academie/galerie/${pk}/supprimer/`, {
+    method: 'POST',
+    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    body: data
+  }).then(r => r.json()).then(d => {
+    if (d.success) {
+      document.getElementById(`gal-${pk}`)?.remove();
+      showToast('🗑', `"${titre}" supprimée.`);
+    }
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lexique Foncier — Dashboard EDEN GROUP</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g800:#1F2937;--r:12px;--rl:20px;}
+body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
+.topnav{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;border-bottom:1.5px solid var(--g200);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
+.tn-em{width:36px;height:36px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:#fff;}
+.tn-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tn-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1.5px solid var(--g200);background:#fff;color:var(--g500);font-family:'Outfit',sans-serif;display:inline-flex;align-items:center;gap:5px;transition:all 0.2s;}
+.tn-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--bpale);}
+.wrap{padding:84px 2rem 3rem;max-width:1000px;margin:0 auto;}
+.page-hd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;}
+.page-tit{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--g800);}
+.page-sub{font-size:13px;color:var(--g500);margin-top:2px;}
+.btn-add{background:var(--grad);color:#fff;padding:10px 18px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+/* Recherche */
+.search-row{display:flex;gap:10px;margin-bottom:1.5rem;flex-wrap:wrap;}
+.search-box{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--g200);border-radius:var(--r);padding:9px 14px;flex:1;min-width:240px;transition:border-color 0.2s;}
+.search-box:focus-within{border-color:var(--blue);}
+.search-box input{flex:1;background:none;border:none;outline:none;font-size:13px;font-family:'Outfit',sans-serif;color:var(--g800);}
+.search-box input::placeholder{color:var(--g400);}
+/* Stats */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;}
+.stat-box{background:#fff;border:1.5px solid var(--g200);border-radius:var(--r);padding:1rem;text-align:center;}
+.stat-n{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;}
+.stat-l{font-size:11px;color:var(--g400);margin-top:3px;text-transform:uppercase;letter-spacing:0.5px;}
+/* Table */
+.table-wrap{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);overflow:hidden;}
+.t-header{display:grid;grid-template-columns:1fr 2fr 80px 80px;gap:0;background:var(--g50);border-bottom:1.5px solid var(--g200);}
+.th{padding:10px 14px;font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:1px;}
+.t-row{display:grid;grid-template-columns:1fr 2fr 80px 80px;gap:0;border-bottom:1px solid var(--g200);align-items:center;transition:background 0.15s;}
+.t-row:hover{background:var(--g50);}
+.t-row:last-child{border-bottom:none;}
+.td{padding:10px 14px;font-size:13px;color:var(--g700);}
+.td-terme{font-weight:800;color:var(--blue);}
+.td-def{font-size:12px;color:var(--g500);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.badge-pub{background:#dcfce7;color:#16a34a;font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;}
+.badge-brou{background:#fef9c3;color:#b45309;font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;}
+.td-actions{display:flex;gap:4px;}
+.btn-sm-ed{padding:4px 9px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Outfit',sans-serif;background:var(--bpale);color:var(--blue);text-decoration:none;}
+.btn-sm-del{padding:4px 9px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Outfit',sans-serif;background:#fee2e2;color:#dc2626;}
+/* Alpha pills rapide */
+.alpha-pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:1.5rem;background:#fff;border:1.5px solid var(--g200);border-radius:var(--r);padding:10px 14px;}
+.ap-pill{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px;font-size:12px;font-weight:700;color:var(--g500);background:var(--g50);border:1px solid var(--g200);cursor:pointer;transition:all 0.15s;text-decoration:none;}
+.ap-pill:hover{background:var(--bpale);color:var(--blue);border-color:var(--blue);}
+.alert{background:#dcfce7;border:1.5px solid #86efac;border-radius:var(--r);padding:12px 16px;font-size:13px;color:#16a34a;margin-bottom:1.5rem;}
+.empty{text-align:center;padding:4rem;background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);}
+.toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1.5px solid var(--g200);border-radius:var(--r);padding:14px 20px;font-size:13px;color:var(--g800);z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(100px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.1);}
+.toast.show{transform:none;opacity:1;}
+@media(max-width:768px){.wrap{padding:80px 1rem 2rem;}.t-header{display:none;}.t-row{grid-template-columns:1fr auto;gap:8px;padding:8px;}.td-def{display:none;}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"><span id="t-ico">✅</span>&nbsp;<span id="t-msg"></span></div>
+
+<nav class="topnav">
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="tn-em">E</div>
+    <div class="tn-name">EDEN GROUP</div>
+    <span style="font-size:11px;color:var(--g400);margin-left:6px;letter-spacing:1px;text-transform:uppercase;">Lexique Foncier</span>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <a class="tn-btn" href="{% url 'academie_lexique' %}" target="_blank">🔤 Voir</a>
+    <a class="tn-btn" href="{% url 'dashboard_academie_liste' %}">← Académie</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="page-hd">
+    <div>
+      <h1 class="page-tit">🔤 Lexique Foncier</h1>
+      <div class="page-sub">{{ nb }} terme{{ nb|pluralize }} au total · Dictionnaire A-Z</div>
+    </div>
+    <a class="btn-add" href="{% url 'dashboard_lexique_ajouter' %}">+ Ajouter un terme</a>
+  </div>
+
+  {% if messages %}{% for msg in messages %}<div class="alert">{{ msg }}</div>{% endfor %}{% endif %}
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-n">{{ nb }}</div>
+      <div class="stat-l">Termes total</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-n">{{ items.filter.publie|default:0 }}</div>
+      <div class="stat-l">Publiés</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-n">26</div>
+      <div class="stat-l">Lettres de l'alphabet</div>
+    </div>
+  </div>
+
+  <!-- Recherche -->
+  <form method="get" class="search-row">
+    <div class="search-box">
+      <span style="font-size:14px;color:var(--g400);">🔍</span>
+      <input type="text" name="q" value="{{ q }}" placeholder="Rechercher un terme...">
+    </div>
+    {% if q %}<a href="{% url 'dashboard_lexique' %}" class="tn-btn">✕ Tout voir</a>{% endif %}
+  </form>
+
+  <!-- Navigation rapide A-Z -->
+  <div class="alpha-pills">
+    {% for l in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
+    <a class="ap-pill" href="#lettre-{{ l }}" title="Lettre {{ l }}">{{ l }}</a>
+    {% endfor %}
+  </div>
+
+  <!-- Table -->
+  {% if items %}
+  <div class="table-wrap">
+    <div class="t-header">
+      <div class="th">Terme</div>
+      <div class="th">Définition</div>
+      <div class="th">Statut</div>
+      <div class="th">Actions</div>
+    </div>
+    {% regroup items by titre.0|upper as items_by_letter %}
+    {% for letter_group in items_by_letter %}
+    <div id="lettre-{{ letter_group.grouper }}" style="grid-column:1/-1;background:linear-gradient(90deg,var(--bpale),transparent);padding:6px 14px;border-bottom:1px solid var(--g200);">
+      <span style="font-size:11px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:1px;">{{ letter_group.grouper }}</span>
+    </div>
+    {% for item in letter_group.list %}
+    <div class="t-row" id="lex-{{ item.pk }}">
+      <div class="td td-terme">{{ item.titre }}</div>
+      <div class="td td-def">{{ item.description|default:"—"|truncatechars:80 }}</div>
+      <div class="td">
+        <span class="{% if item.statut == 'publie' %}badge-pub{% else %}badge-brou{% endif %}">
+          {{ item.get_statut_display }}
+        </span>
+      </div>
+      <div class="td td-actions">
+        <a class="btn-sm-ed" href="{% url 'dashboard_lexique_modifier' item.pk %}">✏</a>
+        <button class="btn-sm-del" onclick="supprimerItem({{ item.pk }},'{{ item.titre|escapejs }}')">🗑</button>
+      </div>
+    </div>
+    {% endfor %}
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty">
+    <div style="font-size:3rem;margin-bottom:1rem;">🔤</div>
+    <div style="font-size:15px;font-weight:600;color:var(--g800);margin-bottom:0.5rem;">
+      {% if q %}Aucun terme pour "{{ q }}"{% else %}Lexique vide{% endif %}
+    </div>
+    <div style="font-size:13px;color:var(--g500);margin-bottom:1.5rem;">
+      {% if q %}Essayez un autre mot.{% else %}Ajoutez votre premier terme foncier.{% endif %}
+    </div>
+    {% if not q %}
+    <a href="{% url 'dashboard_lexique_ajouter' %}" class="btn-add">+ Premier terme</a>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+
+<script>
+function showToast(ico,msg){const t=document.getElementById('toast');document.getElementById('t-ico').textContent=ico;document.getElementById('t-msg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),4000);}
+
+function supprimerItem(pk, titre) {
+  if (!confirm(`Supprimer le terme "${titre}" ?`)) return;
+  const data = new FormData();
+  data.append('csrfmiddlewaretoken','{{ csrf_token }}');
+  fetch(`/dashboard/academie/lexique/${pk}/supprimer/`,{
+    method:'POST',
+    headers:{'X-Requested-With':'XMLHttpRequest'},
+    body:data
+  }).then(r=>r.json()).then(d=>{
+    if(d.success){
+      document.getElementById(`lex-${pk}`)?.remove();
+      showToast('🗑',`"${titre}" supprimé.`);
+    }
+  });
+}
+</script>
+</body>
+</html>

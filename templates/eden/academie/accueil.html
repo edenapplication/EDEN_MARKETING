@@ -18,785 +18,990 @@
   --g400:#94A3B8;--g500:#64748B;--g600:#475569;--g800:#1E293B;
   --sh:0 2px 12px rgba(0,0,0,0.08);
   --sh-lg:0 8px 32px rgba(27,79,219,0.15);
-  --r:8px;--rl:12px;--rxl:20px;
-  --topbar:54px;--sidebar:200px;
+  --r:10px;--rl:16px;--rxl:24px;
 }
 html{scroll-behavior:smooth;}
-body{font-family:'Outfit',sans-serif;background:#f5f6fa;color:var(--g800);overflow-x:hidden;}
+body{font-family:'Outfit',sans-serif;background:#fff;color:var(--g800);overflow-x:hidden;}
 ::-webkit-scrollbar{width:5px;}
 ::-webkit-scrollbar-thumb{background:var(--grad-h);border-radius:100px;}
 
-/* ══ TOPBAR ══ */
-.topbar{
-  position:fixed;top:0;left:0;right:0;height:var(--topbar);
-  background:var(--blue-d);z-index:1000;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 1.5rem;gap:1rem;
-  border-bottom:1px solid rgba(255,255,255,0.1);
+/* ══ NAV ══ */
+nav{
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    z-index:1000;
+    height:70px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 2rem;
+    background:transparent;
+    border-bottom:1px solid transparent;
+    box-shadow:none;
+    transition:background .4s ease, backdrop-filter .4s ease, border-color .4s ease, box-shadow .4s ease;
 }
-.tb-left{display:flex;align-items:center;gap:12px;flex-shrink:0;}
-.tb-logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
-.tb-logo-box{width:34px;height:34px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#fff;}
-.tb-logo-name{font-size:14px;font-weight:900;color:#fff;}
-.tb-logo-tag{font-size:9px;color:rgba(255,255,255,0.6);letter-spacing:0.5px;}
-.tb-div{width:1px;height:32px;background:rgba(255,255,255,0.2);}
-.tb-academie{display:flex;flex-direction:column;}
-.tb-ac-name{font-size:16px;font-weight:800;color:#fff;letter-spacing:0.5px;}
-.tb-ac-tag{font-size:10px;color:rgba(255,255,255,0.65);font-style:italic;}
-/* Search bar */
-.tb-search{flex:1;max-width:480px;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:100px;padding:6px 16px;transition:all 0.2s;}
-.tb-search:focus-within{background:rgba(255,255,255,0.18);border-color:rgba(255,255,255,0.4);}
-.tb-search input{flex:1;background:none;border:none;outline:none;font-size:13px;color:#fff;font-family:'Outfit',sans-serif;}
-.tb-search input::placeholder{color:rgba(255,255,255,0.5);}
-.tb-search-ico{color:rgba(255,255,255,0.6);font-size:14px;cursor:pointer;}
-.tb-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
-.tb-btn{padding:7px 16px;border-radius:100px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;display:flex;align-items:center;gap:6px;transition:all 0.2s;text-decoration:none;border:none;}
-.tb-btn-primary{background:var(--blue);color:#fff;border:1.5px solid rgba(255,255,255,0.3);}
-.tb-btn-primary:hover{background:#2563EB;}
-.tb-btn-ghost{background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2);}
-.tb-btn-ghost:hover{background:rgba(255,255,255,0.2);}
-.tb-back{color:rgba(255,255,255,0.7);font-size:12px;text-decoration:none;display:flex;align-items:center;gap:4px;transition:color 0.2s;}
-.tb-back:hover{color:#fff;}
-
-/* ══ LAYOUT ══ */
-.layout{display:flex;padding-top:var(--topbar);min-height:100vh;}
-
-/* ══ SIDEBAR ══ */
-.sidebar{
-  width:var(--sidebar);
-  background:#fff;
-  border-right:1px solid var(--g200);
-  position:fixed;top:var(--topbar);left:0;bottom:0;
-  overflow-y:auto;z-index:900;
-  display:flex;flex-direction:column;
+nav.scrolled{
+    background:rgba(255,255,255,.92);
+    backdrop-filter:blur(22px);
+    -webkit-backdrop-filter:blur(22px);
+    border-bottom:1px solid rgba(226,232,240,.9);
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
 }
-.sidebar::-webkit-scrollbar{width:3px;}
-.sidebar::-webkit-scrollbar-thumb{background:var(--blue);border-radius:100px;}
-.sb-nav{flex:1;padding:0.5rem 0;}
-.sb-item{display:flex;align-items:center;gap:9px;padding:9px 1rem;font-size:12.5px;font-weight:500;color:var(--g600);cursor:pointer;transition:all 0.15s;border-left:3px solid transparent;text-decoration:none;border-right:none;}
-.sb-item:hover{color:var(--blue);background:var(--blue-pale);border-left-color:var(--blue);}
-.sb-item.active{color:var(--blue);background:var(--blue-pale);border-left-color:var(--blue);font-weight:700;}
-.sb-item.active-cat{background:var(--red);color:#fff;border-left-color:var(--red);}
-.sb-ico{font-size:14px;width:18px;text-align:center;flex-shrink:0;}
-.sb-nb{margin-left:auto;background:var(--g200);color:var(--g500);font-size:10px;font-weight:700;padding:1px 6px;border-radius:100px;}
-.sb-item.active .sb-nb,.sb-item.active-cat .sb-nb{background:rgba(255,255,255,0.3);color:#fff;}
-.sb-divider{height:1px;background:var(--g100);margin:4px 0;}
-/* Box bas sidebar */
-.sb-info-box{margin:0.8rem;background:var(--blue-pale);border-radius:var(--rl);padding:0.8rem;}
-.sib-tit{font-size:11px;font-weight:700;color:var(--blue);margin-bottom:0.3rem;}
-.sib-desc{font-size:10px;color:var(--g500);line-height:1.5;margin-bottom:0.6rem;}
-.sib-btn{background:var(--blue);color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;width:100%;display:flex;align-items:center;justify-content:center;gap:5px;}
-
-/* ══ CONTENU PRINCIPAL ══ */
-.main-content{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-box{width:42px;height:42px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#fff;}
+.logo-name{font-size:18px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.logo-tagline{font-size:9px;color:var(--g500);letter-spacing:1.5px;text-transform:uppercase;}
+.nav-links{display:flex;align-items:center;gap:0;}
+.nav-lnk{padding:6px 13px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.85);text-decoration:none;border-radius:7px;transition:all 0.18s;position:relative;}
+.nav-lnk:hover,.nav-lnk.active{color:#fff;}
+.nav-lnk.active::after{content:'';position:absolute;bottom:-4px;left:13px;right:13px;height:2px;background:var(--red);border-radius:100px;}
+nav.scrolled .nav-lnk{color:var(--g600);}
+nav.scrolled .nav-lnk:hover,nav.scrolled .nav-lnk.active{color:var(--blue);}
+nav.scrolled .nav-lnk.active::after{background:var(--red);}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.btn-rdv{background:var(--red);color:#fff;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:7px;text-decoration:none;}
+.btn-rdv:hover{background:var(--red-d);transform:translateY(-1px);box-shadow:0 4px 16px rgba(200,16,46,0.3);}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:none;padding:6px;}
+.hamburger span{width:22px;height:2px;background:#fff;border-radius:2px;display:block;transition:background 0.3s;}
+nav.scrolled .hamburger span{background:var(--g800);}
+.mob-menu{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(255,255,255,0.98);border-bottom:1px solid var(--g200);padding:1rem 1.5rem;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.1);backdrop-filter:blur(10px);}
+.mob-menu.open{display:flex;flex-direction:column;gap:4px;}
+.mob-menu .nav-lnk{color:var(--g600);padding:8px 0;}
+.mob-menu .nav-lnk.active{color:var(--blue);}
+.mob-menu .nav-lnk.active::after{display:none;}
 
 /* ══ HERO ══ */
-.hero-ac{
-  position:relative;height:180px;overflow:hidden;
-  background:linear-gradient(135deg,var(--blue-d) 0%,#1B4FDB 50%,#7B20B4 100%);
-}
-.hero-ac-bg{position:absolute;inset:0;}
-.hero-ac-bg img{width:100%;height:100%;object-fit:cover;opacity:0.3;display:block;}
-.hero-ac-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(10,20,80,0.85) 0%,rgba(10,20,80,0.5) 100%);}
-.hero-ac-content{position:absolute;inset:0;display:flex;align-items:center;padding:0 2rem;gap:3rem;}
-.hero-ac-left{max-width:500px;}
-.hero-ac-tit{font-size:clamp(1.4rem,2.5vw,2rem);font-weight:900;color:#fff;margin-bottom:0.3rem;}
-.hero-ac-sub{font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5;margin-bottom:0.8rem;max-width:420px;}
-.hero-ac-line{width:48px;height:3px;background:var(--red);border-radius:100px;margin-bottom:0.8rem;}
-.hero-ac-desc{font-size:12px;color:rgba(255,255,255,0.65);line-height:1.65;max-width:420px;}
-.hero-ac-right{flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.hero-academie{margin-top:0;position:relative;background:var(--blue-d);min-height:200px;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;}
+.hero-bg img{width:100%;height:100%;object-fit:cover;display:block;opacity:1;}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,15,50,.98) 0%,rgba(8,25,70,.92) 15%,rgba(10,30,80,.80) 30%,rgba(10,35,85,.65) 45%,rgba(10,35,85,.45) 55%,rgba(10,35,85,.25) 70%,rgba(10,35,85,.10) 85%,rgba(0,0,0,0) 100%);z-index:1;}
+.hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr 320px;align-items:center;gap:2rem;padding:6rem 2rem 2.5rem;max-width:1280px;margin:0 auto;}
+.hero-tit{font-size:clamp(2rem,3.5vw,2.8rem);font-weight:900;color:#fff;margin-bottom:0.5rem;}
+.hero-desc{font-size:14px;color:rgba(255,255,255,0.85);line-height:1.7;max-width:500px;margin-bottom:1.5rem;}
+.hero-badges{display:flex;gap:1.5rem;flex-wrap:wrap;}
+.hero-badge{display:flex;align-items:center;gap:8px;}
+.hb-ico{width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.hb-txt{font-size:11px;color:rgba(255,255,255,0.85);font-weight:600;line-height:1.3;}
 
-/* ══ STATS BAND ══ */
-.stats-band{
-  background:#fff;border-bottom:1px solid var(--g200);
-  display:flex;align-items:stretch;
-  overflow-x:auto;
-}
-.stats-band::-webkit-scrollbar{height:2px;}
-.stat-chip{
-  display:flex;align-items:center;gap:10px;
-  padding:1rem 1.4rem;border-right:1px solid var(--g100);
-  flex:1;min-width:140px;
-}
-.stat-chip:last-child{border-right:none;}
-.sc-ico{font-size:1.6rem;flex-shrink:0;}
-.sc-n{font-size:1.3rem;font-weight:900;color:var(--blue);line-height:1;}
-.sc-l{font-size:10px;color:var(--g400);line-height:1.3;margin-top:2px;}
+/* ══ SEARCH BAR ══ */
+.search-bar-ac{background:#fff;padding:0.8rem 2rem;border-bottom:1px solid var(--g200);display:flex;align-items:center;gap:1rem;}
+.search-bar-ac .sb-wrap{flex:1;max-width:600px;display:flex;align-items:center;background:var(--g50);border:1.5px solid var(--g200);border-radius:100px;padding:8px 18px;transition:all 0.2s;}
+.search-bar-ac .sb-wrap:focus-within{border-color:var(--blue);background:#fff;}
+.search-bar-ac .sb-wrap .sb-icon{color:var(--g400);font-size:16px;margin-right:10px;}
+.search-bar-ac .sb-wrap input{flex:1;border:none;outline:none;background:transparent;font-size:13px;font-family:'Outfit',sans-serif;color:var(--g800);}
+.search-bar-ac .sb-wrap input::placeholder{color:var(--g400);}
+.search-bar-ac .sb-btn{background:var(--blue);color:#fff;border:none;padding:8px 20px;border-radius:100px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;}
+.search-bar-ac .sb-btn:hover{background:var(--blue-d);}
+.search-bar-ac .sb-gestion{background:var(--blue);color:#fff;padding:8px 16px;border-radius:100px;font-size:12px;font-weight:700;text-decoration:none;transition:all 0.2s;white-space:nowrap;}
+.search-bar-ac .sb-gestion:hover{background:var(--blue-d);}
+
+/* ══ LAYOUT PRINCIPAL ══ */
+.academie-layout{display:grid;grid-template-columns:220px 1fr;gap:0;max-width:1280px;margin:0 auto;}
+
+/* ══ MENU GAUCHE ══ */
+.sidebar-menu{background:#fff;border-right:1.5px solid var(--g200);padding:1.2rem 0;position:sticky;top:70px;height:calc(100vh - 70px);overflow-y:auto;}
+.sidebar-menu::-webkit-scrollbar{width:3px;}
+.sidebar-menu::-webkit-scrollbar-thumb{background:var(--grad-h);border-radius:100px;}
+.sm-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g400);padding:0.5rem 1.2rem 0.8rem;border-bottom:1px solid var(--g200);margin-bottom:0.4rem;}
+.sm-item{display:flex;align-items:center;gap:9px;padding:9px 1.2rem;font-size:12.5px;font-weight:500;color:var(--g600);cursor:pointer;transition:all 0.15s;border-left:3px solid transparent;text-decoration:none;}
+.sm-item:hover{color:var(--blue);background:var(--blue-pale);}
+.sm-item.active{color:var(--blue);background:var(--blue-pale);border-left-color:var(--blue);font-weight:700;}
+.sm-item.active-cat{background:var(--red);color:#fff;border-left-color:var(--red);font-weight:700;}
+.sm-item-ico{font-size:14px;flex-shrink:0;width:20px;text-align:center;}
+.sm-nb{margin-left:auto;background:var(--g200);color:var(--g500);font-size:9px;font-weight:700;padding:1px 6px;border-radius:100px;}
+.sm-item.active .sm-nb,.sm-item.active-cat .sm-nb{background:rgba(255,255,255,0.3);color:#fff;}
+.sm-divider{height:1px;background:var(--g100);margin:4px 0;}
+.sm-conseil-box{margin:1rem;background:var(--blue-pale);border-radius:var(--rl);padding:1rem;}
+.scb-tit{font-size:12px;font-weight:700;color:var(--g800);margin-bottom:0.4rem;}
+.scb-desc{font-size:11px;color:var(--g500);line-height:1.5;margin-bottom:0.8rem;}
+.btn-conseiller{background:var(--red);color:#fff;border:none;padding:9px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;width:100%;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s;}
+.btn-conseiller:hover{background:var(--red-d);}
+
+/* ══ CONTENU ACADÉMIE ══ */
+.academie-content{padding:2rem 2rem;background:var(--g50);}
 
 /* ══ SECTION TAGS ══ */
-.section-tag{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g400);margin-bottom:0.3rem;}
-.section-tit{font-size:1.1rem;font-weight:800;color:var(--g800);}
-.voir-tout{font-size:12px;font-weight:700;color:var(--blue);text-decoration:none;display:flex;align-items:center;gap:4px;transition:gap 0.2s;}
+.section-tag{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g400);margin-bottom:2px;}
+.section-tit{font-size:0.95rem;font-weight:800;color:var(--g800);}
+.voir-tout{font-size:11px;font-weight:700;color:var(--blue);text-decoration:none;display:flex;align-items:center;gap:4px;transition:gap 0.2s;}
 .voir-tout:hover{gap:7px;}
-.section-hd{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:1rem;}
+.section-hd{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:0.8rem;}
 
-/* ══ GRILLE PRINCIPALE ══ */
-.content-body{padding:1.5rem;}
+/* ══ LIGNE 4 : PARCOURS | GALERIE | REVUE ══ */
+.row-3-col{display:grid;grid-template-columns:1fr 1.5fr 1fr;gap:1rem;margin-bottom:1.5rem;align-items:start;}
 
-/* Section: A LA UNE + REVUE + PARCOURS */
-.top-grid{display:grid;grid-template-columns:1fr 280px 260px;gap:1.2rem;margin-bottom:1.5rem;}
+/* ══ LIGNE 5 : ARTICLES ══ */
+.row-articles{margin-bottom:1.5rem;}
 
-/* À LA UNE */
-.une-card{
-  border-radius:var(--rl);overflow:hidden;
-  background:#fff;box-shadow:var(--sh);cursor:pointer;
-  transition:all 0.3s;text-decoration:none;display:block;
-}
-.une-card:hover{transform:translateY(-3px);box-shadow:var(--sh-lg);}
-.une-img{height:180px;position:relative;overflow:hidden;}
-.une-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s;}
-.une-card:hover .une-img img{transform:scale(1.04);}
-.une-img-ph{width:100%;height:100%;background:linear-gradient(135deg,var(--blue-d),#7B20B4);display:flex;align-items:center;justify-content:center;font-size:3rem;}
-.une-cat-tag{position:absolute;top:10px;left:10px;background:var(--blue);color:#fff;padding:3px 10px;border-radius:100px;font-size:9px;font-weight:700;text-transform:uppercase;}
-.une-body{padding:1rem;}
-.une-tit{font-size:14px;font-weight:800;color:var(--g800);line-height:1.35;margin-bottom:0.5rem;}
-.une-desc{font-size:11px;color:var(--g500);line-height:1.6;margin-bottom:0.6rem;}
-.une-meta{display:flex;align-items:center;gap:8px;font-size:10px;color:var(--g400);}
-.une-btn{display:inline-flex;align-items:center;gap:5px;background:var(--blue);color:#fff;padding:7px 14px;border-radius:6px;font-size:12px;font-weight:700;text-decoration:none;margin-top:0.8rem;transition:all 0.2s;}
-.une-btn:hover{background:var(--blue-d);}
+/* ══ LIGNE 6 : 4 COLONNES ══ */
+.row-4-col{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1rem;margin-bottom:1.5rem;}
 
-/* REVUE FEATURED */
-.revue-card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);overflow:hidden;display:flex;flex-direction:column;}
-.revue-img{height:120px;overflow:hidden;background:linear-gradient(135deg,var(--blue-pale),#E8EDFF);}
-.revue-img img{width:100%;height:100%;object-fit:cover;display:block;}
-.revue-body{padding:0.8rem;flex:1;}
-.revue-num{font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
-.revue-tit{font-size:12px;font-weight:700;color:var(--g800);line-height:1.35;margin-bottom:0.5rem;}
-.revue-btns{display:flex;gap:6px;margin-top:auto;}
-.btn-lire{display:flex;align-items:center;gap:4px;padding:6px 10px;border-radius:6px;font-size:11px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;transition:all 0.2s;}
-.btn-lire-ol{background:var(--blue);color:#fff;}
-.btn-lire-dl{background:var(--g50);border:1.5px solid var(--g200);color:var(--g600);}
-.btn-lire-ol:hover{background:var(--blue-d);}
-.btn-lire-dl:hover{border-color:var(--blue);color:var(--blue);}
-
-/* PARCOURS */
-.parcours-card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);padding:1rem;}
-.parcours-steps{display:flex;flex-direction:column;gap:6px;margin-bottom:0.8rem;}
-.ps-item{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--g700);}
-.ps-num{width:20px;height:20px;border-radius:50%;background:var(--blue-pale);border:1.5px solid var(--blue);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:var(--blue);flex-shrink:0;}
-.ps-ico{font-size:14px;flex-shrink:0;}
+/* ══ PARCOURS (accueil) ══ */
+.acceuil .parcours-card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);padding:0.8rem;height:100%;display:flex;flex-direction:column;}
+.acceuil .parcours-card .ps-list{flex:1;}
+.acceuil .btn-parcours{width:100%;background:var(--grad);color:#fff;border:none;padding:8px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;display:flex;align-items:center;justify-content:center;gap:4px;margin-top:auto;}
+.acceuil .btn-parcours:hover{opacity:0.88;}
+.ps-item{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--g100);}
+.ps-item:last-child{border-bottom:none;}
+.ps-num{width:22px;height:22px;border-radius:50%;background:var(--blue-pale);border:1.5px solid var(--blue);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:var(--blue);flex-shrink:0;}
+.ps-ico{font-size:13px;flex-shrink:0;width:20px;text-align:center;}
 .ps-tit{font-size:11px;font-weight:600;color:var(--g800);}
-.ps-sub{font-size:10px;color:var(--g400);}
-.ps-line{flex:1;height:1px;background:var(--g200);margin-left:26px;}
-.btn-parcours{width:100%;background:var(--grad);color:#fff;border:none;padding:9px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;display:flex;align-items:center;justify-content:center;gap:5px;transition:all 0.2s;}
-.btn-parcours:hover{opacity:0.88;}
+.ps-sub{font-size:9px;color:var(--g400);}
 
-/* ══ SECTIONS SECONDAIRES (grille 4 colonnes) ══ */
-.bottom-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1.2rem;margin-bottom:1.5rem;}
+/* ══ CARROUSEL HORIZONTAL ══ */
+.carousel-wrap{overflow:hidden;position:relative;}
+.carousel-track{display:flex;transition:transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);}
+.carousel-nav{display:flex;gap:5px;margin-top:0.4rem;justify-content:flex-end;}
+.car-btn{width:28px;height:28px;border-radius:50%;background:#fff;border:1.5px solid var(--g200);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.car-btn:hover{background:var(--blue);color:#fff;border-color:var(--blue);}
 
-/* Card document générique */
-.doc-mini{display:flex;gap:8px;padding:0.6rem 0;border-bottom:1px solid var(--g100);cursor:pointer;transition:all 0.15s;text-decoration:none;}
+/* ══ SLIDE UNIQUE ══ */
+.slide-item{min-width:100%;padding:0 2px;flex-shrink:0;}
+
+/* ══ GALERIE (accueil) ══ */
+/* ══ GALERIE (accueil) ══ */
+.galerie-item{width:100%;height:200px;border-radius:var(--rl);overflow:hidden;position:relative;cursor:pointer;}
+.galerie-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s;}
+.galerie-item:hover img{transform:scale(1.04);}
+.galerie-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 40%);display:flex;flex-direction:column;justify-content:flex-end;padding:16px;}
+.galerie-tit{font-size:14px;font-weight:700;color:#fff;line-height:1.2;}
+.galerie-desc{font-size:11px;color:rgba(255,255,255,0.8);margin-top:4px;}
+.galerie-container{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);padding:0.6rem;height:100%;display:flex;flex-direction:column;}/* ══ REVUE CARD ══ */
+.revue-card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);overflow:hidden;display:flex;flex-direction:column;height:100%;}
+.revue-img{height:180px;overflow:hidden;background:var(--blue-pale);flex-shrink:0;}
+.revue-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.revue-body{padding:0.8rem;flex:1;display:flex;flex-direction:column;}
+.revue-num{font-size:9px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+.revue-tit{font-size:13px;font-weight:700;color:var(--g800);line-height:1.4;flex:1;}
+.revue-btns{display:flex;gap:5px;margin-top:8px;}
+.btn-lire{display:flex;align-items:center;gap:4px;padding:5px 12px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;transition:all 0.2s;border:none;}
+.btn-lire-ol{background:var(--blue);color:#fff;}
+.btn-lire-ol:hover{background:var(--blue-d);}
+.btn-lire-outline{background:transparent;color:var(--blue);border:1.5px solid var(--blue);}
+.btn-lire-outline:hover{background:var(--blue);color:#fff;}
+
+/* ══ ED CARD (articles) ══ */
+.ed-card{min-width:180px;max-width:180px;background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);overflow:hidden;cursor:pointer;transition:all 0.3s;flex-shrink:0;text-decoration:none;display:block;}
+.ed-card:hover{transform:translateY(-3px);box-shadow:var(--sh-lg);border-color:rgba(27,79,219,0.2);}
+.ed-img{height:90px;position:relative;overflow:hidden;background:var(--blue-pale);}
+.ed-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.ed-img-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;}
+.ed-body{padding:0.6rem;}
+.ed-type{font-size:8px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+.ed-tit{font-size:10px;font-weight:700;color:var(--g800);line-height:1.3;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+.ed-meta{font-size:8px;color:var(--g400);}
+.ed-ouvrir{font-size:9px;font-weight:700;color:var(--blue);margin-top:3px;display:flex;align-items:center;gap:3px;}
+
+/* ══ TEXTE DE LOI MINI (défilement vertical) ══ */
+.doc-mini{display:flex;gap:6px;padding:0.5rem 0;border-bottom:1px solid var(--g100);cursor:pointer;transition:all 0.15s;text-decoration:none;}
 .doc-mini:last-child{border-bottom:none;padding-bottom:0;}
 .doc-mini:hover .dm-tit{color:var(--blue);}
-.dm-ico{font-size:1.2rem;flex-shrink:0;margin-top:1px;}
+.dm-ico{font-size:1rem;flex-shrink:0;margin-top:1px;}
 .dm-body{flex:1;min-width:0;}
-.dm-tit{font-size:11.5px;font-weight:600;color:var(--g800);line-height:1.4;transition:color 0.2s;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
-.dm-meta{font-size:10px;color:var(--g400);margin-top:2px;}
-.dm-dl{font-size:10px;font-weight:600;color:var(--blue);display:flex;align-items:center;gap:3px;margin-top:3px;}
+.dm-tit{font-size:10px;font-weight:600;color:var(--g800);line-height:1.4;transition:color 0.2s;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+.dm-meta{font-size:8px;color:var(--g400);margin-top:2px;}
+.dm-dl{font-size:9px;font-weight:600;color:var(--blue);display:flex;align-items:center;gap:3px;margin-top:3px;}
+.mini-section{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);padding:0.8rem;display:flex;flex-direction:column;height:100%;overflow:hidden;position:relative;}
+.mini-section .scroll-vertical{flex:1;overflow-y:auto;animation:scrollVertical 15s linear infinite;}
+.mini-section .scroll-vertical:hover{animation-play-state:paused;}
+@keyframes scrollVertical{0%{transform:translateY(0);}100%{transform:translateY(-50%);}}
 
-.mini-section{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);padding:1rem;display:flex;flex-direction:column;}
-.ms-docs{flex:1;}
-
-/* Vidéo du moment */
-.video-card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);overflow:hidden;}
-.video-player-wrap{position:relative;background:#000;height:140px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
-.video-player-wrap video{width:100%;height:100%;object-fit:cover;}
+/* ══ VIDEO ══ */
+.video-card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);overflow:hidden;height:100%;display:flex;flex-direction:column;}
+.video-player-wrap{position:relative;background:#000;height:180px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
+.video-player-wrap img{width:100%;height:100%;object-fit:cover;}
 .video-play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);cursor:pointer;transition:all 0.2s;}
-.video-play-overlay:hover{background:rgba(0,0,0,0.2);}
-.play-btn{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;font-size:18px;transition:transform 0.2s;}
+.video-play-overlay:hover{background:rgba(0,0,0,0.15);}
+.play-btn{width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;font-size:20px;transition:transform 0.2s;}
 .video-play-overlay:hover .play-btn{transform:scale(1.1);}
-.video-duree{position:absolute;bottom:6px;right:8px;background:rgba(0,0,0,0.7);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;}
-.video-body{padding:0.8rem;}
-.video-tit{font-size:12px;font-weight:700;color:var(--g800);line-height:1.4;margin-bottom:4px;}
-.video-desc{font-size:10px;color:var(--g500);line-height:1.5;}
+.video-duree{position:absolute;bottom:4px;right:6px;background:rgba(0,0,0,0.7);color:#fff;font-size:9px;font-weight:700;padding:2px 5px;border-radius:4px;}
+.video-body{padding:0.6rem;flex:1;}
+.video-tit{font-size:12px;font-weight:700;color:var(--g800);line-height:1.3;margin-bottom:2px;}
+.video-desc{font-size:10px;color:var(--g500);line-height:1.4;}
 
-/* Guide pratique */
-.guide-card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);padding:1rem;display:flex;flex-direction:column;}
-.guide-img{height:80px;border-radius:var(--r);overflow:hidden;margin-bottom:0.8rem;background:var(--blue-pale);}
+/* ══ GUIDE PRATIQUE ══ */
+.guide-card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);overflow:hidden;display:flex;flex-direction:column;height:100%;text-decoration:none;cursor:pointer;transition:all 0.3s;}
+.guide-card:hover{transform:translateY(-2px);box-shadow:var(--sh-lg);}
+.guide-img{height:180px;overflow:hidden;background:var(--blue-pale);flex-shrink:0;}
 .guide-img img{width:100%;height:100%;object-fit:cover;display:block;}
-.guide-tit{font-size:13px;font-weight:700;color:var(--g800);line-height:1.35;margin-bottom:0.4rem;}
-.guide-desc{font-size:10px;color:var(--g500);line-height:1.5;flex:1;margin-bottom:0.6rem;}
-.btn-telecharger{display:flex;align-items:center;gap:5px;background:var(--blue-pale);border:1.5px solid rgba(27,79,219,0.2);color:var(--blue);padding:7px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;transition:all 0.2s;}
-.btn-telecharger:hover{background:var(--blue);color:#fff;}
+.guide-body{padding:0.8rem;flex:1;display:flex;flex-direction:column;}
+.guide-tit{font-size:13px;font-weight:700;color:var(--g800);line-height:1.4;flex:1;}
+.guide-desc{font-size:10px;color:var(--g500);line-height:1.4;margin-bottom:6px;}
+.guide-btns{display:flex;gap:5px;margin-top:8px;}
 
-/* FAQ featured */
-.faq-card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);padding:1rem;display:flex;flex-direction:column;}
-.faq-q-prefix{font-size:1rem;font-weight:900;color:var(--blue);margin-right:4px;}
-.faq-q{font-size:12px;font-weight:700;color:var(--g800);line-height:1.4;margin-bottom:0.6rem;}
-.faq-r{font-size:11px;color:var(--g500);line-height:1.65;flex:1;margin-bottom:0.6rem;}
-.faq-voir{font-size:11px;font-weight:700;color:var(--blue);text-decoration:none;display:flex;align-items:center;gap:4px;transition:gap 0.2s;}
-.faq-voir:hover{gap:7px;}
+/* ══ FAQ CARD (défilement vertical) ══ */
+.faq-card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);padding:0.8rem;display:flex;flex-direction:column;height:100%;overflow:hidden;}
+.faq-card .scroll-vertical{flex:1;overflow-y:auto;animation:scrollVertical 18s linear infinite;}
+.faq-card .scroll-vertical:hover{animation-play-state:paused;}
+.faq-q-prefix{font-size:0.9rem;font-weight:900;color:var(--blue);margin-right:3px;}
+.faq-q{font-size:11px;font-weight:700;color:var(--g800);line-height:1.3;margin-bottom:0.4rem;}
+.faq-r{font-size:10px;color:var(--g500);line-height:1.5;margin-bottom:0.4rem;}
+.faq-voir{font-size:10px;font-weight:700;color:var(--blue);text-decoration:none;display:flex;align-items:center;gap:4px;}
+.faq-temps{font-size:9px;color:var(--g400);margin-bottom:0.3rem;}
+.faq-item-wrap{padding:0.6rem 0;border-bottom:1px solid var(--g100);}
+.faq-item-wrap:last-child{border-bottom:none;}
 
-/* ══ SECTION COMPLÈTE (affichage au clic sidebar) ══ */
+/* ══ SECTION COMPLÈTE (pages internes) ══ */
 .full-section{display:none;padding:1.5rem;background:#f5f6fa;}
 .full-section.visible{display:block;}
-.fs-header{background:#fff;border-radius:var(--rl);padding:1rem 1.2rem;margin-bottom:1.2rem;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--sh);}
-.fs-tit{font-size:1.1rem;font-weight:800;color:var(--g800);display:flex;align-items:center;gap:8px;}
-.fs-back{background:var(--blue-pale);border:1.5px solid rgba(27,79,219,0.2);color:var(--blue);padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;display:flex;align-items:center;gap:5px;}
-.fs-back:hover{background:var(--blue);color:#fff;}
-.fs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.2rem;}
+.full-section .fs-header{background:#fff;border-radius:var(--rl);padding:0.8rem 1rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--sh);}
+.full-section .fs-tit{font-size:0.95rem;font-weight:800;color:var(--g800);display:flex;align-items:center;gap:6px;}
+.full-section .fs-back{background:var(--blue-pale);border:1.5px solid rgba(27,79,219,0.2);color:var(--blue);padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;display:flex;align-items:center;gap:4px;}
+.full-section .fs-back:hover{background:var(--blue);color:#fff;}
+.full-section .fs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;}
+.full-section .ed-card-full{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);overflow:hidden;cursor:pointer;transition:all 0.3s;text-decoration:none;display:block;}
+.full-section .ed-card-full:hover{transform:translateY(-3px);box-shadow:var(--sh-lg);}
+.full-section .ecf-img{height:120px;position:relative;overflow:hidden;background:var(--blue-pale);}
+.full-section .ecf-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.full-section .ecf-img-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;}
+.full-section .ecf-type{position:absolute;top:6px;left:6px;background:var(--blue);color:#fff;padding:2px 6px;border-radius:100px;font-size:8px;font-weight:700;text-transform:uppercase;}
+.full-section .ecf-body{padding:0.6rem;}
+.full-section .ecf-tit{font-size:11px;font-weight:700;color:var(--g800);line-height:1.3;margin-bottom:3px;}
+.full-section .ecf-meta{font-size:9px;color:var(--g400);margin-bottom:0.3rem;}
+.full-section .ecf-btn{display:flex;align-items:center;justify-content:center;gap:4px;background:var(--blue);color:#fff;padding:5px 10px;border-radius:5px;font-size:10px;font-weight:700;text-decoration:none;width:100%;transition:all 0.2s;}
+.full-section .ecf-btn:hover{background:var(--blue-d);}
 
-/* Card document complet */
-.doc-card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);overflow:hidden;transition:all 0.3s;cursor:pointer;}
-.doc-card:hover{transform:translateY(-3px);box-shadow:var(--sh-lg);}
-.dc-img{height:120px;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--blue-pale),#E8EDFF);}
-.dc-img img{width:100%;height:100%;object-fit:cover;display:block;}
-.dc-img-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;}
-.dc-cat{position:absolute;top:8px;left:8px;background:var(--blue);color:#fff;padding:2px 8px;border-radius:100px;font-size:9px;font-weight:700;text-transform:uppercase;}
-.dc-body{padding:0.8rem;}
-.dc-tit{font-size:13px;font-weight:700;color:var(--g800);line-height:1.35;margin-bottom:4px;}
-.dc-meta{font-size:10px;color:var(--g400);margin-bottom:0.6rem;display:flex;gap:8px;flex-wrap:wrap;}
-.dc-desc{font-size:11px;color:var(--g500);line-height:1.55;margin-bottom:0.6rem;}
-.dc-btn{display:flex;align-items:center;gap:5px;background:var(--blue);color:#fff;padding:7px 12px;border-radius:6px;font-size:11px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;width:100%;justify-content:center;transition:all 0.2s;}
-.dc-btn:hover{background:var(--blue-d);}
+/* ══ GALERIE GRID FULL (page galerie) ══ */
+.galerie-grid-full{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;}
+.gf-item{height:140px;border-radius:var(--rl);overflow:hidden;position:relative;cursor:pointer;}
+.gf-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s;}
+.gf-item:hover img{transform:scale(1.06);}
+.gf-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 55%);display:flex;flex-direction:column;justify-content:flex-end;padding:8px;}
+.gf-tit{font-size:10px;font-weight:700;color:#fff;}
+.gf-desc{font-size:9px;color:rgba(255,255,255,0.75);margin-top:2px;}
 
-/* Card vidéo complète */
-.video-card-full{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);overflow:hidden;transition:all 0.3s;}
-.video-card-full:hover{transform:translateY(-3px);box-shadow:var(--sh-lg);}
-.vcf-player{position:relative;height:160px;background:#000;}
-.vcf-player video{width:100%;height:100%;object-fit:cover;}
-.vcf-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.25);cursor:pointer;transition:all 0.2s;}
-.vcf-overlay:hover{background:rgba(0,0,0,0.15);}
-.vcf-play{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;font-size:16px;}
-.vcf-duree{position:absolute;bottom:6px;right:8px;background:rgba(0,0,0,0.7);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;}
-.vcf-body{padding:0.8rem;}
-.vcf-tit{font-size:12px;font-weight:700;color:var(--g800);line-height:1.4;margin-bottom:3px;}
-.vcf-meta{font-size:10px;color:var(--g400);}
+/* ══ LEXIQUE ══ */
+.lexique-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px;}
+.lex-item{background:#fff;border-radius:var(--r);padding:0.6rem 0.8rem;box-shadow:var(--sh);border-left:3px solid var(--blue);}
+.lex-terme{font-size:12px;font-weight:800;color:var(--blue);margin-bottom:3px;}
+.lex-def{font-size:10px;color:var(--g600);line-height:1.5;}
 
-/* FAQ liste */
-.faq-item{background:#fff;border-radius:var(--r);box-shadow:var(--sh);margin-bottom:8px;overflow:hidden;}
-.faq-q-row{display:flex;align-items:center;gap:10px;padding:0.8rem 1rem;cursor:pointer;transition:background 0.2s;}
+/* FAQ LISTE */
+.faq-item-list{background:#fff;border-radius:var(--r);box-shadow:var(--sh);margin-bottom:6px;overflow:hidden;}
+.faq-q-row{display:flex;align-items:center;gap:8px;padding:0.6rem 0.8rem;cursor:pointer;transition:background 0.2s;}
 .faq-q-row:hover{background:var(--blue-pale);}
-.faq-q-ico{font-size:1rem;font-weight:900;color:var(--blue);flex-shrink:0;}
-.faq-q-txt{font-size:12px;font-weight:600;color:var(--g800);flex:1;}
-.faq-arrow{color:var(--g400);font-size:12px;transition:transform 0.2s;flex-shrink:0;}
-.faq-item.open .faq-arrow{transform:rotate(180deg);}
-.faq-r-body{display:none;padding:0 1rem 0.8rem 2.4rem;font-size:12px;color:var(--g600);line-height:1.7;}
-.faq-item.open .faq-r-body{display:block;}
-.faq-r-meta{font-size:10px;color:var(--g400);margin-top:6px;}
+.faq-q-ico{font-size:0.9rem;font-weight:900;color:var(--blue);flex-shrink:0;}
+.faq-q-txt{font-size:11px;font-weight:600;color:var(--g800);flex:1;}
+.faq-arrow{color:var(--g400);font-size:10px;transition:transform 0.2s;flex-shrink:0;}
+.faq-item-list.open .faq-arrow{transform:rotate(180deg);}
+.faq-r-body{display:none;padding:0 0.8rem 0.6rem 2rem;font-size:11px;color:var(--g600);line-height:1.6;}
+.faq-item-list.open .faq-r-body{display:block;}
 
-/* Lexique */
-.lexique-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;}
-.lex-item{background:#fff;border-radius:var(--r);padding:0.7rem 0.9rem;box-shadow:var(--sh);cursor:pointer;transition:all 0.15s;}
-.lex-item:hover{border-color:var(--blue);box-shadow:var(--sh-lg);transform:translateY(-1px);}
-.lex-terme{font-size:12px;font-weight:700;color:var(--blue);margin-bottom:2px;}
-.lex-def{font-size:10px;color:var(--g500);line-height:1.5;}
-
-/* ══ VIDÉO MODALE ══ */
+/* VIDEO MODALE */
 .video-modal{position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:3000;display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(6px);}
 .video-modal.open{display:flex;}
 .vm-box{background:#000;border-radius:var(--rl);max-width:800px;width:100%;overflow:hidden;position:relative;}
-.vm-close{position:absolute;top:10px;right:10px;z-index:10;background:rgba(255,255,255,0.15);border:none;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background 0.2s;}
+.vm-close{position:absolute;top:8px;right:8px;z-index:10;background:rgba(255,255,255,0.15);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;}
 .vm-close:hover{background:rgba(200,16,46,0.8);}
 .vm-video{width:100%;max-height:70vh;display:block;}
-.vm-info{background:#111;padding:0.8rem 1rem;}
-.vm-tit{font-size:13px;font-weight:700;color:#fff;margin-bottom:2px;}
-.vm-meta{font-size:11px;color:rgba(255,255,255,0.5);}
+.vm-info{background:#111;padding:0.6rem 0.8rem;}
+.vm-tit{font-size:12px;font-weight:700;color:#fff;margin-bottom:2px;}
+.vm-meta{font-size:10px;color:rgba(255,255,255,0.5);}
 
-/* Toast */
-.toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1px solid var(--g200);border-radius:var(--r);padding:12px 18px;font-size:13px;color:var(--g800);z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(80px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);max-width:320px;box-shadow:0 8px 32px rgba(0,0,0,0.12);}
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:3000;display:none;align-items:center;justify-content:center;padding:1rem;}
+.lightbox.open{display:flex;}
+.lb-img{max-width:90vw;max-height:85vh;object-fit:contain;border-radius:var(--r);}
+.lb-close{position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,0.15);border:none;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;}
+.lb-info{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);padding:1rem;text-align:center;}
+.lb-tit{font-size:13px;font-weight:700;color:#fff;}
+.lb-desc{font-size:11px;color:rgba(255,255,255,0.7);margin-top:3px;}
+
+.toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1px solid var(--g200);border-radius:var(--r);padding:10px 16px;font-size:12px;color:var(--g800);z-index:5000;display:flex;align-items:center;gap:8px;transform:translateY(80px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);max-width:320px;box-shadow:0 8px 32px rgba(0,0,0,0.12);}
 .toast.show{transform:none;opacity:1;}
 
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,0.6);z-index:3000;display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px);}
+.overlay.open{display:flex;}
+.modal{background:#fff;border-radius:var(--rxl);padding:2rem;max-width:500px;width:100%;position:relative;animation:mIn 0.3s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 24px 80px rgba(0,0,0,0.2);max-height:90vh;overflow-y:auto;}
+@keyframes mIn{from{opacity:0;transform:scale(0.92);}to{opacity:1;transform:none;}}
+.m-close{position:absolute;top:1rem;right:1rem;background:var(--g100);border:none;color:var(--g500);width:30px;height:30px;border-radius:7px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;}
+.m-close:hover{background:#fee2e2;color:#dc2626;}
+.m-tag{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);margin-bottom:0.3rem;}
+.m-tit{font-size:1.4rem;font-weight:800;color:var(--g800);margin-bottom:0.3rem;}
+.m-desc{font-size:13px;color:var(--g500);margin-bottom:1.2rem;}
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
+.fg label{font-size:11px;font-weight:600;color:var(--g500);}
+.fi{width:100%;border:1.5px solid var(--g200);border-radius:9px;padding:11px 14px;font-size:14px;font-family:'Outfit',sans-serif;outline:none;transition:border-color 0.2s;}
+.fi:focus{border-color:var(--blue);}
+.fi::placeholder{color:var(--g400);}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.m-submit{width:100%;background:var(--red);border:none;color:#fff;padding:13px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;margin-top:6px;transition:all 0.2s;}
+.m-submit:hover{background:var(--red-d);}
+
+/* ══ FOOTER ══ */
+.footer-bar{height:3px;background:var(--grad-h);}
+footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1px solid #334155;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1.5fr;gap:2rem;max-width:1280px;margin:0 auto 2rem;}
+.footer-desc{font-size:12px;color:#94A3B8;line-height:1.75;max-width:260px;margin-bottom:1rem;margin-top:0.8rem;}
+.footer-tagline{font-size:11px;color:rgba(255,255,255,0.4);font-style:italic;}
+.footer-col h4{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.9rem;}
+.footer-lnk{display:block;font-size:12px;color:#94A3B8;text-decoration:none;margin-bottom:6px;transition:color 0.2s;}
+.footer-lnk:hover{color:#fff;}
+.footer-agences-item{display:flex;align-items:center;gap:5px;font-size:12px;color:#94A3B8;margin-bottom:6px;}
+.footer-socials{display:flex;gap:8px;margin-top:0.8rem;}
+.footer-social-btn{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;transition:all 0.2s;}
+.fs-fb{background:#1877F2;color:#fff;}
+.fs-tt{background:#010101;color:#fff;}
+.fs-yt{background:#FF0000;color:#fff;}
+.fs-li{background:#0A66C2;color:#fff;}
+.fs-ig{background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;}
+.footer-social-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.3);}
+.footer-nl-wrap{position:relative;}
+.footer-nl-input{width:100%;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);border-radius:8px;padding:9px 48px 9px 12px;font-size:12px;color:#fff;font-family:'Outfit',sans-serif;outline:none;}
+.footer-nl-input::placeholder{color:rgba(255,255,255,0.35);}
+.footer-nl-btn{position:absolute;right:0;top:0;bottom:0;background:var(--red);border:none;width:40px;border-radius:0 8px 8px 0;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;transition:background 0.2s;}
+.footer-nl-btn:hover{background:var(--red-d);}
+.footer-bot{border-top:1px solid #334155;max-width:1280px;margin:0 auto;padding-top:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.footer-copy{font-size:12px;color:#64748B;}
+.footer-links-bot{display:flex;gap:1.5rem;}
+.footer-links-bot a{font-size:12px;color:#64748B;text-decoration:none;transition:color 0.2s;}
+.footer-links-bot a:hover{color:#fff;}
+
 /* RESPONSIVE */
-@media(max-width:1100px){.top-grid{grid-template-columns:1fr 260px;}.bottom-grid{grid-template-columns:1fr 1fr;}}
-@media(max-width:900px){.top-grid{grid-template-columns:1fr;}.bottom-grid{grid-template-columns:1fr 1fr;}.parcours-card{display:none;}}
+@media(max-width:1200px){.row-4-col{grid-template-columns:1fr 1fr;}.row-3-col{grid-template-columns:1fr 1fr;}}
+@media(max-width:1024px){.academie-layout{grid-template-columns:1fr;}.sidebar-menu{position:static;height:auto;display:flex;flex-direction:row;overflow-x:auto;border-right:none;border-bottom:1.5px solid var(--g200);padding:0;}.sm-title{display:none;}.sm-item{padding:10px 14px;border-left:none;border-bottom:3px solid transparent;white-space:nowrap;}.sm-item.active,.sm-item.active-cat{border-bottom-color:var(--blue);border-left:none;}.sm-conseil-box{display:none;}.footer-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:900px){.row-3-col{grid-template-columns:1fr;}.row-4-col{grid-template-columns:1fr 1fr;}}
 @media(max-width:768px){
-  .sidebar{display:none;}
-  .main-content{margin-left:0;}
-  .bottom-grid{grid-template-columns:1fr;}
-  .tb-search{display:none;}
-  .hero-ac-right{display:none;}
+  nav{padding:0 1rem;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .hero-inner{grid-template-columns:1fr;padding:5rem 1.5rem 2rem;}
+  .search-bar-ac{padding:0.8rem 1rem;flex-wrap:wrap;}
+  .search-bar-ac .sb-wrap{max-width:100%;}
+  .academie-content{padding:1.5rem 1rem;}
+  .row-4-col{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr;gap:1.5rem;}
+  .footer-grid>div:first-child{grid-column:1;}
+  .footer-bot{flex-direction:column;text-align:center;}
 }
+@media(max-width:480px){.hero-tit{font-size:1.8rem;}}
 </style>
 </head>
 <body>
 
-<!-- ══ TOPBAR ══ -->
-<div class="topbar">
-  <div class="tb-left">
-    <a class="tb-logo" href="{% url 'home' %}">
-      <div class="tb-logo-box">E</div>
-      <div>
-        <div class="tb-logo-name">EDEN GROUP</div>
-      </div>
-    </a>
-    <div class="tb-div"></div>
-    <div class="tb-academie">
-      <div class="tb-ac-name">ACADÉMIE</div>
-      <div class="tb-ac-tag">Le savoir foncier à votre portée</div>
-    </div>
-  </div>
+<!-- TOAST -->
+<div class="toast" id="toast"><span id="t-ico">✅</span>&nbsp;<span id="t-msg"></span></div>
 
-  <div class="tb-search">
-    <span class="tb-search-ico">🔍</span>
-    <input type="text" id="search-academie" placeholder="Rechercher un sujet, un article, un document..." oninput="rechercherAcademie(this.value)">
-  </div>
-
-  <div class="tb-right">
-    <a class="tb-btn tb-btn-primary" href="{% url 'dashboard_academie_liste' %}" style="{% if not user.is_staff %}display:none{% endif %}">
-      ⚙ Gestion
-    </a>
-    <a class="tb-btn tb-btn-ghost" href="#">💬 Poser une question</a>
-    <a class="tb-btn tb-btn-ghost" href="#">👤 Mon espace ↓</a>
-    <a class="tb-back" href="{% url 'home' %}">← Site principal</a>
-  </div>
-</div>
-
-<!-- ══ MODAL VIDÉO ══ -->
+<!-- VIDÉO MODALE -->
 <div class="video-modal" id="video-modal">
   <div class="vm-box">
     <button class="vm-close" onclick="fermerVideo()">✕</button>
-    <video class="vm-video" id="vm-video" controls controlsList="nodownload">
-      Votre navigateur ne supporte pas la vidéo HTML5.
-    </video>
-    <div class="vm-info">
-      <div class="vm-tit" id="vm-tit"></div>
-      <div class="vm-meta" id="vm-meta"></div>
+    <video class="vm-video" id="vm-video" controls>Votre navigateur ne supporte pas la vidéo HTML5.</video>
+    <div class="vm-info"><div class="vm-tit" id="vm-tit"></div><div class="vm-meta" id="vm-meta"></div></div>
+  </div>
+</div>
+
+<!-- LIGHTBOX GALERIE -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" onclick="fermerLightbox()">✕</button>
+  <img class="lb-img" id="lb-img" src="" alt="">
+  <div class="lb-info"><div class="lb-tit" id="lb-tit"></div><div class="lb-desc" id="lb-desc"></div></div>
+</div>
+
+<!-- ══ MODAL ══ -->
+<div class="overlay" id="modal">
+  <div class="modal">
+    <button class="m-close" onclick="closeModal()">✕</button>
+    <div id="modal-content">
+      <div class="m-tag">✦ EDEN GROUP</div>
+      <div class="m-tit">Prendre rendez-vous</div>
+      <div class="m-desc">Notre équipe vous contactera sous 24 heures.</div>
+      <form id="mform">
+        {% csrf_token %}
+        <div class="f-row">
+          <div class="fg"><label>Prénom *</label><input class="fi" type="text" name="prenom" placeholder="Jean-Marie" required></div>
+          <div class="fg"><label>Nom *</label><input class="fi" type="text" name="nom" placeholder="Nguema" required></div>
+        </div>
+        <div class="fg"><label>Téléphone / WhatsApp *</label><input class="fi" type="tel" name="telephone" placeholder="+237 6XX XXX XXX" required></div>
+        <div class="fg"><label>Email</label><input class="fi" type="email" name="email" placeholder="votre@email.com"></div>
+        <div class="fg"><label>Site ou terrain d'intérêt</label><input class="fi" type="text" id="msite" placeholder="Ex: NTOUESSONG 5"></div>
+        <div class="fg"><label>Budget (FCFA)</label>
+          <select class="fi" name="budget" style="appearance:none;">
+            <option>Moins de 3 000 000</option>
+            <option>3 000 000 – 6 000 000</option>
+            <option>6 000 000 – 12 000 000</option>
+            <option>Plus de 12 000 000</option>
+          </select>
+        </div>
+        <div class="fg"><label>Type de demande</label>
+          <select class="fi" name="type_demande" style="appearance:none;">
+            <option value="visite">Visite de site</option>
+            <option value="achat">Achat de terrain</option>
+            <option value="information">Renseignements</option>
+            <option value="reservation">Réservation</option>
+          </select>
+        </div>
+        <div class="fg"><label>Message</label><textarea class="fi" name="message" rows="2" placeholder="Vos questions..." style="resize:none;"></textarea></div>
+        <button type="button" class="m-submit" onclick="submitModal()">Envoyer la demande →</button>
+        <a href="https://wa.me/2376XXXXXXXX" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;background:#25D366;color:#fff;padding:10px;border-radius:9px;font-size:13px;font-weight:700;text-decoration:none;">💬 Ou discuter sur WhatsApp</a>
+      </form>
     </div>
   </div>
 </div>
 
-<!-- Toast -->
-<div class="toast" id="toast"><span id="t-ico">✅</span>&nbsp;<span id="t-msg"></span></div>
+<!-- ══ NAV ══ -->
+<nav id="navbar">
+  <a class="nav-logo" href="{% url 'home' %}">
+    <div class="logo-box">E</div>
+    <div>
+      <div class="logo-name">EDEN GROUP</div>
+      <div class="logo-tagline">Le foncier sécurisé, notre engagement</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a class="nav-lnk" href="{% url 'home' %}">Accueil</a>
+    <a class="nav-lnk" href="{% url 'sites_list' %}">Nos Terrains</a>
+    <a class="nav-lnk" href="{% url 'nos_projets' %}">Nos Projets</a>
+    <a class="nav-lnk" href="{% url 'nos_services' %}">Nos Services</a>
+    <a class="nav-lnk" href="{% url 'nos_agences' %}">Nos Agences</a>
+    <a class="nav-lnk active" href="{% url 'academie_accueil' %}">🎓 Académie</a>
+    <a class="nav-lnk" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+    <a class="nav-lnk" href="{% url 'journal_kiosque' %}">📰 Documentation</a>
+    <a class="nav-lnk" href="{% url 'a_propos' %}">À propos</a>
+    {% if user.is_staff %}
+    <a class="nav-lnk" href="{% url 'dashboard_home' %}" style="color:var(--blue);font-weight:700;">Dashboard</a>
+    {% endif %}
+  </div>
+  <div class="nav-right">
+    <button class="btn-rdv" onclick="openModal()">📅 Contact</button>
+  </div>
+  <button class="hamburger" onclick="toggleMob()"><span></span><span></span><span></span></button>
+</nav>
 
-<!-- ══ LAYOUT ══ -->
-<div class="layout">
+<div class="mob-menu" id="mob-menu">
+  <a class="nav-lnk" href="{% url 'home' %}">Accueil</a>
+  <a class="nav-lnk" href="{% url 'sites_list' %}">Nos Terrains</a>
+  <a class="nav-lnk" href="{% url 'nos_projets' %}">Nos Projets</a>
+  <a class="nav-lnk" href="{% url 'nos_services' %}">Nos Services</a>
+  <a class="nav-lnk" href="{% url 'nos_agences' %}">Nos Agences</a>
+  <a class="nav-lnk active" href="{% url 'academie_accueil' %}">🎓 Académie</a>
+  <a class="nav-lnk" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+  <a class="nav-lnk" href="{% url 'journal_kiosque' %}">📰 Documentation</a>
+  <a class="nav-lnk" href="{% url 'promotions' %}">Promotions</a>
+  <a class="nav-lnk" href="{% url 'a_propos' %}">À propos</a>
+  {% if user.is_staff %}<a class="nav-lnk" href="{% url 'dashboard_home' %}">Dashboard</a>{% endif %}
+  <button class="btn-rdv" style="width:100%;margin-top:8px;justify-content:center;" onclick="openModal()">📅 Contact</button>
+</div>
 
-  <!-- SIDEBAR -->
-  <div class="sidebar" id="sidebar">
-    <nav class="sb-nav">
-      <a class="sb-item active-cat" onclick="afficherAccueil(this)" href="#">
-        <span class="sb-ico">🏠</span>Accueil
-      </a>
-      <div class="sb-divider"></div>
-      <a class="sb-item" onclick="afficherSection('texte_loi','📜 Textes de loi',this)" href="#">
-        <span class="sb-ico">📜</span>Textes de loi
-        <span class="sb-nb">{{ nb_textes }}</span>
-      </a>
-      <a class="sb-item" onclick="afficherSection('article','📄 Articles',this)" href="#">
-        <span class="sb-ico">📄</span>Articles
-        <span class="sb-nb">{{ nb_articles }}</span>
-      </a>
-      <a class="sb-item" onclick="afficherSection('revue','📕 Revues',this)" href="#">
-        <span class="sb-ico">📕</span>Revues
-        <span class="sb-nb">{{ nb_revues }}</span>
-      </a>
-      <a class="sb-item" onclick="afficherSection('guide','📚 Guides pratiques',this)" href="#">
-        <span class="sb-ico">📚</span>Guides pratiques
-        <span class="sb-nb">{{ nb_guides }}</span>
-      </a>
-      <a class="sb-item" onclick="afficherSection('lexique','🔤 Lexique',this)" href="#">
-        <span class="sb-ico">🔤</span>Lexique du foncier
-      </a>
-      <div class="sb-divider"></div>
-      <a class="sb-item" onclick="afficherSection('video','🎬 Vidéothèque',this)" href="#">
-        <span class="sb-ico">🎬</span>Vidéothèque
-        <span class="sb-nb">{{ nb_videos }}</span>
-      </a>
-      <a class="sb-item" onclick="afficherSection('infographie','📊 Infographies',this)" href="#">
-        <span class="sb-ico">📊</span>Infographies
-        <span class="sb-nb">{{ nb_infographies }}</span>
-      </a>
-      <div class="sb-divider"></div>
-      <a class="sb-item" onclick="afficherSection('faq','❓ FAQ',this)" href="#">
-        <span class="sb-ico">❓</span>Questions fréquentes
-        <span class="sb-nb">{{ nb_faqs }}</span>
-      </a>
-      <a class="sb-item" onclick="afficherSection('ressource','📦 Ressources',this)" href="#">
-        <span class="sb-ico">📦</span>Centre de ressources
-        <span class="sb-nb">{{ nb_ressources }}</span>
-      </a>
-      <a class="sb-item" onclick="afficherSection('faq_poser','💬 Poser une question',this)" href="#">
-        <span class="sb-ico">💬</span>Poser une question
-      </a>
-    </nav>
+<!-- ══ HERO ══ -->
+<div class="hero-academie">
+  <div class="hero-bg">
+    <img src="{% static 'images/academie-hero.jpg' %}" alt="Académie EDEN GROUP" onerror="this.style.display='none'">
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-inner">
+    <div>
+      <h1 class="hero-tit">EDEN GROUP ACADÉMIE</h1>
+      <p class="hero-desc">Comprendre le foncier pour investir en toute sécurité. Un espace dédié à l'information, à la sensibilisation et au partage d'expertise.</p>
+      <div class="hero-badges">
+        <div class="hero-badge"><div class="hb-ico">📚</div><div class="hb-txt">Ressources<br>Documentaires</div></div>
+        <div class="hero-badge"><div class="hb-ico">🎬</div><div class="hb-txt">Vidéos<br>Pédagogiques</div></div>
+        <div class="hero-badge"><div class="hb-ico">🔤</div><div class="hb-txt">Lexique<br>du Foncier</div></div>
+        <div class="hero-badge"><div class="hb-ico">❓</div><div class="hb-txt">FAQ<br>Expertise</div></div>
+      </div>
+    </div>
+  </div>
+</div>
 
-    <div class="sb-info-box">
-      <div class="sib-tit">EDEN GROUP Académie</div>
-      <div class="sib-desc">est un centre d'information, de sensibilisation et de partage d'expertise foncière ouverte à tous.</div>
-      <a href="#" class="sib-btn" style="color:#fff;text-decoration:none;">En savoir plus →</a>
+<!-- ══ SEARCH BAR ══ -->
+<div class="search-bar-ac">
+  <div class="sb-wrap">
+    <span class="sb-icon">🔍</span>
+    <input type="text" id="search-academie" placeholder="Rechercher un sujet, un mot du lexique, un article..." onkeydown="if(event.key==='Enter'){window.location='/academie/recherche/?q='+encodeURIComponent(this.value)}">
+  </div>
+  <button class="sb-btn" onclick="const q=document.getElementById('search-academie').value;if(q.length>=2){window.location='/academie/recherche/?q='+encodeURIComponent(q)}">Rechercher</button>
+  {% if user.is_staff %}
+  <a href="{% url 'dashboard_academie_liste' %}" class="sb-gestion">⚙ Gestion</a>
+  {% endif %}
+</div>
+
+<!-- ══ LAYOUT PRINCIPAL ══ -->
+<div class="academie-layout">
+
+  <!-- MENU GAUCHE -->
+  <div class="sidebar-menu">
+    <div class="sm-title">CATÉGORIES</div>
+    <a href="{% url 'academie_accueil' %}" class="sm-item active-cat" id="sb-accueil">
+      <span class="sm-item-ico">🏠</span>Accueil
+    </a>
+    <div class="sm-divider"></div>
+    <a class="sm-item" onclick="afficherSection('texte_loi','📜 Textes de loi',this);return false;" href="#">
+      <span class="sm-item-ico">📜</span>Reglementation <span class="sm-nb">{{ nb_textes }}</span>
+    </a>
+    <a class="sm-item" onclick="afficherSection('article','📄 Articles',this);return false;" href="#">
+      <span class="sm-item-ico">📄</span>Articles <span class="sm-nb">{{ nb_articles }}</span>
+    </a>
+    <a class="sm-item" onclick="afficherSection('revue','📕 Revues',this);return false;" href="#">
+      <span class="sm-item-ico">📕</span>Revues <span class="sm-nb">{{ nb_revues }}</span>
+    </a>
+    <a class="sm-item" onclick="afficherSection('guide','📚 Guides pratiques',this);return false;" href="#">
+      <span class="sm-item-ico">📚</span>Guides pratiques <span class="sm-nb">{{ nb_guides }}</span>
+    </a>
+    <a class="sm-item" onclick="afficherSection('lexique','🔤 Lexique',this);return false;" href="#">
+      <span class="sm-item-ico">🔤</span>Lexique du foncier <span class="sm-nb">{{ nb_lexique }}</span>
+    </a>
+    <div class="sm-divider"></div>
+    <a class="sm-item" onclick="afficherSection('video','🎬 Vidéothèque',this);return false;" href="#">
+      <span class="sm-item-ico">🎬</span>Vidéothèque <span class="sm-nb">{{ nb_videos }}</span>
+    </a>
+    <a class="sm-item" onclick="afficherSection('galerie','🖼 Galerie',this);return false;" href="#">
+      <span class="sm-item-ico">🖼</span>Galerie <span class="sm-nb">{{ nb_galerie }}</span>
+    </a>
+    <div class="sm-divider"></div>
+    <a class="sm-item" onclick="afficherSection('faq','❓ FAQ',this);return false;" href="#">
+      <span class="sm-item-ico">❓</span>Questions fréquentes <span class="sm-nb">{{ nb_faqs }}</span>
+    </a>
+    <a class="sm-item" onclick="afficherSection('ressource','📦 Centre de ressources',this);return false;" href="#">
+      <span class="sm-item-ico">📦</span>Centre de ressources
+    </a>
+    <a class="sm-item" onclick="afficherSection('faq_poser','💬 Poser une question',this);return false;" href="#">
+      <span class="sm-item-ico">💬</span>Poser une question
+    </a>
+    <div class="sm-conseil-box">
+      <div class="scb-tit">Une question sur le foncier ?</div>
+      <div class="scb-desc">Nos experts sont à votre disposition.</div>
+      <button class="btn-conseiller" onclick="showToast('💬','Notre équipe vous contactera sous 24h.')">Poser une question 💬</button>
     </div>
   </div>
 
-  <!-- CONTENU PRINCIPAL -->
-  <div class="main-content">
+  <!-- CONTENU ACADÉMIE -->
+  <div class="academie-content">
 
-    <!-- HERO -->
-    <div class="hero-ac">
-      <div class="hero-ac-bg">
-        <img src="{% static 'images/academie-hero.jpg' %}" alt="Académie EDEN GROUP" onerror="this.style.display='none'">
-      </div>
-      <div class="hero-ac-overlay"></div>
-      <div class="hero-ac-content">
-        <div class="hero-ac-left">
-          <div class="hero-ac-tit">EDEN GROUP ACADÉMIE</div>
-          <div class="hero-ac-line"></div>
-          <div class="hero-ac-sub">Comprendre le foncier pour investir en toute sécurité.</div>
-          <div class="hero-ac-desc">Un espace dédié à l'information, à la sensibilisation et au partage d'expertise pour mieux comprendre l'environnement foncier et prendre des décisions éclairées.</div>
-        </div>
-        <div class="hero-ac-right">
-          <img src="{% static 'images/code-foncier.png' %}" alt="Code Foncier" style="height:120px;object-fit:contain;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.3));" onerror="this.style.display='none'">
-        </div>
-      </div>
-    </div>
+    <!-- VUE ACCUEIL -->
+    <div id="vue-accueil" class="acceuil">
 
-    <!-- STATS -->
-    {% if stats %}
-    <div class="stats-band">
-      {% for s in stats %}
-      <div class="stat-chip">
-        <div class="sc-ico">{{ s.icone }}</div>
-        <div><div class="sc-n">{{ s.valeur }}</div><div class="sc-l">{{ s.label }}</div></div>
-      </div>
-      {% endfor %}
-    </div>
-    {% else %}
-    <div class="stats-band">
-      <div class="stat-chip"><div class="sc-ico">📜</div><div><div class="sc-n">150+</div><div class="sc-l">Textes de loi disponibles</div></div></div>
-      <div class="stat-chip"><div class="sc-ico">📄</div><div><div class="sc-n">350+</div><div class="sc-l">Articles et analyses à votre disposition</div></div></div>
-      <div class="stat-chip"><div class="sc-ico">🎬</div><div><div class="sc-n">200+</div><div class="sc-l">Vidéos pédagogiques et explicatives</div></div></div>
-      <div class="stat-chip"><div class="sc-ico">📦</div><div><div class="sc-n">1000+</div><div class="sc-l">Ressources à télécharger gratuitement</div></div></div>
-      <div class="stat-chip"><div class="sc-ico">👥</div><div><div class="sc-n">20+</div><div class="sc-l">Experts à votre écoute et vous conseillent</div></div></div>
-    </div>
-    {% endif %}
+      <!-- ═══ LIGNE 4 : PARCOURS | GALERIE (carrousel horizontal) | REVUE (carrousel horizontal) ═══ -->
+      <div class="row-3-col">
 
-    <!-- ══ VUE ACCUEIL (par défaut) ══ -->
-    <div id="vue-accueil" class="content-body">
-
-      <!-- TOP GRID : À la une + Revue + Parcours -->
-      <div class="top-grid">
-
-        <!-- À LA UNE -->
+        <!-- PARCOURS INVESTISSEUR -->
         <div>
           <div class="section-hd">
-            <div><div class="section-tag">À LA UNE</div><div class="section-tit">Actualités &amp; Événements</div></div>
-            <a href="{% url 'une_evenements_accueil' %}" class="voir-tout">Voir tout →</a>
-          </div>
-          {% if a_la_une %}
-          <a class="une-card" href="{{ a_la_une.lien_detail|default:'#' }}" {% if a_la_une.lien_detail and a_la_une.lien_detail != '#' %}target="_blank"{% endif %}>
-            <div class="une-img">
-              {% if a_la_une.image_couverture %}
-                <img src="{{ a_la_une.image_couverture.url }}" alt="{{ a_la_une.titre }}">
-              {% else %}
-                <div class="une-img-ph">📰</div>
-              {% endif %}
-              <span class="une-cat-tag">{{ a_la_une.get_categorie_display }}</span>
-            </div>
-            <div class="une-body">
-              <div class="une-tit">{{ a_la_une.titre }}</div>
-              {% if a_la_une.description %}
-              <div class="une-desc">{{ a_la_une.description|truncatechars:120 }}</div>
-              {% endif %}
-              <div class="une-meta">
-                {% if a_la_une.auteur %}<span>✍ {{ a_la_une.auteur }}</span>{% endif %}
-                {% if a_la_une.date_publication %}<span>📅 {{ a_la_une.date_publication|date:"d M Y" }}</span>{% endif %}
-                {% if a_la_une.temps_lecture %}<span>⏱ {{ a_la_une.temps_lecture }}</span>{% endif %}
-              </div>
-              {% if a_la_une.fichier_pdf %}
-              <a href="{% url 'academie_telecharger' a_la_une.pk %}" class="une-btn" onclick="event.stopPropagation()">
-                📥 Télécharger le PDF
-              </a>
-              {% endif %}
-            </div>
-          </a>
-          {% else %}
-          <!-- Fallback: événements et actualités EDEN -->
-          <a class="une-card" href="{% url 'une_evenements_accueil' %}">
-            <div class="une-img" style="background:linear-gradient(135deg,var(--blue-d),#7B20B4);display:flex;align-items:center;justify-content:center;height:180px;">
-              <div style="text-align:center;color:#fff;"><div style="font-size:3rem;margin-bottom:0.5rem;">📰</div><div style="font-size:13px;font-weight:700;">Actualités &amp; Événements EDEN GROUP</div></div>
-            </div>
-            <div class="une-body">
-              <div class="une-tit">Découvrez nos dernières actualités</div>
-              <div class="une-desc">Événements, conférences, nouvelles du secteur foncier camerounais.</div>
-              <a href="{% url 'une_evenements_accueil' %}" class="une-btn">Voir les actualités →</a>
-            </div>
-          </a>
-          {% endif %}
-        </div>
-
-        <!-- REVUE EDEN GROUP -->
-        <div>
-          <div class="section-hd">
-            <div><div class="section-tag">REVUE EDEN GROUP</div><div class="section-tit">Publication officielle</div></div>
-            <a class="voir-tout" href="#" onclick="afficherSection('revue','📕 Revues',null);return false;">Voir tout →</a>
-          </div>
-          {% if revue_featured %}
-          <div class="revue-card">
-            <div class="revue-img">
-              {% if revue_featured.image_couverture %}
-                <img src="{{ revue_featured.image_couverture.url }}" alt="{{ revue_featured.titre }}">
-              {% else %}
-                <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--grad);"><span style="font-size:2.5rem;">📕</span></div>
-              {% endif %}
-            </div>
-            <div class="revue-body">
-              <div class="revue-num">
-                {% if revue_featured.numero_revue %}N°{{ revue_featured.numero_revue }}{% endif %}
-                {% if revue_featured.date_publication %} · {{ revue_featured.date_publication|date:"M Y"|upper }}{% endif %}
-              </div>
-              <div class="revue-tit">{{ revue_featured.titre }}</div>
-              {% if revue_featured.description %}
-              <div style="font-size:10px;color:var(--g500);line-height:1.5;margin-bottom:0.6rem;">{{ revue_featured.description|truncatechars:100 }}</div>
-              {% endif %}
-            </div>
-            <div class="revue-btns" style="padding:0 0.8rem 0.8rem;">
-              {% if revue_featured.fichier_pdf %}
-              <a href="#" class="btn-lire btn-lire-ol" onclick="ouvrirPDFViewer('{% url 'academie_telecharger' revue_featured.pk %}','{{ revue_featured.titre|escapejs }}');return false;">📖 Lire en ligne</a>
-              <a href="{% url 'academie_telecharger' revue_featured.pk %}" class="btn-lire btn-lire-dl">📥 Télécharger</a>
-              {% else %}
-              <span style="font-size:11px;color:var(--g400);">PDF bientôt disponible</span>
-              {% endif %}
-            </div>
-          </div>
-          {% else %}
-          <div class="revue-card" style="padding:1rem;">
-            <div style="text-align:center;padding:1.5rem;color:var(--g400);">
-              <div style="font-size:2rem;margin-bottom:0.5rem;">📕</div>
-              <div style="font-size:12px;">Aucune revue publiée pour le moment.</div>
-            </div>
-          </div>
-          {% endif %}
-        </div>
-
-        <!-- PARCOURS DE L'INVESTISSEUR -->
-        <div>
-          <div class="section-hd">
-            <div><div class="section-tag">PARCOURS DE L'INVESTISSEUR</div><div class="section-tit">Votre guide étape par étape</div></div>
+            <div><div class="section-tag">PARCOURS DE L'INVESTISSEUR</div></div>
           </div>
           <div class="parcours-card">
-            <div class="parcours-steps">
-              {% if etapes_parcours %}
-                {% for etape in etapes_parcours %}
+            <div class="ps-list">
+              {% for etape in etapes_parcours %}
+              <div class="ps-item">
+                <div class="ps-num">{{ etape.numero }}</div>
+                <span class="ps-ico">{{ etape.icone }}</span>
                 <div>
-                  <div class="ps-item">
-                    <div class="ps-num">{{ etape.numero }}</div>
-                    <span class="ps-ico">{{ etape.icone }}</span>
-                    <div>
-                      <div class="ps-tit">{{ etape.titre }}</div>
-                      {% if etape.description %}<div class="ps-sub">{{ etape.description }}</div>{% endif %}
+                  <div class="ps-tit">{{ etape.titre }}</div>
+                  {% if etape.description %}<div class="ps-sub">{{ etape.description }}</div>{% endif %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <!-- GALERIE (carrousel horizontal - 1 slide à la fois) -->
+        <div>
+          <div class="section-hd">
+            <div><div class="section-tag">GALERIE</div><div class="section-tit">Photos &amp; Images</div></div>
+            <a class="voir-tout" href="#" onclick="afficherSection('galerie','🖼 Galerie',null);return false;">Voir tout →</a>
+          </div>
+          <div class="galerie-container">
+            <div class="carousel-wrap" id="carousel-galerie">
+              <div class="carousel-track" id="track-galerie-haut">
+                {% if galerie %}
+                  {% for img in galerie %}
+                  <div class="slide-item">
+                    <div class="galerie-item" onclick="ouvrirLightbox('{{ img.image_couverture.url }}','{{ img.titre|escapejs }}','{{ img.description|escapejs }}')">
+                      {% if img.image_couverture %}
+                        <img src="{{ img.image_couverture.url }}" alt="{{ img.titre }}">
+                      {% else %}
+                        <div style="width:100%;height:100%;background:var(--blue-pale);display:flex;align-items:center;justify-content:center;font-size:2.5rem;">🖼</div>
+                      {% endif %}
+                      <div class="galerie-overlay">
+                        <div class="galerie-tit">{{ img.titre|truncatechars:35 }}</div>
+                        {% if img.description %}<div class="galerie-desc">{{ img.description|truncatechars:80 }}</div>{% endif %}
+                      </div>
                     </div>
                   </div>
-                  {% if not forloop.last %}<div class="ps-line"></div>{% endif %}
+                  {% endfor %}
+                {% else %}
+                  <div class="slide-item"><div style="height:200px;display:flex;align-items:center;justify-content:center;color:var(--g400);font-size:14px;background:var(--blue-pale);border-radius:var(--r);">Aucune image</div></div>
+                {% endif %}
+              </div>
+            </div>
+            <div class="carousel-nav">
+              <button class="car-btn" onclick="scrollCarousel('galerie-haut',-1)">‹</button>
+              <button class="car-btn" onclick="scrollCarousel('galerie-haut',1)">›</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- REVUE EDEN GROUP (carrousel horizontal - 1 slide à la fois) -->
+        <div>
+          <div class="section-hd">
+            <div><div class="section-tag">REVUE EDEN GROUP</div><div class="section-tit">Dernière parution</div></div>
+            <a class="voir-tout" href="#" onclick="afficherSection('revue','📕 Revues',null);return false;">Voir tout →</a>
+          </div>
+          <div class="carousel-wrap" id="carousel-revue">
+            <div class="carousel-track" id="track-revue">
+              {% if revues %}
+                {% for revue in revues %}
+                <div class="slide-item">
+                  <div class="revue-card">
+                    <div class="revue-img">
+                      {% if revue.image_une %}
+                        <img src="{{ revue.image_une.url }}" alt="{{ revue.titre }}">
+                      {% else %}<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--grad);font-size:2.5rem;">📕</div>{% endif %}
+                    </div>
+                    <div class="revue-body">
+                      <div class="revue-num">N°{{ revue.numero }}{% if revue.date_parution %} · {{ revue.date_parution|date:"M Y"|upper }}{% endif %}</div>
+                      <div class="revue-tit">{{ revue.titre }}</div>
+                      <div class="revue-btns">
+                        <a href="/journal/{{ revue.numero }}/?from=academie" class="btn-lire btn-lire-ol">📖 Lire en ligne</a>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 {% endfor %}
               {% else %}
-              {% for step in "1234567"|make_list %}
-              <div class="ps-item">
-                <div class="ps-num">{{ forloop.counter }}</div>
-                <span class="ps-ico">{% if forloop.counter == 1 %}🔍{% elif forloop.counter == 2 %}📋{% elif forloop.counter == 3 %}🏡{% elif forloop.counter == 4 %}📝{% elif forloop.counter == 5 %}🔒{% elif forloop.counter == 6 %}📐{% else %}🏆{% endif %}</span>
-                <div class="ps-tit">{% if forloop.counter == 1 %}Découvrir le foncier{% elif forloop.counter == 2 %}Comprendre les documents{% elif forloop.counter == 3 %}Choisir son terrain{% elif forloop.counter == 4 %}Suivre les procédures{% elif forloop.counter == 5 %}Recevoir son achat{% elif forloop.counter == 6 %}Valoriser son patrimoine{% else %}Finaliser{% endif %}</div>
-              </div>
-              {% endfor %}
+                <div class="slide-item"><div style="height:200px;display:flex;align-items:center;justify-content:center;color:var(--g400);font-size:14px;background:var(--blue-pale);border-radius:var(--r);">Aucune revue</div></div>
               {% endif %}
             </div>
-            <button class="btn-parcours" onclick="afficherSection('guide','📚 Guides pratiques',null)">
-              Voir tout le parcours →
-            </button>
+          </div>
+          <div class="carousel-nav">
+            <button class="car-btn" onclick="scrollCarousel('revue',-1)">‹</button>
+            <button class="car-btn" onclick="scrollCarousel('revue',1)">›</button>
           </div>
         </div>
       </div>
 
-      <!-- BOTTOM GRID : Textes loi + Vidéo + Guide + FAQ -->
-      <div class="bottom-grid">
+      <!-- ═══ LIGNE 5 : ARTICLES (carrousel multi-slides) ═══ -->
+      {% if articles_journal %}
+      <div class="row-articles">
+        <div class="section-hd">
+          <div><div class="section-tag">ARTICLES</div><div class="section-tit">Analyses &amp; conseils fonciers</div></div>
+          <a class="voir-tout" href="#" onclick="afficherSection('article','📄 Articles',null);return false;">Voir tout →</a>
+        </div>
+        <div class="carousel-wrap" id="carousel-articles">
+          <div class="carousel-track" id="track-articles">
+            {% for ed in articles_journal %}
+            <a class="ed-card" href="{% url 'journal_lire' ed.numero %}?from=academie">
+              <div class="ed-img">
+                {% if ed.image_une %}<img src="{{ ed.image_une.url }}" alt="{{ ed.titre }}">
+                {% else %}<div class="ed-img-ph">📄</div>{% endif %}
+              </div>
+              <div class="ed-body">
+                <div class="ed-type">Article</div>
+                <div class="ed-tit">{{ ed.titre|truncatechars:35 }}</div>
+                {% if ed.date_parution %}<div class="ed-meta">📅 {{ ed.date_parution|date:"d M Y" }}</div>{% endif %}
+                <div class="ed-ouvrir">📖 Lire →</div>
+              </div>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="carousel-nav">
+          <button class="car-btn" onclick="scrollCarousel('articles',-1)">‹</button>
+          <button class="car-btn" onclick="scrollCarousel('articles',1)">›</button>
+        </div>
+      </div>
+      {% endif %}
 
-        <!-- TEXTES DE LOI RÉCENTS -->
+      <!-- ═══ LIGNE 6 : 4 COLONNES ═══ -->
+      <div class="row-4-col">
+
+        <!-- TEXTES DE LOI (défilement vertical) -->
         <div>
           <div class="section-hd">
-            <div><div class="section-tag">TEXTES DE LOI RÉCENTS</div></div>
+            <div><div class="section-tag">REGLEMENTATION</div></div>
             <a class="voir-tout" href="#" onclick="afficherSection('texte_loi','📜 Textes de loi',null);return false;">Voir tout →</a>
           </div>
           <div class="mini-section">
-            {% if textes_loi %}
-              {% for doc in textes_loi %}
-              <a class="doc-mini" href="{% url 'academie_telecharger' doc.pk %}">
-                <span class="dm-ico">📜</span>
-                <div class="dm-body">
-                  <div class="dm-tit">{% if doc.reference_officielle %}{{ doc.reference_officielle }}{% else %}{{ doc.titre }}{% endif %}</div>
-                  <div class="dm-meta">{% if doc.date_publication %}{{ doc.date_publication|date:"d M Y" }}{% endif %}</div>
-                  <div class="dm-dl">📥 Télécharger PDF</div>
-                </div>
-              </a>
-              {% endfor %}
-            {% else %}
-              <div style="text-align:center;padding:1rem;color:var(--g400);font-size:12px;">Aucun texte de loi publié.</div>
-            {% endif %}
+            <div class="scroll-vertical">
+              {% if textes_loi %}
+                {% for doc in textes_loi %}
+                <a class="doc-mini" href="{% url 'academie_telecharger' doc.pk %}">
+                  <span class="dm-ico">📜</span>
+                  <div class="dm-body">
+                    <div class="dm-tit">{% if doc.reference_officielle %}{{ doc.reference_officielle }}{% else %}{{ doc.titre|truncatechars:30 }}{% endif %}</div>
+                    {% if doc.date_publication %}<div class="dm-meta">{{ doc.date_publication|date:"d M Y" }}</div>{% endif %}
+                    <div class="dm-dl">📥 Télécharger PDF</div>
+                  </div>
+                </a>
+                {% endfor %}
+                <!-- Dupliquer pour l'effet infini -->
+                {% for doc in textes_loi %}
+                <a class="doc-mini" href="{% url 'academie_telecharger' doc.pk %}">
+                  <span class="dm-ico">📜</span>
+                  <div class="dm-body">
+                    <div class="dm-tit">{% if doc.reference_officielle %}{{ doc.reference_officielle }}{% else %}{{ doc.titre|truncatechars:30 }}{% endif %}</div>
+                    {% if doc.date_publication %}<div class="dm-meta">{{ doc.date_publication|date:"d M Y" }}</div>{% endif %}
+                    <div class="dm-dl">📥 Télécharger PDF</div>
+                  </div>
+                </a>
+                {% endfor %}
+              {% else %}
+                <div style="text-align:center;padding:1rem;color:var(--g400);font-size:11px;">Aucun texte de loi publié.</div>
+              {% endif %}
+            </div>
           </div>
         </div>
 
-        <!-- VIDÉO DU MOMENT -->
+        <!-- VIDÉO DU MOMENT (carrousel horizontal - 1 slide à la fois) -->
         <div>
           <div class="section-hd">
-            <div><div class="section-tag">VIDÉO DU MOMENT</div></div>
+            <div><div class="section-tag">VIDÉOS</div></div>
             <a class="voir-tout" href="#" onclick="afficherSection('video','🎬 Vidéothèque',null);return false;">Voir tout →</a>
           </div>
-          {% if video_moment %}
-          <div class="video-card">
-            <div class="video-player-wrap">
-              {% if video_moment.image_miniature %}
-                <img src="{{ video_moment.image_miniature.url }}" alt="{{ video_moment.titre }}" style="width:100%;height:100%;object-fit:cover;">
+          <div class="carousel-wrap" id="carousel-video">
+            <div class="carousel-track" id="track-video">
+              {% if videos %}
+                {% for video in videos %}
+                <div class="slide-item">
+                  <div class="video-card">
+                    <div class="video-player-wrap">
+                      {% if video.image_miniature %}
+                        <img src="{{ video.image_miniature.url }}" alt="{{ video.titre }}">
+                      {% else %}<div style="width:100%;height:100%;background:#111;display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:#fff;">🎬</div>{% endif %}
+                      <div class="video-play-overlay" onclick="ouvrirVideo('{% url 'academie_voir_video' video.pk %}','{{ video.titre|escapejs }}','{% if video.duree %}{{ video.duree }}{% endif %}')">
+                        <div class="play-btn">▶</div>
+                      </div>
+                      {% if video.duree %}<div class="video-duree">{{ video.duree }}</div>{% endif %}
+                    </div>
+                    <div class="video-body">
+                      <div class="video-tit">{{ video.titre|truncatechars:35 }}</div>
+                      {% if video.description %}<div class="video-desc">{{ video.description|truncatechars:80 }}</div>{% endif %}
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
               {% else %}
-                <div style="width:100%;height:100%;background:#111;display:flex;align-items:center;justify-content:center;">🎬</div>
+                <div class="slide-item"><div style="height:200px;display:flex;align-items:center;justify-content:center;color:var(--g400);font-size:14px;background:var(--blue-pale);border-radius:var(--r);">Aucune vidéo</div></div>
               {% endif %}
-              <div class="video-play-overlay" onclick="ouvrirVideo('{% url 'academie_voir_video' video_moment.pk %}','{{ video_moment.titre|escapejs }}','{% if video_moment.auteur %}{{ video_moment.auteur|escapejs }}{% endif %} {% if video_moment.duree %}· {{ video_moment.duree }}{% endif %}')">
-                <div class="play-btn">▶</div>
-              </div>
-              {% if video_moment.duree %}<div class="video-duree">{{ video_moment.duree }}</div>{% endif %}
-            </div>
-            <div class="video-body">
-              <div class="video-tit">{{ video_moment.titre }}</div>
-              {% if video_moment.description %}<div class="video-desc">{{ video_moment.description|truncatechars:100 }}</div>{% endif %}
             </div>
           </div>
-          {% else %}
-          <div class="video-card">
-            <div class="video-player-wrap" style="background:#111;height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-              <div style="font-size:2rem;margin-bottom:0.5rem;">🎬</div>
-              <div style="font-size:11px;color:rgba(255,255,255,0.5);">Aucune vidéo disponible</div>
-            </div>
+          <div class="carousel-nav">
+            <button class="car-btn" onclick="scrollCarousel('video',-1)">‹</button>
+            <button class="car-btn" onclick="scrollCarousel('video',1)">›</button>
           </div>
-          {% endif %}
         </div>
 
-        <!-- GUIDE PRATIQUE -->
+        <!-- GUIDE PRATIQUE (carrousel horizontal - 1 slide à la fois) -->
         <div>
           <div class="section-hd">
             <div><div class="section-tag">GUIDE PRATIQUE</div></div>
             <a class="voir-tout" href="#" onclick="afficherSection('guide','📚 Guides pratiques',null);return false;">Voir tout →</a>
           </div>
-          {% if guide_featured %}
-          <div class="guide-card">
-            {% if guide_featured.image_couverture %}
-            <div class="guide-img"><img src="{{ guide_featured.image_couverture.url }}" alt="{{ guide_featured.titre }}"></div>
-            {% else %}
-            <div class="guide-img" style="display:flex;align-items:center;justify-content:center;font-size:2rem;">📚</div>
-            {% endif %}
-            <div class="guide-tit">{{ guide_featured.titre }}</div>
-            {% if guide_featured.description %}
-            <div class="guide-desc">{{ guide_featured.description|truncatechars:150 }}</div>
-            {% endif %}
-            {% if guide_featured.fichier_pdf %}
-            <a href="{% url 'academie_telecharger' guide_featured.pk %}" class="btn-telecharger">
-              📥 Télécharger
-            </a>
-            {% endif %}
+          <div class="carousel-wrap" id="carousel-guide">
+            <div class="carousel-track" id="track-guide">
+              {% if guides %}
+                {% for guide in guides %}
+                <div class="slide-item">
+                  <a class="guide-card" href="/journal/{{ guide.numero }}/?from=academie">
+                    <div class="guide-img">
+                      {% if guide.image_une %}
+                        <img src="{{ guide.image_une.url }}" alt="{{ guide.titre }}">
+                      {% else %}
+                        <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--grad);font-size:2.5rem;">📚</div>
+                      {% endif %}
+                    </div>
+                    <div class="guide-body">
+                      <div class="guide-tit">{{ guide.titre }}</div>
+                      {% if guide.sous_titre %}<div class="guide-desc">{{ guide.sous_titre|truncatechars:80 }}</div>{% endif %}
+                      <div class="guide-btns">
+                        <span class="btn-lire btn-lire-ol">📖 Lire en ligne</span>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+                {% endfor %}
+              {% else %}
+                <div class="slide-item"><div style="height:200px;display:flex;align-items:center;justify-content:center;color:var(--g400);font-size:14px;background:var(--blue-pale);border-radius:var(--r);">Aucun guide</div></div>
+              {% endif %}
+            </div>
           </div>
-          {% else %}
-          <div class="guide-card">
-            <div style="text-align:center;padding:1.5rem;color:var(--g400);font-size:12px;"><div style="font-size:2rem;margin-bottom:0.5rem;">📚</div>Aucun guide publié.</div>
+          <div class="carousel-nav">
+            <button class="car-btn" onclick="scrollCarousel('guide',-1)">‹</button>
+            <button class="car-btn" onclick="scrollCarousel('guide',1)">›</button>
           </div>
-          {% endif %}
         </div>
 
-        <!-- QUESTION FRÉQUENTE -->
+        <!-- QUESTION FRÉQUENTE (défilement vertical) -->
         <div>
           <div class="section-hd">
             <div><div class="section-tag">QUESTION FRÉQUENTE</div></div>
             <a class="voir-tout" href="#" onclick="afficherSection('faq','❓ FAQ',null);return false;">Voir tout →</a>
           </div>
-          {% if faq_featured %}
           <div class="faq-card">
-            <div class="faq-q">
-              <span class="faq-q-prefix">Q.</span>
-              {{ faq_featured.question }}
+            <div class="scroll-vertical">
+              {% if faqs %}
+                {% for faq in faqs %}
+                <div class="faq-item-wrap">
+                  <div class="faq-q"><span class="faq-q-prefix">Q.</span>{{ faq.question|truncatechars:60 }}</div>
+                  <div class="faq-r">{{ faq.reponse|truncatechars:150 }}</div>
+                  {% if faq.temps_reponse %}<div class="faq-temps">⏱ {{ faq.temps_reponse }}</div>{% endif %}
+                  <a class="faq-voir" href="#" onclick="afficherSection('faq','❓ FAQ',null);return false;">Réponse complète →</a>
+                </div>
+                {% endfor %}
+                <!-- Dupliquer pour l'effet infini -->
+                {% for faq in faqs %}
+                <div class="faq-item-wrap">
+                  <div class="faq-q"><span class="faq-q-prefix">Q.</span>{{ faq.question|truncatechars:60 }}</div>
+                  <div class="faq-r">{{ faq.reponse|truncatechars:150 }}</div>
+                  {% if faq.temps_reponse %}<div class="faq-temps">⏱ {{ faq.temps_reponse }}</div>{% endif %}
+                  <a class="faq-voir" href="#" onclick="afficherSection('faq','❓ FAQ',null);return false;">Réponse complète →</a>
+                </div>
+                {% endfor %}
+              {% else %}
+                <div style="text-align:center;padding:1.5rem;color:var(--g400);font-size:11px;">Aucune FAQ publiée.</div>
+              {% endif %}
             </div>
-            <div class="faq-r">{{ faq_featured.reponse|truncatechars:280 }}</div>
-            {% if faq_featured.temps_reponse %}
-            <div style="font-size:10px;color:var(--g400);margin-bottom:0.5rem;">⏱ {{ faq_featured.temps_reponse }}</div>
-            {% endif %}
-            <a class="faq-voir" href="#" onclick="afficherSection('faq','❓ FAQ',null);return false;">Voir la réponse complète →</a>
           </div>
-          {% else %}
-          <div class="faq-card">
-            <div style="text-align:center;padding:1.5rem;color:var(--g400);font-size:12px;"><div style="font-size:2rem;margin-bottom:0.5rem;">❓</div>Aucune FAQ publiée.</div>
-          </div>
-          {% endif %}
         </div>
       </div>
 
     </div><!-- fin vue-accueil -->
 
-    <!-- ══ VUE SECTION COMPLÈTE ══ -->
+    <!-- VUE SECTION COMPLÈTE -->
     <div id="vue-section" class="full-section">
       <div class="fs-header">
         <div class="fs-tit" id="fs-tit">Documents</div>
-        <button class="fs-back" onclick="afficherAccueil(null)">← Retour à l'accueil</button>
+        <button class="fs-back" onclick="afficherAccueil()">← Retour à l'accueil</button>
       </div>
       <div id="fs-content"></div>
     </div>
 
-  </div><!-- fin main-content -->
-</div><!-- fin layout -->
+  </div><!-- fin academie-content -->
+</div><!-- fin academie-layout -->
 
-<!-- Données JSON pour le JS -->
+<!-- ══ FOOTER ══ -->
+<div class="footer-bar"></div>
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;">
+        <div class="logo-box" style="width:36px;height:36px;font-size:15px;border-radius:8px;">E</div>
+        <div style="font-size:15px;font-weight:900;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">EDEN GROUP</div>
+      </div>
+      <p class="footer-desc">Votre partenaire foncier de confiance depuis 2018.</p>
+      <div class="footer-tagline">Le foncier sécurisé, notre engagement</div>
+    </div>
+    <div class="footer-col">
+      <h4>Liens rapides</h4>
+      <a class="footer-lnk" href="{% url 'home' %}">Accueil</a>
+      <a class="footer-lnk" href="{% url 'sites_list' %}">Nos Terrains</a>
+      <a class="footer-lnk" href="{% url 'nos_projets' %}">Nos Projets</a>
+      <a class="footer-lnk" href="{% url 'nos_services' %}">Nos Services</a>
+      <a class="footer-lnk" href="{% url 'nos_agences' %}">Nos Agences</a>
+      <a class="footer-lnk" href="{% url 'academie_accueil' %}">Académie</a>
+      <a class="footer-lnk" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+      <a class="footer-lnk" href="{% url 'journal_kiosque' %}">Journal</a>
+      <a class="footer-lnk" href="{% url 'a_propos' %}">À propos</a>
+    </div>
+    <div class="footer-col">
+      <h4>Nos agences</h4>
+      <div class="footer-agences-item">📍 Yaoundé (Siège)</div>
+      <div class="footer-agences-item">📍 Bafoussam</div>
+      <div class="footer-agences-item">📍 Dschang</div>
+      <div class="footer-agences-item">📍 Bangangté</div>
+    </div>
+    <div class="footer-col">
+      <h4>Suivez-nous</h4>
+      <div class="footer-socials">
+        <a href="#" class="footer-social-btn fs-fb">f</a>
+        <a href="#" class="footer-social-btn fs-tt" style="color:#fff;">T</a>
+        <a href="#" class="footer-social-btn fs-yt" style="color:#fff;">▶</a>
+        <a href="#" class="footer-social-btn fs-li" style="color:#fff;">in</a>
+        <a href="#" class="footer-social-btn fs-ig" style="color:#fff;">📷</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Newsletter</h4>
+      <div style="font-size:12px;color:#94A3B8;margin-bottom:0.8rem;">Recevez nos offres et actualités</div>
+      <div class="footer-nl-wrap">
+        <input class="footer-nl-input" type="email" placeholder="Votre email" id="footer-nl">
+        <button class="footer-nl-btn" onclick="souscrireFooter()">→</button>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bot">
+    <div class="footer-copy">© 2026 EDEN GROUP ENTREPRISE. Tous droits réservés.</div>
+    <div class="footer-links-bot">
+      <a href="#">Mentions légales</a>
+      <a href="#">Politique de confidentialité</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ══ SCRIPTS ══ -->
 <script>
-// ════════════════════════════════════════
-// DONNÉES
-// ════════════════════════════════════════
-const DOCS_DATA = {
-  texte_loi: [
-    {% for doc in textes_loi %}
-    {pk:{{ doc.pk }},titre:'{{ doc.titre|escapejs }}',ref:'{{ doc.reference_officielle|escapejs }}',auteur:'{{ doc.auteur|escapejs }}',date:'{% if doc.date_publication %}{{ doc.date_publication|date:"d M Y" }}{% endif %}',desc:'{{ doc.description|escapejs|truncatechars:150 }}',image:'{% if doc.image_couverture %}{{ doc.image_couverture.url }}{% endif %}',hasPdf:{{ doc.fichier_pdf|yesno:"true,false" }},urlDl:'{% url "academie_telecharger" doc.pk %}',type:'doc'},
-    {% endfor %}
-  ],
-  article: [
-    {% for doc in articles %}
-    {pk:{{ doc.pk }},titre:'{{ doc.titre|escapejs }}',auteur:'{{ doc.auteur|escapejs }}',date:'{% if doc.date_publication %}{{ doc.date_publication|date:"d M Y" }}{% endif %}',tps:'{{ doc.temps_lecture|escapejs }}',desc:'{{ doc.description|escapejs|truncatechars:150 }}',image:'{% if doc.image_couverture %}{{ doc.image_couverture.url }}{% endif %}',hasPdf:{{ doc.fichier_pdf|yesno:"true,false" }},urlDl:'{% url "academie_telecharger" doc.pk %}',type:'doc'},
-    {% endfor %}
-  ],
-  revue: [
-    {% for doc in revues %}
-    {pk:{{ doc.pk }},titre:'{{ doc.titre|escapejs }}',num:'{{ doc.numero_revue|escapejs }}',auteur:'{{ doc.auteur|escapejs }}',date:'{% if doc.date_publication %}{{ doc.date_publication|date:"M Y" }}{% endif %}',desc:'{{ doc.description|escapejs|truncatechars:150 }}',image:'{% if doc.image_couverture %}{{ doc.image_couverture.url }}{% endif %}',hasPdf:{{ doc.fichier_pdf|yesno:"true,false" }},urlDl:'{% url "academie_telecharger" doc.pk %}',type:'revue'},
-    {% endfor %}
-  ],
-  guide: [
-    {% for doc in guides %}
-    {pk:{{ doc.pk }},titre:'{{ doc.titre|escapejs }}',auteur:'{{ doc.auteur|escapejs }}',date:'{% if doc.date_publication %}{{ doc.date_publication|date:"d M Y" }}{% endif %}',desc:'{{ doc.description|escapejs|truncatechars:150 }}',image:'{% if doc.image_couverture %}{{ doc.image_couverture.url }}{% endif %}',hasPdf:{{ doc.fichier_pdf|yesno:"true,false" }},urlDl:'{% url "academie_telecharger" doc.pk %}',type:'doc'},
-    {% endfor %}
-  ],
-  lexique: [
-    {% for doc in lexique %}
-    {pk:{{ doc.pk }},titre:'{{ doc.titre|escapejs }}',desc:'{{ doc.description|escapejs }}',hasPdf:{{ doc.fichier_pdf|yesno:"true,false" }},urlDl:'{% url "academie_telecharger" doc.pk %}',type:'lexique'},
-    {% endfor %}
-  ],
-  infographie: [
-    {% for doc in infographies %}
-    {pk:{{ doc.pk }},titre:'{{ doc.titre|escapejs }}',date:'{% if doc.date_publication %}{{ doc.date_publication|date:"d M Y" }}{% endif %}',desc:'{{ doc.description|escapejs|truncatechars:150 }}',image:'{% if doc.image_couverture %}{{ doc.image_couverture.url }}{% endif %}',hasPdf:{{ doc.fichier_pdf|yesno:"true,false" }},urlDl:'{% url "academie_telecharger" doc.pk %}',type:'infographie'},
-    {% endfor %}
-  ],
-  ressource: [
-    {% for doc in ressources %}
-    {pk:{{ doc.pk }},titre:'{{ doc.titre|escapejs }}',auteur:'{{ doc.auteur|escapejs }}',date:'{% if doc.date_publication %}{{ doc.date_publication|date:"d M Y" }}{% endif %}',desc:'{{ doc.description|escapejs|truncatechars:150 }}',image:'{% if doc.image_couverture %}{{ doc.image_couverture.url }}{% endif %}',hasPdf:{{ doc.fichier_pdf|yesno:"true,false" }},urlDl:'{% url "academie_telecharger" doc.pk %}',type:'doc'},
-    {% endfor %}
-  ],
+const EDITIONS_DATA = {
+  article: [{% for ed in articles %}{pk:{{ ed.pk }},titre:'{{ ed.titre|escapejs }}',sous_titre:'{{ ed.sous_titre|escapejs }}',num:'{{ ed.numero }}',date:'{% if ed.date_parution %}{{ ed.date_parution|date:"d M Y" }}{% endif %}',image:'{% if ed.image_une %}{{ ed.image_une.url }}{% endif %}',url:'/journal/{{ ed.numero }}/?from=academie',type:'article'},{% endfor %}],
+  revue: [{% for ed in revues %}{pk:{{ ed.pk }},titre:'{{ ed.titre|escapejs }}',sous_titre:'{{ ed.sous_titre|escapejs }}',num:'{{ ed.numero }}',date:'{% if ed.date_parution %}{{ ed.date_parution|date:"d M Y" }}{% endif %}',image:'{% if ed.image_une %}{{ ed.image_une.url }}{% endif %}',url:'/journal/{{ ed.numero }}/?from=academie',type:'revue'},{% endfor %}],
+  guide: [{% for ed in guides %}{pk:{{ ed.pk }},titre:'{{ ed.titre|escapejs }}',sous_titre:'{{ ed.sous_titre|escapejs }}',num:'{{ ed.numero }}',date:'{% if ed.date_parution %}{{ ed.date_parution|date:"d M Y" }}{% endif %}',image:'{% if ed.image_une %}{{ ed.image_une.url }}{% endif %}',url:'/journal/{{ ed.numero }}/?from=academie',type:'guide'},{% endfor %}],
 };
+const TEXTES_LOI = [{% for doc in textes_loi %}{pk:{{ doc.pk }},titre:'{{ doc.titre|escapejs }}',ref:'{{ doc.reference_officielle|escapejs }}',date:'{% if doc.date_publication %}{{ doc.date_publication|date:"d M Y" }}{% endif %}',desc:'{{ doc.description|escapejs|truncatechars:120 }}',hasPdf:{{ doc.fichier_pdf|yesno:"true,false" }},urlDl:'{% url "academie_telecharger" doc.pk %}'},{% endfor %}];
+const LEXIQUE_DATA = [{% for doc in lexique %}{titre:'{{ doc.titre|escapejs }}',desc:'{{ doc.description|escapejs }}'},{% endfor %}];
+const GALERIE_DATA = [{% for img in galerie %}{titre:'{{ img.titre|escapejs }}',desc:'{{ img.description|escapejs }}',image:'{% if img.image_couverture %}{{ img.image_couverture.url }}{% endif %}'},{% endfor %}];
+const VIDEOS_DATA = [{% for v in videos %}{pk:{{ v.pk }},titre:'{{ v.titre|escapejs }}',desc:'{{ v.description|escapejs|truncatechars:100 }}',duree:'{{ v.duree|escapejs }}',auteur:'{{ v.auteur|escapejs }}',miniature:'{% if v.image_miniature %}{{ v.image_miniature.url }}{% endif %}',url:'{% url "academie_voir_video" v.pk %}'},{% endfor %}];
+const FAQS_DATA = [{% for f in faqs %}{question:'{{ f.question|escapejs }}',reponse:'{{ f.reponse|escapejs }}',tps:'{{ f.temps_reponse|escapejs }}'},{% endfor %}];
 
-const VIDEOS_DATA = [
-  {% for v in videos %}
-  {pk:{{ v.pk }},titre:'{{ v.titre|escapejs }}',desc:'{{ v.description|escapejs|truncatechars:120 }}',duree:'{{ v.duree|escapejs }}',auteur:'{{ v.auteur|escapejs }}',miniature:'{% if v.image_miniature %}{{ v.image_miniature.url }}{% endif %}',urlStream:'{% url "academie_voir_video" v.pk %}'},
-  {% endfor %}
-];
+// ══ CARROUSELS ══
+const carPositions = {};
+const carTimers = {};
 
-const FAQS_DATA = [
-  {% for f in faqs %}
-  {pk:{{ f.pk }},question:'{{ f.question|escapejs }}',reponse:'{{ f.reponse|escapejs }}',tps:'{{ f.temps_reponse|escapejs }}',cat:'{{ f.categorie_faq|escapejs }}'},
-  {% endfor %}
-];
+function scrollCarousel(id, dir) {
+  const track = document.getElementById(`track-${id}`);
+  if (!track) return;
+  const children = track.children.length;
+  const cardW = 100;
+  const max = Math.max(0, (children - 1) * cardW);
+  carPositions[id] = Math.max(0, Math.min((carPositions[id] || 0) + dir * cardW, max));
+  track.style.transform = `translateX(-${carPositions[id]}%)`;
+  if (carTimers[id]) {
+    clearInterval(carTimers[id]);
+    startAutoScroll(id, 5000);
+  }
+}
 
-// ════════════════════════════════════════
-// NAVIGATION SIDEBAR
-// ════════════════════════════════════════
+function startAutoScroll(id, interval) {
+  if (carTimers[id]) clearInterval(carTimers[id]);
+  const track = document.getElementById(`track-${id}`);
+  if (!track || track.children.length <= 1) return;
+  carTimers[id] = setInterval(function() {
+    const children = track.children.length;
+    const max = (children - 1) * 100;
+    let current = carPositions[id] || 0;
+    current += 100;
+    if (current > max) current = 0;
+    carPositions[id] = current;
+    track.style.transform = `translateX(-${current}%)`;
+  }, interval || 5000);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(function() {
+    startAutoScroll('galerie-haut', 4000);
+    startAutoScroll('revue', 4500);
+    startAutoScroll('video', 4000);
+    startAutoScroll('guide', 4500);
+    const articlesTrack = document.getElementById('track-articles');
+    if (articlesTrack && articlesTrack.children.length > 0) {
+      let pos = 0;
+      const max = Math.max(0, (articlesTrack.children.length - 4) * 190);
+      setInterval(function() {
+        pos += 190;
+        if (pos > max) pos = 0;
+        articlesTrack.style.transform = `translateX(-${pos}px)`;
+      }, 4000);
+    }
+  }, 1000);
+});
+
+// ══ NAVIGATION SIDEBAR ══
 function afficherAccueil(el) {
   document.getElementById('vue-accueil').style.display = 'block';
   document.getElementById('vue-section').classList.remove('visible');
-  document.querySelectorAll('.sb-item').forEach(i => {
-    i.classList.remove('active');
-    i.classList.remove('active-cat');
-  });
-  if (el) {
-    el.classList.add('active-cat');
-  } else {
-    document.querySelector('.sb-item:first-child')?.classList.add('active-cat');
-  }
+  document.querySelectorAll('.sb-item').forEach(i => {i.classList.remove('active','sel');});
+  const acc = document.getElementById('sb-accueil');
+  if (acc) acc.classList.add('active');
+  if (el) el.classList.add('active');
 }
 
 function afficherSection(cat, label, el) {
@@ -804,94 +1009,115 @@ function afficherSection(cat, label, el) {
   const sec = document.getElementById('vue-section');
   sec.classList.add('visible');
   document.getElementById('fs-tit').textContent = label;
-
-  // Activer lien sidebar
-  document.querySelectorAll('.sb-item').forEach(i => {
-    i.classList.remove('active');
-    i.classList.remove('active-cat');
-  });
-  if (el) el.classList.add('active');
-
-  // Rendre le contenu
+  document.querySelectorAll('.sb-item').forEach(i => {i.classList.remove('active','sel');});
+  if (el) el.classList.add('sel');
   const content = document.getElementById('fs-content');
-  if (cat === 'video') {
-    content.innerHTML = rendreVideos();
-  } else if (cat === 'faq') {
-    content.innerHTML = rendreFAQ();
-  } else if (cat === 'faq_poser') {
-    content.innerHTML = rendrePoseQuestion();
-  } else if (cat === 'lexique') {
-    content.innerHTML = rendreLexique();
-  } else {
-    content.innerHTML = rendreDocs(cat);
-  }
-  sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (cat === 'video') content.innerHTML = rendreVideos();
+  else if (cat === 'faq') content.innerHTML = rendreFAQ();
+  else if (cat === 'faq_poser') content.innerHTML = rendrePoseQuestion();
+  else if (cat === 'lexique') content.innerHTML = rendreLexique();
+  else if (cat === 'galerie') content.innerHTML = rendreGalerie();
+  else if (cat === 'texte_loi') content.innerHTML = rendreTextesLoi();
+  else if (cat === 'ressource') content.innerHTML = rendreCentreRessources();
+  else if (['article','revue','guide'].includes(cat)) content.innerHTML = rendreEditions(cat);
+  else content.innerHTML = `<div style="text-align:center;padding:3rem;color:var(--g400);">Section en cours de construction.</div>`;
+  sec.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-// ════════════════════════════════════════
-// RENDUS HTML
-// ════════════════════════════════════════
-function rendreDocs(cat) {
-  const items = DOCS_DATA[cat] || [];
-  if (!items.length) return `<div style="text-align:center;padding:4rem;color:#94A3B8;font-size:14px;"><div style="font-size:3rem;margin-bottom:1rem;">📂</div>Aucun document disponible dans cette catégorie.</div>`;
-
-  return `<div class="fs-grid">
-    ${items.map(d => `
-      <div class="doc-card">
-        <div class="dc-img">
-          ${d.image
-            ? `<img src="${d.image}" alt="${d.titre}">`
-            : `<div class="dc-img-ph">📄</div>`}
-          <span class="dc-cat">${cat === 'texte_loi' ? 'TEXTE DE LOI' : cat === 'guide' ? 'GUIDE' : cat === 'revue' ? 'REVUE' : cat === 'ressource' ? 'RESSOURCE' : 'DOCUMENT'}</span>
-        </div>
-        <div class="dc-body">
-          <div class="dc-tit">${d.ref || d.titre}${d.num ? ' — N°'+d.num : ''}</div>
-          <div class="dc-meta">
-            ${d.auteur ? `<span>✍ ${d.auteur}</span>` : ''}
-            ${d.date ? `<span>📅 ${d.date}</span>` : ''}
-            ${d.tps ? `<span>⏱ ${d.tps}</span>` : ''}
-          </div>
-          ${d.desc ? `<div class="dc-desc">${d.desc}</div>` : ''}
-          ${d.hasPdf
-            ? `<a href="${d.urlDl}" class="dc-btn" download>📥 Télécharger le PDF</a>`
-            : `<div class="dc-btn" style="background:var(--g200);color:var(--g500);cursor:default;">PDF non disponible</div>`}
-        </div>
+function rendreEditions(cat) {
+  const items = EDITIONS_DATA[cat] || [];
+  const labels = {article:'📄 Article',revue:'📕 Revue',guide:'📚 Guide pratique'};
+  if (!items.length) return `<div style="text-align:center;padding:3rem;color:var(--g400);"><div style="font-size:3rem;margin-bottom:1rem;">📂</div>Aucune publication dans cette catégorie.</div>`;
+  return `<div class="fs-grid">${items.map(d => `
+    <a class="ed-card-full" href="${d.url}">
+      <div class="ecf-img">
+        ${d.image ? `<img src="${d.image}" alt="${d.titre}">` : `<div class="ecf-img-ph">📄</div>`}
+        <span class="ecf-type">${labels[d.type]||d.type}</span>
       </div>
-    `).join('')}
-  </div>`;
+      <div class="ecf-body">
+        <div class="ecf-tit">${d.titre}</div>
+        <div class="ecf-meta">${d.num ? 'N°'+d.num+' · ':''} ${d.date||''}</div>
+        ${d.sous_titre ? `<div style="font-size:10px;color:var(--g500);line-height:1.5;margin-bottom:0.5rem;">${d.sous_titre.substring(0,100)}...</div>` : ''}
+        <span class="ecf-btn">📖 Lire maintenant</span>
+      </div>
+    </a>`).join('')}</div>`;
+}
+
+function rendreTextesLoi() {
+  if (!TEXTES_LOI.length) return `<div style="text-align:center;padding:3rem;color:var(--g400);"><div style="font-size:3rem;margin-bottom:1rem;">📜</div>Aucun texte de loi publié.</div>`;
+  return `<div class="fs-grid">${TEXTES_LOI.map(d => `
+    <div class="ed-card-full" style="display:block;">
+      <div class="ecf-body" style="padding:1.2rem;">
+        <div style="font-size:1.5rem;margin-bottom:0.5rem;">📜</div>
+        <div class="ecf-tit">${d.ref || d.titre}</div>
+        <div class="ecf-meta">${d.date||''}</div>
+        ${d.desc ? `<div style="font-size:11px;color:var(--g500);line-height:1.55;margin-bottom:0.6rem;">${d.desc}</div>` : ''}
+        ${d.hasPdf
+          ? `<a href="${d.urlDl}" class="ecf-btn" download>📥 Télécharger le PDF</a>`
+          : `<div class="ecf-btn" style="background:var(--g200);color:var(--g500);cursor:default;">PDF non disponible</div>`}
+      </div>
+    </div>`).join('')}</div>`;
 }
 
 function rendreVideos() {
-  if (!VIDEOS_DATA.length) return `<div style="text-align:center;padding:4rem;color:#94A3B8;font-size:14px;"><div style="font-size:3rem;margin-bottom:1rem;">🎬</div>Aucune vidéo disponible.</div>`;
-
-  return `<div class="fs-grid">
-    ${VIDEOS_DATA.map(v => `
-      <div class="video-card-full">
-        <div class="vcf-player">
-          ${v.miniature
-            ? `<img src="${v.miniature}" alt="${v.titre}" style="width:100%;height:100%;object-fit:cover;">`
-            : `<div style="width:100%;height:100%;background:#111;display:flex;align-items:center;justify-content:center;font-size:2rem;">🎬</div>`}
-          <div class="vcf-overlay" onclick="ouvrirVideo('${v.urlStream}','${v.titre}','${v.auteur}${v.duree ? ' · '+v.duree : ''}')">
-            <div class="vcf-play">▶</div>
-          </div>
-          ${v.duree ? `<div class="vcf-duree">${v.duree}</div>` : ''}
+  if (!VIDEOS_DATA.length) return `<div style="text-align:center;padding:3rem;color:var(--g400);"><div style="font-size:3rem;margin-bottom:1rem;">🎬</div>Aucune vidéo disponible.</div>`;
+  return `<div class="fs-grid">${VIDEOS_DATA.map(v => `
+    <div class="ed-card-full" style="cursor:pointer;" onclick="ouvrirVideo('${v.url}','${v.titre}','${v.duree}')">
+      <div class="ecf-img" style="position:relative;height:160px;">
+        ${v.miniature ? `<img src="${v.miniature}" alt="${v.titre}" style="width:100%;height:100%;object-fit:cover;">` : `<div class="ecf-img-ph" style="background:#111;color:#fff;">🎬</div>`}
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);">
+          <div style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;font-size:16px;">▶</div>
         </div>
-        <div class="vcf-body">
-          <div class="vcf-tit">${v.titre}</div>
-          <div class="vcf-meta">${v.auteur ? '✍ '+v.auteur : ''} ${v.duree ? '· ⏱ '+v.duree : ''}</div>
-          ${v.desc ? `<div style="font-size:11px;color:var(--g500);margin-top:4px;line-height:1.5;">${v.desc}</div>` : ''}
-        </div>
+        ${v.duree ? `<div style="position:absolute;bottom:6px;right:8px;background:rgba(0,0,0,0.7);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;">${v.duree}</div>` : ''}
       </div>
-    `).join('')}
+      <div class="ecf-body">
+        <div class="ecf-tit">${v.titre}</div>
+        <div class="ecf-meta">${v.auteur ? '✍ '+v.auteur : ''} ${v.duree ? '· '+v.duree : ''}</div>
+        ${v.desc ? `<div style="font-size:10px;color:var(--g500);margin-top:3px;line-height:1.5;">${v.desc}</div>` : ''}
+      </div>
+    </div>`).join('')}</div>`;
+}
+
+function rendreLexique() {
+  if (!LEXIQUE_DATA.length) return `<div style="text-align:center;padding:3rem;color:var(--g400);"><div style="font-size:3rem;margin-bottom:1rem;">🔤</div>Aucune entrée dans le lexique.</div>`;
+  const letters = [...new Set(LEXIQUE_DATA.map(d => d.titre[0]?.toUpperCase()).filter(Boolean))].sort();
+  let html = '';
+  letters.forEach(letter => {
+    const items = LEXIQUE_DATA.filter(d => d.titre[0]?.toUpperCase() === letter);
+    html += `
+      <div style="margin-bottom:1.5rem;">
+        <div style="font-size:1.4rem;font-weight:900;color:var(--blue);border-bottom:2px solid var(--blue);padding-bottom:4px;margin-bottom:0.8rem;display:inline-block;min-width:36px;text-align:center;">${letter}</div>
+        <div class="lexique-grid">
+          ${items.map(d => `
+            <div class="lex-item">
+              <div class="lex-terme">${d.titre}</div>
+              <div class="lex-def">${d.desc || 'Définition à venir.'}</div>
+            </div>`).join('')}
+        </div>
+      </div>`;
+  });
+  return `<div>${html}</div>`;
+}
+
+function rendreGalerie() {
+  if (!GALERIE_DATA.length) return `<div style="text-align:center;padding:3rem;color:var(--g400);"><div style="font-size:3rem;margin-bottom:1rem;">🖼</div>Aucune image dans la galerie.</div>`;
+  return `<div class="galerie-grid-full">
+    ${GALERIE_DATA.map((img, i) => `
+      <div class="gf-item" onclick="ouvrirLightbox('${img.image}','${img.titre}','${img.desc}')">
+        ${img.image ? `<img src="${img.image}" alt="${img.titre}">` : `<div style="width:100%;height:100%;background:var(--blue-pale);display:flex;align-items:center;justify-content:center;font-size:2.5rem;">🖼</div>`}
+        <div class="gf-overlay">
+          <div class="gf-tit">${img.titre}</div>
+          ${img.desc ? `<div class="gf-desc">${img.desc.substring(0,80)}</div>` : ''}
+        </div>
+      </div>`).join('')}
   </div>`;
 }
 
 function rendreFAQ() {
-  if (!FAQS_DATA.length) return `<div style="text-align:center;padding:4rem;color:#94A3B8;font-size:14px;"><div style="font-size:3rem;margin-bottom:1rem;">❓</div>Aucune FAQ disponible.</div>`;
-
+  if (!FAQS_DATA.length) return `<div style="text-align:center;padding:3rem;color:var(--g400);"><div style="font-size:3rem;margin-bottom:1rem;">❓</div>Aucune FAQ disponible.</div>`;
   return `<div style="max-width:860px;margin:0 auto;">
-    ${FAQS_DATA.map((f, i) => `
-      <div class="faq-item" id="faq-${i}">
+    ${FAQS_DATA.map((f,i) => `
+      <div class="faq-item-list" id="faq-${i}">
         <div class="faq-q-row" onclick="toggleFAQ(${i})">
           <span class="faq-q-ico">Q.</span>
           <span class="faq-q-txt">${f.question}</span>
@@ -899,26 +1125,31 @@ function rendreFAQ() {
         </div>
         <div class="faq-r-body">
           <p>${f.reponse}</p>
-          ${f.tps ? `<div class="faq-r-meta">⏱ ${f.tps}</div>` : ''}
+          ${f.tps ? `<div style="font-size:10px;color:var(--g400);margin-top:6px;">⏱ ${f.tps}</div>` : ''}
         </div>
-      </div>
-    `).join('')}
+      </div>`).join('')}
   </div>`;
 }
 
-function rendreLexique() {
-  const items = DOCS_DATA['lexique'] || [];
-  if (!items.length) return `<div style="text-align:center;padding:4rem;color:#94A3B8;font-size:14px;"><div style="font-size:3rem;margin-bottom:1rem;">🔤</div>Aucune entrée dans le lexique.</div>`;
-
-  return `<div class="lexique-grid">
-    ${items.map(d => `
-      <div class="lex-item">
-        <div class="lex-terme">${d.titre}</div>
-        <div class="lex-def">${d.desc || 'Définition à venir.'}</div>
-        ${d.hasPdf ? `<a href="${d.urlDl}" style="font-size:10px;font-weight:700;color:var(--blue);text-decoration:none;display:flex;align-items:center;gap:3px;margin-top:4px;">📥 Fiche PDF</a>` : ''}
-      </div>
-    `).join('')}
-  </div>`;
+function rendreCentreRessources() {
+  let html = `<div style="display:flex;flex-direction:column;gap:2rem;">`;
+  if (EDITIONS_DATA.article.length) {
+    html += `<div><div style="font-size:11px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.8rem;">📄 Articles (${EDITIONS_DATA.article.length})</div><div class="fs-grid">${EDITIONS_DATA.article.map(d => `<a class="ed-card-full" href="${d.url}" style="display:block;"><div class="ecf-img">${d.image ? `<img src="${d.image}" alt="${d.titre}">` : '<div class="ecf-img-ph">📄</div>'}<span class="ecf-type">Article</span></div><div class="ecf-body"><div class="ecf-tit">${d.titre}</div><div class="ecf-meta">${d.date||''}</div><span class="ecf-btn">📖 Lire</span></div></a>`).join('')}</div></div>`;
+  }
+  if (EDITIONS_DATA.revue.length) {
+    html += `<div><div style="font-size:11px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.8rem;">📕 Revues (${EDITIONS_DATA.revue.length})</div><div class="fs-grid">${EDITIONS_DATA.revue.map(d => `<a class="ed-card-full" href="${d.url}" style="display:block;"><div class="ecf-img">${d.image ? `<img src="${d.image}" alt="${d.titre}">` : '<div class="ecf-img-ph">📕</div>'}<span class="ecf-type">Revue</span></div><div class="ecf-body"><div class="ecf-tit">${d.titre}</div><div class="ecf-meta">${d.date||''}</div><span class="ecf-btn">📖 Lire</span></div></a>`).join('')}</div></div>`;
+  }
+  if (EDITIONS_DATA.guide.length) {
+    html += `<div><div style="font-size:11px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.8rem;">📚 Guides pratiques (${EDITIONS_DATA.guide.length})</div><div class="fs-grid">${EDITIONS_DATA.guide.map(d => `<a class="ed-card-full" href="${d.url}" style="display:block;"><div class="ecf-img">${d.image ? `<img src="${d.image}" alt="${d.titre}">` : '<div class="ecf-img-ph">📚</div>'}<span class="ecf-type">Guide</span></div><div class="ecf-body"><div class="ecf-tit">${d.titre}</div><div class="ecf-meta">${d.date||''}</div><span class="ecf-btn">📖 Lire</span></div></a>`).join('')}</div></div>`;
+  }
+  if (TEXTES_LOI.length) {
+    html += `<div><div style="font-size:11px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.8rem;">📜 Reglementation</div><div class="fs-grid">${TEXTES_LOI.map(d => `<div style="background:#fff;border-radius:var(--rl);box-shadow:var(--sh);padding:1rem;"><div style="font-size:1.2rem;margin-bottom:0.4rem;">📜</div><div style="font-size:12px;font-weight:700;color:var(--g800);margin-bottom:4px;">${d.ref||d.titre}</div><div style="font-size:10px;color:var(--g400);">${d.date||''}</div>${d.hasPdf ? `<a href="${d.urlDl}" style="display:inline-flex;align-items:center;gap:4px;margin-top:8px;font-size:11px;font-weight:700;color:var(--blue);text-decoration:none;" download>📥 Télécharger</a>` : ''}</div>`).join('')}</div></div>`;
+  }
+  if (VIDEOS_DATA.length) {
+    html += `<div><div style="font-size:11px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.8rem;">🎬 Vidéos (${VIDEOS_DATA.length})</div>${rendreVideos()}</div>`;
+  }
+  html += `</div>`;
+  return html;
 }
 
 function rendrePoseQuestion() {
@@ -926,125 +1157,60 @@ function rendrePoseQuestion() {
     <div style="font-size:1rem;font-weight:800;color:var(--g800);margin-bottom:0.5rem;">💬 Poser une question à nos experts</div>
     <div style="font-size:12px;color:var(--g500);margin-bottom:1.5rem;">Nos experts fonciers vous répondront sous 48h ouvrées.</div>
     <div style="display:flex;flex-direction:column;gap:10px;">
-      <div style="display:flex;flex-direction:column;gap:4px;">
-        <label style="font-size:11px;font-weight:600;color:var(--g500);">Votre nom *</label>
-        <input type="text" placeholder="Jean-Marie Nguema" style="border:1.5px solid var(--g200);border-radius:8px;padding:10px 14px;font-size:13px;font-family:'Outfit',sans-serif;outline:none;">
-      </div>
-      <div style="display:flex;flex-direction:column;gap:4px;">
-        <label style="font-size:11px;font-weight:600;color:var(--g500);">Email / WhatsApp *</label>
-        <input type="text" placeholder="+237 6XX XXX XXX" style="border:1.5px solid var(--g200);border-radius:8px;padding:10px 14px;font-size:13px;font-family:'Outfit',sans-serif;outline:none;">
-      </div>
-      <div style="display:flex;flex-direction:column;gap:4px;">
-        <label style="font-size:11px;font-weight:600;color:var(--g500);">Sujet *</label>
-        <input type="text" placeholder="Ex: Procédure d'immatriculation" style="border:1.5px solid var(--g200);border-radius:8px;padding:10px 14px;font-size:13px;font-family:'Outfit',sans-serif;outline:none;">
-      </div>
-      <div style="display:flex;flex-direction:column;gap:4px;">
-        <label style="font-size:11px;font-weight:600;color:var(--g500);">Votre question *</label>
-        <textarea rows="5" placeholder="Décrivez votre question en détail..." style="border:1.5px solid var(--g200);border-radius:8px;padding:10px 14px;font-size:13px;font-family:'Outfit',sans-serif;outline:none;resize:vertical;"></textarea>
-      </div>
-      <button onclick="showToast('✅','Votre question a été envoyée ! Réponse sous 48h.')" style="background:var(--blue);color:#fff;border:none;padding:12px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;">
-        Envoyer ma question →
-      </button>
+      <div style="display:flex;flex-direction:column;gap:4px;"><label style="font-size:11px;font-weight:600;color:var(--g500);">Votre nom *</label><input type="text" placeholder="Jean-Marie Nguema" style="border:1.5px solid var(--g200);border-radius:8px;padding:10px 14px;font-size:13px;font-family:'Outfit',sans-serif;outline:none;"></div>
+      <div style="display:flex;flex-direction:column;gap:4px;"><label style="font-size:11px;font-weight:600;color:var(--g500);">Email / WhatsApp *</label><input type="text" placeholder="+237 6XX XXX XXX" style="border:1.5px solid var(--g200);border-radius:8px;padding:10px 14px;font-size:13px;font-family:'Outfit',sans-serif;outline:none;"></div>
+      <div style="display:flex;flex-direction:column;gap:4px;"><label style="font-size:11px;font-weight:600;color:var(--g500);">Sujet *</label><input type="text" placeholder="Ex: Procédure d'immatriculation" style="border:1.5px solid var(--g200);border-radius:8px;padding:10px 14px;font-size:13px;font-family:'Outfit',sans-serif;outline:none;"></div>
+      <div style="display:flex;flex-direction:column;gap:4px;"><label style="font-size:11px;font-weight:600;color:var(--g500);">Question *</label><textarea rows="5" placeholder="Décrivez votre question..." style="border:1.5px solid var(--g200);border-radius:8px;padding:10px 14px;font-size:13px;font-family:'Outfit',sans-serif;outline:none;resize:vertical;width:100%;"></textarea></div>
+      <button onclick="showToast('✅','Votre question a été envoyée ! Réponse sous 48h.')" style="background:var(--blue);color:#fff;border:none;padding:12px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;">Envoyer ma question →</button>
     </div>
   </div>`;
 }
 
-// ════════════════════════════════════════
-// FAQ TOGGLE
-// ════════════════════════════════════════
 function toggleFAQ(idx) {
   const item = document.getElementById(`faq-${idx}`);
   if (!item) return;
   const isOpen = item.classList.contains('open');
-  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  document.querySelectorAll('.faq-item-list').forEach(i => i.classList.remove('open'));
   if (!isOpen) item.classList.add('open');
 }
 
-// ════════════════════════════════════════
-// VIDÉO MODALE
-// ════════════════════════════════════════
 function ouvrirVideo(url, titre, meta) {
-  const modal = document.getElementById('video-modal');
   const video = document.getElementById('vm-video');
   document.getElementById('vm-tit').textContent = titre;
   document.getElementById('vm-meta').textContent = meta || '';
   video.src = url;
   video.load();
-  modal.classList.add('open');
+  document.getElementById('video-modal').classList.add('open');
 }
-
 function fermerVideo() {
   const video = document.getElementById('vm-video');
   video.pause();
   video.src = '';
   document.getElementById('video-modal').classList.remove('open');
 }
-
 document.getElementById('video-modal').addEventListener('click', function(e) {
   if (e.target === this) fermerVideo();
 });
 
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') fermerVideo();
+function ouvrirLightbox(src, titre, desc) {
+  if (!src) return;
+  document.getElementById('lb-img').src = src;
+  document.getElementById('lb-tit').textContent = titre || '';
+  document.getElementById('lb-desc').textContent = desc || '';
+  document.getElementById('lightbox').classList.add('open');
+}
+function fermerLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.getElementById('lb-img').src = '';
+}
+document.getElementById('lightbox').addEventListener('click', function(e) {
+  if (e.target === this) fermerLightbox();
 });
 
-// ════════════════════════════════════════
-// PDF VIEWER (nouvelle fenêtre)
-// ════════════════════════════════════════
-function ouvrirPDFViewer(url, titre) {
-  window.open(url, '_blank');
-  showToast('📄', `Ouverture de "${titre}"…`);
-}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { fermerVideo(); fermerLightbox(); }
+});
 
-// ════════════════════════════════════════
-// RECHERCHE
-// ════════════════════════════════════════
-function rechercherAcademie(q) {
-  if (!q || q.length < 2) return;
-  const ql = q.toLowerCase();
-  const resultats = [];
-  Object.entries(DOCS_DATA).forEach(([cat, items]) => {
-    items.forEach(d => {
-      if ((d.titre||'').toLowerCase().includes(ql) || (d.desc||'').toLowerCase().includes(ql)) {
-        resultats.push({ ...d, cat });
-      }
-    });
-  });
-  VIDEOS_DATA.forEach(v => {
-    if (v.titre.toLowerCase().includes(ql)) resultats.push({ ...v, cat: 'video' });
-  });
-  if (resultats.length > 0 && q.length >= 3) {
-    afficherSection('_search_', `🔍 Résultats pour "${q}"`, null);
-    const content = document.getElementById('fs-content');
-    // Mélanger résultats (max 20)
-    const limited = resultats.slice(0, 20);
-    content.innerHTML = `<div class="fs-grid">
-      ${limited.map(r => r.cat === 'video'
-        ? `<div class="video-card-full">
-            <div class="vcf-player">
-              ${r.miniature ? `<img src="${r.miniature}" style="width:100%;height:100%;object-fit:cover;">` : `<div style="background:#111;width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;">🎬</div>`}
-              <div class="vcf-overlay" onclick="ouvrirVideo('${r.urlStream}','${r.titre}','')"><div class="vcf-play">▶</div></div>
-              ${r.duree ? `<div class="vcf-duree">${r.duree}</div>` : ''}
-            </div>
-            <div class="vcf-body"><div class="vcf-tit">${r.titre}</div></div>
-          </div>`
-        : `<div class="doc-card">
-            <div class="dc-img">${r.image ? `<img src="${r.image}" alt="${r.titre}">` : '<div class="dc-img-ph">📄</div>'}</div>
-            <div class="dc-body">
-              <div class="dc-tit">${r.ref || r.titre}</div>
-              <div class="dc-meta">${r.date || ''}</div>
-              ${r.desc ? `<div class="dc-desc">${r.desc}</div>` : ''}
-              ${r.hasPdf ? `<a href="${r.urlDl}" class="dc-btn" download>📥 Télécharger</a>` : ''}
-            </div>
-          </div>`
-      ).join('')}
-    </div>`;
-  }
-}
-
-// ════════════════════════════════════════
-// TOAST
-// ════════════════════════════════════════
 function showToast(ico, msg) {
   const t = document.getElementById('toast');
   document.getElementById('t-ico').textContent = ico;
@@ -1052,6 +1218,34 @@ function showToast(ico, msg) {
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 4000);
 }
+
+window.addEventListener('scroll', function() {
+    const nav = document.getElementById('navbar');
+    if (window.scrollY > 40) {
+        nav.classList.add('scrolled');
+    } else {
+        nav.classList.remove('scrolled');
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const nav = document.getElementById('navbar');
+    if (window.scrollY > 40) {
+        nav.classList.add('scrolled');
+    } else {
+        nav.classList.remove('scrolled');
+    }
+});
+
+function toggleMob(){
+    document.getElementById('mob-menu').classList.toggle('open');
+}
+
+document.querySelectorAll('.mob-menu .nav-lnk').forEach(link => {
+    link.addEventListener('click', function() {
+        document.getElementById('mob-menu').classList.remove('open');
+    });
+});
 </script>
 </body>
 </html>

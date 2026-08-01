@@ -1266,9 +1266,12 @@ def api_groupy_toggle(request):
 # ══════════════════════════════════════════════
 
 def journal_kiosque(request):
-    """Kiosque à journaux — page d'accueil."""
+    """Kiosque — liste des éditions publiées."""
     from .models import JournalEdition
-    editions = JournalEdition.objects.filter(statut='publie').order_by('-numero')
+    # Journaux seulement (pas articles/revues/guides)
+    editions = JournalEdition.objects.filter(
+        statut='publie', type_academie='journal'
+    ).order_by('-date_parution', '-created_at')
     derniere = editions.first()
     return render(request, 'eden/journal/kiosque.html', {
         'editions': editions,
@@ -1277,18 +1280,26 @@ def journal_kiosque(request):
 
 
 def journal_lire(request, numero):
-    """Visionneuse flipbook d'une édition."""
+    """Visionneuse flipbook — accepte slug ET entiers."""
     from .models import JournalEdition
     edition = get_object_or_404(JournalEdition, numero=numero, statut='publie')
     pages = edition.pages.order_by('numero')
+
+    pages_json = json.dumps([
+        {
+            'numero': p.numero,
+            'layout': p.layout,
+            'contenu': p.contenu,
+            'couleur_fond': p.couleur_fond
+        }
+        for p in pages
+    ], ensure_ascii=False)
+
     return render(request, 'eden/journal/lire.html', {
         'edition': edition,
         'pages': pages,
-        'pages_json': json.dumps([
-            {'numero': p.numero, 'layout': p.layout,
-             'contenu': p.contenu, 'couleur_fond': p.couleur_fond}
-            for p in pages
-        ])
+        'pages_json': pages_json,
+        'from_academie': request.GET.get('from') == 'academie',
     })
 
 
@@ -1305,53 +1316,100 @@ def journal_page_json(request, numero, page):
 @user_passes_test(is_agent)
 def dashboard_journal(request):
     from .models import JournalEdition
-    editions = JournalEdition.objects.all().order_by('-numero')
-    return render(request, 'eden/dashboard/journal.html', {'editions': editions})
-
+    editions = JournalEdition.objects.all().order_by('-created_at')
+    # Séparer journaux et publications académie
+    journaux = editions.filter(type_academie='journal')
+    academie = editions.exclude(type_academie='journal')
+    return render(request, 'eden/dashboard/journal.html', {
+        'editions': editions,
+        'journaux': journaux,
+        'academie': academie,
+    })
 
 @login_required
 @user_passes_test(is_agent)
 def dashboard_journal_edition_form(request, pk=None):
     from .models import JournalEdition
+    import uuid as _uuid
     edition = get_object_or_404(JournalEdition, pk=pk) if pk else None
+
     if request.method == 'POST':
         titre = request.POST.get('titre', '').strip()
-        sous_titre = request.POST.get('sous_titre', '').strip()
-        numero_str = request.POST.get('numero', '')
+        if not titre:
+            messages.error(request, 'Le titre est obligatoire.')
+            return render(request, 'eden/dashboard/journal_edition_form.html', {
+                'edition': edition
+            })
+
+        if not edition:
+            edition = JournalEdition()
+
+        edition.titre = titre
+        edition.sous_titre = request.POST.get('sous_titre', '').strip()
+        edition.type_academie = request.POST.get('type_academie', 'journal')
+        edition.statut = request.POST.get('statut', 'brouillon')
+
+        # ✅ Numéro : auto-généré si vide, garanti unique
+        numero = request.POST.get('numero', '').strip()
+        if not numero:
+            prefix = {
+                'journal': 'JNL',
+                'article': 'ART',
+                'revue': 'REV',
+                'guide': 'GUI',
+            }.get(edition.type_academie, 'PUB')
+            for _ in range(20):
+                candidat = f"{prefix}-{str(_uuid.uuid4())[:8].upper()}"
+                if not JournalEdition.objects.filter(numero=candidat).exclude(
+                    pk=edition.pk if edition.pk else 0
+                ).exists():
+                    numero = candidat
+                    break
+
+        # Vérifier unicité si numéro manuel
+        qs_check = JournalEdition.objects.filter(numero=numero)
+        if edition.pk:
+            qs_check = qs_check.exclude(pk=edition.pk)
+        if qs_check.exists():
+            messages.error(request, f'Le numéro "{numero}" existe déjà.')
+            return render(request, 'eden/dashboard/journal_edition_form.html', {
+                'edition': edition
+            })
+
+        edition.numero = numero
+
         date_str = request.POST.get('date_parution', '')
-        statut = request.POST.get('statut', 'brouillon')
-        if not titre or not numero_str:
-            messages.error(request, 'Le titre et le numéro sont obligatoires.')
-            return render(request, 'eden/dashboard/journal_edition_form.html', {'edition': edition})
-        if edition:
-            obj = edition
-        else:
-            obj = JournalEdition()
-        obj.titre = titre
-        obj.sous_titre = sous_titre
-        obj.statut = statut
-        obj.created_by = request.user
-        try:
-            obj.numero = int(numero_str)
-        except ValueError:
-            messages.error(request, 'Numéro invalide.')
-            return render(request, 'eden/dashboard/journal_edition_form.html', {'edition': edition})
         if date_str:
             from datetime import date
             try:
-                obj.date_parution = date.fromisoformat(date_str)
+                edition.date_parution = date.fromisoformat(date_str)
             except Exception:
                 pass
+
         if request.FILES.get('image_une'):
-            obj.image_une = request.FILES['image_une']
-        obj.save()
-        messages.success(request, f'Édition #{obj.numero} enregistrée.')
+            edition.image_une = request.FILES['image_une']
+
+        edition.save()
+
+        # Créer page 1 si nouvelle édition
+        if not edition.pages.exists():
+            from .models import JournalPage
+            JournalPage.objects.create(
+                edition=edition, numero=1,
+                contenu=[], layout='col2'
+            )
+
+        messages.success(request, f'"{edition.titre}" enregistré.')
+
+        # Ouvrir éditeur si demandé
+        if request.POST.get('action') == 'editeur':
+            return redirect('dashboard_journal_page_editer',
+                            edition_pk=edition.pk, page_num=1)
+
         return redirect('dashboard_journal')
-    # Prochain numéro auto
-    from .models import JournalEdition as JE
-    prochain = (JE.objects.aggregate(m=models.Max('numero'))['m'] or 0) + 1
+
     return render(request, 'eden/dashboard/journal_edition_form.html', {
-        'edition': edition, 'prochain': prochain
+        'edition': edition,
     })
 
 
@@ -1361,13 +1419,13 @@ def dashboard_journal_edition_supprimer(request, pk):
     from .models import JournalEdition
     edition = get_object_or_404(JournalEdition, pk=pk)
     if request.method == 'POST':
-        num = edition.numero
+        titre = edition.titre
         edition.delete()
-        messages.success(request, f'Édition #{num} supprimée.')
+        messages.success(request, f'"{titre}" supprimé.')
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True})
         return redirect('dashboard_journal')
-    return render(request, 'eden/dashboard/confirm_delete.html', {
-        'objet': edition, 'retour': 'dashboard_journal'
-    })
+    return JsonResponse({'success': False})
 
 
 @login_required
@@ -1393,17 +1451,20 @@ def dashboard_journal_publier(request, pk):
 def dashboard_journal_page_editer(request, edition_pk, page_num):
     from .models import JournalEdition, JournalPage, JournalMedia
     edition = get_object_or_404(JournalEdition, pk=edition_pk)
-    page, _ = JournalPage.objects.get_or_create(
+    page, created = JournalPage.objects.get_or_create(
         edition=edition, numero=page_num,
-        defaults={'contenu': [], 'layout': 'col2'}
+        defaults={'contenu': [], 'layout': 'col2', 'couleur_fond': '#FFFEF7'}
     )
     medias = JournalMedia.objects.filter(edition=edition).order_by('-created_at')
+    toutes_pages = edition.pages.order_by('numero')
+
     return render(request, 'eden/dashboard/journal_editeur.html', {
         'edition': edition,
         'page': page,
-        'page_json': json.dumps(page.contenu),
+        'page_json': json.dumps(page.contenu, ensure_ascii=False),
         'medias': medias,
-        'total_pages': edition.pages.count(),
+        'toutes_pages': toutes_pages,
+        'total_pages': toutes_pages.count(),
     })
 
 
@@ -1414,9 +1475,14 @@ def dashboard_journal_page_ajouter(request, edition_pk):
     edition = get_object_or_404(JournalEdition, pk=edition_pk)
     dernier = edition.pages.aggregate(m=models.Max('numero'))['m'] or 0
     nouveau_num = dernier + 1
-    JournalPage.objects.create(edition=edition, numero=nouveau_num)
-    return redirect('dashboard_journal_page_editer', edition_pk=edition_pk, page_num=nouveau_num)
-
+    JournalPage.objects.get_or_create(
+        edition=edition, numero=nouveau_num,
+        defaults={'contenu': [], 'layout': 'col2'}
+    )
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'success': True, 'page_num': nouveau_num})
+    return redirect('dashboard_journal_page_editer',
+                    edition_pk=edition_pk, page_num=nouveau_num)
 
 @login_required
 @user_passes_test(is_agent)
@@ -1430,77 +1496,131 @@ def dashboard_journal_page_supprimer(request, edition_pk, page_num):
         for i, p in enumerate(edition.pages.order_by('numero'), 1):
             if p.numero != i:
                 p.numero = i
-                p.save()
-        messages.success(request, f'Page {page_num} supprimée.')
+                p.save(update_fields=['numero'])
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return JsonResponse({'success': True})
-        return redirect('dashboard_journal')
+        return redirect('dashboard_journal_page_editer',
+                        edition_pk=edition_pk, page_num=1)
     return JsonResponse({'success': False})
+
 
 
 @login_required
 @user_passes_test(is_agent)
 def dashboard_journal_media_upload(request):
-    from .models import JournalMedia, JournalEdition
+    """Upload image ou vidéo locale pour le journal."""
+    from .models import JournalEdition, JournalMedia
     if request.method == 'POST':
-        edition_id = request.POST.get('edition_id')
-        legende = request.POST.get('legende', '')
-        url_externe = request.POST.get('url_externe', '').strip()
-        edition = JournalEdition.objects.filter(pk=edition_id).first() if edition_id else None
-        if request.FILES.get('fichier'):
-            f = request.FILES['fichier']
-            t = 'image' if f.content_type.startswith('image') else 'video'
-            m = JournalMedia.objects.create(
-                edition=edition, type=t,
-                fichier=f, legende=legende
-            )
-            url = request.build_absolute_uri(m.fichier.url)
-            return JsonResponse({'success': True, 'id': m.pk, 'url': url, 'type': t, 'legende': legende})
-        elif url_externe:
-            m = JournalMedia.objects.create(
-                edition=edition, type='video',
-                url_externe=url_externe, legende=legende
-            )
-            return JsonResponse({'success': True, 'id': m.pk, 'url': url_externe, 'type': 'video', 'legende': legende})
-    return JsonResponse({'success': False})
+        fichier = request.FILES.get('fichier')
+        if not fichier:
+            return JsonResponse({'success': False, 'error': 'Aucun fichier.'})
 
+        edition_pk = request.POST.get('edition_pk')
+        legende = request.POST.get('legende', '').strip()
+
+        # Détecter le type
+        nom = fichier.name.lower()
+        if nom.endswith(('.mp4', '.webm', '.mov', '.avi', '.mkv')):
+            type_media = 'video'
+        else:
+            type_media = 'image'
+
+        media = JournalMedia(
+            type=type_media,
+            fichier=fichier,
+            legende=legende,
+        )
+        if edition_pk:
+            try:
+                media.edition = JournalEdition.objects.get(pk=edition_pk)
+            except JournalEdition.DoesNotExist:
+                pass
+        media.save()
+
+        return JsonResponse({
+            'success': True,
+            'pk': media.pk,
+            'url': media.fichier.url,
+            'type': media.type,
+            'legende': media.legende,
+            'nom': fichier.name,
+        })
+
+    return JsonResponse({'success': False, 'error': 'POST requis.'})
 
 @login_required
 @user_passes_test(is_agent)
 def dashboard_journal_media_liste(request):
-    from .models import JournalMedia
-    edition_id = request.GET.get('edition_id')
+    """Liste des médias pour l'éditeur."""
+    from .models import JournalEdition, JournalMedia
+    edition_pk = request.GET.get('edition_pk')
     qs = JournalMedia.objects.all().order_by('-created_at')
-    if edition_id:
-        qs = qs.filter(edition_id=edition_id)
-    data = []
-    for m in qs[:50]:
-        url = request.build_absolute_uri(m.fichier.url) if m.fichier else m.url_externe
-        data.append({'id': m.pk, 'type': m.type, 'url': url, 'legende': m.legende})
-    return JsonResponse({'medias': data})
+    if edition_pk:
+        qs = qs.filter(
+            Q(edition__pk=edition_pk) | Q(edition__isnull=True)
+        )
+    medias = []
+    for m in qs[:60]:
+        medias.append({
+            'pk': m.pk,
+            'type': m.type,
+            'url': m.fichier.url if m.fichier else '',
+            'legende': m.legende,
+        })
+    return JsonResponse({'medias': medias})
 
 
-@csrf_exempt
 @login_required
 @user_passes_test(is_agent)
-def api_journal_sauvegarder_page(request):
-    from .models import JournalPage
+def dashboard_journal_media_supprimer(request, pk):
+    from .models import JournalMedia
+    media = get_object_or_404(JournalMedia, pk=pk)
     if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            page_id = data.get('page_id')
-            contenu = data.get('contenu', [])
-            layout = data.get('layout', 'col2')
-            couleur_fond = data.get('couleur_fond', '#FFFEF7')
-            page = get_object_or_404(JournalPage, pk=page_id)
-            page.contenu = contenu
-            page.layout = layout
-            page.couleur_fond = couleur_fond
-            page.save()
+        if media.fichier:
+            try:
+                import os
+                if os.path.exists(media.fichier.path):
+                    os.remove(media.fichier.path)
+            except Exception:
+                pass
+        media.delete()
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return JsonResponse({'success': True})
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)})
     return JsonResponse({'success': False})
+
+def api_journal_sauvegarder_page(request):
+    """API AJAX — sauvegarde le contenu d'une page."""
+    from .models import JournalPage
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'POST requis'})
+    if not request.user.is_authenticated or not request.user.is_staff:
+        return JsonResponse({'success': False, 'error': 'Non autorisé'}, status=403)
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'error': 'JSON invalide'})
+
+    page_id = data.get('page_id')
+    contenu = data.get('contenu', [])
+    layout = data.get('layout', 'col2')
+    couleur_fond = data.get('couleur_fond', '#FFFEF7')
+
+    try:
+        page = JournalPage.objects.get(pk=page_id)
+    except JournalPage.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Page introuvable'})
+
+    page.contenu = contenu
+    page.layout = layout
+    page.couleur_fond = couleur_fond
+    page.save(update_fields=['contenu', 'layout', 'couleur_fond'])
+
+    return JsonResponse({
+        'success': True,
+        'page_id': page.pk,
+        'nb_blocs': len(contenu),
+    })
 
 @login_required
 @user_passes_test(is_agent)
@@ -2749,7 +2869,7 @@ def api_calcul_parcelles(request):
     """
     API AJAX pour le panneau flottant.
     Reçoit : budget, superficie, site_slug, statut
-    Retourne : résultats calculés par site basés UNIQUEMENT sur prix_min du site
+    Retourne : résultats calculés par site basés UNIQUEMENT sur prix_morcellable ou prix_min
     """
     from .models import SiteFoncier
 
@@ -2759,7 +2879,6 @@ def api_calcul_parcelles(request):
     statut = request.GET.get('statut', '').strip()
 
     results = []
-    messages_info = []
 
     # Récupérer les sites actifs
     sites_qs = SiteFoncier.objects.filter(is_active=True)
@@ -2778,37 +2897,23 @@ def api_calcul_parcelles(request):
     budget_val = float(budget) if budget else None
     superficie_val = float(superficie) if superficie else None
 
-    # ═══ SUPERFICIE MINIMALE = 500 m² ═══
-    SUPERFICIE_MIN = 500
-
-    # Si superficie saisie < 500, afficher un message
-    if superficie_val is not None and superficie_val < SUPERFICIE_MIN:
-        messages_info.append({
-            'type': 'info',
-            'message': f"📐 La superficie minimale est de <strong>{SUPERFICIE_MIN} m²</strong>. Veuillez saisir une superficie d'au moins {SUPERFICIE_MIN} m²."
-        })
-        # On ne bloque pas, on continue mais on affiche le message
-
     # Si aucun critère n'est fourni, retourner vide
     if not budget_val and not superficie_val and not site_slug and not statut:
-        return JsonResponse({
-            'results': [],
-            'count': 0,
-            'messages': []
-        })
+        return JsonResponse({'results': [], 'count': 0})
 
     for site in sites_qs:
-        # ═══ PRIX AU M² = prix_min DU SITE ═══
-        prix_m2 = float(site.prix_min) if site.prix_min else 0
-        prix_min_site = float(site.prix_min) if site.prix_min else 0
+        # ═══ PRIX AU M² = prix_morcellable OU prix_min DU SITE ═══
+        # Utiliser prix_morcellable s'il existe, sinon prix_min
+        if site.prix_morcellable:
+            prix_m2 = float(site.prix_morcellable)
+        else:
+            prix_m2 = float(site.prix_min) if site.prix_min else 0
 
         if prix_m2 == 0:
             continue
 
-        # ═══ VÉRIFICATION : Budget >= prix_min du site ═══
-        if budget_val is not None and budget_val < prix_min_site:
-            # Le budget est insuffisant pour ce site, on ne l'affiche pas
-            continue
+        # ═══ SUPERFICIE MINIMALE = superficie_morcellable OU calculée ═══
+        superficie_min = site.superficie_min_effective
 
         # Préparer les infos de base
         info = {
@@ -2816,140 +2921,125 @@ def api_calcul_parcelles(request):
             'slug': site.slug,
             'url': site.get_absolute_url(),
             'prix_m2': round(prix_m2, 0),
-            'prix_min_site': round(prix_min_site, 0),
             'nb_dispo': site.nb_disponibles,
             'statut': site.statut,
             'en_promotion': site.en_promotion,
+            'superficie_min': round(superficie_min, 2),
         }
 
         # ─── CAS 1 : Budget seul ───────────────────────────────
         if budget_val and not superficie_val:
             superficie_possible = budget_val / prix_m2
+            info['superficie_possible'] = round(superficie_possible, 2)
             
-            # Vérifier si la superficie possible est >= 500 m²
-            if superficie_possible >= SUPERFICIE_MIN:
-                info['superficie_possible'] = round(superficie_possible, 2)
+            if superficie_possible >= superficie_min:
                 info['message'] = (
                     f"💰 Avec <strong>{format_fcfa(budget_val)} FCFA</strong> → "
                     f"<strong>{format_sup(superficie_possible)} m²</strong>"
                 )
-                info['detail'] = f"📐 Prix au m² : {format_fcfa(prix_m2)} FCFA/m²"
-                results.append(info)
             else:
-                # Superficie possible < 500 m², on affiche un message explicatif
-                info['superficie_possible'] = round(superficie_possible, 2)
+                manque = (prix_m2 * superficie_min) - budget_val
                 info['message'] = (
-                    f"⚠️ Avec <strong>{format_fcfa(budget_val)} FCFA</strong>, "
-                    f"vous ne pouvez pas atteindre la superficie minimale de <strong>{SUPERFICIE_MIN} m²</strong>"
+                    f"⚠️ Budget insuffisant pour {format_sup(superficie_min)} m² minimum"
                 )
                 info['detail'] = (
-                    f"💡 Superficie possible : {format_sup(superficie_possible)} m²\n"
-                    f"💰 Il vous manque <strong>{format_fcfa(prix_m2 * SUPERFICIE_MIN - budget_val)} FCFA</strong> "
-                    f"pour atteindre {SUPERFICIE_MIN} m²"
+                    f"💡 Avec <strong>{format_fcfa(budget_val)} FCFA</strong>, "
+                    f"vous pouvez avoir <strong>{format_sup(superficie_possible)} m²</strong>\n"
+                    f"💰 Il vous manque <strong>{format_fcfa(manque)} FCFA</strong> "
+                    f"pour atteindre {format_sup(superficie_min)} m²"
                 )
-                results.append(info)
+            info['detail'] = f"📐 Prix au m² : {format_fcfa(prix_m2)} FCFA/m²"
+            results.append(info)
 
         # ─── CAS 2 : Superficie seule ─────────────────────────
         elif superficie_val and not budget_val:
-            # Vérifier si la superficie saisie est >= 500 m²
-            if superficie_val >= SUPERFICIE_MIN:
-                prix_total = superficie_val * prix_m2
+            prix_total = superficie_val * prix_m2
+            
+            if superficie_val >= superficie_min:
                 info['prix_total'] = round(prix_total, 0)
                 info['message'] = (
                     f"📐 <strong>{format_sup(superficie_val)} m²</strong> → "
                     f"<strong>{format_fcfa(prix_total)} FCFA</strong>"
                 )
                 info['detail'] = f"📐 Prix au m² : {format_fcfa(prix_m2)} FCFA/m²"
-                results.append(info)
             else:
-                # Superficie < 500 m², on affiche un message
-                prix_pour_500 = SUPERFICIE_MIN * prix_m2
+                prix_pour_min = prix_m2 * superficie_min
                 info['message'] = (
-                    f"⚠️ La superficie minimale est de <strong>{SUPERFICIE_MIN} m²</strong>"
+                    f"⚠️ La superficie minimale est de <strong>{format_sup(superficie_min)} m²</strong>"
                 )
                 info['detail'] = (
-                    f"💡 {SUPERFICIE_MIN} m² → <strong>{format_fcfa(prix_pour_500)} FCFA</strong> "
-                    f"(prix au m² : {format_fcfa(prix_m2)} FCFA/m²)"
+                    f"💡 {format_sup(superficie_min)} m² → <strong>{format_fcfa(prix_pour_min)} FCFA</strong>\n"
+                    f"📐 Prix au m² : {format_fcfa(prix_m2)} FCFA/m²"
                 )
-                results.append(info)
+            results.append(info)
 
         # ─── CAS 3 : Budget + Superficie ──────────────────────
         elif budget_val and superficie_val:
-            # Vérifier si la superficie saisie est >= 500 m²
-            if superficie_val < SUPERFICIE_MIN:
-                prix_pour_500 = SUPERFICIE_MIN * prix_m2
+            prix_total = superficie_val * prix_m2
+            
+            if superficie_val < superficie_min:
+                prix_pour_min = prix_m2 * superficie_min
                 info['message'] = (
-                    f"⚠️ La superficie minimale est de <strong>{SUPERFICIE_MIN} m²</strong>"
+                    f"⚠️ La superficie minimale est de <strong>{format_sup(superficie_min)} m²</strong>"
                 )
                 info['detail'] = (
-                    f"💡 {SUPERFICIE_MIN} m² → <strong>{format_fcfa(prix_pour_500)} FCFA</strong> "
-                    f"(prix au m² : {format_fcfa(prix_m2)} FCFA/m²)"
+                    f"💡 {format_sup(superficie_min)} m² → <strong>{format_fcfa(prix_pour_min)} FCFA</strong>\n"
+                    f"📐 Prix au m² : {format_fcfa(prix_m2)} FCFA/m²"
                 )
                 results.append(info)
+            elif budget_val >= prix_total:
+                reste = budget_val - prix_total
+                info['compatible'] = True
+                info['prix_total'] = round(prix_total, 0)
+                info['reste'] = round(reste, 0)
+                info['message'] = (
+                    f"✅ <strong>{format_sup(superficie_val)} m²</strong> = "
+                    f"<strong>{format_fcfa(prix_total)} FCFA</strong> "
+                    f"(reste {format_fcfa(reste)} FCFA)"
+                )
+                info['detail'] = f"📐 Prix au m² : {format_fcfa(prix_m2)} FCFA/m²"
+                results.append(info)
             else:
-                prix_total = superficie_val * prix_m2
-                if budget_val >= prix_total:
-                    reste = budget_val - prix_total
-                    info['compatible'] = True
-                    info['prix_total'] = round(prix_total, 0)
-                    info['reste'] = round(reste, 0)
+                superficie_possible = budget_val / prix_m2
+                manque = prix_total - budget_val
+                info['compatible'] = False
+                info['superficie_possible'] = round(superficie_possible, 2)
+                info['manque'] = round(manque, 0)
+                
+                if superficie_possible >= superficie_min:
                     info['message'] = (
-                        f"✅ <strong>{format_sup(superficie_val)} m²</strong> = "
-                        f"<strong>{format_fcfa(prix_total)} FCFA</strong> "
-                        f"(reste {format_fcfa(reste)} FCFA)"
+                        f"⚠️ Budget insuffisant pour {format_sup(superficie_val)} m²"
+                    )
+                    info['detail'] = (
+                        f"💡 Avec <strong>{format_fcfa(budget_val)} FCFA</strong>, "
+                        f"vous pouvez avoir <strong>{format_sup(superficie_possible)} m²</strong>\n"
+                        f"💰 Il vous manque <strong>{format_fcfa(manque)} FCFA</strong>\n"
+                        f"📐 Prix au m² : {format_fcfa(prix_m2)} FCFA/m²"
                     )
                 else:
-                    superficie_possible = budget_val / prix_m2
-                    manque = prix_total - budget_val
-                    info['compatible'] = False
-                    info['superficie_possible'] = round(superficie_possible, 2)
-                    info['manque'] = round(manque, 0)
-                    
-                    if superficie_possible >= SUPERFICIE_MIN:
-                        info['message'] = (
-                            f"⚠️ Budget insuffisant pour {format_sup(superficie_val)} m²"
-                        )
-                        info['detail'] = (
-                            f"💡 Avec <strong>{format_fcfa(budget_val)} FCFA</strong>, "
-                            f"vous pouvez avoir <strong>{format_sup(superficie_possible)} m²</strong>\n"
-                            f"💰 Il vous manque <strong>{format_fcfa(manque)} FCFA</strong>"
-                        )
-                    else:
-                        info['message'] = (
-                            f"⚠️ Budget insuffisant pour atteindre la superficie minimale de {SUPERFICIE_MIN} m²"
-                        )
-                        info['detail'] = (
-                            f"💡 Avec <strong>{format_fcfa(budget_val)} FCFA</strong>, "
-                            f"vous pouvez avoir <strong>{format_sup(superficie_possible)} m²</strong>\n"
-                            f"💰 Il vous manque <strong>{format_fcfa(prix_m2 * SUPERFICIE_MIN - budget_val)} FCFA</strong> "
-                            f"pour atteindre {SUPERFICIE_MIN} m²"
-                        )
-                    results.append(info)
+                    manque_min = (prix_m2 * superficie_min) - budget_val
+                    info['message'] = (
+                        f"⚠️ Budget insuffisant pour atteindre {format_sup(superficie_min)} m²"
+                    )
+                    info['detail'] = (
+                        f"💡 Avec <strong>{format_fcfa(budget_val)} FCFA</strong>, "
+                        f"vous pouvez avoir <strong>{format_sup(superficie_possible)} m²</strong>\n"
+                        f"💰 Il vous manque <strong>{format_fcfa(manque_min)} FCFA</strong> "
+                        f"pour atteindre {format_sup(superficie_min)} m²"
+                    )
+                results.append(info)
 
         # ─── CAS 4 : Site seul sélectionné ────────────────────
         elif site_slug and site.slug == site_slug:
             info['message'] = f"📐 Prix au m² : <strong>{format_fcfa(prix_m2)} FCFA/m²</strong>"
             info['detail'] = (
-                f"📏 Superficie minimale : <strong>{SUPERFICIE_MIN} m²</strong>\n"
-                f"💡 {SUPERFICIE_MIN} m² → <strong>{format_fcfa(prix_m2 * SUPERFICIE_MIN)} FCFA</strong>\n"
+                f"📏 Superficie minimale : <strong>{format_sup(superficie_min)} m²</strong>\n"
+                f"💡 {format_sup(superficie_min)} m² → <strong>{format_fcfa(prix_m2 * superficie_min)} FCFA</strong>\n"
                 f"💡 1000 m² → <strong>{format_fcfa(prix_m2 * 1000)} FCFA</strong>"
             )
             results.append(info)
 
-    # Ajouter un message si aucun site n'est affiché à cause du budget
-    if budget_val is not None and len(results) == 0:
-        # Vérifier si c'est à cause du budget
-        sites_avec_prix = [s for s in sites_qs if s.prix_min]
-        if sites_avec_prix:
-            prix_min_global = min(float(s.prix_min) for s in sites_avec_prix if s.prix_min)
-            if budget_val < prix_min_global:
-                messages_info.append({
-                    'type': 'warning',
-                    'message': f"⚠️ Votre budget de <strong>{format_fcfa(budget_val)} FCFA</strong> est insuffisant.",
-                    'detail': f"💡 Le prix minimum d'un site est de <strong>{format_fcfa(prix_min_global)} FCFA</strong>."
-                })
-
-    # Trier : d'abord les compatibles, puis par prix_m2 croissant
+    # Trier
     if budget_val and superficie_val:
         results.sort(key=lambda x: (
             not x.get('compatible', False),
@@ -2962,89 +3052,175 @@ def api_calcul_parcelles(request):
         'results': results,
         'count': len(results),
         'budget': budget_val,
-        'superficie': superficie_val,
-        'superficie_min': SUPERFICIE_MIN,
-        'messages': messages_info
+        'superficie': superficie_val
     })
-
-
-def format_fcfa(n):
-    """Formatte un nombre en FCFA avec séparateur d'espaces."""
-    try:
-        return f"{int(round(n)):,}".replace(',', ' ')
-    except (ValueError, TypeError):
-        return "0"
-
-
-def format_sup(n):
-    """Formatte une superficie avec 2 décimales max."""
-    try:
-        if n == int(n):
-            return f"{int(n)}"
-        return f"{round(n, 2)}"
-    except (ValueError, TypeError):
-        return "0"
     
+
 # ══════════════════════════════════════════════
-# MODULE ACADÉMIE
+# MODULE ACADÉMIE — VERSION 2
 # ══════════════════════════════════════════════
+
+from .models import (
+    AcademieDocument, AcademieVideo, AcademieEtapeParcours,
+    AcademieFAQ, AcademieStatistique, AcademieCategorie,
+    JournalEdition
+)
+
 
 def academie_accueil(request):
     """Page principale de l'Académie."""
     docs_publie = AcademieDocument.objects.filter(statut='publie')
+    editions_publiees = JournalEdition.objects.filter(statut='publie')
 
     contexte = {
-        'a_la_une': docs_publie.filter(est_a_la_une=True).first(),
+        # Articles = éditions de type 'article'
+        'articles': editions_publiees.filter(type_academie='article').order_by('-date_parution')[:6],
+        # Revues = éditions de type 'revue'
+        'revues': editions_publiees.filter(type_academie='revue').order_by('-date_parution')[:4],
+        # Guides = éditions de type 'guide'
+        'guides': editions_publiees.filter(type_academie='guide').order_by('-date_parution')[:4],
+        # Textes de loi
         'textes_loi': docs_publie.filter(categorie='texte_loi').order_by('ordre')[:3],
-        'articles': docs_publie.filter(categorie='article').order_by('-date_publication')[:6],
-        'revues': docs_publie.filter(categorie='revue').order_by('ordre')[:4],
-        'guides': docs_publie.filter(categorie='guide').order_by('ordre')[:6],
-        'lexique': docs_publie.filter(categorie='lexique').order_by('ordre')[:10],
-        'infographies': docs_publie.filter(categorie='infographie').order_by('ordre')[:6],
+        # Lexique
+        'lexique': docs_publie.filter(categorie='lexique').order_by('ordre'),
+        # Galerie
+        'galerie': docs_publie.filter(categorie='galerie').order_by('ordre')[:8],
+        # Ressources (tout le contenu)
         'ressources': docs_publie.filter(categorie='ressource').order_by('ordre')[:6],
+        # Vidéos
         'video_moment': AcademieVideo.objects.filter(statut='publie', est_video_moment=True).first(),
-        'videos': AcademieVideo.objects.filter(statut='publie').order_by('ordre')[:6],
+        'videos': AcademieVideo.objects.filter(statut='publie').order_by('ordre')[:8],
+        # FAQ
         'faq_featured': AcademieFAQ.objects.filter(statut='publie', est_featured=True).first(),
-        'faqs': AcademieFAQ.objects.filter(statut='publie').order_by('ordre')[:8],
+        'faqs': AcademieFAQ.objects.filter(statut='publie').order_by('ordre')[:10],
+        # Parcours
         'etapes_parcours': AcademieEtapeParcours.objects.filter(is_active=True).order_by('ordre'),
+        # Stats
         'stats': AcademieStatistique.objects.filter(is_active=True).order_by('ordre'),
-        'guide_featured': docs_publie.filter(categorie='guide', est_featured=True).first(),
-        'revue_featured': docs_publie.filter(categorie='revue').order_by('ordre').first(),
-        # Compteurs pour sidebar
+        # À la une = édition mise en avant OU doc mis en une
+        'a_la_une_edition': editions_publiees.filter(
+            type_academie__in=['article','revue','guide']
+        ).order_by('-date_parution').first(),
+        # Revue featured pour encart
+        'revue_featured': editions_publiees.filter(type_academie='revue').order_by('-date_parution').first(),
+        # Guide featured
+        'guide_featured': editions_publiees.filter(type_academie='guide').order_by('-date_parution').first(),
+        # Compteurs sidebar
         'nb_textes': docs_publie.filter(categorie='texte_loi').count(),
-        'nb_articles': docs_publie.filter(categorie='article').count(),
-        'nb_revues': docs_publie.filter(categorie='revue').count(),
-        'nb_guides': docs_publie.filter(categorie='guide').count(),
+        'nb_articles': editions_publiees.filter(type_academie='article').count(),
+        'nb_revues': editions_publiees.filter(type_academie='revue').count(),
+        'nb_guides': editions_publiees.filter(type_academie='guide').count(),
         'nb_videos': AcademieVideo.objects.filter(statut='publie').count(),
-        'nb_infographies': docs_publie.filter(categorie='infographie').count(),
+        'nb_galerie': docs_publie.filter(categorie='galerie').count(),
         'nb_faqs': AcademieFAQ.objects.filter(statut='publie').count(),
-        'nb_ressources': docs_publie.filter(categorie='ressource').count(),
+        'nb_lexique': docs_publie.filter(categorie='lexique').count(),
     }
     return render(request, 'eden/academie/accueil.html', contexte)
 
 
+def academie_recherche(request):
+    """Recherche globale dans toute l'Académie."""
+    q = request.GET.get('q', '').strip()
+    resultats = {'q': q, 'docs': [], 'editions': [], 'videos': [], 'faqs': [], 'lexique': []}
+
+    if q and len(q) >= 2:
+        resultats['docs'] = AcademieDocument.objects.filter(
+            statut='publie'
+        ).filter(
+            Q(titre__icontains=q) | Q(description__icontains=q) | Q(reference_officielle__icontains=q)
+        ).order_by('categorie')[:20]
+
+        resultats['editions'] = JournalEdition.objects.filter(
+            statut='publie',
+            type_academie__in=['article', 'revue', 'guide']
+        ).filter(
+            Q(titre__icontains=q) | Q(sous_titre__icontains=q)
+        )[:10]
+
+        resultats['videos'] = AcademieVideo.objects.filter(
+            statut='publie'
+        ).filter(
+            Q(titre__icontains=q) | Q(description__icontains=q)
+        )[:6]
+
+        resultats['faqs'] = AcademieFAQ.objects.filter(
+            statut='publie'
+        ).filter(
+            Q(question__icontains=q) | Q(reponse__icontains=q)
+        )[:6]
+
+        resultats['lexique'] = AcademieDocument.objects.filter(
+            statut='publie', categorie='lexique'
+        ).filter(
+            Q(titre__icontains=q) | Q(description__icontains=q)
+        )[:10]
+
+    return render(request, 'eden/academie/recherche.html', resultats)
+
+
 def academie_categorie(request, cat):
-    """Affiche tous les documents d'une catégorie."""
-    labels = {v: k for k, v in AcademieCategorie.choices}
-    if cat == 'videos':
+    """Liste complète d'une catégorie."""
+    origine = request.GET.get('from', 'academie')
+    label_map = {
+        'texte_loi': 'Textes de loi',
+        'article': 'Articles',
+        'revue': 'Revues',
+        'guide': 'Guides pratiques',
+        'lexique': 'Lexique du foncier',
+        'galerie': 'Galerie',
+        'ressource': 'Centre de ressources',
+        'video': 'Vidéothèque',
+        'faq': 'Questions fréquentes',
+    }
+    label = label_map.get(cat, cat)
+
+    if cat == 'video':
         items = AcademieVideo.objects.filter(statut='publie').order_by('ordre')
         return render(request, 'eden/academie/liste_videos.html', {
-            'items': items, 'categorie': 'videos', 'categorie_label': 'Vidéothèque'
+            'items': items, 'categorie': cat, 'categorie_label': label, 'origine': origine
         })
+
     if cat == 'faq':
         items = AcademieFAQ.objects.filter(statut='publie').order_by('ordre')
         return render(request, 'eden/academie/liste_faq.html', {
-            'items': items, 'categorie': 'faq', 'categorie_label': 'Questions fréquentes'
+            'items': items, 'categorie': cat, 'categorie_label': label, 'origine': origine
         })
+
+    if cat in ['article', 'revue', 'guide']:
+        # Ce sont des éditions Journal
+        items = JournalEdition.objects.filter(
+            statut='publie', type_academie=cat
+        ).order_by('-date_parution')
+        return render(request, 'eden/academie/liste_editions.html', {
+            'items': items, 'categorie': cat, 'categorie_label': label, 'origine': origine
+        })
+
+    if cat == 'lexique':
+        items = AcademieDocument.objects.filter(statut='publie', categorie='lexique').order_by('titre')
+        return render(request, 'eden/academie/lexique.html', {
+            'items': items, 'categorie': cat, 'categorie_label': label, 'origine': origine
+        })
+
+    if cat == 'ressource':
+        # Centre de ressources = TOUT le contenu
+        editions = JournalEdition.objects.filter(
+            statut='publie', type_academie__in=['article','revue','guide']
+        ).order_by('-date_parution')
+        docs = AcademieDocument.objects.filter(statut='publie').order_by('categorie', 'ordre')
+        videos = AcademieVideo.objects.filter(statut='publie').order_by('ordre')
+        return render(request, 'eden/academie/centre_ressources.html', {
+            'editions': editions, 'docs': docs, 'videos': videos,
+            'categorie': cat, 'categorie_label': label, 'origine': origine
+        })
+
+    # Textes loi, galerie
     docs = AcademieDocument.objects.filter(statut='publie', categorie=cat).order_by('ordre', '-date_publication')
-    label = dict(AcademieCategorie.choices).get(cat, cat)
     return render(request, 'eden/academie/liste_documents.html', {
-        'documents': docs, 'categorie': cat, 'categorie_label': label
+        'documents': docs, 'categorie': cat, 'categorie_label': label, 'origine': origine
     })
 
 
 def academie_telecharger(request, pk):
-    """Incrémente le compteur et sert le PDF."""
     from django.http import FileResponse, Http404
     doc = get_object_or_404(AcademieDocument, pk=pk, statut='publie')
     if not doc.fichier_pdf:
@@ -3056,7 +3232,6 @@ def academie_telecharger(request, pk):
 
 
 def academie_voir_video(request, pk):
-    """Incrémente le compteur de vues et sert la vidéo en streaming."""
     from django.http import FileResponse, Http404
     video = get_object_or_404(AcademieVideo, pk=pk, statut='publie')
     if not video.fichier_video:
@@ -3083,6 +3258,8 @@ def dashboard_academie_liste(request):
         'categories': AcademieCategorie.choices,
         'nb_total': AcademieDocument.objects.count(),
         'nb_publie': AcademieDocument.objects.filter(statut='publie').count(),
+        # ✅ Ajouté
+        'nb_lexique': AcademieDocument.objects.filter(categorie='lexique').count(),
     })
 
 
@@ -3299,3 +3476,322 @@ def dashboard_academie_stats(request):
             messages.success(request, 'Stat supprimée.')
         return redirect('dashboard_academie_stats')
     return render(request, 'eden/dashboard/academie_stats.html', {'stats': stats})
+
+
+# ══════════════════════════════════════════════
+# CRÉATION ARTICLES / REVUES / GUIDES
+# (via le système Journal existant)
+# ══════════════════════════════════════════════
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_journal_article_form(request, pk=None):
+    from .models import JournalEdition
+    import uuid as uuid_module
+
+    edition = get_object_or_404(JournalEdition, pk=pk) if pk else None
+
+    url_name = request.resolver_match.url_name
+    if 'revue' in url_name:
+        type_defaut = 'revue'
+    elif 'guide' in url_name:
+        type_defaut = 'guide'
+    else:
+        type_defaut = 'article'
+
+    if edition:
+        type_defaut = edition.type_academie
+
+    if request.method == 'POST':
+        titre = request.POST.get('titre', '').strip()
+        if not titre:
+            messages.error(request, 'Le titre est obligatoire.')
+            return render(request, 'eden/dashboard/academie_publication_form.html', {
+                'edition': edition, 'type_defaut': type_defaut
+            })
+
+        if not edition:
+            edition = JournalEdition()
+
+        edition.titre = titre
+        edition.sous_titre = request.POST.get('sous_titre', '').strip()
+        edition.type_academie = request.POST.get('type_academie', type_defaut)
+        edition.statut = request.POST.get('statut', 'brouillon')
+
+        # ── Numéro : toujours unique ──
+        numero = request.POST.get('numero', '').strip()
+
+        if not numero:
+            # Générer un numéro unique avec uuid court
+            prefix = {
+                'article': 'ART',
+                'revue': 'REV',
+                'guide': 'GUI',
+                'journal': 'JNL',
+            }.get(edition.type_academie, 'PUB')
+            # Boucle pour garantir l'unicité
+            for _ in range(20):
+                short = str(uuid_module.uuid4())[:8].upper()
+                candidat = f"{prefix}-{short}"
+                if not JournalEdition.objects.filter(numero=candidat).exclude(
+                    pk=edition.pk if edition.pk else None
+                ).exists():
+                    numero = candidat
+                    break
+            else:
+                # Fallback timestamp
+                import time
+                numero = f"{prefix}-{int(time.time())}"
+
+        # Vérifier unicité si numéro saisi manuellement
+        qs = JournalEdition.objects.filter(numero=numero)
+        if edition.pk:
+            qs = qs.exclude(pk=edition.pk)
+        if qs.exists():
+            messages.error(
+                request,
+                f'Le numéro "{numero}" existe déjà. '
+                f'Laissez le champ vide pour un numéro automatique.'
+            )
+            return render(request, 'eden/dashboard/academie_publication_form.html', {
+                'edition': edition, 'type_defaut': type_defaut
+            })
+
+        edition.numero = numero
+
+        date_str = request.POST.get('date_parution', '')
+        if date_str:
+            from datetime import date
+            try:
+                edition.date_parution = date.fromisoformat(date_str)
+            except Exception:
+                pass
+
+        if request.FILES.get('image_une'):
+            edition.image_une = request.FILES['image_une']
+
+        edition.save()
+
+        # Créer une première page vide si c'est une nouvelle édition
+        if not edition.pages.exists():
+            from .models import JournalPage
+            JournalPage.objects.create(
+                edition=edition,
+                numero=1,
+                contenu=[],
+                layout='libre'
+            )
+
+        messages.success(request, f'"{edition.titre}" enregistré (N° {edition.numero}).')
+
+        if request.POST.get('action') == 'editeur':
+            return redirect('dashboard_journal_page_editer',
+                            edition_pk=edition.pk, page_num=1)
+
+        return redirect('dashboard_academie_publications')
+
+    return render(request, 'eden/dashboard/academie_publication_form.html', {
+        'edition': edition,
+        'type_defaut': type_defaut,
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_academie_publications(request):
+    """Liste des articles, revues et guides."""
+    from .models import JournalEdition
+    type_f = request.GET.get('type', '')
+    publications = JournalEdition.objects.filter(
+        type_academie__in=['article', 'revue', 'guide']
+    ).order_by('-created_at')
+
+    if type_f:
+        publications = publications.filter(type_academie=type_f)
+
+    return render(request, 'eden/dashboard/academie_publications.html', {
+        'publications': publications,
+        'type_f': type_f,
+        'nb_articles': JournalEdition.objects.filter(type_academie='article').count(),
+        'nb_revues': JournalEdition.objects.filter(type_academie='revue').count(),
+        'nb_guides': JournalEdition.objects.filter(type_academie='guide').count(),
+    })
+
+
+# ══════════════════════════════════════════════
+# GALERIE ACADÉMIE
+# ══════════════════════════════════════════════
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_academie_galerie(request):
+    items = AcademieDocument.objects.filter(
+        categorie='galerie'
+    ).order_by('ordre', '-created_at')
+    return render(request, 'eden/dashboard/academie_galerie.html', {
+        'items': items,
+        'nb': items.count(),
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_academie_galerie_form(request, pk=None):
+    item = get_object_or_404(AcademieDocument, pk=pk, categorie='galerie') if pk else None
+
+    if request.method == 'POST':
+        titre = request.POST.get('titre', '').strip()
+        if not titre:
+            messages.error(request, 'Le titre est obligatoire.')
+            return render(request, 'eden/dashboard/academie_galerie_form.html', {'item': item})
+
+        if not item:
+            item = AcademieDocument()
+            item.categorie = 'galerie'
+
+        item.titre = titre
+        item.description = request.POST.get('description', '').strip()
+        item.statut = request.POST.get('statut', 'publie')
+        item.ordre = int(request.POST.get('ordre', 0) or 0)
+
+        if request.FILES.get('image_couverture'):
+            item.image_couverture = request.FILES['image_couverture']
+
+        item.save()
+        messages.success(request, f'Image "{item.titre}" enregistrée.')
+        return redirect('dashboard_academie_galerie')
+
+    return render(request, 'eden/dashboard/academie_galerie_form.html', {'item': item})
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_academie_galerie_supprimer(request, pk):
+    item = get_object_or_404(AcademieDocument, pk=pk, categorie='galerie')
+    if request.method == 'POST':
+        item.delete()
+        messages.success(request, 'Image supprimée.')
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True})
+        return redirect('dashboard_academie_galerie')
+    return redirect('dashboard_academie_galerie')
+
+# ══════════════════════════════════════════════
+# LEXIQUE FONCIER
+# ══════════════════════════════════════════════
+
+def academie_lexique(request):
+    """Page publique du lexique foncier — dictionnaire A-Z."""
+    q = request.GET.get('q', '').strip()
+    lettre = request.GET.get('lettre', '').upper()
+
+    items = AcademieDocument.objects.filter(
+        statut='publie', categorie='lexique'
+    ).order_by('titre')
+
+    if q:
+        items = items.filter(
+            Q(titre__icontains=q) | Q(description__icontains=q)
+        )
+    if lettre:
+        items = items.filter(titre__istartswith=lettre)
+
+    # Grouper par lettre
+    from collections import OrderedDict
+    grouped = OrderedDict()
+    for item in items:
+        l = item.titre[0].upper() if item.titre else '#'
+        if l not in grouped:
+            grouped[l] = []
+        grouped[l].append(item)
+
+    # Lettres disponibles pour la navigation
+    lettres_dispo = sorted(set(
+        doc.titre[0].upper()
+        for doc in AcademieDocument.objects.filter(
+            statut='publie', categorie='lexique'
+        )
+        if doc.titre
+    ))
+
+    return render(request, 'eden/academie/lexique.html', {
+        'grouped': grouped,
+        'lettres_dispo': lettres_dispo,
+        'q': q,
+        'lettre': lettre,
+        'nb_total': AcademieDocument.objects.filter(
+            statut='publie', categorie='lexique'
+        ).count(),
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_lexique(request):
+    """Liste des entrées du lexique."""
+    items = AcademieDocument.objects.filter(
+        categorie='lexique'
+    ).order_by('titre')
+    q = request.GET.get('q', '')
+    if q:
+        items = items.filter(
+            Q(titre__icontains=q) | Q(description__icontains=q)
+        )
+    return render(request, 'eden/dashboard/lexique_liste.html', {
+        'items': items,
+        'q': q,
+        'nb': items.count(),
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_lexique_form(request, pk=None):
+    """Créer ou modifier une entrée du lexique."""
+    item = get_object_or_404(
+        AcademieDocument, pk=pk, categorie='lexique'
+    ) if pk else None
+
+    if request.method == 'POST':
+        titre = request.POST.get('titre', '').strip()
+        if not titre:
+            messages.error(request, 'Le terme est obligatoire.')
+            return render(request, 'eden/dashboard/lexique_form.html', {
+                'item': item
+            })
+
+        if not item:
+            item = AcademieDocument()
+            item.categorie = 'lexique'
+
+        item.titre = titre
+        item.description = request.POST.get('description', '').strip()
+        item.sous_titre = request.POST.get('sous_titre', '').strip()
+        item.auteur = request.POST.get('auteur', '').strip()
+        item.statut = request.POST.get('statut', 'publie')
+        item.ordre = int(request.POST.get('ordre', 0) or 0)
+
+        if request.FILES.get('fichier_pdf'):
+            item.fichier_pdf = request.FILES['fichier_pdf']
+
+        item.save()
+        messages.success(request, f'"{item.titre}" enregistré.')
+        return redirect('dashboard_lexique')
+
+    return render(request, 'eden/dashboard/lexique_form.html', {
+        'item': item
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_lexique_supprimer(request, pk):
+    item = get_object_or_404(AcademieDocument, pk=pk, categorie='lexique')
+    if request.method == 'POST':
+        titre = item.titre
+        item.delete()
+        messages.success(request, f'"{titre}" supprimé.')
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True})
+        return redirect('dashboard_lexique')
+    return redirect('dashboard_lexique')

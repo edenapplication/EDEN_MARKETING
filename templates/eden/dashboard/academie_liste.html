@@ -114,6 +114,18 @@ body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
       <a class="qa-btn" href="{% url 'dashboard_academie_parcours' %}"><span style="font-size:1.1rem;">🗺</span> Parcours investisseur</a>
       <a class="qa-btn" href="{% url 'dashboard_academie_stats' %}"><span style="font-size:1.1rem;">📊</span> Statistiques affichées</a>
       <a class="qa-btn" href="{% url 'academie_accueil' %}" target="_blank"><span style="font-size:1.1rem;">👁</span> Voir la page publique</a>
+      
+<a class="qa-btn" href="{% url 'dashboard_academie_galerie' %}">
+  <span style="font-size:1.1rem;">🖼</span> Galerie
+</a>
+
+<!-- Dans la section .quick-actions, ajoutez ce bouton -->
+<a class="qa-btn" href="{% url 'dashboard_lexique' %}">
+  <span style="font-size:1.1rem;">🔤</span> Lexique Foncier
+  <span style="background:#EEF3FF;color:#1B4FDB;font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;margin-left:4px;">
+    {{ nb_lexique|default:0 }}
+  </span>
+</a>
     </div>
 
     <!-- Filtre catégorie -->

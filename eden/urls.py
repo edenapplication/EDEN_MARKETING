@@ -88,13 +88,11 @@ path('dashboard/groupy/qr/<int:pk>/supprimer/', views.dashboard_groupy_qr_suppri
 path('dashboard/groupy/categorie/ajouter/', views.dashboard_groupy_cat_form, name='dashboard_groupy_cat_ajouter'),
 path('dashboard/groupy/categorie/<int:pk>/supprimer/', views.dashboard_groupy_cat_supprimer, name='dashboard_groupy_cat_supprimer'),
 
-
-# Journal EDEN GROUP
+# ── Journal public ──
 path('journal/', views.journal_kiosque, name='journal_kiosque'),
-path('journal/<int:numero>/', views.journal_lire, name='journal_lire'),
-path('journal/<int:numero>/page/<int:page>/', views.journal_page_json, name='journal_page_json'),
+path('journal/<slug:numero>/', views.journal_lire, name='journal_lire'),
 
-# Dashboard Journal
+# ── Dashboard Journal ──
 path('dashboard/journal/', views.dashboard_journal, name='dashboard_journal'),
 path('dashboard/journal/ajouter/', views.dashboard_journal_edition_form, name='dashboard_journal_edition_ajouter'),
 path('dashboard/journal/<int:pk>/modifier/', views.dashboard_journal_edition_form, name='dashboard_journal_edition_modifier'),
@@ -105,6 +103,7 @@ path('dashboard/journal/<int:edition_pk>/page/ajouter/', views.dashboard_journal
 path('dashboard/journal/<int:edition_pk>/page/<int:page_num>/supprimer/', views.dashboard_journal_page_supprimer, name='dashboard_journal_page_supprimer'),
 path('dashboard/journal/media/upload/', views.dashboard_journal_media_upload, name='dashboard_journal_media_upload'),
 path('dashboard/journal/media/liste/', views.dashboard_journal_media_liste, name='dashboard_journal_media_liste'),
+path('dashboard/journal/media/<int:pk>/supprimer/', views.dashboard_journal_media_supprimer, name='dashboard_journal_media_supprimer'),
 path('api/journal/sauvegarder-page/', views.api_journal_sauvegarder_page, name='api_journal_sauvegarder_page'),
 path('dashboard/sites/<uuid:pk>/stats-manuelles/', views.dashboard_site_stats_manuelles, name='dashboard_site_stats_manuelles'),
 # Dashboard home config
@@ -183,8 +182,10 @@ path('dashboard/services-module/engagements/', views.dashboard_services_engageme
 path('api/calcul-parcelles/', views.api_calcul_parcelles, name='api_calcul_parcelles'),
 
 # Académie — public
+# Académie — public
 path('academie/', views.academie_accueil, name='academie_accueil'),
-path('academie/<str:cat>/', views.academie_categorie, name='academie_categorie'),
+path('academie/recherche/', views.academie_recherche, name='academie_recherche'),
+path('academie/categorie/<str:cat>/', views.academie_categorie, name='academie_categorie'),
 path('academie/document/<int:pk>/telecharger/', views.academie_telecharger, name='academie_telecharger'),
 path('academie/video/<int:pk>/voir/', views.academie_voir_video, name='academie_voir_video'),
 
@@ -200,5 +201,28 @@ path('dashboard/academie/videos/<int:pk>/supprimer/', views.dashboard_academie_v
 path('dashboard/academie/faq/', views.dashboard_academie_faq, name='dashboard_academie_faq'),
 path('dashboard/academie/parcours/', views.dashboard_academie_parcours, name='dashboard_academie_parcours'),
 path('dashboard/academie/stats/', views.dashboard_academie_stats, name='dashboard_academie_stats'),
+
+# Dashboard Journal — types académie
+path('dashboard/journal/article/ajouter/', views.dashboard_journal_article_form, name='dashboard_journal_article_ajouter'),
+path('dashboard/journal/article/<int:pk>/modifier/', views.dashboard_journal_article_form, name='dashboard_journal_article_modifier'),
+path('dashboard/journal/revue/ajouter/', views.dashboard_journal_article_form, name='dashboard_journal_revue_ajouter'),
+path('dashboard/journal/guide/ajouter/', views.dashboard_journal_article_form, name='dashboard_journal_guide_ajouter'),
+
+# Dashboard Académie — Galerie
+path('dashboard/academie/galerie/', views.dashboard_academie_galerie, name='dashboard_academie_galerie'),
+path('dashboard/academie/galerie/ajouter/', views.dashboard_academie_galerie_form, name='dashboard_academie_galerie_ajouter'),
+path('dashboard/academie/galerie/<int:pk>/modifier/', views.dashboard_academie_galerie_form, name='dashboard_academie_galerie_modifier'),
+path('dashboard/academie/galerie/<int:pk>/supprimer/', views.dashboard_academie_galerie_supprimer, name='dashboard_academie_galerie_supprimer'),
+
+path('dashboard/academie/publications/', views.dashboard_academie_publications, name='dashboard_academie_publications'),
+
+# Lexique foncier — public
+path('academie/lexique/', views.academie_lexique, name='academie_lexique'),
+
+# Dashboard — Lexique
+path('dashboard/academie/lexique/', views.dashboard_lexique, name='dashboard_lexique'),
+path('dashboard/academie/lexique/ajouter/', views.dashboard_lexique_form, name='dashboard_lexique_ajouter'),
+path('dashboard/academie/lexique/<int:pk>/modifier/', views.dashboard_lexique_form, name='dashboard_lexique_modifier'),
+path('dashboard/academie/lexique/<int:pk>/supprimer/', views.dashboard_lexique_supprimer, name='dashboard_lexique_supprimer'),
 
 ]

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Publications Académie — Dashboard EDEN GROUP</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g800:#1F2937;--r:12px;--rl:20px;}
+body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
+.topnav{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;border-bottom:1.5px solid var(--g200);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
+.tn-em{width:36px;height:36px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:#fff;}
+.tn-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tn-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1.5px solid var(--g200);background:#fff;color:var(--g500);font-family:'Outfit',sans-serif;display:inline-flex;align-items:center;gap:5px;transition:all 0.2s;}
+.tn-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--bpale);}
+.wrap{display:flex;padding-top:64px;min-height:100vh;}
+.sidebar{width:240px;background:#fff;border-right:1.5px solid var(--g200);position:fixed;top:64px;left:0;bottom:0;overflow-y:auto;z-index:900;}
+.sb-sec{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g400);padding:1.2rem 1.5rem 0.4rem;}
+.sb-lnk{display:flex;align-items:center;gap:10px;padding:10px 1.5rem;font-size:13px;font-weight:500;color:var(--g600);border-left:2px solid transparent;text-decoration:none;transition:all 0.15s;}
+.sb-lnk:hover,.sb-lnk.active{color:var(--blue);background:var(--bpale);border-left-color:var(--blue);}
+.sb-ico{font-size:15px;width:20px;text-align:center;flex-shrink:0;}
+.sb-user{padding:1.2rem 1.5rem;border-top:1px solid var(--g200);margin-top:1rem;}
+.main{flex:1;padding:2rem;margin-left:240px;}
+.page-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;flex-wrap:wrap;gap:1rem;}
+.page-tit{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--g800);}
+.btns-add{display:flex;gap:8px;flex-wrap:wrap;}
+.btn-add{padding:10px 16px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+.btn-article{background:var(--blue);color:#fff;}
+.btn-revue{background:#7B20B4;color:#fff;}
+.btn-guide{background:#16a34a;color:#fff;}
+/* KPIs */
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;}
+.kpi{background:#fff;border:1.5px solid var(--g200);border-radius:var(--r);padding:1rem;text-align:center;position:relative;overflow:hidden;cursor:pointer;transition:all 0.2s;}
+.kpi:hover{transform:translateY(-2px);}
+.kpi::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;}
+.kpi-article::after{background:var(--blue);}
+.kpi-revue::after{background:#7B20B4;}
+.kpi-guide::after{background:#16a34a;}
+.kpi-n{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;line-height:1;}
+.kpi-article .kpi-n{color:var(--blue);}
+.kpi-revue .kpi-n{color:#7B20B4;}
+.kpi-guide .kpi-n{color:#16a34a;}
+.kpi-l{font-size:11px;color:var(--g400);text-transform:uppercase;letter-spacing:0.5px;margin-top:4px;}
+/* Filtre */
+.filtres{display:flex;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap;}
+.fpill{padding:7px 16px;border-radius:100px;border:1.5px solid var(--g200);font-size:12px;font-weight:600;color:var(--g600);cursor:pointer;transition:all 0.2s;background:#fff;text-decoration:none;font-family:'Outfit',sans-serif;}
+.fpill:hover{border-color:var(--blue);color:var(--blue);}
+.fpill.active{background:var(--grad);border-color:transparent;color:#fff;}
+/* Grille publications */
+.pub-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.2rem;}
+.pub-card{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);overflow:hidden;transition:all 0.2s;}
+.pub-card:hover{box-shadow:0 4px 20px rgba(0,0,0,0.08);border-color:rgba(27,79,219,0.2);}
+.pc-img{height:140px;position:relative;overflow:hidden;}
+.pc-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.pc-img-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;}
+.pc-article .pc-img-ph{background:linear-gradient(135deg,var(--bpale),#C7D7FF);}
+.pc-revue .pc-img-ph{background:linear-gradient(135deg,#F3E8FF,#DDD6FE);}
+.pc-guide .pc-img-ph{background:linear-gradient(135deg,#DCFCE7,#BBF7D0);}
+.pc-type-badge{position:absolute;top:8px;left:8px;padding:3px 10px;border-radius:100px;font-size:9px;font-weight:800;text-transform:uppercase;color:#fff;}
+.badge-article{background:var(--blue);}
+.badge-revue{background:#7B20B4;}
+.badge-guide{background:#16a34a;}
+.pc-statut{position:absolute;top:8px;right:8px;padding:3px 8px;border-radius:100px;font-size:9px;font-weight:700;}
+.s-pub{background:#dcfce7;color:#16a34a;}
+.s-brou{background:#fef9c3;color:#b45309;}
+.s-arch{background:var(--g100);color:var(--g500);}
+.pc-body{padding:1rem;}
+.pc-num{font-size:10px;font-weight:700;color:var(--g400);margin-bottom:3px;}
+.pc-tit{font-size:14px;font-weight:700;color:var(--g800);line-height:1.35;margin-bottom:4px;}
+.pc-date{font-size:11px;color:var(--g400);margin-bottom:0.8rem;}
+.pc-actions{display:flex;gap:6px;flex-wrap:wrap;}
+.btn-sm{padding:6px 11px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid;font-family:'Outfit',sans-serif;text-decoration:none;transition:all 0.2s;display:inline-flex;align-items:center;gap:3px;}
+.btn-edit{background:var(--bpale);border-color:rgba(27,79,219,0.2);color:var(--blue);}
+.btn-editeur{background:#f0fdf4;border-color:#86efac;color:#16a34a;}
+.btn-voir{background:var(--g50);border-color:var(--g200);color:var(--g600);}
+.btn-del{background:#fee2e2;border-color:#fca5a5;color:#dc2626;}
+.alert{background:#dcfce7;border:1.5px solid #86efac;border-radius:var(--r);padding:12px 16px;font-size:13px;color:#16a34a;margin-bottom:1.5rem;}
+.info-box{background:var(--bpale);border:1.5px solid rgba(27,79,219,0.2);border-radius:var(--r);padding:1rem 1.2rem;margin-bottom:1.5rem;font-size:13px;color:var(--blue);}
+.empty{text-align:center;padding:4rem;background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);}
+.toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1.5px solid var(--g200);border-radius:var(--r);padding:14px 20px;font-size:13px;color:var(--g800);z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(100px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.1);}
+.toast.show{transform:none;opacity:1;}
+@media(max-width:1024px){.sidebar{display:none;}.main{margin-left:0;}}
+@media(max-width:640px){.main{padding:1rem;}.kpis{grid-template-columns:1fr;}.btns-add{flex-direction:column;}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"><span id="t-ico">✅</span>&nbsp;<span id="t-msg"></span></div>
+
+<nav class="topnav">
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="tn-em">E</div>
+    <div class="tn-name">EDEN GROUP</div>
+    <span style="font-size:11px;color:var(--g400);margin-left:6px;letter-spacing:1px;text-transform:uppercase;">Publications Académie</span>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <a class="tn-btn" href="{% url 'academie_accueil' %}" target="_blank">🎓 Voir l'Académie</a>
+    <a class="tn-btn" href="{% url 'dashboard_academie_liste' %}">← Académie</a>
+    <a class="tn-btn" href="{% url 'dashboard_home' %}">Dashboard</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="sidebar">
+    <div class="sb-sec">Académie</div>
+    <a class="sb-lnk" href="{% url 'dashboard_academie_liste' %}"><span class="sb-ico">📋</span>Documents</a>
+    <a class="sb-lnk active" href="{% url 'dashboard_academie_publications' %}"><span class="sb-ico">📚</span>Publications</a>
+    <a class="sb-lnk" href="{% url 'dashboard_academie_galerie' %}"><span class="sb-ico">🖼</span>Galerie</a>
+    <a class="sb-lnk" href="{% url 'dashboard_academie_videos' %}"><span class="sb-ico">🎬</span>Vidéos</a>
+    <a class="sb-lnk" href="{% url 'dashboard_academie_faq' %}"><span class="sb-ico">❓</span>FAQ</a>
+    <a class="sb-lnk" href="{% url 'dashboard_academie_parcours' %}"><span class="sb-ico">🗺</span>Parcours</a>
+    <a class="sb-lnk" href="{% url 'dashboard_academie_stats' %}"><span class="sb-ico">📊</span>Statistiques</a>
+    <div class="sb-sec">Journal</div>
+    <a class="sb-lnk" href="{% url 'dashboard_journal' %}"><span class="sb-ico">📔</span>Journal EDEN</a>
+    <div class="sb-sec">Navigation</div>
+    <a class="sb-lnk" href="{% url 'dashboard_home' %}"><span class="sb-ico">📊</span>Tableau de bord</a>
+    <div class="sb-user">
+      <div style="font-size:13px;font-weight:700;color:var(--g800);">{{ user.get_full_name|default:user.username }}</div>
+      <div style="font-size:11px;color:var(--g400);">{% if user.is_superuser %}Super Admin{% else %}Admin{% endif %}</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="page-hd">
+      <div>
+        <h1 class="page-tit">📚 Publications Académie</h1>
+        <div style="font-size:13px;color:var(--g500);margin-top:2px;">Articles · Revues · Guides pratiques</div>
+      </div>
+      <div class="btns-add">
+        <a class="btn-add btn-article" href="{% url 'dashboard_journal_article_ajouter' %}">
+          + 📄 Nouvel article
+        </a>
+        <a class="btn-add btn-revue" href="{% url 'dashboard_journal_revue_ajouter' %}">
+          + 📕 Nouvelle revue
+        </a>
+        <a class="btn-add btn-guide" href="{% url 'dashboard_journal_guide_ajouter' %}">
+          + 📚 Nouveau guide
+        </a>
+      </div>
+    </div>
+
+    {% if messages %}{% for msg in messages %}<div class="alert">{{ msg }}</div>{% endfor %}{% endif %}
+
+    <div class="info-box">
+      💡 Les articles, revues et guides sont créés avec le même éditeur que le Journal EDEN GROUP. Ils apparaissent automatiquement dans la section <strong>Académie</strong> selon leur type. Créez d'abord les informations de base, puis ouvrez l'éditeur pour rédiger le contenu.
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpis">
+      <div class="kpi kpi-article" onclick="window.location='?type=article'">
+        <div class="kpi-n">{{ nb_articles }}</div>
+        <div class="kpi-l">📄 Articles</div>
+      </div>
+      <div class="kpi kpi-revue" onclick="window.location='?type=revue'">
+        <div class="kpi-n">{{ nb_revues }}</div>
+        <div class="kpi-l">📕 Revues</div>
+      </div>
+      <div class="kpi kpi-guide" onclick="window.location='?type=guide'">
+        <div class="kpi-n">{{ nb_guides }}</div>
+        <div class="kpi-l">📚 Guides pratiques</div>
+      </div>
+    </div>
+
+    <!-- Filtres -->
+    <div class="filtres">
+      <a href="?" class="fpill {% if not type_f %}active{% endif %}">Tout voir</a>
+      <a href="?type=article" class="fpill {% if type_f == 'article' %}active{% endif %}">📄 Articles</a>
+      <a href="?type=revue" class="fpill {% if type_f == 'revue' %}active{% endif %}">📕 Revues</a>
+      <a href="?type=guide" class="fpill {% if type_f == 'guide' %}active{% endif %}">📚 Guides pratiques</a>
+    </div>
+
+    <!-- Grille publications -->
+    {% if publications %}
+    <div class="pub-grid">
+      {% for pub in publications %}
+      <div class="pub-card pc-{{ pub.type_academie }}" id="pub-{{ pub.pk }}">
+        <div class="pc-img">
+          {% if pub.image_une %}
+            <img src="{{ pub.image_une.url }}" alt="{{ pub.titre }}">
+          {% else %}
+            <div class="pc-img-ph">
+              {% if pub.type_academie == 'article' %}📄{% elif pub.type_academie == 'revue' %}📕{% else %}📚{% endif %}
+            </div>
+          {% endif %}
+          <span class="pc-type-badge badge-{{ pub.type_academie }}">
+            {{ pub.get_type_academie_display }}
+          </span>
+          <span class="pc-statut {% if pub.statut == 'publie' %}s-pub{% elif pub.statut == 'brouillon' %}s-brou{% else %}s-arch{% endif %}">
+            {{ pub.get_statut_display }}
+          </span>
+        </div>
+        <div class="pc-body">
+          <div class="pc-num">N° {{ pub.numero }}</div>
+          <div class="pc-tit">{{ pub.titre }}</div>
+          <div class="pc-date">
+            {% if pub.date_parution %}📅 {{ pub.date_parution|date:"d/m/Y" }}{% endif %}
+            · {{ pub.pages.count }} page{{ pub.pages.count|pluralize }}
+          </div>
+          <div class="pc-actions">
+            <a class="btn-sm btn-edit" href="{% url 'dashboard_journal_article_modifier' pub.pk %}">
+              ⚙ Infos
+            </a>
+            <a class="btn-sm btn-editeur" href="{% url 'dashboard_journal_page_editer' edition_pk=pub.pk page_num=1 %}">
+              ✏ Éditeur
+            </a>
+            {% if pub.statut == 'publie' %}
+            <a class="btn-sm btn-voir" href="{% url 'journal_lire' pub.numero %}?from=academie" target="_blank">
+              👁 Lire
+            </a>
+            {% endif %}
+            <button class="btn-sm btn-del" onclick="supprimerPub({{ pub.pk }},'{{ pub.titre|escapejs }}')">
+              🗑
+            </button>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty">
+      <div style="font-size:3rem;margin-bottom:1rem;">📚</div>
+      <div style="font-size:15px;font-weight:600;color:var(--g800);margin-bottom:0.5rem;">Aucune publication</div>
+      <div style="font-size:13px;color:var(--g500);margin-bottom:1.5rem;">
+        {% if type_f %}Aucune publication de type "{{ type_f }}" pour le moment.
+        {% else %}Créez votre premier article, revue ou guide pratique.{% endif %}
+      </div>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+        <a class="btn-add btn-article" href="{% url 'dashboard_journal_article_ajouter' %}">+ 📄 Article</a>
+        <a class="btn-add btn-revue" href="{% url 'dashboard_journal_revue_ajouter' %}">+ 📕 Revue</a>
+        <a class="btn-add btn-guide" href="{% url 'dashboard_journal_guide_ajouter' %}">+ 📚 Guide</a>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+function showToast(ico,msg){const t=document.getElementById('toast');document.getElementById('t-ico').textContent=ico;document.getElementById('t-msg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),4000);}
+
+function supprimerPub(pk, titre) {
+  if (!confirm(`Supprimer "${titre}" et toutes ses pages ?\nCette action est irréversible.`)) return;
+  const data = new FormData();
+  data.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+  fetch(`/dashboard/journal/${pk}/supprimer/`, {
+    method: 'POST',
+    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    body: data
+  }).then(r => r.json()).then(d => {
+    if (d.success) {
+      document.getElementById(`pub-${pk}`)?.remove();
+      showToast('🗑', `"${titre}" supprimé.`);
+    }
+  }).catch(() => {
+    // Rediriger si pas d'API AJAX
+    window.location = `/dashboard/journal/${pk}/supprimer/`;
+  });
+}
+</script>
+</body>
+</html>

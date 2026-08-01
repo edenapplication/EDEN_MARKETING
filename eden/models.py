@@ -8,10 +8,12 @@ import string
 
 class SiteFoncier(models.Model):
     STATUT_CHOICES = [
-        ('disponible', 'Disponible'),
-        ('en_cours', 'En cours de vente'),
-        ('complet', 'Complet'),
-        ('prochainement', 'Prochainement'),
+        ('disponible', '🟢 Disponible'),
+        ('site_titre', '🔵 Site titré'),
+        ('en_cours_immatriculation', '🟡 En cours d\'immatriculation'),
+        ('titré_et_lotis', '🟣 Titré et lotis'),
+        ('complet', '🔴 Complet'),
+        ('prochainement', '🔷 Prochainement'),
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -27,10 +29,16 @@ class SiteFoncier(models.Model):
     zoom_carte = models.PositiveSmallIntegerField(default=16)
     image_principale = models.ImageField(upload_to='sites/images/', blank=True, null=True, verbose_name="Image principale")
     video_drone = models.URLField(blank=True, verbose_name="Video drone (URL)")
-    statut = models.CharField(max_length=20, choices=STATUT_CHOICES, default='disponible')
+    statut = models.CharField(max_length=40, choices=STATUT_CHOICES, default='disponible')
     prix_min = models.DecimalField(max_digits=15, decimal_places=0, null=True, blank=True, verbose_name="Prix minimum (FCFA)")
     prix_max = models.DecimalField(max_digits=15, decimal_places=0, null=True, blank=True, verbose_name="Prix maximum (FCFA)")
-    superficie_totale = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    superficie_totale = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True,
+        verbose_name="Superficie totale",
+        help_text="Ex: 2 500 m², 1.5 Ha, 500 m²"
+    )
     featured = models.BooleanField(default=False, verbose_name="Mis en avant")
     en_promotion = models.BooleanField(default=False, verbose_name="En promotion")
     promotion_description = models.CharField(max_length=200, blank=True)
@@ -62,9 +70,7 @@ class SiteFoncier(models.Model):
 
     @property
     def nb_parcelles_total(self):
-        """Utilise les stats manuelles si disponibles, sinon compte les parcelles."""
         if hasattr(self, 'stats_manuelles') and self.stats_manuelles.total_parcelles_manuel > 0:
-            # Ajouter les parcelles créées en base aux stats manuelles
             return self.stats_manuelles.total_parcelles_manuel + self.parcelles.filter(is_active=True).count()
         return self.parcelles.filter(is_active=True).count()
 
@@ -95,19 +101,23 @@ class SiteFoncier(models.Model):
         if total == 0:
             return 0
         return round((self.nb_vendues / total) * 100, 1)
+    
     @property
     def prix_m2_min(self):
-        """Prix minimum au m² — base du calcul filtre."""
-        # 1. Depuis stats manuelles
+        """Prix minimum au m² — basé sur prix_morcellable ou prix_min."""
+        # 1. Utiliser prix_morcellable si disponible
+        if self.prix_morcellable:
+            return round(float(self.prix_morcellable))
+        
+        # 2. Depuis stats manuelles
         try:
             sm = self.stats_manuelles
             if sm.prix_min and sm.superficie_min and sm.superficie_min > 0:
                 return round(sm.prix_min / sm.superficie_min)
-            if sm.prix_min and sm.nb_lots_total and sm.nb_lots_total > 0:
-                return round(sm.prix_min)  # déjà au m²
         except Exception:
             pass
-        # 2. Depuis parcelles
+        
+        # 3. Depuis parcelles
         p = self.parcelles.filter(
             is_active=True, statut='disponible'
         ).order_by('prix').first()
@@ -130,7 +140,29 @@ class SiteFoncier(models.Model):
         if p and p.prix and p.superficie and p.superficie > 0:
             return round(p.prix / p.superficie)
         return 0
-
+    
+    @property
+    def superficie_min_effective(self):
+        """Superficie minimale effective — basée sur superficie_morcellable."""
+        # 1. Utiliser superficie_morcellable si disponible
+        if self.superficie_morcellable:
+            return float(self.superficie_morcellable)
+        
+        # 2. Depuis stats manuelles
+        try:
+            sm = self.stats_manuelles
+            if sm.superficie_min:
+                return float(sm.superficie_min)
+        except Exception:
+            pass
+        
+        # 3. Depuis la plus petite parcelle
+        p = self.parcelles.filter(is_active=True).order_by('superficie').first()
+        if p and p.superficie:
+            return float(p.superficie)
+        
+        # 4. Valeur par défaut
+        return 500.0
 
     @property
     def prix_min_effectif(self):
@@ -148,157 +180,6 @@ class SiteFoncier(models.Model):
     def get_absolute_url(self):
         from django.urls import reverse
         return reverse('site_detail', kwargs={'slug': self.slug})
-
-
-def api_calcul_parcelles(request):
-    """
-    API AJAX pour le panneau flottant.
-    Reçoit : budget, superficie, site_slug, statut
-    Retourne : résultats calculés par site basés UNIQUEMENT sur prix_min du site
-    """
-    from .models import SiteFoncier
-
-    budget = request.GET.get('budget', '').strip()
-    superficie = request.GET.get('superficie', '').strip()
-    site_slug = request.GET.get('site', '').strip()
-    statut = request.GET.get('statut', '').strip()
-
-    results = []
-
-    # Récupérer les sites actifs
-    sites_qs = SiteFoncier.objects.filter(is_active=True)
-
-    if site_slug:
-        sites_qs = sites_qs.filter(slug=site_slug)
-
-    if statut == 'disponible':
-        sites_qs = sites_qs.filter(statut='disponible')
-    elif statut == 'en_cours':
-        sites_qs = sites_qs.filter(statut='en_cours')
-    elif statut == 'promo':
-        sites_qs = sites_qs.filter(en_promotion=True)
-
-    # Convertir les valeurs
-    budget_val = float(budget) if budget else None
-    superficie_val = float(superficie) if superficie else None
-
-    # Si aucun critère n'est fourni, retourner vide
-    if not budget_val and not superficie_val and not site_slug and not statut:
-        return JsonResponse({'results': [], 'count': 0})
-
-    for site in sites_qs:
-        # ═══ PRIX AU M² = prix_min DU SITE ═══
-        prix_m2 = float(site.prix_min) if site.prix_min else 0
-
-        if prix_m2 == 0:
-            continue
-
-        # Préparer les infos de base
-        info = {
-            'nom': site.nom,
-            'slug': site.slug,
-            'url': site.get_absolute_url(),
-            'prix_m2': round(prix_m2, 0),
-            'nb_dispo': site.nb_disponibles,
-            'statut': site.statut,
-            'en_promotion': site.en_promotion,
-        }
-
-        # ─── CAS 1 : Budget seul ───────────────────────────────
-        if budget_val and not superficie_val:
-            superficie_possible = budget_val / prix_m2
-            info['superficie_possible'] = round(superficie_possible, 2)
-            info['message'] = (
-                f"💰 Avec {format_fcfa(budget_val)} FCFA → "
-                f"<strong>{format_sup(superficie_possible)} m²</strong>"
-            )
-            info['detail'] = f"Prix au m² : {format_fcfa(prix_m2)} FCFA/m²"
-            results.append(info)
-
-        # ─── CAS 2 : Superficie seule ─────────────────────────
-        elif superficie_val and not budget_val:
-            prix_total = superficie_val * prix_m2
-            info['prix_total'] = round(prix_total, 0)
-            info['message'] = (
-                f"📐 <strong>{format_sup(superficie_val)} m²</strong> → "
-                f"{format_fcfa(prix_total)} FCFA"
-            )
-            info['detail'] = f"Prix au m² : {format_fcfa(prix_m2)} FCFA/m²"
-            results.append(info)
-
-        # ─── CAS 3 : Budget + Superficie ──────────────────────
-        elif budget_val and superficie_val:
-            prix_total = superficie_val * prix_m2
-            if budget_val >= prix_total:
-                reste = budget_val - prix_total
-                info['compatible'] = True
-                info['prix_total'] = round(prix_total, 0)
-                info['reste'] = round(reste, 0)
-                info['message'] = (
-                    f"✅ <strong>{format_sup(superficie_val)} m²</strong> = "
-                    f"<strong>{format_fcfa(prix_total)} FCFA</strong> "
-                    f"(reste {format_fcfa(reste)} FCFA)"
-                )
-            else:
-                superficie_possible = budget_val / prix_m2
-                manque = prix_total - budget_val
-                info['compatible'] = False
-                info['superficie_possible'] = round(superficie_possible, 2)
-                info['manque'] = round(manque, 0)
-                info['message'] = (
-                    f"⚠️ Budget insuffisant pour {format_sup(superficie_val)} m²\n"
-                    f"→ Avec {format_fcfa(budget_val)} FCFA, "
-                    f"vous pouvez avoir <strong>{format_sup(superficie_possible)} m²</strong>"
-                )
-                info['detail'] = f"Il vous manque {format_fcfa(manque)} FCFA"
-            info['prix_m2_affichage'] = format_fcfa(prix_m2)
-            results.append(info)
-
-        # ─── CAS 4 : Site seul sélectionné ────────────────────
-        elif site_slug and site.slug == site_slug:
-            info['message'] = f"📐 Prix au m² : <strong>{format_fcfa(prix_m2)} FCFA/m²</strong>"
-            info['detail'] = (
-                f"💡 Exemples :\n"
-                f"• 100 m² → {format_fcfa(prix_m2 * 100)} FCFA\n"
-                f"• 500 m² → {format_fcfa(prix_m2 * 500)} FCFA"
-            )
-            results.append(info)
-
-    # Trier : d'abord les compatibles, puis par prix_m2 croissant
-    if budget_val and superficie_val:
-        results.sort(key=lambda x: (
-            not x.get('compatible', False),
-            x.get('prix_m2', float('inf'))
-        ))
-    else:
-        results.sort(key=lambda x: x.get('prix_m2', float('inf')))
-
-    return JsonResponse({
-        'results': results,
-        'count': len(results),
-        'budget': budget_val,
-        'superficie': superficie_val
-    })
-
-
-def format_fcfa(n):
-    """Formatte un nombre en FCFA avec séparateur d'espaces."""
-    try:
-        return f"{int(round(n)):,}".replace(',', ' ')
-    except (ValueError, TypeError):
-        return "0"
-
-
-def format_sup(n):
-    """Formatte une superficie avec 2 décimales max."""
-    try:
-        if n == int(n):
-            return f"{int(n)}"
-        return f"{round(n, 2)}"
-    except (ValueError, TypeError):
-        return "0"
-    
-    
 
 
 class ImageSite(models.Model):
@@ -591,37 +472,41 @@ class GroupyQR(models.Model):
 # ─────────────────────────────────────────────
 # JOURNAL EDEN GROUP
 # ─────────────────────────────────────────────
-
 class JournalEdition(models.Model):
-    STATUT_CHOICES = [
-        ('brouillon', 'Brouillon'),
-        ('publie', 'Publié'),
-        ('archive', 'Archivé'),
+    TYPE_ACADEMIE_CHOICES = [
+        ('journal', 'Journal EDEN'),
+        ('article', 'Article Académie'),
+        ('revue', 'Revue Académie'),
+        ('guide', 'Guide Pratique'),
     ]
-    titre = models.CharField(max_length=200, verbose_name="Titre de l'édition")
-    numero = models.PositiveIntegerField(unique=True, verbose_name="Numéro")
-    sous_titre = models.CharField(max_length=300, blank=True)
-    image_une = models.ImageField(upload_to='journal/unes/', null=True, blank=True, verbose_name="Image à la Une")
-    statut = models.CharField(max_length=20, choices=STATUT_CHOICES, default='brouillon')
+
+    titre = models.CharField(max_length=300)
+    # ✅ CORRIGÉ : CharField unique, pas IntegerField
+    numero = models.CharField(max_length=30, unique=True)
+    sous_titre = models.CharField(max_length=400, blank=True)
+    image_une = models.ImageField(upload_to='journal/unes/', null=True, blank=True)
+    statut = models.CharField(
+        max_length=20,
+        choices=[('brouillon','Brouillon'),('publie','Publié'),('archive','Archivé')],
+        default='brouillon'
+    )
     date_parution = models.DateField(null=True, blank=True)
+    type_academie = models.CharField(
+        max_length=20,
+        choices=TYPE_ACADEMIE_CHOICES,
+        default='journal',
+        verbose_name="Type de publication"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    created_by = models.ForeignKey(
-        'auth.User', on_delete=models.SET_NULL,
-        null=True, blank=True, related_name='editions'
-    )
 
     class Meta:
-        verbose_name = "Édition du journal"
-        verbose_name_plural = "Éditions du journal"
-        ordering = ['-numero']
+        verbose_name = "Édition Journal"
+        verbose_name_plural = "Éditions Journal"
+        ordering = ['-date_parution', '-created_at']
 
     def __str__(self):
-        return f"Édition #{self.numero} — {self.titre}"
-
-    def get_absolute_url(self):
-        from django.urls import reverse
-        return reverse('journal_lire', kwargs={'numero': self.numero})
+        return f"[{self.get_type_academie_display()}] N°{self.numero} — {self.titre}"
 
     @property
     def nb_pages(self):
@@ -633,9 +518,7 @@ class JournalPage(models.Model):
         JournalEdition, on_delete=models.CASCADE, related_name='pages'
     )
     numero = models.PositiveSmallIntegerField(verbose_name="Numéro de page")
-    # La page est un JSON de blocs disposés librement
-    contenu = models.JSONField(default=list, blank=True, verbose_name="Contenu (blocs)")
-    # Layout: 1 colonne, 2 colonnes, 3 colonnes, une
+    contenu = models.JSONField(default=list, blank=True)
     layout = models.CharField(
         max_length=20,
         choices=[
@@ -659,15 +542,20 @@ class JournalPage(models.Model):
 
 
 class JournalMedia(models.Model):
-    """Médiathèque pour le journal."""
-    TYPE_CHOICES = [('image', 'Image'), ('video', 'Vidéo')]
+    """Médiathèque — images et vidéos locales pour le journal."""
+    TYPE_CHOICES = [('image', 'Image'), ('video', 'Vidéo locale')]
+
     edition = models.ForeignKey(
         JournalEdition, on_delete=models.CASCADE,
         null=True, blank=True, related_name='medias'
     )
-    type = models.CharField(max_length=10, choices=TYPE_CHOICES)
-    fichier = models.FileField(upload_to='journal/medias/', null=True, blank=True)
-    url_externe = models.URLField(blank=True, help_text="URL YouTube/Vimeo")
+    type = models.CharField(max_length=10, choices=TYPE_CHOICES, default='image')
+    # ✅ CORRIGÉ : fichier local seulement, pas URL YouTube
+    fichier = models.FileField(
+        upload_to='journal/medias/',
+        null=True, blank=True,
+        help_text="Image (JPG/PNG) ou vidéo locale (MP4/WebM)"
+    )
     legende = models.CharField(max_length=200, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -676,7 +564,17 @@ class JournalMedia(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return f"{self.type} — {self.legende or self.fichier}"
+        return f"{self.type} — {self.legende or str(self.fichier)}"
+
+    @property
+    def url(self):
+        if self.fichier:
+            return self.fichier.url
+        return ''
+
+    @property
+    def est_video(self):
+        return self.type == 'video'
 
 class SiteStatistiquesManuelle(models.Model):
     """
@@ -1434,52 +1332,45 @@ class EngagementService(models.Model):
 
 class AcademieCategorie(models.TextChoices):
     TEXTE_LOI = 'texte_loi', 'Textes de loi'
-    ARTICLE = 'article', 'Articles'
-    REVUE = 'revue', 'Revues'
-    GUIDE = 'guide', 'Guides pratiques'
     LEXIQUE = 'lexique', 'Lexique du foncier'
     VIDEO = 'video', 'Vidéothèque'
-    INFOGRAPHIE = 'infographie', 'Infographies'
+    GALERIE = 'galerie', 'Galerie'
     FAQ = 'faq', 'Questions fréquentes'
     RESSOURCE = 'ressource', 'Centre de ressources'
 
 
 class AcademieDocument(models.Model):
-    """Document PDF de l'Académie EDEN GROUP."""
+    """Textes de loi, lexique, ressources — PAS les articles/revues/guides (= Journal)."""
     categorie = models.CharField(
         max_length=30,
         choices=AcademieCategorie.choices,
-        default=AcademieCategorie.ARTICLE,
+        default=AcademieCategorie.TEXTE_LOI,
         verbose_name="Catégorie"
     )
     titre = models.CharField(max_length=300, verbose_name="Titre")
-    sous_titre = models.CharField(max_length=400, blank=True, verbose_name="Sous-titre / Accroche")
-    description = models.TextField(blank=True, verbose_name="Description")
+    sous_titre = models.CharField(max_length=400, blank=True)
+    description = models.TextField(blank=True)
     image_couverture = models.ImageField(
-        upload_to='academie/couvertures/',
-        null=True, blank=True,
-        verbose_name="Image de couverture"
+        upload_to='academie/couvertures/', null=True, blank=True
     )
     fichier_pdf = models.FileField(
-        upload_to='academie/documents/',
-        null=True, blank=True,
-        verbose_name="Fichier PDF"
+        upload_to='academie/documents/', null=True, blank=True,
+        verbose_name="Fichier PDF (textes de loi)"
     )
-    auteur = models.CharField(max_length=200, blank=True, verbose_name="Auteur / Source")
-    date_publication = models.DateField(null=True, blank=True, verbose_name="Date de publication")
-    nb_pages = models.PositiveIntegerField(null=True, blank=True, verbose_name="Nombre de pages")
-    temps_lecture = models.CharField(max_length=30, blank=True, verbose_name="Temps de lecture")
-    # Pour les textes de loi
-    reference_officielle = models.CharField(max_length=300, blank=True, verbose_name="Référence officielle")
-    # Pour les revues
-    numero_revue = models.CharField(max_length=20, blank=True, verbose_name="N° de revue")
+    auteur = models.CharField(max_length=200, blank=True)
+    date_publication = models.DateField(null=True, blank=True)
+    nb_pages = models.PositiveIntegerField(null=True, blank=True)
+    temps_lecture = models.CharField(max_length=30, blank=True)
+    reference_officielle = models.CharField(max_length=300, blank=True)
+    # Pour galerie : titre + image + description
+    lien_externe = models.URLField(blank=True, verbose_name="Lien externe (optionnel)")
     statut = models.CharField(
         max_length=20,
         choices=[('brouillon','Brouillon'),('publie','Publié'),('archive','Archivé')],
         default='brouillon'
     )
-    est_a_la_une = models.BooleanField(default=False, verbose_name="Afficher À la Une")
-    est_featured = models.BooleanField(default=False, verbose_name="Mis en avant")
+    est_a_la_une = models.BooleanField(default=False)
+    est_featured = models.BooleanField(default=False)
     nb_telechargements = models.PositiveIntegerField(default=0)
     ordre = models.PositiveSmallIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -1499,7 +1390,7 @@ class AcademieDocument(models.Model):
 
 
 class AcademieVideo(models.Model):
-    """Vidéo de la vidéothèque — fichier uploadé localement."""
+    """Vidéo de la vidéothèque."""
     titre = models.CharField(max_length=300, verbose_name="Titre")
     description = models.TextField(blank=True)
     fichier_video = models.FileField(

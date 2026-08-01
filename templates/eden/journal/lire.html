@@ -1,578 +1,345 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{ edition.titre }} — Le Journal EDEN GROUP</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Outfit:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<title>{{ edition.titre }} — Journal EDEN GROUP</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --blanc:#FFFFFF;
-  --blanc-casse:#F8F6F1;
-  --blanc-jaune:#FDFBF7;
-  --gris-clair:#F0EEEA;
-  --gris-moyen:#D1CDC5;
-  --gris-texte:#3D3A35;
-  --noir-texte:#1A1613;
-  --rouge:#C8102E;
-  --rouge-fonce:#9C0C24;
-  --rouge-clair:#E8D0D5;
-  --bleu:#1B4FDB;
-  --bleu-fonce:#1239A3;
-  --bleu-clair:#D4E0F7;
-  --bleu-tres-clair:#EEF3FC;
-  --filet:#C4BDB3;
-  --gold:#D4AF37;
-  --ombre:0 8px 40px rgba(0,0,0,0.15);
-  --transition:0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  --blue:#1B4FDB;--red:#C8102E;--grad-h:linear-gradient(90deg,#1B4FDB,#7B20B4,#C8102E);
+  --encre:#1a1209;--papier:#FDFBF7;--papier2:#FFF8EE;
+  --gris-journal:#8B7355;
 }
-html,body{height:100%;overflow:hidden;background:var(--gris-clair);font-family:'Lora',serif;}
+html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;background:#0d0d1a;}
 
-/* ── TOPBAR ── */
-.topbar{
-  position:fixed;top:0;left:0;right:0;height:56px;
-  background:var(--blanc);
-  border-bottom:2px solid var(--rouge);
-  z-index:1000;
+/* ── TOP BAR ── */
+.top-bar{
+  position:fixed;top:0;left:0;right:0;height:52px;
+  background:rgba(10,10,20,0.95);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,0.08);
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 1.5rem;gap:1rem;
-  box-shadow:0 2px 8px rgba(200,16,46,0.08);
+  padding:0 1.5rem;z-index:200;gap:1rem;
 }
-.tb-logo{
-  display:flex;align-items:center;gap:10px;
-  text-decoration:none;
-}
-.tb-em{
-  width:34px;height:34px;border-radius:6px;
-  background:linear-gradient(135deg,var(--bleu),var(--rouge));
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Playfair Display',serif;font-weight:900;font-size:15px;
-  color:#fff;
-}
-.tb-nom{
-  font-family:'Playfair Display',serif;font-size:15px;
-  color:var(--noir-texte);font-weight:700;
-  letter-spacing:0.5px;
-}
-.tb-nom span{color:var(--rouge);}
-.tb-titre{
-  font-family:'Playfair Display',serif;font-style:italic;
-  font-size:13px;color:var(--gris-texte);
-  flex:1;text-align:center;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  background:var(--gris-clair);
-  padding:4px 16px;
-  border-radius:20px;
-  max-width:500px;
-}
-.tb-btns{display:flex;align-items:center;gap:8px;}
-.tb-btn{
-  padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;
-  cursor:pointer;font-family:'Outfit',sans-serif;
-  border:1px solid var(--gris-moyen);
-  background:var(--blanc);
-  color:var(--gris-texte);
-  text-decoration:none;transition:all 0.2s;
-  display:inline-flex;align-items:center;gap:6px;
-}
-.tb-btn:hover{background:var(--rouge);color:var(--blanc);border-color:var(--rouge);}
-.tb-btn.primary{background:var(--bleu);color:var(--blanc);border-color:var(--bleu);}
-.tb-btn.primary:hover{background:var(--bleu-fonce);border-color:var(--bleu-fonce);}
-.tb-page-info{
-  font-size:12px;color:var(--gris-texte);
-  font-family:'Outfit',sans-serif;font-weight:500;
-  background:var(--blanc-casse);
-  padding:4px 14px;border-radius:20px;
-  border:1px solid var(--gris-moyen);
-}
+.tb-title{font-size:13px;font-weight:700;color:#fff;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.tb-num{font-size:11px;color:rgba(255,255,255,0.5);white-space:nowrap;}
+.tb-actions{display:flex;gap:6px;flex-shrink:0;}
+.tb-btn{padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.75);background:rgba(255,255,255,0.05);text-decoration:none;transition:all 0.2s;}
+.tb-btn:hover{background:rgba(255,255,255,0.15);color:#fff;}
+.page-info-top{font-size:11px;color:rgba(255,255,255,0.5);white-space:nowrap;}
 
 /* ── VIEWER ── */
 .viewer-wrap{
-  position:fixed;top:56px;left:0;right:0;bottom:56px;
+  position:fixed;top:52px;left:0;right:0;bottom:60px;
   display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(180deg,var(--gris-clair) 0%,var(--blanc-casse) 100%);
-  padding:20px;
+  perspective:2000px;
 }
 .book{
   position:relative;
+  display:flex;
   transform-style:preserve-3d;
-  box-shadow:var(--ombre);
-  border-radius:2px;
+  transition:width 0.3s,height 0.3s;
 }
-
-/* ── PAGES ── */
+.book-spine{
+  position:absolute;left:50%;top:0;bottom:0;
+  width:6px;transform:translateX(-50%);
+  background:linear-gradient(to right,#8B7355,#C4A97A,#8B7355);
+  z-index:10;
+  box-shadow:0 0 12px rgba(0,0,0,0.5);
+}
 .page-outer{
-  position:absolute;top:0;width:50%;height:100%;
-  transform-style:preserve-3d;
-  transition:transform 0.7s cubic-bezier(0.645,0.045,0.355,1);
-}
-.page-outer.left{left:0;transform-origin:right center;}
-.page-outer.right{left:50%;transform-origin:left center;}
-.page-outer.turning-left{transform:rotateY(180deg);}
-.page-outer.turning-right{transform:rotateY(-180deg);}
-.page-face{
-  position:absolute;inset:0;
-  backface-visibility:hidden;
+  width:50%;height:100%;
+  position:relative;
   overflow:hidden;
 }
-.page-face.back{transform:rotateY(180deg);}
+.page-outer.left{border-radius:4px 0 0 4px;box-shadow:-4px 0 20px rgba(0,0,0,0.5);}
+.page-outer.right{border-radius:0 4px 4px 0;box-shadow:4px 0 20px rgba(0,0,0,0.5);}
 
 /* ── PAGE PAPIER ── */
 .page-paper{
   width:100%;height:100%;
-  background:var(--blanc-jaune);
   position:relative;overflow:hidden;
+  background:var(--papier);
+  font-family:'IM Fell English',serif;
+  color:var(--encre);
 }
-.page-paper::before{
-  content:'';position:absolute;inset:0;
-  background:
-    linear-gradient(rgba(200,16,46,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(200,16,46,0.02) 1px, transparent 1px);
-  background-size:100% 28px, 100% 28px;
-  pointer-events:none;
-}
-.page-paper.sombre{background:var(--blanc-casse);}
-.page-paper.fonce{background:var(--noir-texte);color:var(--blanc);}
-
-/* ── NUMÉROS ── */
-.page-num{
-  position:absolute;bottom:14px;
-  font-family:'Outfit',sans-serif;font-size:11px;
-  color:var(--gris-moyen);font-weight:500;
-  letter-spacing:0.5px;
-}
-.page-num.left{left:20px;}
-.page-num.right{right:20px;}
-.page-nom-journal{
-  position:absolute;bottom:14px;left:50%;
-  transform:translateX(-50%);
-  font-family:'Outfit',sans-serif;font-size:9px;
-  color:var(--gris-moyen);
-  letter-spacing:3px;text-transform:uppercase;
+.page-paper.fonce{background:#1a1a2e !important;}
+.page-content{
+  position:absolute;inset:0;
+  padding:20px 18px 30px;
+  overflow:hidden;
 }
 
-/* ── OMBRES ── */
-.page-shadow-left{
-  position:absolute;top:0;right:0;width:30px;height:100%;
-  background:linear-gradient(to right,transparent,rgba(0,0,0,0.06));
-  pointer-events:none;
+/* ── LAYOUT COLONNES ── */
+.blocs-zone{height:100%;overflow:hidden;}
+.layout-col2 .blocs-zone{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;
+  align-content:start;
 }
-.page-shadow-right{
-  position:absolute;top:0;left:0;width:30px;height:100%;
-  background:linear-gradient(to left,transparent,rgba(0,0,0,0.06));
-  pointer-events:none;
+.layout-col3 .blocs-zone{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;
+  align-content:start;
 }
-
-/* ── RELIURE ── */
-.book-spine{
-  position:absolute;top:0;left:50%;width:4px;height:100%;
-  background:linear-gradient(to bottom,var(--rouge),var(--bleu));
-  transform:translateX(-50%);
-  z-index:5;
-  opacity:0.3;
-}
-.book-spine::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(to right,transparent,rgba(255,255,255,0.3),transparent);
+.layout-col1 .blocs-zone,.layout-une .blocs-zone{
+  display:flex;flex-direction:column;gap:10px;
 }
 
-/* ── COUVERTURE ── */
-.couverture{
-  width:100%;height:100%;
-  background:linear-gradient(135deg,var(--noir-texte) 0%,#1a1a2e 50%,var(--rouge-fonce) 100%);
-  position:relative;overflow:hidden;
-  display:flex;flex-direction:column;
-}
-.couverture::before{
-  content:'';position:absolute;inset:0;
-  background:
-    repeating-linear-gradient(45deg, transparent, transparent 20px,
-    rgba(255,255,255,0.02) 20px, rgba(255,255,255,0.02) 21px);
-  pointer-events:none;
-}
-.couv-bandeau-top{
-  background:linear-gradient(90deg,var(--rouge),var(--rouge-fonce));
-  padding:12px 24px;
-  display:flex;justify-content:space-between;align-items:center;
-  border-bottom:2px solid var(--gold);
-}
-.couv-nom{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(1.2rem,2.5vw,2rem);
-  color:var(--gold);
-  font-weight:700;
-  letter-spacing:1px;
-}
-.couv-nom span{font-weight:300;opacity:0.7;}
-.couv-num{
-  font-family:'Outfit',sans-serif;font-size:12px;
-  color:rgba(255,255,255,0.8);
-  font-weight:500;
-  background:rgba(255,255,255,0.1);
-  padding:4px 14px;border-radius:20px;
-  border:1px solid rgba(255,255,255,0.15);
-}
-.couv-img-zone{flex:1;position:relative;overflow:hidden;}
-.couv-img{
-  width:100%;height:100%;object-fit:cover;
-  display:block;
-  opacity:0.9;
-}
-.couv-img-placeholder{
-  width:100%;height:100%;
-  background:linear-gradient(135deg,#1a1a2e,#2d1f0e);
-  display:flex;align-items:center;justify-content:center;
-  font-size:4rem;
-}
-.couv-titre-zone{
-  padding:20px 24px;
-  background:linear-gradient(to bottom,transparent,rgba(0,0,0,0.8));
-}
-.couv-surtitre{
-  font-size:10px;
-  color:var(--rouge);
-  text-transform:uppercase;
-  letter-spacing:3px;
-  font-family:'Outfit',sans-serif;
-  font-weight:600;
-  margin-bottom:4px;
-}
-.couv-titre{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(1.2rem,3vw,2.2rem);
-  font-weight:900;
-  color:var(--blanc);
-  line-height:1.15;
-}
-.couv-sous-titre{
-  font-family:'Playfair Display',serif;
-  font-style:italic;
-  font-size:clamp(0.8rem,1.5vw,1.1rem);
-  color:rgba(255,255,255,0.7);
-  margin-top:6px;
-}
-.couv-date-pied{
-  background:rgba(255,255,255,0.05);
-  padding:10px 24px;
-  font-family:'Outfit',sans-serif;
-  font-size:10px;
-  color:rgba(255,255,255,0.5);
-  letter-spacing:2px;
-  text-align:center;
-  border-top:1px solid rgba(255,255,255,0.05);
-}
+/* ── BLOCS ── */
+.bloc{overflow:hidden;}
 
-/* ── CONTENU PAGE ── */
-.page-content{padding:16px 20px;height:100%;display:flex;flex-direction:column;gap:8px;overflow:hidden;}
-.layout-une .blocs-zone{display:block;}
-.layout-col1 .blocs-zone{display:flex;flex-direction:column;gap:10px;}
-.layout-col2 .blocs-zone{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.layout-col3 .blocs-zone{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
-
-.bloc{position:relative;overflow:hidden;}
-
-/* TITRES */
 .bloc-titre h1{
   font-family:'Playfair Display',serif;
-  font-size:clamp(1.1rem,2.5vw,1.8rem);
-  font-weight:900;
-  color:var(--noir-texte);
-  line-height:1.1;
-  border-bottom:3px double var(--rouge);
-  padding-bottom:8px;
-  margin-bottom:8px;
+  font-size:clamp(1rem,2vw,1.8rem);
+  font-weight:900;line-height:1.1;
+  color:var(--encre);
+  border-bottom:3px double var(--encre);
+  padding-bottom:6px;margin-bottom:6px;
 }
 .bloc-titre h2{
   font-family:'Playfair Display',serif;
-  font-size:clamp(0.9rem,2vw,1.4rem);
-  font-weight:700;
-  color:var(--noir-texte);
-  line-height:1.2;
-  border-bottom:2px solid var(--bleu);
-  padding-bottom:6px;
-  margin-bottom:6px;
+  font-size:clamp(0.85rem,1.5vw,1.3rem);
+  font-weight:700;line-height:1.2;color:var(--encre);
+  border-bottom:1px solid var(--gris-journal);
+  padding-bottom:4px;margin-bottom:4px;
 }
 .bloc-titre h3{
   font-family:'Playfair Display',serif;
-  font-size:clamp(0.8rem,1.5vw,1.1rem);
-  font-weight:600;
-  font-style:italic;
-  color:var(--rouge);
-  margin-bottom:4px;
+  font-size:clamp(0.75rem,1.2vw,1rem);
+  font-weight:700;color:var(--encre);
+  font-style:italic;margin-bottom:4px;
 }
-.bloc-titre .surtitre{
-  font-size:9px;
-  color:var(--rouge);
-  text-transform:uppercase;
-  letter-spacing:3px;
-  font-family:'Outfit',sans-serif;
-  font-weight:600;
-  margin-bottom:4px;
+.surtitre{
+  font-size:9px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:var(--red);margin-bottom:4px;
 }
 
-/* TEXTES */
 .bloc-texte p{
-  font-family:'Lora',serif;
-  font-size:clamp(0.7rem,1.2vw,0.85rem);
-  color:var(--gris-texte);
-  line-height:1.7;
-  text-align:justify;
-  hyphens:auto;
-  margin-bottom:0.5em;
-}
-.bloc-texte p:last-child{margin-bottom:0;}
-.bloc-texte p::first-letter{
-  font-size:2.8em;
-  font-family:'Playfair Display',serif;
-  font-weight:900;
-  float:left;
-  line-height:0.8;
-  margin:4px 6px 0 0;
-  color:var(--rouge);
+  font-size:clamp(0.6rem,0.9vw,0.78rem);
+  line-height:1.6;color:var(--encre);
+  text-align:justify;hyphens:auto;
+  margin-bottom:4px;
 }
 .bloc-texte .chapeau{
-  font-family:'Lora',serif;
+  font-size:clamp(0.65rem,0.95vw,0.85rem);
+  font-weight:600;color:var(--encre);
+  border-left:3px solid var(--red);
+  padding-left:8px;margin-bottom:6px;
   font-style:italic;
-  font-size:clamp(0.75rem,1.3vw,0.95rem);
-  color:var(--bleu-fonce);
-  border-left:4px solid var(--rouge);
-  padding-left:12px;
-  margin-bottom:8px;
-  line-height:1.6;
-}
-
-/* IMAGES */
-.bloc-image figure{margin:0;}
-.bloc-image img{
-  width:100%;height:auto;display:block;
-  border-radius:2px;
-  cursor:pointer;
-  transition:opacity 0.3s;
-}
-.bloc-image img:hover{opacity:0.9;}
-.bloc-image figcaption{
-  font-family:'Outfit',sans-serif;
-  font-size:9px;
-  color:var(--gris-moyen);
-  text-align:center;
-  margin-top:4px;
-  font-style:italic;
-}
-
-/* CITATIONS */
-.bloc-citation blockquote{
-  border-left:4px solid var(--rouge);
-  padding:12px 16px;
-  background:var(--blanc-casse);
-}
-.bloc-citation blockquote p{
-  font-family:'Playfair Display',serif;
-  font-style:italic;
-  font-size:clamp(0.8rem,1.4vw,1rem);
-  color:var(--noir-texte);
-  line-height:1.6;
-}
-.bloc-citation .auteur{
-  font-size:10px;
-  font-family:'Outfit',sans-serif;
-  font-weight:600;
-  color:var(--bleu);
-  text-transform:uppercase;
-  letter-spacing:1px;
-  margin-top:6px;
-  text-align:right;
-}
-
-/* FILETS */
-.bloc-filet hr{
-  border:none;height:2px;
-  background:linear-gradient(to right,var(--rouge),var(--bleu),var(--rouge));
-  margin:6px 0;
-}
-.bloc-filet.double hr{height:1px;box-shadow:0 3px 0 var(--rouge),0 3px 0 var(--bleu);}
-.bloc-filet.ornement{
-  text-align:center;
-  color:var(--rouge);
-  font-size:16px;
-  padding:6px 0;
-  letter-spacing:8px;
-}
-
-/* ENCARTS */
-.bloc-encart{
-  background:var(--bleu-tres-clair);
-  border:2px solid var(--bleu);
-  padding:12px 14px;
-  border-radius:2px;
-}
-.bloc-encart .encart-titre{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(0.7rem,1.3vw,0.9rem);
-  font-weight:700;
-  color:var(--bleu-fonce);
-  border-bottom:2px solid var(--bleu);
-  padding-bottom:6px;
-  margin-bottom:8px;
-  text-transform:uppercase;
-  letter-spacing:1px;
-}
-.bloc-encart p{
-  font-family:'Lora',serif;
-  font-size:clamp(0.65rem,1.1vw,0.78rem);
-  line-height:1.6;
-  color:var(--gris-texte);
-}
-.bloc-encart p::first-letter{font-size:1em;float:none;}
-
-/* PUBLICITÉS */
-.bloc-pub{
-  background:linear-gradient(135deg,var(--bleu-fonce),var(--noir-texte));
-  color:var(--blanc);
-  padding:16px;
-  text-align:center;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  gap:6px;
-  border:3px double var(--gold);
-  border-radius:2px;
-}
-.pub-titre{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(1rem,2vw,1.5rem);
-  color:var(--gold);
-  font-weight:700;
-}
-.pub-texte{
-  font-family:'Lora',serif;
-  font-size:clamp(0.7rem,1.2vw,0.85rem);
   line-height:1.4;
 }
-.pub-tel{
-  font-family:'Outfit',sans-serif;
-  font-weight:700;
-  font-size:clamp(0.75rem,1.3vw,0.9rem);
-  color:var(--rouge);
+
+.bloc-image figure{text-align:center;}
+.bloc-image img{
+  max-width:100%;max-height:140px;
+  object-fit:cover;border-radius:2px;
+  cursor:zoom-in;
+  border:1px solid rgba(0,0,0,0.1);
+}
+.bloc-image figcaption{
+  font-size:9px;color:var(--gris-journal);
+  font-style:italic;margin-top:3px;
+}
+
+/* ✅ VIDÉO LOCALE */
+.bloc-video .video-wrap{
+  position:relative;width:100%;
+  background:#000;border-radius:4px;overflow:hidden;
+}
+.bloc-video video{
+  width:100%;max-height:140px;
+  object-fit:cover;display:block;cursor:pointer;
+}
+.bloc-video .video-overlay{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,0.3);cursor:pointer;transition:all 0.2s;
+}
+.bloc-video .video-overlay:hover{background:rgba(0,0,0,0.15);}
+.video-play-btn{
+  width:40px;height:40px;border-radius:50%;
+  background:rgba(255,255,255,0.9);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;transition:transform 0.2s;
+}
+.bloc-video figcaption{
+  font-size:9px;color:var(--gris-journal);
+  font-style:italic;margin-top:3px;text-align:center;
+}
+
+.bloc-citation blockquote{
+  border-left:3px solid var(--red);
+  padding:6px 10px;margin:0;
+  background:rgba(200,16,46,0.04);
+  border-radius:0 4px 4px 0;
+}
+.bloc-citation blockquote p{
+  font-size:clamp(0.65rem,0.9vw,0.85rem);
+  font-style:italic;color:var(--encre);line-height:1.5;
+}
+.bloc-citation .auteur{
+  font-size:9px;font-weight:700;color:var(--red);
+  margin-top:4px;text-align:right;letter-spacing:0.5px;
+}
+
+.bloc-filet hr{
+  border:none;
+  border-top:1px solid rgba(0,0,0,0.2);margin:4px 0;
+}
+.bloc-filet.ornement{text-align:center;color:var(--gris-journal);font-size:11px;}
+
+.bloc-encart{
+  background:linear-gradient(135deg,#f5f0e8,#ede7d6);
+  border:1px solid #c4a97a;
+  border-radius:4px;padding:8px 10px;
+}
+.bloc-encart .encart-titre{
+  font-size:10px;font-weight:800;
+  text-transform:uppercase;letter-spacing:1px;
+  color:var(--red);margin-bottom:4px;
+  padding-bottom:4px;border-bottom:1px solid #c4a97a;
+}
+.bloc-encart p{font-size:clamp(0.58rem,0.85vw,0.75rem);line-height:1.55;color:var(--encre);}
+
+.bloc-pub{
+  background:linear-gradient(135deg,#1B4FDB,#0A2494);
+  border-radius:4px;padding:10px;text-align:center;color:#fff;
+}
+.bloc-pub .pub-titre{font-family:'Playfair Display',serif;font-size:clamp(0.7rem,1.1vw,1rem);font-weight:900;margin-bottom:4px;}
+.bloc-pub .pub-texte{font-size:clamp(0.55rem,0.8vw,0.7rem);opacity:0.85;line-height:1.4;}
+.bloc-pub .pub-tel{font-size:clamp(0.55rem,0.8vw,0.72rem);font-weight:700;margin-top:6px;background:rgba(255,255,255,0.2);padding:3px 8px;border-radius:100px;}
+
+/* COUVERTURE */
+.couverture{
+  width:100%;height:100%;
+  background:linear-gradient(160deg,#1a1a2e 0%,#0d1b4b 60%,#1a0a0a 100%);
+  display:flex;flex-direction:column;
+  position:relative;overflow:hidden;
+}
+.couv-bandeau-top{
+  background:var(--grad-h);
+  padding:8px 16px;
+  display:flex;justify-content:space-between;align-items:center;
+  flex-shrink:0;
+}
+.couv-nom{font-family:'Playfair Display',serif;font-size:clamp(0.7rem,1.2vw,1rem);font-weight:900;color:#fff;letter-spacing:1px;}
+.couv-nom span{color:var(--red);}
+.couv-num{font-size:clamp(0.6rem,0.9vw,0.8rem);font-weight:700;color:rgba(255,255,255,0.85);}
+.couv-img-zone{flex:1;overflow:hidden;min-height:0;}
+.couv-img{width:100%;height:100%;object-fit:cover;display:block;}
+.couv-img-placeholder{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:4rem;
+  background:linear-gradient(135deg,rgba(27,79,219,0.3),rgba(200,16,46,0.2));
+}
+.couv-titre-zone{
+  padding:12px 16px 6px;flex-shrink:0;
+  background:linear-gradient(to bottom,transparent,rgba(0,0,0,0.8));
+}
+.couv-surtitre{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:4px;}
+.couv-titre{font-family:'Playfair Display',serif;font-size:clamp(0.9rem,1.8vw,1.4rem);font-weight:900;color:#fff;line-height:1.2;}
+.couv-sous-titre{font-size:clamp(0.6rem,0.9vw,0.75rem);color:rgba(255,255,255,0.7);margin-top:4px;font-style:italic;}
+.couv-date-pied{
+  padding:6px 16px;font-size:clamp(0.55rem,0.75vw,0.7rem);
+  color:rgba(255,255,255,0.4);letter-spacing:0.5px;
+  border-top:1px solid rgba(255,255,255,0.1);flex-shrink:0;
+}
+
+/* Numéro de page */
+.page-num{
+  position:absolute;bottom:8px;font-size:9px;color:var(--gris-journal);
+  font-family:'Playfair Display',serif;font-style:italic;
+}
+.page-num.left{left:12px;}
+.page-num.right{right:12px;}
+.page-nom-journal{
+  position:absolute;bottom:8px;left:50%;transform:translateX(-50%);
+  font-size:7px;color:rgba(139,115,85,0.5);letter-spacing:2px;text-transform:uppercase;
 }
 
 /* ── NAV BAR ── */
 .nav-bar{
-  position:fixed;bottom:0;left:0;right:0;height:56px;
-  background:var(--blanc);
-  border-top:2px solid var(--rouge);
-  z-index:1000;
+  position:fixed;bottom:0;left:0;right:0;height:60px;
+  background:rgba(10,10,20,0.95);backdrop-filter:blur(12px);
+  border-top:1px solid rgba(255,255,255,0.08);
   display:flex;align-items:center;justify-content:center;
-  gap:1.2rem;
-  box-shadow:0 -2px 8px rgba(200,16,46,0.08);
+  gap:1rem;z-index:200;padding:0 1.5rem;
 }
 .nav-bar-btn{
-  padding:8px 20px;
-  border-radius:20px;
-  font-size:13px;font-weight:600;
-  cursor:pointer;
-  font-family:'Outfit',sans-serif;
-  border:1px solid var(--gris-moyen);
-  background:var(--blanc);
-  color:var(--gris-texte);
-  transition:all 0.2s;
-  display:flex;align-items:center;gap:6px;
-}
-.nav-bar-btn:hover:not(:disabled){
-  background:var(--rouge);
-  color:var(--blanc);
-  border-color:var(--rouge);
-}
-.nav-bar-btn:disabled{
-  opacity:0.3;cursor:not-allowed;
-}
-.nav-bar-btn.primary{
-  background:var(--bleu);
-  color:var(--blanc);
-  border-color:var(--bleu);
-}
-.nav-bar-btn.primary:hover:not(:disabled){
-  background:var(--bleu-fonce);
-  border-color:var(--bleu-fonce);
-}
-.nav-progress{
-  display:flex;align-items:center;gap:6px;
-}
-.nav-dot{
-  width:8px;height:8px;
-  border-radius:50%;
-  background:var(--gris-moyen);
-  cursor:pointer;
+  padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;
+  cursor:pointer;font-family:'Outfit',sans-serif;
+  border:1px solid rgba(255,255,255,0.15);
+  background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.75);
   transition:all 0.2s;
 }
-.nav-dot.active{
-  background:var(--rouge);
-  transform:scale(1.4);
-}
-.nav-dot:hover{background:var(--rouge);}
-.nav-page-label{
-  font-family:'Outfit',sans-serif;
-  font-size:11px;
-  color:var(--gris-texte);
-  font-weight:500;
-  min-width:80px;
-  text-align:center;
-}
+.nav-bar-btn:hover:not(:disabled){background:rgba(255,255,255,0.15);color:#fff;}
+.nav-bar-btn:disabled{opacity:0.25;cursor:not-allowed;}
+.nav-bar-btn.primary{background:linear-gradient(135deg,#1B4FDB,#C8102E);border-color:transparent;color:#fff;}
+.nav-progress{display:flex;gap:5px;align-items:center;max-width:200px;overflow:hidden;}
+.nav-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.2);cursor:pointer;transition:all 0.2s;flex-shrink:0;}
+.nav-dot.active{background:#fff;width:20px;border-radius:100px;}
+.nav-page-label{font-size:12px;color:rgba(255,255,255,0.5);white-space:nowrap;min-width:80px;text-align:center;}
 
-/* ── MEDIA OVERLAY ── */
+/* MEDIA OVERLAY */
 .media-overlay{
-  position:fixed;inset:0;
-  background:rgba(0,0,0,0.92);
-  z-index:2000;
-  display:none;
-  align-items:center;justify-content:center;
-  backdrop-filter:blur(8px);
+  position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:3000;
+  display:none;align-items:center;justify-content:center;
+  backdrop-filter:blur(6px);
 }
 .media-overlay.open{display:flex;}
 .media-close{
-  position:absolute;top:1.5rem;right:1.5rem;
-  background:rgba(255,255,255,0.1);
-  border:1px solid rgba(255,255,255,0.2);
-  color:#fff;
-  width:44px;height:44px;
-  border-radius:50%;
-  cursor:pointer;
-  font-size:20px;
-  transition:all 0.2s;
-  display:flex;align-items:center;justify-content:center;
+  position:absolute;top:1rem;right:1rem;
+  background:rgba(255,255,255,0.1);border:none;color:#fff;
+  width:38px;height:38px;border-radius:50%;cursor:pointer;
+  font-size:18px;display:flex;align-items:center;justify-content:center;
 }
-.media-close:hover{background:var(--rouge);}
-.media-inner{max-width:90vw;max-height:85vh;}
-.media-inner img{max-width:90vw;max-height:85vh;object-fit:contain;border-radius:4px;}
-.media-inner iframe{width:80vw;height:45vw;border-radius:4px;}
+.media-inner img{max-width:90vw;max-height:88vh;object-fit:contain;border-radius:8px;}
+.media-inner video{max-width:90vw;max-height:88vh;border-radius:8px;}
 
-@media(max-width:768px){
-  .topbar{padding:0 1rem;height:50px;}
-  .tb-titre{display:none;}
-  .viewer-wrap{top:50px;bottom:50px;padding:10px;}
-  .nav-bar{height:50px;gap:0.6rem;padding:0 0.5rem;}
-  .nav-bar-btn{padding:6px 12px;font-size:11px;}
-  .page-content{padding:10px 12px;}
-  .layout-col2 .blocs-zone,.layout-col3 .blocs-zone{grid-template-columns:1fr;}
-  .couv-titre-zone{padding:12px 16px;}
-  .couv-bandeau-top{padding:8px 16px;}
-  .page-num{bottom:8px;font-size:9px;}
-  .page-nom-journal{display:none;}
+/* ── Retour Académie ── */
+.btn-retour-academie{
+  position:fixed;top:64px;left:12px;z-index:150;
+  display:flex;align-items:center;gap:6px;
+  background:rgba(10,36,148,0.85);color:#fff;
+  padding:7px 14px;border-radius:8px;font-size:12px;
+  font-weight:700;text-decoration:none;
+  backdrop-filter:blur(4px);transition:all 0.2s;
+}
+.btn-retour-academie:hover{background:rgba(10,36,148,1);}
+
+@media(max-width:600px){
+  .nav-progress{display:none;}
+  .nav-bar-btn{padding:6px 12px;font-size:12px;}
 }
 </style>
 </head>
 <body>
 
-<!-- TOPBAR -->
-<div class="topbar">
-  <a class="tb-logo" href="{% url 'journal_kiosque' %}">
-    <div class="tb-em">E</div>
-    <div class="tb-nom">Journal <span>EDEN</span></div>
-  </a>
-  <div class="tb-titre">{{ edition.titre }} — Édition #{{ edition.numero }}</div>
-  <div class="tb-btns">
-    <span class="tb-page-info" id="page-info">Couverture</span>
+{% if from_academie %}
+<a class="btn-retour-academie" href="{% url 'academie_accueil' %}">← Académie</a>
+{% endif %}
+
+<!-- MEDIA OVERLAY (images + vidéos locales) -->
+<div class="media-overlay" id="media-overlay">
+  <button class="media-close" onclick="fermerMedia()">✕</button>
+  <div class="media-inner" id="media-inner"></div>
+</div>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="tb-title">
+    <span style="color:rgba(255,255,255,0.4);font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-right:8px;">Journal EDEN</span>
+    {{ edition.titre }}
+  </div>
+  <div class="tb-num">N°{{ edition.numero }}</div>
+  <div class="tb-actions">
+    <span class="page-info-top" id="page-info">Couverture</span>
+    {% if user.is_staff %}
+    <a class="tb-btn" href="{% url 'dashboard_journal_page_editer' edition_pk=edition.pk page_num=1 %}">✏ Éditer</a>
+    {% endif %}
     <a class="tb-btn" href="{% url 'journal_kiosque' %}">← Kiosque</a>
-    <a class="tb-btn" href="{% url 'home' %}">🏠</a>
   </div>
 </div>
 
@@ -581,37 +348,25 @@ html,body{height:100%;overflow:hidden;background:var(--gris-clair);font-family:'
   <div class="book" id="book"></div>
 </div>
 
-<!-- MEDIA OVERLAY -->
-<div class="media-overlay" id="media-overlay">
-  <button class="media-close" onclick="fermerMedia()">✕</button>
-  <div class="media-inner" id="media-inner"></div>
-</div>
-
 <!-- NAV -->
 <div class="nav-bar">
-  <button class="nav-bar-btn" id="btn-prev" onclick="pagePrecedente()" disabled>
-    ← Précédent
-  </button>
+  <button class="nav-bar-btn" id="btn-prev" onclick="pagePrecedente()" disabled>← Précédent</button>
   <div class="nav-progress" id="nav-dots"></div>
   <span class="nav-page-label" id="nav-label">Couverture</span>
-  <button class="nav-bar-btn primary" id="btn-next" onclick="pageSuivante()">
-    Suivant →
-  </button>
+  <button class="nav-bar-btn primary" id="btn-next" onclick="pageSuivante()">Suivant →</button>
 </div>
 
 <script>
 const PAGES_DATA = {{ pages_json|safe }};
 const EDITION = {
-  numero: {{ edition.numero }},
+  numero: "{{ edition.numero|escapejs }}",
   titre: "{{ edition.titre|escapejs }}",
   sous_titre: "{{ edition.sous_titre|escapejs }}",
   date: "{% if edition.date_parution %}{{ edition.date_parution|date:'d F Y' }}{% endif %}",
   image_une: "{% if edition.image_une %}{{ edition.image_une.url }}{% endif %}",
-  nb_pages: {{ edition.nb_pages }},
 };
-
 let pageCourante = 0;
-const totalEtapes = PAGES_DATA.length + 1;
+const totalEtapes = Math.ceil(PAGES_DATA.length / 2) + 1;
 
 // ── RENDU COUVERTURE ──
 function renderCouverture() {
@@ -622,7 +377,8 @@ function renderCouverture() {
     </div>
     <div class="couv-img-zone">
       ${EDITION.image_une
-        ? `<img src="${EDITION.image_une}" class="couv-img" alt="Une" onclick="ouvrirMedia('image','${EDITION.image_une}','Couverture')">`
+        ? `<img class="couv-img" src="${EDITION.image_une}" alt="Une"
+            onclick="ouvrirMediaImage('${EDITION.image_une}','Couverture')">`
         : `<div class="couv-img-placeholder">📰</div>`}
     </div>
     <div class="couv-titre-zone">
@@ -630,76 +386,103 @@ function renderCouverture() {
       <div class="couv-titre">${EDITION.titre}</div>
       ${EDITION.sous_titre ? `<div class="couv-sous-titre">${EDITION.sous_titre}</div>` : ''}
     </div>
-    <div class="couv-date-pied">${EDITION.date} · Édition N°${EDITION.numero}</div>
+    <div class="couv-date-pied">${EDITION.date}${EDITION.date ? ' · ' : ''}Édition N°${EDITION.numero}</div>
   </div>`;
 }
 
 // ── RENDU BLOC ──
 function renderBloc(bloc) {
+  if (!bloc) return '';
   const type = bloc.type || 'texte';
   switch(type) {
     case 'titre':
       return `<div class="bloc bloc-titre">
-        ${bloc.surtitre ? `<div class="surtitre">${bloc.surtitre}</div>` : ''}
-        ${bloc.niveau === 1 ? `<h1>${bloc.contenu || ''}</h1>` :
-          bloc.niveau === 3 ? `<h3>${bloc.contenu || ''}</h3>` :
-          `<h2>${bloc.contenu || ''}</h2>`}
+        ${bloc.surtitre ? `<div class="surtitre">${esc(bloc.surtitre)}</div>` : ''}
+        ${bloc.niveau === 1 ? `<h1>${esc(bloc.contenu||'')}</h1>` :
+          bloc.niveau === 3 ? `<h3>${esc(bloc.contenu||'')}</h3>` :
+          `<h2>${esc(bloc.contenu||'')}</h2>`}
       </div>`;
+
     case 'texte':
+      const lignes = (bloc.contenu||'').split('\n').filter(l=>l.trim());
       return `<div class="bloc bloc-texte">
-        ${bloc.chapeau ? `<p class="chapeau">${bloc.chapeau}</p>` : ''}
-        <p>${(bloc.contenu || '').replace(/\n/g,'</p><p>')}</p>
+        ${bloc.chapeau ? `<p class="chapeau">${esc(bloc.chapeau)}</p>` : ''}
+        ${lignes.map(l=>`<p>${esc(l)}</p>`).join('')||'<p></p>'}
       </div>`;
+
     case 'image':
+      if (!bloc.url) return '';
       return `<div class="bloc bloc-image">
         <figure>
-          <img src="${bloc.url || ''}" alt="${bloc.legende || ''}"
-            onclick="ouvrirMedia('image','${bloc.url || ''}','${(bloc.legende||'').replace(/'/g,"\\'")}')">
-          ${bloc.legende ? `<figcaption>${bloc.legende}</figcaption>` : ''}
+          <img src="${bloc.url}" alt="${esc(bloc.legende||'')}"
+            onclick="ouvrirMediaImage('${bloc.url}','${esc(bloc.legende||'')}')">
+          ${bloc.legende ? `<figcaption>${esc(bloc.legende)}</figcaption>` : ''}
         </figure>
       </div>`;
+
+    // ✅ VIDÉO LOCALE
+    case 'video':
+      if (!bloc.url) return '';
+      return `<div class="bloc bloc-video">
+        <div class="video-wrap" onclick="ouvrirMediaVideo('${bloc.url}','${esc(bloc.legende||'')}')">
+          <video src="${bloc.url}" preload="metadata" muted>
+            Votre navigateur ne supporte pas la vidéo HTML5.
+          </video>
+          <div class="video-overlay">
+            <div class="video-play-btn">▶</div>
+          </div>
+        </div>
+        ${bloc.legende ? `<figcaption>${esc(bloc.legende)}</figcaption>` : ''}
+      </div>`;
+
     case 'citation':
       return `<div class="bloc bloc-citation">
         <blockquote>
-          <p>${bloc.contenu || ''}</p>
-          ${bloc.auteur ? `<div class="auteur">— ${bloc.auteur}</div>` : ''}
+          <p>${esc(bloc.contenu||'')}</p>
+          ${bloc.auteur ? `<div class="auteur">— ${esc(bloc.auteur)}</div>` : ''}
         </blockquote>
       </div>`;
+
     case 'filet':
-      return `<div class="bloc bloc-filet ${bloc.style || ''}">
-        ${bloc.style === 'ornement' ? `<div>✦ ✦ ✦</div>` : `<hr>`}
+      return `<div class="bloc bloc-filet ${bloc.style === 'ornement' ? 'ornement' : ''}">
+        ${bloc.style === 'ornement' ? '<div>✦ ✦ ✦</div>' : '<hr>'}
       </div>`;
+
     case 'encart':
       return `<div class="bloc bloc-encart">
-        ${bloc.titre_encart ? `<div class="encart-titre">${bloc.titre_encart}</div>` : ''}
-        <p>${(bloc.contenu || '').replace(/\n/g,'</p><p>')}</p>
+        ${bloc.titre_encart ? `<div class="encart-titre">${esc(bloc.titre_encart)}</div>` : ''}
+        <p>${esc(bloc.contenu||'')}</p>
       </div>`;
+
     case 'pub':
       return `<div class="bloc bloc-pub">
         <div class="pub-titre">EDEN GROUP</div>
-        <div class="pub-texte">${bloc.contenu || ''}</div>
-        ${bloc.telephone ? `<div class="pub-tel">📞 ${bloc.telephone}</div>` : ''}
+        <div class="pub-texte">${esc(bloc.contenu||'')}</div>
+        ${bloc.telephone ? `<div class="pub-tel">📞 ${esc(bloc.telephone)}</div>` : ''}
       </div>`;
+
     default:
-      return `<div class="bloc" style="padding:8px;font-size:12px;color:#999;">Bloc inconnu</div>`;
+      return `<div class="bloc" style="padding:6px;font-size:10px;color:#bbb;font-style:italic;">Bloc: ${type}</div>`;
   }
 }
 
-function renderPage(pageData, numero) {
+function esc(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function renderPage(pageData, numeroAffiche, isGauche) {
   const layout = pageData.layout || 'col2';
   const fond = pageData.couleur_fond || '#FDFBF7';
   const blocs = pageData.contenu || [];
-  const isGauche = numero % 2 === 1;
-
   return `<div class="page-paper layout-${layout}" style="background:${fond};">
     <div class="page-content">
       <div class="blocs-zone">
         ${blocs.map(b => renderBloc(b)).join('')}
       </div>
     </div>
-    <div class="page-num ${isGauche ? 'left' : 'right'}">${pageData.numero}</div>
+    <div class="page-num ${isGauche ? 'left' : 'right'}">${numeroAffiche}</div>
     <div class="page-nom-journal">Journal EDEN</div>
-    ${isGauche ? '<div class="page-shadow-left"></div>' : '<div class="page-shadow-right"></div>'}
   </div>`;
 }
 
@@ -707,18 +490,18 @@ function renderPage(pageData, numero) {
 function calculerDimensions() {
   const vw = window.innerWidth;
   const vh = window.innerHeight - 112;
-  const ratio = 210/297;
-  let pageH = Math.min(vh * 0.9, 750);
+  const ratio = 210 / 297;
+  let pageH = Math.min(vh * 0.93, 780);
   let pageW = pageH * ratio;
-  if (pageW * 2 > vw * 0.92) {
-    pageW = (vw * 0.92) / 2;
+  if (pageW * 2 > vw * 0.95) {
+    pageW = (vw * 0.95) / 2;
     pageH = pageW / ratio;
   }
   return { pageW, pageH };
 }
 
 // ── AFFICHAGE ──
-function afficherPage(index, animate = true) {
+function afficherPage(index) {
   pageCourante = Math.max(0, Math.min(index, totalEtapes - 1));
   const { pageW, pageH } = calculerDimensions();
   const book = document.getElementById('book');
@@ -728,43 +511,46 @@ function afficherPage(index, animate = true) {
   let htmlGauche, htmlDroite;
 
   if (pageCourante === 0) {
-    htmlGauche = `<div class="page-paper fonce" style="background:#1a1a2e;border-right:1px solid rgba(255,255,255,0.05);"></div>`;
+    // Couverture
+    htmlGauche = `<div class="page-paper fonce"></div>`;
     htmlDroite = renderCouverture();
   } else {
-    const idx = pageCourante - 1;
-    if (idx < PAGES_DATA.length) {
-      htmlGauche = renderPage(PAGES_DATA[idx], idx + 1);
+    const idxGauche = (pageCourante - 1) * 2;
+    const idxDroite = idxGauche + 1;
+
+    if (idxGauche < PAGES_DATA.length) {
+      htmlGauche = renderPage(PAGES_DATA[idxGauche], idxGauche + 1, true);
     } else {
-      htmlGauche = `<div class="page-paper" style="background:#FDFBF7;"></div>`;
+      htmlGauche = `<div class="page-paper fonce"></div>`;
     }
-    if (idx + 1 < PAGES_DATA.length) {
-      htmlDroite = renderPage(PAGES_DATA[idx + 1], idx + 2);
+
+    if (idxDroite < PAGES_DATA.length) {
+      htmlDroite = renderPage(PAGES_DATA[idxDroite], idxDroite + 1, false);
     } else {
-      htmlDroite = `<div class="page-paper fonce" style="background:#1a1a2e;"></div>`;
+      htmlDroite = `<div class="page-paper fonce"></div>`;
     }
   }
 
   book.innerHTML = `
-    <div class="page-outer left" id="page-left">
-      <div class="page-face front">${htmlGauche}</div>
-    </div>
-    <div class="page-outer right" id="page-right">
-      <div class="page-face front">${htmlDroite}</div>
-    </div>
+    <div class="page-outer left">${htmlGauche}</div>
     <div class="book-spine"></div>
+    <div class="page-outer right">${htmlDroite}</div>
   `;
-
   mettreAjourNav();
 }
 
 // ── NAVIGATION ──
 function pageSuivante() {
   if (pageCourante >= totalEtapes - 1) return;
-  const pr = document.getElementById('page-right');
-  if (pr) {
-    pr.style.transition = 'transform 0.7s cubic-bezier(0.645,0.045,0.355,1)';
-    pr.style.transform = 'rotateY(-180deg)';
-    setTimeout(() => afficherPage(pageCourante + 1), 350);
+  const right = document.querySelector('.page-outer.right');
+  if (right) {
+    right.style.transition = 'transform 0.5s ease';
+    right.style.transform = 'rotateY(-180deg)';
+    setTimeout(() => {
+      right.style.transition = '';
+      right.style.transform = '';
+      afficherPage(pageCourante + 1);
+    }, 250);
   } else {
     afficherPage(pageCourante + 1);
   }
@@ -772,70 +558,89 @@ function pageSuivante() {
 
 function pagePrecedente() {
   if (pageCourante <= 0) return;
-  const pl = document.getElementById('page-left');
-  if (pl) {
-    pl.style.transition = 'transform 0.7s cubic-bezier(0.645,0.045,0.355,1)';
-    pl.style.transform = 'rotateY(180deg)';
-    setTimeout(() => afficherPage(pageCourante - 1), 350);
+  const left = document.querySelector('.page-outer.left');
+  if (left) {
+    left.style.transition = 'transform 0.5s ease';
+    left.style.transform = 'rotateY(180deg)';
+    setTimeout(() => {
+      left.style.transition = '';
+      left.style.transform = '';
+      afficherPage(pageCourante - 1);
+    }, 250);
   } else {
     afficherPage(pageCourante - 1);
   }
 }
 
-function allerPage(index) { afficherPage(index); }
+function allerPage(idx) { afficherPage(idx); }
 
 function mettreAjourNav() {
   document.getElementById('btn-prev').disabled = pageCourante === 0;
   document.getElementById('btn-next').disabled = pageCourante >= totalEtapes - 1;
-  document.getElementById('page-info').textContent =
-    pageCourante === 0 ? 'Couverture' :
-    `Page ${pageCourante * 2 - 1} / ${PAGES_DATA.length}`;
 
-  const labels = ['Couverture', ...PAGES_DATA.map(p => `Page ${p.numero}`)];
-  document.getElementById('nav-label').textContent = labels[pageCourante] || '';
+  const nbPagesAffichees = PAGES_DATA.length;
+  if (pageCourante === 0) {
+    document.getElementById('page-info').textContent = 'Couverture';
+    document.getElementById('nav-label').textContent = 'Couverture';
+  } else {
+    const pg1 = (pageCourante - 1) * 2 + 1;
+    const pg2 = pg1 + 1;
+    const label = pg2 <= nbPagesAffichees ? `Pages ${pg1}-${pg2}` : `Page ${pg1}`;
+    document.getElementById('page-info').textContent = label;
+    document.getElementById('nav-label').textContent = label;
+  }
 
   const dotsEl = document.getElementById('nav-dots');
   dotsEl.innerHTML = Array.from({length: totalEtapes}, (_, i) =>
-    `<div class="nav-dot ${i === pageCourante ? 'active' : ''}" onclick="allerPage(${i})" title="${i === 0 ? 'Couverture' : 'Page ' + i}"></div>`
+    `<div class="nav-dot ${i === pageCourante ? 'active' : ''}"
+      onclick="allerPage(${i})"
+      title="${i === 0 ? 'Couverture' : 'Pages ' + ((i-1)*2+1)}"></div>`
   ).join('');
 }
 
-// ── MEDIA ──
-function ouvrirMedia(type, url, legende) {
-  const overlay = document.getElementById('media-overlay');
-  const inner = document.getElementById('media-inner');
-  overlay.classList.add('open');
-  if (type === 'image') {
-    inner.innerHTML = `<img src="${url}" alt="${legende}">`;
-  } else {
-    inner.innerHTML = `<iframe src="${url}" frameborder="0" allowfullscreen></iframe>`;
-  }
+// ── MEDIA OVERLAY ──
+function ouvrirMediaImage(url, legende) {
+  document.getElementById('media-inner').innerHTML =
+    `<img src="${url}" alt="${legende}" style="max-width:90vw;max-height:88vh;object-fit:contain;border-radius:8px;">`;
+  document.getElementById('media-overlay').classList.add('open');
+}
+
+function ouvrirMediaVideo(url, legende) {
+  document.getElementById('media-inner').innerHTML =
+    `<video src="${url}" controls autoplay style="max-width:90vw;max-height:88vh;border-radius:8px;">
+      Votre navigateur ne supporte pas la vidéo.
+    </video>`;
+  document.getElementById('media-overlay').classList.add('open');
 }
 
 function fermerMedia() {
-  document.getElementById('media-overlay').classList.remove('open');
+  const overlay = document.getElementById('media-overlay');
+  overlay.classList.remove('open');
+  // Arrêter la vidéo si en cours
+  const video = overlay.querySelector('video');
+  if (video) { video.pause(); video.src = ''; }
   document.getElementById('media-inner').innerHTML = '';
 }
 
-// ── CLAVIER ──
+// ── CLAVIER / SWIPE ──
 document.addEventListener('keydown', e => {
   if (e.key === 'ArrowRight' || e.key === 'ArrowDown') pageSuivante();
   if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') pagePrecedente();
   if (e.key === 'Escape') fermerMedia();
 });
 
-// ── SWIPE ──
-let touchStartX = 0;
-document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+let _tX = 0;
+document.addEventListener('touchstart', e => { _tX = e.touches[0].clientX; }, {passive:true});
 document.addEventListener('touchend', e => {
-  const diff = touchStartX - e.changedTouches[0].clientX;
-  if (Math.abs(diff) > 50) {
-    if (diff > 0) pageSuivante();
-    else pagePrecedente();
-  }
+  const d = _tX - e.changedTouches[0].clientX;
+  if (Math.abs(d) > 50) d > 0 ? pageSuivante() : pagePrecedente();
 });
 
-window.addEventListener('resize', () => afficherPage(pageCourante, false));
+document.getElementById('media-overlay').addEventListener('click', function(e) {
+  if (e.target === this) fermerMedia();
+});
+
+window.addEventListener('resize', () => afficherPage(pageCourante));
 
 // ── INIT ──
 afficherPage(0);
