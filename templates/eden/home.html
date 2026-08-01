@@ -1579,7 +1579,6 @@ footer{
     <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
     <a class="nav-lnk {% if request.resolver_match.url_name == 'academie_accueil' %}active{% endif %}" href="{% url 'academie_accueil' %}">🎓 Académie</a>
     <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' or request.resolver_match.url_name == 'une_evenement_detail' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
-    <a class="nav-lnk {% if request.resolver_match.url_name == 'journal_kiosque' or request.resolver_match.url_name == 'journal_lire' %}active{% endif %}" href="{% url 'journal_kiosque' %}">📰 Documentation</a>
     <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
     {% if user.is_staff %}
     <a class="nav-lnk" href="{% url 'dashboard_home' %}" style="color:var(--blue);font-weight:700;">Dashboard</a>
@@ -1599,7 +1598,6 @@ footer{
   <a class="nav-lnk" href="{% url 'nos_agences' %}">Nos Agences</a>
   <a class="nav-lnk" href="{% url 'academie_accueil' %}">🎓 Académie</a>
   <a class="nav-lnk" href="{% url 'une_evenements_accueil' %}">Actualités</a>
-  <a class="nav-lnk" href="{% url 'journal_kiosque' %}">📰 Documentation</a>
   <a class="nav-lnk" href="{% url 'promotions' %}">Promotions</a>
   <a class="nav-lnk" href="{% url 'a_propos' %}">À propos</a>
   {% if user.is_staff %}<a class="nav-lnk" href="{% url 'dashboard_home' %}">Dashboard</a>{% endif %}

@@ -455,9 +455,8 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
     <a class="nav-lnk" href="{% url 'nos_projets' %}">Nos Projets</a>
     <a class="nav-lnk" href="{% url 'nos_services' %}">Nos Services</a>
     <a class="nav-lnk" href="{% url 'nos_agences' %}">Nos Agences</a>
-    <a class="nav-lnk active" href="{% url 'academie_accueil' %}">🎓 Académie</a>
+    <a class="nav-lnk active" href="{% url 'academie_accueil' %}">Académie</a>
     <a class="nav-lnk" href="{% url 'une_evenements_accueil' %}">Actualités</a>
-    <a class="nav-lnk" href="{% url 'journal_kiosque' %}">📰 Documentation</a>
     <a class="nav-lnk" href="{% url 'a_propos' %}">À propos</a>
     {% if user.is_staff %}
     <a class="nav-lnk" href="{% url 'dashboard_home' %}" style="color:var(--blue);font-weight:700;">Dashboard</a>
@@ -475,9 +474,8 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
   <a class="nav-lnk" href="{% url 'nos_projets' %}">Nos Projets</a>
   <a class="nav-lnk" href="{% url 'nos_services' %}">Nos Services</a>
   <a class="nav-lnk" href="{% url 'nos_agences' %}">Nos Agences</a>
-  <a class="nav-lnk active" href="{% url 'academie_accueil' %}">🎓 Académie</a>
+  <a class="nav-lnk active" href="{% url 'academie_accueil' %}">Académie</a>
   <a class="nav-lnk" href="{% url 'une_evenements_accueil' %}">Actualités</a>
-  <a class="nav-lnk" href="{% url 'journal_kiosque' %}">📰 Documentation</a>
   <a class="nav-lnk" href="{% url 'promotions' %}">Promotions</a>
   <a class="nav-lnk" href="{% url 'a_propos' %}">À propos</a>
   {% if user.is_staff %}<a class="nav-lnk" href="{% url 'dashboard_home' %}">Dashboard</a>{% endif %}
