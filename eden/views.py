@@ -141,12 +141,6 @@ def sites_list(request):
         'image_principale','superficie_minimale_affichage'
     )
 
-    # ═══ DÉBOGAGE : Afficher les valeurs dans la console ═══
-    print("=" * 60)
-    print("🔍 VALEURS DES SITES :")
-    for site in sites:
-        print(f"  {site.nom[:25]:<25} | prix_min: {site.prix_min:<10} | morcellement: {site.morcellement:<10}")
-    print("=" * 60)
 
     # Filtre par slug de site
     slug = request.GET.get('slug', '')
