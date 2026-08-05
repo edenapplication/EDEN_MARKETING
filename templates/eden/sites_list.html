@@ -94,7 +94,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .hero-slide img{
     width:100%;
     height:100%;
-    object-fit:cover;
+    object-fit:fill;
     display:block;
 }
 
@@ -664,12 +664,31 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
   .filter-pills{justify-content:center;}
 }
 
-.st-a{background:rgba(22,163,74,0.92);color:#fff;}  /* Disponible - Vert */
-.st-b{background:rgba(59,130,246,0.92);color:#fff;}  /* Site titré - Bleu */
-.st-c{background:rgba(245,158,11,0.92);color:#fff;}  /* En cours d'immatriculation - Orange */
-.st-d{background:rgba(139,92,246,0.92);color:#fff;}  /* Titré et lotis - Violet */
-.st-e{background:rgba(239,68,68,0.92);color:#fff;}  /* Complet - Rouge */
-.st-f{background:rgba(6,182,212,0.92);color:#fff;}  /* Prochainement - Cyan */
+.sc-popularite {
+    position: absolute;
+    top: 3px;
+    right: -200px;
+    
+    background: #dc2626;
+    color: white;
+
+    padding: 6px 18px;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+
+    clip-path: polygon(
+        10% 0,
+        100% 0,
+        100% 100%,
+        0 100%
+    );
+
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+
+    z-index: 5;
+}
+
 </style>
 </head>
 <body>
@@ -686,12 +705,12 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
   <div class="nav-links">
     <a class="nav-lnk {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
     <a class="nav-lnk {% if request.resolver_match.url_name == 'sites_list' or request.resolver_match.url_name == 'site_detail' %}active{% endif %}" href="{% url 'sites_list' %}">Nos Terrains</a>
-    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_projets' %}active{% endif %}" href="{% url 'nos_projets' %}">Nos Projets</a>
     <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
     <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
-        <a class="nav-lnk" href="{% url 'academie_accueil' %}">Académie</a>
 
     <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+            <a class="nav-lnk" href="{% url 'academie_accueil' %}">Académie</a>
+
     <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
     {% if user.is_staff %}
     <a class="nav-lnk" href="{% url 'dashboard_home' %}" style="color:var(--blue);font-weight:700;">Dashboard</a>
@@ -706,13 +725,13 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
 <div class="mob-menu" id="mob-menu">
   <a class="nav-lnk {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
   <a class="nav-lnk {% if request.resolver_match.url_name == 'sites_list' %}active{% endif %}" href="{% url 'sites_list' %}">Nos Terrains</a>
-  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_projets' %}active{% endif %}" href="{% url 'nos_projets' %}">Nos Projets</a>
   <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
   <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
-      <a class="nav-lnk" href="{% url 'academie_accueil' %}">Académie</a>
 
   <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
   <a class="nav-lnk {% if request.resolver_match.url_name == 'promotions' %}active{% endif %}" href="{% url 'promotions' %}">Promotions</a>
+        <a class="nav-lnk" href="{% url 'academie_accueil' %}">Académie</a>
+
   <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
   {% if user.is_staff %}<a class="nav-lnk" href="{% url 'dashboard_home' %}">Dashboard</a>{% endif %}
   <button class="btn-rdv" style="width:100%;margin-top:8px;justify-content:center;" onclick="openModal()">📅 Contact</button>
@@ -856,7 +875,6 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
         <div class="sf-inp-wrap">
           <select class="sf-select" id="s-statut" onchange="analyserFiltre()">
   <option value="">Tous les terrains</option>
-  <option value="disponible">🟢 Disponible</option>
   <option value="site_titre">🔵 Site titré</option>
   <option value="en_cours_immatriculation">🟡 En cours d'immatriculation</option>
   <option value="titre_et_lotis">🟣 Titré et lotis</option>
@@ -896,8 +914,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
     </div>
     <div class="filter-pills">
   <button class="fpill active" onclick="setFilter(this,'all')">📋 Tous</button>
-  <button class="fpill" onclick="setFilter(this,'disponible')">🟢 Disponibles</button>
-  <button class="fpill" onclick="setFilter(this,'site_titre')">🔵 Sites titrés</button>
+  <button class="fpill" onclick="setFilter(this,'site_titre')">🔵 Titrés</button>
   <button class="fpill" onclick="setFilter(this,'en_cours_immatriculation')">🟡 En cours immatriculation</button>
   <button class="fpill" onclick="setFilter(this,'titre_et_lotis')">🟣 Titrés et lotis</button>
   <button class="fpill" onclick="setFilter(this,'prochainement')">🔷 Prochainement</button>
@@ -927,13 +944,16 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
         {% endif %}
         <div class="sc-overlay"></div>
         <span class="sc-status {% if site.statut == 'disponible' %}st-a{% elif site.statut == 'en_cours' %}st-p{% else %}st-c{% endif %}">
-          {{ site.get_statut_display }}
-        </span>
+    {{ site.popularite }}
+</span>
+        
         {% if site.en_promotion %}<span class="sc-promo">🔥 Promo</span>{% endif %}
-        <div class="sc-loc">📍 {{ site.localisation }} - Superficie de {{ site.superficie_totale }}</div>
+        <div class="sc-loc">📍 {{ site.localisation }} - Superficie de {{ site.superficie_totale }} <span class="sc-popularite">
+    {{ site.get_statut_display }}
+</span> </div>
       </div>
       <div class="sc-body">
-        <div class="sc-name">{{ site.nom }}</div>
+        <div class="sc-name">{{ site.nom }} </div>
         <div class="sc-desc">{{ site.description_courte|default:"Un site exceptionnel à découvrir." }}</div>
         <div class="prog-hd">
           <span class="prog-lbl">Parcelles vendues</span>
@@ -1063,29 +1083,42 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
     </div>
   </div>
 </footer>
-
+{{ sites_json|json_script:"sites-data" }}
 <script>
 // ══════════════════════════════════════════════
 // DONNÉES SITES
 // ══════════════════════════════════════════════
-const SITES_DATA = [
-  {% for site in sites %}
-  {
-    slug: '{{ site.slug }}',
-    nom: '{{ site.nom|escapejs }}',
-    localisation: '{{ site.localisation|escapejs }}',
-    statut: '{{ site.statut }}',
-    en_promotion: {{ site.en_promotion|lower }},
-    prix_m2: {{ site.prix_min|default:0 }},
-    prix_min_site: {{ site.prix_min|default:0 }},
-    nb_dispo: {{ site.nb_disponibles|default:0 }},
-    url: '{% url "site_detail" site.slug %}',
-  },
-  {% endfor %}
-];
+const SITES_DATA = JSON.parse(
+    document.getElementById('sites-data').textContent
+);
 
-const SUPERFICIE_MIN = 500;
-const SUPERFICIE_SEUIL_AFFICHAGE = 400;
+// ═══ DÉBOGAGE : Vérifier les données chargées ═══
+console.log('📊 SITES_DATA chargés :', SITES_DATA.length);
+SITES_DATA.forEach((s, i) => {
+  console.log(`Site ${i+1}: ${s.nom} | prix_m2: ${s.prix_m2} | morcellement: ${s.morcellement} | superficie_affichage: ${s.superficie_affichage} | nb_dispo: ${s.nb_dispo}`);
+});
+
+// ══════════════════════════════════════════════
+// FONCTIONS UTILITAIRES
+// ══════════════════════════════════════════════
+function formatFCFA(n) {
+  if (n === undefined || n === null || isNaN(n)) return '0';
+  return new Intl.NumberFormat('fr-FR').format(Math.round(n));
+}
+
+function formatSup(n) {
+  if (n === undefined || n === null || isNaN(n)) return '0';
+  if (n === Math.floor(n)) return Math.floor(n).toString();
+  return n.toFixed(2);
+}
+
+function showToast(ico, msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('t-ico').textContent = ico;
+  document.getElementById('t-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4500);
+}
 
 // ══════════════════════════════════════════════
 // NAV TRANSPARENTE → OPAQUE AU SCROLL
@@ -1116,13 +1149,10 @@ let heroTimer    = null;
 
 function goHeroSlide(idx) {
   if (!heroSlides.length) return;
-
   heroSlides.forEach(s => s.classList.remove('active'));
   heroDots.forEach(d => d.classList.remove('active'));
   hscSlides.forEach(s => s.classList.remove('active'));
-
   heroIdx = ((idx % heroSlides.length) + heroSlides.length) % heroSlides.length;
-
   heroSlides[heroIdx]?.classList.add('active');
   heroDots[heroIdx]?.classList.add('active');
   if (hscSlides[heroIdx]) hscSlides[heroIdx].classList.add('active');
@@ -1138,7 +1168,6 @@ function resetHeroTimer() {
   clearInterval(heroTimer);
   heroTimer = setInterval(() => goHeroSlide(heroIdx + 1), 5000);
 }
-
 resetHeroTimer();
 
 // ══════════════════════════════════════════════
@@ -1146,311 +1175,291 @@ resetHeroTimer();
 // ══════════════════════════════════════════════
 let analyseTimer = null;
 
-['s-loc','s-surf','s-budget','s-statut'].forEach(id => {
-  const el = document.getElementById(id);
-  if (el) {
-    el.addEventListener('input', () => {
-      clearTimeout(analyseTimer);
-      analyseTimer = setTimeout(analyserFiltre, 400);
-    });
-    el.addEventListener('change', () => {
-      clearTimeout(analyseTimer);
-      analyseTimer = setTimeout(analyserFiltre, 400);
-    });
-  }
-});
-
 function analyserFiltre() {
-  const siteSlug    = document.getElementById('s-loc')?.value || '';
-  const budgetStr   = (document.getElementById('s-budget')?.value || '').replace(/[\s,]/g,'');
-  const supStr      = (document.getElementById('s-surf')?.value || '').replace(/[\s,]/g,'');
-  const statut      = document.getElementById('s-statut')?.value || '';
+  const siteSlug   = document.getElementById('s-loc')?.value || '';
+  const budgetStr  = (document.getElementById('s-budget')?.value || '').replace(/[\s,]/g,'');
+  const supStr     = (document.getElementById('s-surf')?.value  || '').replace(/[\s,]/g,'');
+  const statut     = document.getElementById('s-statut')?.value || '';
 
-  const budget      = budgetStr   ? parseFloat(budgetStr)   : null;
-  const superficie  = supStr      ? parseFloat(supStr)      : null;
+  const budget     = budgetStr ? parseFloat(budgetStr) : null;
+  const superficie = supStr    ? parseFloat(supStr)    : null;
 
-  if (!siteSlug && !budget && !superficie && !statut) {
+  console.log('🔍 Recherche:', { siteSlug, budget, superficie, statut });
+
+  if (!siteSlug && budget === null && superficie === null && !statut) {
     fermerAjaxPanel();
     return;
   }
 
+  // ═══ FILTRE DE BASE ═══
   let pool = SITES_DATA.filter(s => {
     if (siteSlug && s.slug !== siteSlug) return false;
-    if (statut === 'disponible' && s.statut !== 'disponible') return false;
-    if (statut === 'promo' && !s.en_promotion) return false;
+    if (statut && s.statut !== statut) return false;
     return true;
   });
+
+  console.log(`📦 Pool après filtrage: ${pool.length} sites`);
 
   const resultats = [];
 
   pool.forEach(site => {
-    const prixM2 = site.prix_m2 || 0;
-    const prixMinSite = site.prix_min_site || 0;
+    // ═══ RÉCUPÉRATION DES DONNÉES ═══
+    const prixM2 = Number(site.prix_m2) || 0;
+    const morcellement = Number(site.morcellement) || 0;
+    const superficieAffichage = Number(site.superficie_affichage) || morcellement;
+    const nbDispo = Number(site.nb_dispo) || 0;
 
-    if (!prixM2 && !siteSlug) return;
+    console.log(`🔎 ${site.nom}: prixM2=${prixM2}, morcellement=${morcellement}, superficieAffichage=${superficieAffichage}`);
 
-    // Vérification : Budget >= prix_min du site
-    if (budget !== null && budget < prixMinSite) {
+    // ═══ VÉRIFICATION DES DONNÉES ═══
+    if (!prixM2 || !morcellement) {
+      console.log(`⚠️ ${site.nom} ignoré: données manquantes`);
       return;
     }
 
-    // LOGIQUE : Budget doit permettre au moins 400 m²
-    if (budget !== null && prixM2 > 0) {
-      const supPossible = budget / prixM2;
-      if (supPossible < SUPERFICIE_SEUIL_AFFICHAGE) {
-        return;
-      }
-    }
+    // ═══ CALCULS ═══
+    const prixMorcellement = morcellement * prixM2;
+    const prixAffichage = superficieAffichage * prixM2;
 
     const lignes = [];
-    let pertinent = false;
 
-    // ─── CAS 1 : BUDGET seul (SANS superficie) ───────────────
-    if (budget && !superficie) {
-      if (prixM2 > 0) {
-        const supPossible = budget / prixM2;
-        pertinent = true;
-        
-        if (supPossible >= SUPERFICIE_MIN) {
-          // ═══════════════════════════════════════════════════
-          // 📍 MESSAGE 1 : Budget suffisant (>= 500 m²)
-          // ═══════════════════════════════════════════════════
+    // ══ CAS 1 : BUDGET seul ══════════════════════
+    if (budget !== null && superficie === null) {
+      const supPossible = budget / prixM2;
+      
+      console.log(`📐 ${site.nom}: surface possible=${supPossible}, seuil affichage=${superficieAffichage}, morcellement=${morcellement}`);
+
+      // ═══ CONDITION 1 : surface possible < superficie_affichage ═══
+      if (supPossible < superficieAffichage) {
+        console.log(`❌ ${site.nom} ignoré: surface possible ${supPossible} < superficieAffichage ${superficieAffichage}`);
+        return; // ← SITE NON AFFICHÉ
+      }
+
+      // ═══ LE SITE S'AFFICHE ═══
+      console.log(`✅ ${site.nom} affiché: surface possible ${supPossible} >= superficieAffichage ${superficieAffichage}`);
+
+      lignes.push(
+        `💰 <span class="arp-hl">${formatFCFA(budget)} FCFA</span> vous permet d'avoir une superficie de ` +
+        `<span class="arp-hl">${formatSup(supPossible)} m²</span> dans ce site`
+      );
+
+      // ═══ CONDITION 2 : superficie_affichage ≤ supPossible < morcellement ═══
+      if (supPossible >= superficieAffichage && supPossible < morcellement) {
+        const manque = prixMorcellement - budget;
+        lignes.push(
+          `⚠️ Votre budget actuel ne vous permet pas d'accéder à ce site`
+        );
+        lignes.push(
+          `💰 Il vous manque <span class="arp-hl">${formatFCFA(manque)} FCFA</span> ` +
+          `pour accéder à ce site`
+        );
+        lignes.push(
+          `📏 Ce site est morcellable à partir de <span class="arp-hl">${formatSup(morcellement)} m²</span>`
+        );
+      }
+
+      // ═══ CONDITION 3 : supPossible ≥ morcellement ═══
+      if (supPossible >= morcellement) {
+        lignes.push(
+          `✅ Votre budget vous permet d'accéder à ce site`
+        );
+        lignes.push(
+          `📏 Ce site est morcellable à partir de <span class="arp-hl">${formatSup(morcellement)} m²</span>`
+        );
+      }
+
+      lignes.push(`📐 Prix au m² : <span class="arp-hl">${formatFCFA(prixM2)} FCFA/m²</span>`);
+      lignes.push(`📦 ${nbDispo} lot${nbDispo > 1 ? 's' : ''} disponible${nbDispo > 1 ? 's' : ''}`);
+
+    // ══ CAS 2 : SUPERFICIE seule ═════════════════
+    } else if (superficie !== null && budget === null) {
+      const prixTotal = prixM2 * superficie;
+
+      console.log(`📐 ${site.nom}: superficie demandée=${superficie}, seuil affichage=${superficieAffichage}`);
+
+      // ═══ CONDITION 1 : superficie < superficie_affichage ═══
+      if (superficie < superficieAffichage) {
+        console.log(`❌ ${site.nom} ignoré: superficie ${superficie} < superficieAffichage ${superficieAffichage}`);
+        return; // ← SITE NON AFFICHÉ
+      }
+
+      // ═══ LE SITE S'AFFICHE ═══
+      console.log(`✅ ${site.nom} affiché: superficie ${superficie} >= superficieAffichage ${superficieAffichage}`);
+
+      lignes.push(
+        `📐 <span class="arp-hl">${formatSup(superficie)} m²</span> → ` +
+        `<span class="arp-hl">${formatFCFA(prixTotal)} FCFA</span>`
+      );
+
+      // ═══ CONDITION 2 : superficie_affichage ≤ superficie < morcellement ═══
+      if (superficie >= superficieAffichage && superficie < morcellement) {
+        const manque = prixMorcellement - prixTotal;
+        lignes.push(
+          `⚠️ Votre superficie actuelle ne vous permet pas d'accéder à ce site`
+        );
+        lignes.push(
+          `💰 Il vous manque <span class="arp-hl">${formatFCFA(manque)} FCFA</span> ` +
+          `pour accéder à ce site`
+        );
+        lignes.push(
+          `📏 Ce site est morcellable à partir de <span class="arp-hl">${formatSup(morcellement)} m²</span>`
+        );
+      }
+
+      // ═══ CONDITION 3 : superficie ≥ morcellement ═══
+      if (superficie >= morcellement) {
+        lignes.push(
+          `✅ Votre superficie vous permet d'accéder à ce site`
+        );
+        lignes.push(
+          `📏 Ce site est morcellable à partir de <span class="arp-hl">${formatSup(morcellement)} m²</span>`
+        );
+      }
+
+      lignes.push(`📐 Prix au m² : <span class="arp-hl">${formatFCFA(prixM2)} FCFA/m²</span>`);
+      lignes.push(`📦 ${nbDispo} lot${nbDispo > 1 ? 's' : ''} disponible${nbDispo > 1 ? 's' : ''}`);
+
+    // ══ CAS 3 : BUDGET + SUPERFICIE ══════════════
+    } else if (budget !== null && superficie !== null) {
+      const prixTotal = prixM2 * superficie;
+      const supPossible = budget / prixM2;
+
+      console.log(`📐 ${site.nom}: superficie=${superficie}, seuil affichage=${superficieAffichage}`);
+
+      // ═══ CONDITION 1 : superficie < superficie_affichage ═══
+      if (superficie < superficieAffichage) {
+        console.log(`❌ ${site.nom} ignoré: superficie ${superficie} < superficieAffichage ${superficieAffichage}`);
+        return; // ← SITE NON AFFICHÉ
+      }
+
+      // ═══ LE SITE S'AFFICHE ═══
+      console.log(`✅ ${site.nom} affiché: superficie ${superficie} >= superficieAffichage ${superficieAffichage}`);
+
+      lignes.push(
+        `📐 <span class="arp-hl">${formatSup(superficie)} m²</span> → ` +
+        `<span class="arp-hl">${formatFCFA(prixTotal)} FCFA</span>`
+      );
+
+      // ═══ CONDITION 2 : superficie_affichage ≤ superficie < morcellement ═══
+      if (superficie >= superficieAffichage && superficie < morcellement) {
+        lignes.push(
+          `⚠️ Votre superficie actuelle ne vous permet pas d'accéder à ce site`
+        );
+        lignes.push(
+          `📏 Ce site est morcellable à partir de <span class="arp-hl">${formatSup(morcellement)} m²</span>`
+        );
+        if (budget >= prixTotal) {
+          const reste = budget - prixTotal;
           lignes.push(
-            `💰 <span class="arp-hl">${formatFCFA(budget)} FCFA</span> → ` +
-            `<span class="arp-hl">${formatSup(supPossible)} m²</span>`
+            `💰 Votre budget est suffisant · Reste : <span class="arp-hl">${formatFCFA(reste)} FCFA</span>`
           );
-          lignes.push(`✅ Budget suffisant pour une parcelle dans ce site`);
+          const manqueMorcellement = prixMorcellement - prixTotal;
+          lignes.push(
+            `💰 Il vous manque <span class="arp-hl">${formatFCFA(manqueMorcellement)} FCFA</span> ` +
+            `pour accéder à ce site`
+          );
         } else {
-          // ═══ BUDGET entre 400 et 500 m² ═══
-          const manque = (prixM2 * SUPERFICIE_MIN) - budget;
+          const manque = prixTotal - budget;
           lignes.push(
-            `💰 <span class="arp-hl">${formatFCFA(budget)} FCFA</span> → ` +
-            `<span class="arp-hl">${formatSup(supPossible)} m²</span>`
+            `⚠️ Votre budget actuel ne vous permet pas d'atteindre la superficie que vous souhaitez`
           );
-          // ═══════════════════════════════════════════════════
-          // 📍 MESSAGE 2 : Budget entre 400 et 500 m² (CAS 1)
-          // ═══════════════════════════════════════════════════
           lignes.push(
-            `⚠️ Votre budget actuel ne vous permet pas d'accéder aux sites . Les sites sont morcellable à partir de <span class="arp-hl">${SUPERFICIE_MIN} m²</span>.`
+            `💡 Avec <span class="arp-hl">${formatFCFA(budget)} FCFA</span> → vous pouvez accéder à ` +
+            `<span class="arp-hl">${formatSup(supPossible)} m²</span> dans ce site`
           );
           lignes.push(
             `💰 Il vous manque <span class="arp-hl">${formatFCFA(manque)} FCFA</span> ` +
-            `pour atteindre ${SUPERFICIE_MIN} m²`
-          );
-          lignes.push(
-            `📏 <strong>Site morcellable à partir de : ${SUPERFICIE_MIN} m²</strong>`
+            `pour accéder à ${formatSup(superficie)} m²`
           );
         }
-        lignes.push(`📐 Prix au m² : <span class="arp-hl">${formatFCFA(prixM2)} FCFA/m²</span>`);
-        lignes.push(`📦 ${site.nb_dispo} lot${site.nb_dispo > 1 ? 's' : ''} disponible${site.nb_dispo > 1 ? 's' : ''}`);
       }
-    }
 
-    // ─── CAS 2 : SUPERFICIE seule (SANS budget) ─────────────
-    else if (superficie && !budget) {
-      if (prixM2 > 0) {
-        pertinent = true;
-        
-        if (superficie >= SUPERFICIE_MIN) {
-          // ═══════════════════════════════════════════════════
-          // 📍 MESSAGE 3 : Superficie suffisante (CAS 2)
-          // ═══════════════════════════════════════════════════
-          const prixTotal = prixM2 * superficie;
-          lignes.push(
-            `📐 <span class="arp-hl">${formatSup(superficie)} m²</span> → ` +
-            `<span class="arp-hl">${formatFCFA(prixTotal)} FCFA</span>`
-          );
-        } else {
-          // ═══════════════════════════════════════════════════
-          // 📍 MESSAGE 4 : Superficie < 500 m² (CAS 2)
-          // ═══════════════════════════════════════════════════
-          const prixPour500 = prixM2 * SUPERFICIE_MIN;
-          lignes.push(
-            `⚠️ Le site est morcellable à partir de <span class="arp-hl">${SUPERFICIE_MIN} m²</span>`
-          );
-          lignes.push(
-            `💡 ${SUPERFICIE_MIN} m² → <span class="arp-hl">${formatFCFA(prixPour500)} FCFA</span>`
-          );
-        }
-        lignes.push(`📐 Prix au m² : <span class="arp-hl">${formatFCFA(prixM2)} FCFA/m²</span>`);
-        lignes.push(`📦 ${site.nb_dispo} lot${site.nb_dispo > 1 ? 's' : ''} disponible${site.nb_dispo > 1 ? 's' : ''}`);
-      }
-    }
-
-    // ─── CAS 3 : BUDGET + SUPERFICIE ──────────────────────
-    else if (budget && superficie) {
-      if (prixM2 > 0) {
-        const prixTotal = prixM2 * superficie;
-        pertinent = true;
-
-        if (superficie < SUPERFICIE_MIN) {
-          // ═══════════════════════════════════════════════════
-          // 📍 MESSAGE 5 : Superficie < 500 m² (CAS 3)
-          // ═══════════════════════════════════════════════════
-          const prixPour500 = prixM2 * SUPERFICIE_MIN;
-          lignes.push(
-            `⚠️ Le site est morcellable à partir de <span class="arp-hl">${SUPERFICIE_MIN} m²</span>`
-          );
-          lignes.push(
-            `💡 ${SUPERFICIE_MIN} m² → <span class="arp-hl">${formatFCFA(prixPour500)} FCFA</span>`
-          );
-          
-          if (budget < prixPour500) {
-            const manquePour500 = prixPour500 - budget;
-            lignes.push(
-              `💰 Il vous manque <span class="arp-hl">${formatFCFA(manquePour500)} FCFA</span> ` +
-              `pour atteindre ${SUPERFICIE_MIN} m²`
-            );
-          } else {
-            lignes.push(`✅ Budget suffisant pour une parcelle dans ce site`);
-          }
-          
-        } else if (budget >= prixTotal) {
-          // ═══════════════════════════════════════════════════
-          // 📍 MESSAGE 6 : Budget suffisant (CAS 3)
-          // ═══════════════════════════════════════════════════
+      // ═══ CONDITION 3 : superficie ≥ morcellement ═══
+      if (superficie >= morcellement) {
+        lignes.push(
+          `✅ Cette superficie vous permet d'accéder à ce site`
+        );
+        lignes.push(
+          `📏 Ce site est morcellable à partir de <span class="arp-hl">${formatSup(morcellement)} m²</span>`
+        );
+        if (budget >= prixTotal) {
           const reste = budget - prixTotal;
           lignes.push(
-            `✅ <span class="arp-hl">${formatSup(superficie)} m²  </span> valent ` +
-            `<span class="arp-hl">${formatFCFA(prixTotal)} FCFA</span> ` +
-            `(reste <span class="arp-hl">${formatFCFA(reste)} FCFA</span>)`
+            `✅ Budget suffisant · Reste : <span class="arp-hl">${formatFCFA(reste)} FCFA</span>`
           );
         } else {
-          const supPossible = budget / prixM2;
           const manque = prixTotal - budget;
-          
-          if (supPossible < SUPERFICIE_SEUIL_AFFICHAGE) {
-            return;
-          }
-          
-          if (supPossible < SUPERFICIE_MIN) {
-            // ═══════════════════════════════════════════════════
-            // 📍 MESSAGE 7 : Budget entre 400 et 500 m² (CAS 3)
-            // ═══════════════════════════════════════════════════
-            const manquePour500 = (prixM2 * SUPERFICIE_MIN) - budget;
-            lignes.push(
-              `⚠️ Votre budget actuel ne permet pas d'atteindre la superficie minimale disponible pour ce terrain. Le site est morcellable à partir de <span class="arp-hl">${SUPERFICIE_MIN} m²</span>.`
-            );
-            lignes.push(
-              `💡 Avec <span class="arp-hl">${formatFCFA(budget)} FCFA</span>, ` +
-              `vous pouvez avoir <span class="arp-hl">${formatSup(supPossible)} m²</span>`
-            );
-            lignes.push(
-              `💰 Il vous manque <span class="arp-hl">${formatFCFA(manquePour500)} FCFA</span> ` +
-              `pour atteindre ${SUPERFICIE_MIN} m²`
-            );
-          } else {
-            // ═══════════════════════════════════════════════════
-            // 📍 MESSAGE 8 : Budget insuffisant pour la superficie demandée
-            // ═══════════════════════════════════════════════════
-            lignes.push(
-              `⚠️ Budget insuffisant pour ${formatSup(superficie)} m²`
-            );
-            lignes.push(
-              `💡 Avec <span class="arp-hl">${formatFCFA(budget)} FCFA</span>, ` +
-              `vous pouvez avoir <span class="arp-hl">${formatSup(supPossible)} m²</span>`
-            );
-            lignes.push(`💰 Il vous manque <span class="arp-hl">${formatFCFA(manque)} FCFA</span>`);
-          }
+          lignes.push(
+            `⚠️ Votre budget est insuffisant pour cette superficie`
+          );
+          lignes.push(
+            `💰 Il vous manque <span class="arp-hl">${formatFCFA(manque)} FCFA</span>`
+          );
         }
-        lignes.push(`📐 Prix au m² : <span class="arp-hl">${formatFCFA(prixM2)} FCFA/m²</span>`);
-        lignes.push(`📦 ${site.nb_dispo} lot${site.nb_dispo > 1 ? 's' : ''} disponible${site.nb_dispo > 1 ? 's' : ''}`);
       }
-    }
 
-    // ─── CAS 4 : SITE seul sélectionné ────────────────────
-    else if (siteSlug && site.slug === siteSlug) {
-      pertinent = true;
-      // ═══════════════════════════════════════════════════
-      // 📍 MESSAGE 9 : Site seul sélectionné
-      // ═══════════════════════════════════════════════════
       lignes.push(`📐 Prix au m² : <span class="arp-hl">${formatFCFA(prixM2)} FCFA/m²</span>`);
-      lignes.push(`💡 ${SUPERFICIE_MIN} m² → <span class="arp-hl">${formatFCFA(prixM2 * SUPERFICIE_MIN)} FCFA</span>`);
-      lignes.push(`💡 1000 m² → <span class="arp-hl">${formatFCFA(prixM2 * 1000)} FCFA</span>`);
-      lignes.push(`📦 ${site.nb_dispo} lot${site.nb_dispo > 1 ? 's' : ''} disponible${site.nb_dispo > 1 ? 's' : ''}`);
+      lignes.push(`📦 ${nbDispo} lot${nbDispo > 1 ? 's' : ''} disponible${nbDispo > 1 ? 's' : ''}`);
+
+    // ══ CAS 4 : Site seul sélectionné ════════════
+    } else if (siteSlug && site.slug === siteSlug) {
+      lignes.push(`📐 Prix au m² : <span class="arp-hl">${formatFCFA(prixM2)} FCFA/m²</span>`);
+      lignes.push(`📏 Seuil d'affichage : <span class="arp-hl">${formatSup(superficieAffichage)} m²</span>`);
+      lignes.push(`📏 Ce site est morcellable à partir de : <span class="arp-hl">${formatSup(morcellement)} m²</span>`);
+      lignes.push(`💡 Morcellement minimal → <span class="arp-hl">${formatFCFA(prixMorcellement)} FCFA</span>`);
+      lignes.push(`📦 ${nbDispo} lot${nbDispo > 1 ? 's' : ''} disponible${nbDispo > 1 ? 's' : ''}`);
     }
 
-    if (pertinent && lignes.length > 0) {
+    if (lignes.length > 0) {
       resultats.push({ site, lignes });
     }
   });
 
-  // ═══ Message si aucun résultat ═══
+  console.log(`📊 Résultats finaux: ${resultats.length} sites`);
+
+  // ── Aucun résultat ────────────────────────────
   if (resultats.length === 0) {
+    let message = 'Aucun site ne correspond à vos critères.';
+    let detail = '💡 Modifiez vos critères ou augmentez votre budget.';
+
     if (budget !== null) {
-      // ═══════════════════════════════════════════════════
-      // 📍 MESSAGE 10 : Aucun résultat - Budget insuffisant
-      // ═══════════════════════════════════════════════════
-      const msgData = {
-        type: 'warning',
-        message: `⚠️ Votre budget actuel ne vous permet pas d'accéder a un site car Les sites sont morcellable à partir de <strong>${SUPERFICIE_MIN} m²</strong>.`,
-        detail: `💡 Essayez d'augmenter votre budget.`
-      };
-      afficherMessagePanel(msgData);
-    } else {
-      // ═══════════════════════════════════════════════════
-      // 📍 MESSAGE 11 : Aucun résultat - Autres critères
-      // ═══════════════════════════════════════════════════
-      afficherMessagePanel({
-        type: 'info',
-        message: '😕 Aucun site ne correspond à vos critères.',
-        detail: '💡 Essayez de modifier vos critères de recherche.'
-      });
+      const sitesCompatibles = SITES_DATA.filter(s => s.prix_m2 > 0 && s.superficie_affichage > 0);
+      if (sitesCompatibles.length > 0) {
+        const moinsCher = sitesCompatibles.reduce((a, b) => 
+          (a.prix_m2 * a.superficie_affichage) < (b.prix_m2 * b.superficie_affichage) ? a : b
+        );
+        const prixMinSeuil = moinsCher.prix_m2 * moinsCher.superficie_affichage;
+        if (budget < prixMinSeuil) {
+          detail = `💡 Le site le moins cher (${moinsCher.nom}) nécessite ${formatFCFA(prixMinSeuil)} FCFA pour ${formatSup(moinsCher.superficie_affichage)} m². Il vous manque ${formatFCFA(prixMinSeuil - budget)} FCFA.`;
+        }
+      }
     }
-  }
 
-  afficherAjaxPanel(resultats, budget, superficie);
-}
-
-// ─── Affichage d'un message dans le panel ─────────────
-function afficherMessagePanel(msg) {
-  const panel = document.getElementById('ajax-panel');
-  const items = document.getElementById('arp-items');
-  const tit   = document.getElementById('arp-tit');
-
-  tit.textContent = msg.type === 'warning' ? '⚠️ Attention' : 'ℹ️ Information';
-  items.innerHTML = `
-    <div class="arp-empty" style="text-align:left;padding:1.2rem;">
-      <div style="font-size:1.1rem;margin-bottom:8px;color:#fff;">${msg.message}</div>
-      ${msg.detail ? `<div style="color:rgba(255,255,255,0.8);font-size:12px;line-height:1.6;">${msg.detail}</div>` : ''}
-      <div style="margin-top:12px;">
-        <a href="#" onclick="fermerAjaxPanel();return false;" style="color:#FFD700;text-decoration:underline;font-size:12px;">Voir tous les sites →</a>
-      </div>
-    </div>
-  `;
-  panel.classList.add('visible');
-}
-
-// ─── Affichage du panel flottant ─────────────
-function afficherAjaxPanel(resultats, budget, superficie) {
-  const panel = document.getElementById('ajax-panel');
-  const items = document.getElementById('arp-items');
-  const tit   = document.getElementById('arp-tit');
-
-  if (resultats.length === 0) {
-    if (items.innerHTML.includes('arp-empty')) return;
-    
-    // ═══════════════════════════════════════════════════
-    // 📍 MESSAGE 12 : Aucun résultat - Panel vide
-    // ═══════════════════════════════════════════════════
-    let msg = '😕 Aucun site';
-    if (budget)     msg += ` pour ${formatFCFA(budget)} FCFA`;
-    if (superficie) msg += ` et ${formatSup(superficie)} m²`;
-    tit.textContent = msg;
-    items.innerHTML = `<div class="arp-empty">
-      Aucun résultat pour ces critères.
-      <a href="#" onclick="fermerAjaxPanel();return false;" style="color:#FFD700;text-decoration:underline;margin-left:8px;">Voir tous →</a>
-    </div>`;
-    panel.classList.add('visible');
+    document.getElementById('arp-tit').textContent = '😕 Aucun résultat';
+    document.getElementById('arp-items').innerHTML = `
+      <div class="arp-empty" style="text-align:left;padding:1.2rem;">
+        <div style="color:#fff;font-size:13px;margin-bottom:6px;">${message}</div>
+        <div style="color:rgba(255,255,255,0.7);font-size:11px;">${detail}</div>
+        <div style="margin-top:10px;font-size:10px;color:rgba(255,255,255,0.5);">
+          ${SITES_DATA.length} site(s) disponible(s) en base de données
+        </div>
+        <a href="#" onclick="fermerAjaxPanel();return false;"
+           style="display:inline-block;margin-top:10px;color:#FFD700;text-decoration:underline;font-size:12px;">
+          Voir tous les sites →
+        </a>
+      </div>`;
+    document.getElementById('ajax-panel').classList.add('visible');
     return;
   }
 
+  // ── Afficher les résultats ────────────────────
   const msgs = [];
-  if (budget)     msgs.push(`budget <strong>${formatFCFA(budget)} FCFA</strong>`);
-  if (superficie) msgs.push(`superficie <strong>${formatSup(superficie)} m²</strong>`);
-  tit.innerHTML = `🎯 ${resultats.length} site${resultats.length > 1 ? 's' : ''} ${msgs.length ? '— ' + msgs.join(' + ') : ''}`;
+  if (budget !== null)     msgs.push(`<strong>${formatFCFA(budget)} FCFA</strong>`);
+  if (superficie !== null) msgs.push(`<strong>${formatSup(superficie)} m²</strong>`);
+  document.getElementById('arp-tit').innerHTML =
+    `🎯 ${resultats.length} site${resultats.length > 1 ? 's' : ''} ${msgs.length ? '— ' + msgs.join(' + ') : ''}`;
 
-  items.innerHTML = resultats.map(r => `
+  document.getElementById('arp-items').innerHTML = resultats.map(r => `
     <div class="arp-item" onclick="scrollToSite('${r.site.slug}')">
       <div class="arp-item-site">
         <span>📍 ${r.site.nom}</span>
@@ -1465,7 +1474,7 @@ function afficherAjaxPanel(resultats, budget, superficie) {
     </div>
   `).join('');
 
-  panel.classList.add('visible');
+  document.getElementById('ajax-panel').classList.add('visible');
   highlightSites(resultats.map(r => r.site.slug));
 }
 
@@ -1497,11 +1506,6 @@ function lancerRecherche() {
   analyserFiltre();
 }
 
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && ['s-loc','s-surf','s-budget','s-statut'].includes(document.activeElement?.id))
-    lancerRecherche();
-});
-
 let currentFilter = 'all';
 
 function setFilter(el, f) {
@@ -1520,11 +1524,11 @@ function filterCards() {
                          (card.dataset.localisation||'').includes(q);
     let matchF = currentFilter === 'all';
     if (currentFilter === 'disponible') matchF = card.dataset.statut === 'disponible';
-  else if (currentFilter === 'site_titre') matchF = card.dataset.statut === 'site_titre';
-  else if (currentFilter === 'en_cours_immatriculation') matchF = card.dataset.statut === 'en_cours_immatriculation';
-  else if (currentFilter === 'titre_et_lotis') matchF = card.dataset.statut === 'titre_et_lotis';
-  else if (currentFilter === 'complet') matchF = card.dataset.statut === 'complet';
-  else if (currentFilter === 'prochainement') matchF = card.dataset.statut === 'prochainement';
+    else if (currentFilter === 'site_titre') matchF = card.dataset.statut === 'site_titre';
+    else if (currentFilter === 'en_cours_immatriculation') matchF = card.dataset.statut === 'en_cours_immatriculation';
+    else if (currentFilter === 'titre_et_lotis') matchF = card.dataset.statut === 'titre_et_lotis';
+    else if (currentFilter === 'complet') matchF = card.dataset.statut === 'complet';
+    else if (currentFilter === 'prochainement') matchF = card.dataset.statut === 'prochainement';
     card.style.display = (matchQ && matchF) ? '' : 'none';
     if (matchQ && matchF) visible++;
   });
@@ -1573,28 +1577,32 @@ function submitModal() {
 }
 
 // ══════════════════════════════════════════════
-// UTILITAIRES
+// ATTACHER LES ÉVÉNEMENTS AU CHARGEMENT
 // ══════════════════════════════════════════════
-function formatFCFA(n) {
-  if (n === undefined || n === null || isNaN(n)) return '0';
-  return new Intl.NumberFormat('fr-FR').format(Math.round(n));
-}
+document.addEventListener('DOMContentLoaded', function() {
+  ['s-loc', 's-surf', 's-budget', 's-statut'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', function() {
+        clearTimeout(analyseTimer);
+        analyseTimer = setTimeout(analyserFiltre, 400);
+      });
+      el.addEventListener('change', function() {
+        clearTimeout(analyseTimer);
+        analyseTimer = setTimeout(analyserFiltre, 400);
+      });
+    }
+  });
 
-function formatSup(n) {
-  if (n === undefined || n === null || isNaN(n)) return '0';
-  if (n === Math.floor(n)) return Math.floor(n).toString();
-  return n.toFixed(2);
-}
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && ['s-loc','s-surf','s-budget','s-statut'].includes(document.activeElement?.id)) {
+      lancerRecherche();
+    }
+  });
 
-function showToast(ico, msg) {
-  const t = document.getElementById('toast');
-  document.getElementById('t-ico').textContent = ico;
-  document.getElementById('t-msg').textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 4500);
-}
+  filterCards();
+});
 
-// ═══ INIT ═══
 filterCards();
 </script>
 

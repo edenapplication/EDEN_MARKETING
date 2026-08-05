@@ -57,7 +57,7 @@ class SiteFoncierForm(forms.ModelForm):
             'latitude', 'longitude', 'zoom_carte', 'image_principale', 'video_drone',
             'statut', 'prix_min', 'prix_max', 'superficie_totale',
             'featured', 'en_promotion', 'promotion_description', 'promotion_fin',
-            'is_active', 'ordre'
+            'is_active', 'ordre','morcellement', 'popularite','superficie_minimale_affichage',
         ]
 
     def __init__(self, *args, **kwargs):

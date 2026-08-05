@@ -125,7 +125,28 @@ def home(request):
 
 def sites_list(request):
     from .models import HeroConfig, HeroSlide
-    sites = SiteFoncier.objects.filter(is_active=True).prefetch_related('images', 'parcelles', 'stats_manuelles')
+    from django.db.models import Q, Value, DecimalField
+    from django.db.models.functions import Coalesce
+
+    # ═══ RÉCUPÉRATION DES SITES AVEC TOUS LES CHAMPS NÉCESSAIRES ═══
+    sites = SiteFoncier.objects.filter(is_active=True).prefetch_related(
+        'images', 'parcelles', 'stats_manuelles'
+    )
+    
+    # ═══ FORCER LE CHARGEMENT DES CHAMPS POUR ÉVITER LES PROBLÈMES ═══
+    sites = sites.only(
+        'nom', 'slug', 'localisation', 'ville', 'statut', 
+        'prix_min', 'prix_max', 'morcellement',
+        'en_promotion', 'description_courte', 'superficie_totale',
+        'image_principale','superficie_minimale_affichage'
+    )
+
+    # ═══ DÉBOGAGE : Afficher les valeurs dans la console ═══
+    print("=" * 60)
+    print("🔍 VALEURS DES SITES :")
+    for site in sites:
+        print(f"  {site.nom[:25]:<25} | prix_min: {site.prix_min:<10} | morcellement: {site.morcellement:<10}")
+    print("=" * 60)
 
     # Filtre par slug de site
     slug = request.GET.get('slug', '')
@@ -137,10 +158,10 @@ def sites_list(request):
     if budget:
         try:
             b = float(budget)
-            # Sites dont le prix minimum est <= budget (accessibles)
             sites = sites.filter(
                 Q(parcelles__prix__lte=b) |
-                Q(stats_manuelles__prix_min__lte=b)
+                Q(stats_manuelles__prix_min__lte=b) |
+                Q(prix_min__lte=b)
             ).distinct()
         except ValueError:
             pass
@@ -161,7 +182,8 @@ def sites_list(request):
             s = float(sup_min)
             sites = sites.filter(
                 Q(parcelles__superficie__gte=s) |
-                Q(stats_manuelles__superficie_min__gte=s)
+                Q(stats_manuelles__superficie_min__gte=s) |
+                Q(morcellement__lte=s)
             ).distinct()
         except ValueError:
             pass
@@ -178,8 +200,31 @@ def sites_list(request):
     hero_config = HeroConfig.objects.filter(pk=1).first()
     hero_slides = HeroSlide.objects.filter(is_active=True).order_by('ordre')
 
+    # ═══ PRÉPARER LES DONNÉES POUR LE JAVASCRIPT ═══
+    # ═══ PRÉPARER LES DONNÉES POUR LE JAVASCRIPT AVEC LES PROPRIÉTÉS DJANGO ═══
+    sites_json = []
+
+    for site in sites:
+        sites_json.append({
+            'slug': site.slug,
+            'nom': site.nom,
+            'localisation': site.localisation,
+            'statut': site.statut,
+            'en_promotion': site.en_promotion,
+            
+
+            # Valeurs calculées par Django
+            'prix_m2': float(site.prix_min or 0),
+            'morcellement': float(site.superficie_min_effective),
+            'superficie_affichage': float(site.superficie_minimale_affichage) if site.superficie_minimale_affichage else 0,
+
+            'prix_min': float(site.prix_min) if site.prix_min else 0,
+            'nb_dispo': site.nb_disponibles,
+        })
+
     return render(request, 'eden/sites_list.html', {
         'sites': sites,
+        'sites_json': sites_json,  # ← DONNÉES PRÉPARÉES POUR JS
         'hero_config': hero_config,
         'hero_slides': hero_slides,
         'q': q,

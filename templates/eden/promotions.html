@@ -124,14 +124,15 @@ footer{background:var(--g800);color:#fff;padding:2rem;text-align:center;margin-t
 <div class="mob-menu" id="mob-menu">
   <a class="nav-lnk {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
   <a class="nav-lnk {% if request.resolver_match.url_name == 'sites_list' or request.resolver_match.url_name == 'site_detail' %}active{% endif %}" href="{% url 'sites_list' %}">Nos Terrains</a>
-  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_projets' %}active{% endif %}" href="{% url 'nos_projets' %}">Nos Projets</a>
   <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
   <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
-      <a class="nav-lnk" href="{% url 'academie_accueil' %}">Académie</a>
+      
 
   <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' or request.resolver_match.url_name == 'une_evenement_detail' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+  <a class="nav-lnk" href="{% url 'academie_accueil' %}">Académie</a>
   <a class="nav-lnk {% if request.resolver_match.url_name == 'promotions' %}active{% endif %}" href="{% url 'promotions' %}">Promotions</a>
   <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
+  
   {% if user.is_staff %}<a class="nav-lnk" href="{% url 'dashboard_home' %}">Dashboard</a>{% endif %}
   <button class="btn-rdv" style="width:100%;margin-top:8px;justify-content:center;" onclick="document.getElementById('cc-form')?.scrollIntoView({behavior:'smooth'})">📅 Contact</button>
 </div>

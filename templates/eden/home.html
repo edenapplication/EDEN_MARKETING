@@ -83,7 +83,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .hero-slide img{
   width:100%;
   height:100%;
-  object-fit:cover;
+  object-fit:fill;
   display:block;
 }
 .hero-slide-placeholder{
@@ -1555,6 +1555,40 @@ footer{
 .statut-complet { background: rgba(239, 68, 68, 0.92); }         /* Rouge */
 .statut-prochainement { background: rgba(6, 182, 212, 0.92); }   /* Cyan */
 
+
+.sc-popularite {
+    position: absolute;
+    top: 135px;
+    right: 0;
+    
+    
+    background: #dc2626;
+    color: white;
+
+    padding: 6px 18px 6px 14px;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+
+    /* ═══ FORME : Pointe à gauche, biseau à droite ═══ */
+    clip-path: polygon(
+        0 50%,
+        8px 0,
+        100% 0,
+        100% 100%,
+        8px 100%
+    );
+
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    z-index: 5;
+
+    white-space: nowrap;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+}
+
 </style>
 </head>
 <body>
@@ -1574,11 +1608,11 @@ footer{
   <div class="nav-links">
     <a class="nav-lnk {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
     <a class="nav-lnk {% if request.resolver_match.url_name == 'sites_list' or request.resolver_match.url_name == 'site_detail' %}active{% endif %}" href="{% url 'sites_list' %}">Nos Terrains</a>
-    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_projets' %}active{% endif %}" href="{% url 'nos_projets' %}">Nos Projets</a>
     <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
     <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
-    <a class="nav-lnk {% if request.resolver_match.url_name == 'academie_accueil' %}active{% endif %}" href="{% url 'academie_accueil' %}">🎓 Académie</a>
     <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' or request.resolver_match.url_name == 'une_evenement_detail' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+        <a class="nav-lnk {% if request.resolver_match.url_name == 'academie_accueil' %}active{% endif %}" href="{% url 'academie_accueil' %}">Académie</a>
+
     <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
     {% if user.is_staff %}
     <a class="nav-lnk" href="{% url 'dashboard_home' %}" style="color:var(--blue);font-weight:700;">Dashboard</a>
@@ -1788,8 +1822,9 @@ footer{
               {% endif %}
               <!-- ═══ BADGE STATUT DU SITE ═══ -->
               <span class="sc-badge sc-badge-statut {% if site.statut == 'disponible' %}statut-disponible{% elif site.statut == 'site_titre' %}statut-site-titre{% elif site.statut == 'en_cours_immatriculation' %}statut-en-cours{% elif site.statut == 'titre_et_lotis' %}statut-titre-lotis{% elif site.statut == 'complet' %}statut-complet{% elif site.statut == 'prochainement' %}statut-prochainement{% endif %}">
-                {{ site.get_statut_display }}
+                {{ site.popularite }}
               </span>
+              <span class="sc-popularite">{{ site.get_statut_display }}</span>
             </div>
             <div class="sc-body">
               <div class="sc-nom">{{ site.nom }}</div>
@@ -2179,9 +2214,9 @@ footer{
       <a class="footer-lnk" href="{% url 'nos_projets' %}">Nos Projets</a>
       <a class="footer-lnk" href="{% url 'nos_services' %}">Nos Services</a>
       <a class="footer-lnk" href="{% url 'nos_agences' %}">Nos Agences</a>
-      <a class="footer-lnk" href="{% url 'academie_accueil' %}">Académie</a>
       <a class="footer-lnk" href="{% url 'une_evenements_accueil' %}">Actualités</a>
-      <a class="footer-lnk" href="{% url 'journal_kiosque' %}">Journal</a>
+            <a class="footer-lnk" href="{% url 'academie_accueil' %}">Académie</a>
+
       <a class="footer-lnk" href="{% url 'a_propos' %}">À propos</a>
     </div>
     <div class="footer-col"><h4>Nos agences</h4>

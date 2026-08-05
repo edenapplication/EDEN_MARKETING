@@ -11,7 +11,7 @@ class SiteFoncier(models.Model):
         ('disponible', '🟢 Disponible'),
         ('site_titre', '🔵 Site titré'),
         ('en_cours_immatriculation', '🟡 En cours d\'immatriculation'),
-        ('titré_et_lotis', '🟣 Titré et lotis'),
+        ('titre_et_lotis', '🟣 Titré et lotis'),
         ('complet', '🔴 Complet'),
         ('prochainement', '🔷 Prochainement'),
     ]
@@ -39,6 +39,34 @@ class SiteFoncier(models.Model):
         verbose_name="Superficie totale",
         help_text="Ex: 2 500 m², 1.5 Ha, 500 m²"
     )
+    
+    # ═══ NOUVEAUX CHAMPS ═══
+    morcellement = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        verbose_name="Morcellement (m²)",
+        help_text="Superficie minimale de morcellement en m²"
+    )
+    
+    # ═══ CHAMP TEXTE LIBRE ═══
+    popularite = models.CharField(
+        max_length=200,
+        null=True,
+        blank=True,
+        verbose_name="Popularité du site",
+        help_text="Ex: Site du moment, Site en vogue, Site demandé, Site rare..."
+    )
+    superficie_minimale_affichage = models.DecimalField(
+    max_digits=12,
+    decimal_places=2,
+    null=True,
+    blank=True,
+    verbose_name="Superficie minimale d'affichage (m²)",
+    help_text="À partir de cette superficie, le site apparaît dans les résultats."
+)
+    
     featured = models.BooleanField(default=False, verbose_name="Mis en avant")
     en_promotion = models.BooleanField(default=False, verbose_name="En promotion")
     promotion_description = models.CharField(max_length=200, blank=True)
@@ -103,31 +131,7 @@ class SiteFoncier(models.Model):
         return round((self.nb_vendues / total) * 100, 1)
     
     @property
-    def prix_m2_min(self):
-        """Prix minimum au m² — basé sur prix_morcellable ou prix_min."""
-        # 1. Utiliser prix_morcellable si disponible
-        if self.prix_morcellable:
-            return round(float(self.prix_morcellable))
-        
-        # 2. Depuis stats manuelles
-        try:
-            sm = self.stats_manuelles
-            if sm.prix_min and sm.superficie_min and sm.superficie_min > 0:
-                return round(sm.prix_min / sm.superficie_min)
-        except Exception:
-            pass
-        
-        # 3. Depuis parcelles
-        p = self.parcelles.filter(
-            is_active=True, statut='disponible'
-        ).order_by('prix').first()
-        if p and p.prix and p.superficie and p.superficie > 0:
-            return round(p.prix / p.superficie)
-        return 0
-    
-    @property
     def prix_m2_max(self):
-        """Prix maximum au m²."""
         try:
             sm = self.stats_manuelles
             if sm.prix_max and sm.superficie_max and sm.superficie_max > 0:
@@ -143,30 +147,21 @@ class SiteFoncier(models.Model):
     
     @property
     def superficie_min_effective(self):
-        """Superficie minimale effective — basée sur superficie_morcellable."""
-        # 1. Utiliser superficie_morcellable si disponible
-        if self.superficie_morcellable:
-            return float(self.superficie_morcellable)
-        
-        # 2. Depuis stats manuelles
+        if self.morcellement:
+            return float(self.morcellement)
         try:
             sm = self.stats_manuelles
             if sm.superficie_min:
                 return float(sm.superficie_min)
         except Exception:
             pass
-        
-        # 3. Depuis la plus petite parcelle
         p = self.parcelles.filter(is_active=True).order_by('superficie').first()
         if p and p.superficie:
             return float(p.superficie)
-        
-        # 4. Valeur par défaut
         return 500.0
 
     @property
     def prix_min_effectif(self):
-        """Prix min : stats manuelles ou prix des parcelles."""
         if hasattr(self, 'stats_manuelles') and self.stats_manuelles.prix_min_manuel:
             return self.stats_manuelles.prix_min_manuel
         return self.prix_min
@@ -180,6 +175,11 @@ class SiteFoncier(models.Model):
     def get_absolute_url(self):
         from django.urls import reverse
         return reverse('site_detail', kwargs={'slug': self.slug})
+    @property
+    def superficie_affichage(self):
+        if self.superficie_minimale_affichage:
+            return float(self.superficie_minimale_affichage)
+        return float(self.morcellement or 0)
 
 
 class ImageSite(models.Model):

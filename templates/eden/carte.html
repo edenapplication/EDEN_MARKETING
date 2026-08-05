@@ -292,37 +292,88 @@ let map, layers = {}, drawnItems, drawControl, isDrawing = false;
 let allSitesData = [], currentSite = null;
 
 // ── INIT MAP ──
+// ── INIT MAP ──
 function initMap() {
+  // ═══ LIMITES DU CAMEROUN ═══
+  const camerounBounds = [
+    [1.5, 8.0],
+    [13.5, 16.5]
+  ];
+
+  // ═══ ZOOM MAXIMUM AUTORISÉ ═══
+  // Les tuiles OpenStreetMap affichent "map data available" à partir du zoom 19
+  // On limite donc à 18 pour éviter ce message
+  const MAX_ZOOM = 18;  // ← Ne pas dépasser 18 pour éviter le message
+  const MIN_ZOOM = 6;
+
   map = L.map('map', {
     zoomControl: false,
     attributionControl: true,
+    minZoom: MIN_ZOOM,
+    maxZoom: MAX_ZOOM,  // ← Bloquer à 18
+    maxBounds: camerounBounds,
+    maxBoundsViscosity: 1.0,
   }).setView([3.858, 11.510], 13);
 
   L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-  // Couche OSM standard
+  // ═══ TOUTES LES COUCHES AVEC LE MÊME MAX ZOOM ═══
   layers.osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a>',
-    maxZoom: 20,
+    maxZoom: MAX_ZOOM,  // ← Limité à 18
+    minZoom: MIN_ZOOM,
   });
 
-  // Couche Satellite Esri (la plus haute qualité disponible)
   layers.sat = L.tileLayer(
     'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     attribution: '© Esri, Maxar, GeoEye, Earthstar Geographics',
-    maxZoom: 20,
+    maxZoom: MAX_ZOOM,
+    minZoom: MIN_ZOOM,
   });
 
-  // Couche Hybride = Satellite + Labels OpenStreetMap
   layers.hybrid_sat = L.tileLayer(
     'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
     attribution: '© Esri',
-    maxZoom: 20,
+    maxZoom: MAX_ZOOM,
+    minZoom: MIN_ZOOM,
   });
   layers.hybrid_labels = L.tileLayer(
     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     opacity: 0.5,
-    maxZoom: 20,
+    maxZoom: MAX_ZOOM,
+    minZoom: MIN_ZOOM,
+  });
+
+  // ═══ EMPÊCHER LE ZOOM AVEC LA MOELETTE ═══
+  map.on('wheel', function(e) {
+    const zoom = map.getZoom();
+    const delta = e.originalEvent.deltaY;
+    
+    // Bloquer le zoom avant si on est au max
+    if (delta < 0 && zoom >= MAX_ZOOM) {
+      e.originalEvent.preventDefault();
+      e.originalEvent.stopPropagation();
+      showToast('🔍', 'Zoom maximum atteint');
+      return false;
+    }
+    // Bloquer le zoom arrière si on est au min
+    if (delta > 0 && zoom <= MIN_ZOOM) {
+      e.originalEvent.preventDefault();
+      e.originalEvent.stopPropagation();
+      showToast('🔍', 'Zoom minimum atteint');
+      return false;
+    }
+  });
+
+  // ═══ BLOQUER LE ZOOM AVEC LES BOUTONS + / - ═══
+  map.on('zoomend', function() {
+    const zoom = map.getZoom();
+    if (zoom > MAX_ZOOM) {
+      map.setZoom(MAX_ZOOM);
+    }
+    if (zoom < MIN_ZOOM) {
+      map.setZoom(MIN_ZOOM);
+    }
   });
 
   // Démarrer avec OSM
