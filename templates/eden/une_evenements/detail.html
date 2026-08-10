@@ -74,7 +74,15 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .anb-share-btn:hover{background:rgba(255,255,255,0.2);}
 
 /* ══ CONTENU ══ */
-.article-page{position:relative;width:100%;background:#FFFEF7;min-height:50vh;padding:2rem;}
+/* ══ CONTENU ARTICLE — ✅ FIX décalage ══ */
+.article-page {
+  /* ✅ Prend toute la largeur de la page */
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  /* Pas de margin-left ni de padding global */
+  overflow-x: hidden;
+}
 .r-texte p{font-family:'Lora',serif;font-size:14px;color:#2d1f0e;line-height:1.75;text-align:justify;hyphens:auto;}
 .r-texte p::first-letter{font-size:2.2em;font-family:'Playfair Display',serif;font-weight:900;float:left;line-height:0.8;margin:3px 3px 0 0;color:#1a1008;}
 .r-texte .chapeau{font-style:italic;border-left:3px solid #C8102E;padding-left:8px;margin-bottom:4px;font-family:'Lora',serif;line-height:1.6;}
