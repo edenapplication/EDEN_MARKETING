@@ -12,6 +12,7 @@ from django.core.paginator import Paginator
 from django.db import models
 from .models import HeroConfig
 
+
 from .models import (
     SiteFoncier, ImageSite, Parcelle, ImageParcelle,
     Temoignage, DemandeContact, Reservation, VisiteProgrammee, HeroConfig, ServiceItem, EtapeAcquisition,
@@ -138,24 +139,23 @@ def sites_list(request):
         'nom', 'slug', 'localisation', 'ville', 'statut', 
         'prix_min', 'prix_max', 'morcellement',
         'en_promotion', 'description_courte', 'superficie_totale',
-        'image_principale','superficie_minimale_affichage'
+        'image_principale', 'superficie_minimale_affichage'
     )
-
 
     # Filtre par slug de site
     slug = request.GET.get('slug', '')
     if slug:
         sites = sites.filter(slug=slug)
 
-    # Filtre par budget (prix >= budget)
+    # ═══ FILTRE BUDGET CORRIGÉ ═══
     budget = request.GET.get('budget', '')
     if budget:
         try:
             b = float(budget)
             sites = sites.filter(
-                Q(parcelles__prix__lte=b) |
-                Q(stats_manuelles__prix_min__lte=b) |
-                Q(prix_min__lte=b)
+                Q(prix_min__lte=b) |
+                Q(stats_manuelles__prix_min_manuel__lte=b) |
+                Q(parcelles__prix__lte=b)
             ).distinct()
         except ValueError:
             pass
@@ -169,7 +169,7 @@ def sites_list(request):
     if request.GET.get('promo'):
         sites = sites.filter(en_promotion=True)
 
-    # Filtre superficie minimum
+    # ═══ FILTRE SUPERFICIE CORRIGÉ ═══
     sup_min = request.GET.get('superficie_min', '')
     if sup_min:
         try:
@@ -195,7 +195,6 @@ def sites_list(request):
     hero_slides = HeroSlide.objects.filter(is_active=True).order_by('ordre')
 
     # ═══ PRÉPARER LES DONNÉES POUR LE JAVASCRIPT ═══
-    # ═══ PRÉPARER LES DONNÉES POUR LE JAVASCRIPT AVEC LES PROPRIÉTÉS DJANGO ═══
     sites_json = []
 
     for site in sites:
@@ -206,19 +205,17 @@ def sites_list(request):
             'statut': site.statut,
             'en_promotion': site.en_promotion,
             
-
             # Valeurs calculées par Django
             'prix_m2': float(site.prix_min or 0),
             'morcellement': float(site.superficie_min_effective),
             'superficie_affichage': float(site.superficie_minimale_affichage) if site.superficie_minimale_affichage else 0,
-
             'prix_min': float(site.prix_min) if site.prix_min else 0,
             'nb_dispo': site.nb_disponibles,
         })
 
     return render(request, 'eden/sites_list.html', {
         'sites': sites,
-        'sites_json': sites_json,  # ← DONNÉES PRÉPARÉES POUR JS
+        'sites_json': sites_json,
         'hero_config': hero_config,
         'hero_slides': hero_slides,
         'q': q,
@@ -230,20 +227,36 @@ def site_detail(request, slug):
     site = get_object_or_404(SiteFoncier, slug=slug, is_active=True)
     parcelles = site.parcelles.filter(is_active=True).prefetch_related('images')
     similaires = SiteFoncier.objects.filter(is_active=True, ville=site.ville).exclude(id=site.id)[:3]
+    all_sites = SiteFoncier.objects.filter(is_active=True)[:10]
+    
     form = DemandeContactForm(initial={'site': site})
+    
     if request.method == 'POST':
         form = DemandeContactForm(request.POST)
         if form.is_valid():
             obj = form.save(commit=False)
             obj.ip_address = request.META.get('REMOTE_ADDR')
+            obj.site = site
             obj.save()
+            
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({'success': True})
-            messages.success(request, 'Demande envoyee !')
+                return JsonResponse({'success': True, 'message': 'Demande envoyée !'})
+            
+            messages.success(request, 'Demande envoyée !')
             return redirect('site_detail', slug=slug)
+        else:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': False, 'errors': form.errors}, status=400)
+    
     return render(request, 'eden/site_detail.html', {
-        'site': site, 'parcelles': parcelles, 'similaires': similaires, 'form': form,
+        'site': site,
+        'parcelles': parcelles,
+        'similaires': similaires,
+        'form': form,
+        'sites': all_sites,
     })
+
+
 
 
 def parcelle_detail(request, site_slug, numero):

@@ -6,6 +6,11 @@
 <title>{% if site %}Modifier{% else %}Ajouter{% endif %} un site — EDEN GROUP</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- ═══ QUILL.JS (gratuit, sans API) ═══ -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g400:#9CA3AF;--g600:#4B5563;--g800:#1F2937;}
@@ -35,10 +40,51 @@ textarea.fi{resize:vertical;}
 .check-row input[type=checkbox]{width:16px;height:16px;cursor:pointer;}
 .fg-full{grid-column:1/-1;}
 
+/* ═══ STYLES QUILL ═══ */
+#editor-container {
+    border: 1.5px solid var(--g200);
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+    transition: border-color 0.2s;
+}
+#editor-container:focus-within {
+    border-color: var(--blue);
+}
+.ql-toolbar {
+    border: none !important;
+    border-bottom: 1.5px solid var(--g200) !important;
+    background: var(--g50);
+    border-radius: 10px 10px 0 0;
+}
+.ql-container {
+    border: none !important;
+    font-size: 13px;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    min-height: 300px;
+}
+.ql-editor {
+    min-height: 300px;
+    padding: 16px;
+    line-height: 1.8;
+}
+.ql-editor h1 { font-size: 24px; font-weight: 700; color: var(--blue); }
+.ql-editor h2 { font-size: 20px; font-weight: 700; color: var(--blue); }
+.ql-editor h3 { font-size: 17px; font-weight: 700; color: var(--g800); }
+.ql-editor ul, .ql-editor ol { padding-left: 24px; margin: 8px 0; }
+.ql-editor li { margin: 4px 0; }
+
+/* Couleurs personnalisées */
+.ql-editor .text-red { color: #C8102E; }
+.ql-editor .text-blue { color: #1B4FDB; }
+.ql-editor .text-green { color: #16A34A; }
+.ql-editor .highlight { background: #EEF3FF; padding: 2px 6px; border-radius: 4px; }
+.ql-editor .highlight-red { background: #FEE2E2; padding: 2px 6px; border-radius: 4px; }
+
 .map-pick{height:300px;border-radius:12px;overflow:hidden;border:1.5px solid var(--g200);margin-top:0.5rem;cursor:crosshair;}
 .map-hint{font-size:11px;color:var(--g400);margin-top:4px;}
 
-.actions{display:flex;gap:12px;margin-top:1.5rem;}
+.actions{display:flex;gap:12px;margin-top:1.5rem;flex-wrap:wrap;}
 .btn-save{background:var(--grad);color:#fff;padding:12px 28px;border-radius:10px;font-size:14px;font-weight:700;border:none;cursor:pointer;}
 .btn-save:hover{opacity:0.88;}
 .btn-cancel{background:#fff;color:var(--g600);padding:12px 24px;border-radius:10px;font-size:14px;font-weight:500;border:1.5px solid var(--g200);text-decoration:none;display:inline-flex;}
@@ -47,10 +93,35 @@ textarea.fi{resize:vertical;}
 .errors{background:#fee2e2;border:1px solid #fca5a5;border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.5rem;}
 .errors li{font-size:13px;color:#dc2626;margin-bottom:4px;}
 
+/* ═══ BOUTONS PERSONNALISÉS POUR COULEURS ═══ */
+.color-btns {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin: 8px 0;
+    padding: 8px;
+    background: var(--g50);
+    border-radius: 8px;
+    border: 1px solid var(--g200);
+}
+.color-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.color-btn:hover {
+    transform: scale(1.15);
+    border-color: var(--g800);
+}
+
 @media(max-width:768px){.form-grid{grid-template-columns:1fr;}.wrap{padding:80px 1rem 3rem;}}
 </style>
 </head>
 <body>
+
 <nav class="topnav">
   <a class="tn-logo" href="{% url 'home' %}">
     <div class="tnem">E</div>
@@ -71,7 +142,7 @@ textarea.fi{resize:vertical;}
   <ul class="errors">{% for field, errors in form.errors.items %}{% for error in errors %}<li><b>{{ field }}</b> : {{ error }}</li>{% endfor %}{% endfor %}</ul>
   {% endif %}
 
-  <form method="post" enctype="multipart/form-data">
+  <form method="post" enctype="multipart/form-data" id="site-form">
     {% csrf_token %}
 
     <div class="form-card">
@@ -79,7 +150,28 @@ textarea.fi{resize:vertical;}
       <div class="form-grid">
         <div class="fg fg-full"><label>Nom du site *</label>{{ form.nom }}</div>
         <div class="fg fg-full"><label>Description courte *</label>{{ form.description_courte }}</div>
-        <div class="fg fg-full"><label>Description complete *</label>{{ form.description }}</div>
+        <div class="fg fg-full">
+          <label>Description complete *</label>
+          <!-- Zone de l'éditeur Quill -->
+          <div id="editor-container">
+            <div id="editor"></div>
+          </div>
+          <!-- Champ caché pour stocker le contenu HTML -->
+          <input type="hidden" name="description" id="description" value="{% if site %}{{ site.description }}{% endif %}">
+          
+          <!-- Boutons de formatage rapide -->
+          <div class="color-btns">
+            <button type="button" class="color-btn" style="background:#C8102E;" onclick="insertColor('red')" title="Rouge"></button>
+            <button type="button" class="color-btn" style="background:#1B4FDB;" onclick="insertColor('blue')" title="Bleu"></button>
+            <button type="button" class="color-btn" style="background:#16A34A;" onclick="insertColor('green')" title="Vert"></button>
+            <button type="button" class="color-btn" style="background:#F59E0B;" onclick="insertColor('orange')" title="Orange"></button>
+            <button type="button" class="color-btn" style="background:#8B5CF6;" onclick="insertColor('purple')" title="Violet"></button>
+            <span style="margin-left:8px;font-size:11px;color:var(--g400);">|</span>
+            <button type="button" onclick="insertHighlight('normal')" style="padding:4px 12px;border-radius:4px;border:1px solid var(--g200);background:var(--bpale);cursor:pointer;font-size:11px;">💡 Surligner</button>
+            <button type="button" onclick="insertHighlight('red')" style="padding:4px 12px;border-radius:4px;border:1px solid var(--g200);background:#FEE2E2;cursor:pointer;font-size:11px;">🔴 Alerte</button>
+            <button type="button" onclick="insertTemplate()" style="padding:4px 12px;border-radius:4px;border:1px solid var(--g200);background:var(--grad);color:#fff;cursor:pointer;font-size:11px;">📝 Modèle</button>
+          </div>
+        </div>
         <div class="fg"><label>Statut</label>{{ form.statut }}</div>
         <div class="fg"><label>Ordre d'affichage</label>{{ form.ordre }}</div>
         <div class="check-row"><label>{{ form.featured }} Mettre en avant sur la page d'accueil</label></div>
@@ -136,17 +228,105 @@ textarea.fi{resize:vertical;}
     <div class="actions">
       <button type="submit" class="btn-save">💾 {% if site %}Sauvegarder les modifications{% else %}Creer le site{% endif %}</button>
       {% if site %}
-<a href="{% url 'dashboard_site_stats_manuelles' site.id %}"
-   style="background:var(--bpale);border:1.5px solid rgba(27,79,219,0.25);color:var(--blue);padding:13px 24px;border-radius:var(--r);font-size:14px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:8px;">
-  📊 Statistiques manuelles
-</a>
-{% endif %}
+      <a href="{% url 'dashboard_site_stats_manuelles' site.id %}"
+         style="background:var(--bpale);border:1.5px solid rgba(27,79,219,0.25);color:var(--blue);padding:13px 24px;border-radius:var(--r);font-size:14px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:8px;">
+        📊 Statistiques manuelles
+      </a>
+      {% endif %}
       <a href="{% url 'dashboard_sites' %}" class="btn-cancel">Annuler</a>
     </div>
   </form>
 </div>
 
 <script>
+// ══════════════════════════════════════════════
+// QUILL.JS — ÉDITEUR TEXTE ENRICH
+// ══════════════════════════════════════════════
+
+const quill = new Quill('#editor', {
+    theme: 'snow',
+    modules: {
+        toolbar: [
+            [{ 'header': [1, 2, 3, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'color': [] }, { 'background': [] }],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            [{ 'align': [] }],
+            ['link', 'blockquote', 'code-block'],
+            ['clean']
+        ]
+    },
+    placeholder: 'Description complète du site...',
+});
+
+// ═══ CHARGER LE CONTENU EXISTANT ═══
+const initialContent = document.getElementById('description').value;
+if (initialContent) {
+    quill.root.innerHTML = initialContent;
+}
+
+// ═══ METTRE À JOUR LE CHAMP CACHÉ AVANT SOUMISSION ═══
+document.getElementById('site-form').addEventListener('submit', function() {
+    document.getElementById('description').value = quill.root.innerHTML;
+});
+
+// ═══ FONCTIONS POUR INSÉRER DES COULEURS ═══
+function insertColor(color) {
+    const colors = {
+        'red': '#C8102E',
+        'blue': '#1B4FDB',
+        'green': '#16A34A',
+        'orange': '#F59E0B',
+        'purple': '#8B5CF6'
+    };
+    quill.format('color', colors[color]);
+    quill.focus();
+}
+
+// ═══ FONCTION POUR SURlIGNER ═══
+function insertHighlight(type) {
+    const range = quill.getSelection();
+    if (range && range.length > 0) {
+        if (type === 'red') {
+            quill.format('background', '#FEE2E2');
+        } else {
+            quill.format('background', '#EEF3FF');
+        }
+    } else {
+        // Insérer du texte avec surlignage
+        const text = type === 'red' ? '⚠️ Texte important' : '💡 Information importante';
+        const range = quill.getSelection();
+        const index = range ? range.index : quill.getLength();
+        quill.insertText(index, text, { 'background': type === 'red' ? '#FEE2E2' : '#EEF3FF' });
+        quill.setSelection(index + text.length, 0);
+        quill.focus();
+    }
+}
+
+// ═══ FONCTION POUR INSÉRER UN MODÈLE ═══
+function insertTemplate() {
+    const template = `
+        <h2>🏡 Présentation du site</h2>
+        <p><span class="text-blue">📌 Emplacement stratégique</span> — Situé dans un quartier en plein développement.</p>
+        <h3>📋 Caractéristiques</h3>
+        <ul>
+            <li><strong>🔒 Sécurisé</strong> — <span class="text-green">Titres fonciers garantis</span></li>
+            <li><em>📍 Idéalement situé</em> — <span class="text-blue">Proche des commodités</span></li>
+            <li><span class="highlight">📐 Superficie modulable</span></li>
+        </ul>
+        <h3>⚠️ Points d'attention</h3>
+        <ul>
+            <li><span class="highlight-red">🔥 Offre promotionnelle limitée</span></li>
+            <li>📅 Visites sur rendez-vous</li>
+        </ul>
+    `;
+    const range = quill.getSelection();
+    const index = range ? range.index : quill.getLength();
+    quill.clipboard.dangerouslyPasteHTML(index, template);
+    quill.focus();
+}
+
+// ═══ MAP PICKER (votre code existant) ═══
 const map = L.map('map-picker').setView([3.858, 11.510], 13);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:'© OpenStreetMap', maxZoom:19}).addTo(map);
 
@@ -157,12 +337,12 @@ map.setView([{{ site.latitude }}, {{ site.longitude }}], 15);
 
 let marker = null;
 map.on('click', function(e) {
-  const lat = e.latlng.lat.toFixed(7);
-  const lng = e.latlng.lng.toFixed(7);
-  document.querySelector('[name="latitude"]').value = lat;
-  document.querySelector('[name="longitude"]').value = lng;
-  if (marker) map.removeLayer(marker);
-  marker = L.marker(e.latlng).addTo(map).bindPopup('📍 Lat: ' + lat + '<br>Lng: ' + lng).openPopup();
+    const lat = e.latlng.lat.toFixed(7);
+    const lng = e.latlng.lng.toFixed(7);
+    document.querySelector('[name="latitude"]').value = lat;
+    document.querySelector('[name="longitude"]').value = lng;
+    if (marker) map.removeLayer(marker);
+    marker = L.marker(e.latlng).addTo(map).bindPopup('📍 Lat: ' + lat + '<br>Lng: ' + lng).openPopup();
 });
 </script>
 </body>

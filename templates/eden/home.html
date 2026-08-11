@@ -1686,7 +1686,7 @@ footer{
       </p>
       <div class="hero-btns">
         <a href="{% url 'sites_list' %}" class="btn-hero-p">Découvrir nos terrains ›</a>
-        <a href="{% url 'carte' %}" class="btn-hero-o">📍 Visite des sites</a>
+        <a onclick="openModal()" class="btn-hero-o">📍 Visite des sites</a>
       </div>
       <div class="hero-stats-row">
         <div class="hero-stat-badge">
@@ -1748,51 +1748,51 @@ footer{
 <!-- ══ SEARCH BOX ══ -->
 <div class="search-section" style="margin-top:-1px;">
   <div class="search-wrap">
+    <div class="sf-lbl" style="color: #0e0d0d; margin-bottom: 8px;">Complétez les informations ci-dessous afin de trouver le site qui correspond à vos critères.</div>
     <div class="search-fields">
+      <!-- 1. LOCALISATION -->
       <div class="sf-grp">
-        <div class="sf-lbl">📍 Localisation</div>
+        <div class="sf-lbl">📍 Site / Localisation</div>
         <div class="sf-inp-wrap">
-          <input class="sf-inp" type="text" id="s-loc" placeholder="Yaoundé et environs" list="loc-list">
-          <datalist id="loc-list">{% for v in villes %}<option value="{{ v }}">{% endfor %}</datalist>
-        </div>
-      </div>
-      <div class="sf-grp">
-        <div class="sf-lbl">📐 Surface</div>
-        <div class="sf-inp-wrap">
-          <select class="sf-select sf-inp" id="s-surf">
-            <option value="">Toute superficie</option>
-            <option value="300">300 m²</option>
-            <option value="500">500 m²</option>
-            <option value="600">600 m²</option>
-            <option value="800">800 m²</option>
-            <option value="1000">1 000 m²+</option>
+          <select class="sf-select" id="s-loc">
+            <option value="">Tous les sites</option>
+            {% for site in sites %}
+            <option value="{{ site.slug }}">{{ site.nom }} — {{ site.localisation }}</option>
+            {% endfor %}
           </select>
         </div>
       </div>
+
+      <!-- 2. SUPERFICIE -->
       <div class="sf-grp">
-        <div class="sf-lbl">💰 Budget</div>
+        <div class="sf-lbl">📐 Superficie souhaitée (m²)</div>
         <div class="sf-inp-wrap">
-          <select class="sf-select sf-inp" id="s-budget">
-            <option value="">3 000 000 FCFA et +</option>
-            <option value="3000000">Moins de 3 000 000</option>
-            <option value="5000000">3 000 000 – 5 000 000</option>
-            <option value="8000000">5 000 000 – 8 000 000</option>
-            <option value="15000000">8 000 000 – 15 000 000</option>
-            <option value="99999999">Plus de 15 000 000</option>
-          </select>
+          <input class="sf-inp" type="number" id="s-surf" placeholder="Ex: 500" min="1">
         </div>
       </div>
+
+      <!-- 3. BUDGET -->
+      <div class="sf-grp">
+        <div class="sf-lbl">💰 Budget (FCFA)</div>
+        <div class="sf-inp-wrap">
+          <input class="sf-inp" type="number" id="s-budget" placeholder="Ex: 5000000" min="1">
+        </div>
+      </div>
+
+      <!-- 4. STATUT -->
       <div class="sf-grp">
         <div class="sf-lbl">✅ Statut</div>
         <div class="sf-inp-wrap">
-          <select class="sf-select sf-inp" id="s-statut">
+          <select class="sf-select" id="s-statut">
             <option value="">Tous les terrains</option>
-            <option value="disponible">Disponible</option>
-            <option value="en_cours">En cours</option>
-            <option value="promo">En promotion</option>
+            <option value="site_titre">🔵 Site titré</option>
+            <option value="en_cours_immatriculation">🟡 En cours d'immatriculation</option>
+            <option value="titre_et_lotis">🟣 Titré et lotis</option>
+            <option value="prochainement">🔷 Prochainement</option>
           </select>
         </div>
       </div>
+
       <button class="btn-rech" onclick="lancerRecherche()">🔍 Rechercher</button>
     </div>
   </div>
@@ -2287,7 +2287,7 @@ footer{
         </div>
         <div class="fg"><label>Message</label><textarea class="fi" name="message" rows="2" placeholder="Vos questions..." style="resize:none;"></textarea></div>
         <button type="button" class="m-submit" onclick="submitModal()">Envoyer la demande →</button>
-        <a href="https://wa.me/2376XXXXXXXX" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;background:#25D366;color:#fff;padding:12px;border-radius:9px;font-size:14px;font-weight:700;text-decoration:none;">💬 Ou discuter sur WhatsApp</a>
+        <a href="https://wa.me/237650701638" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;background:#25D366;color:#fff;padding:12px;border-radius:9px;font-size:14px;font-weight:700;text-decoration:none;">💬 Ou discuter sur WhatsApp</a>
       </form>
     </div>
   </div>
@@ -2363,22 +2363,26 @@ if (wrap) {
   document.addEventListener('mouseup', () => { isDrag = false; wrap.classList.remove('grabbed'); });
 }
 
-// ── RECHERCHE ──
-function lancerRecherche() {
+// ── RECHERCHE (comportement original) ──
+function lancerRecherche(){
   const loc = document.getElementById('s-loc')?.value || '';
   const budget = document.getElementById('s-budget')?.value || '';
   const statut = document.getElementById('s-statut')?.value || '';
   const surf = document.getElementById('s-surf')?.value || '';
   let url = '{% url "sites_list" %}?';
-  if (loc) url += 'q=' + encodeURIComponent(loc) + '&';
+  if (loc) url += 'site=' + encodeURIComponent(loc) + '&';
   if (budget) url += 'budget=' + budget + '&';
   if (statut && statut !== 'promo') url += 'statut=' + statut + '&';
   if (statut === 'promo') url += 'promo=1&';
   if (surf) url += 'superficie_min=' + surf + '&';
   window.location = url;
 }
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && document.activeElement?.id?.startsWith('s-')) lancerRecherche();
+
+// Recherche avec la touche Entrée
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && ['s-loc','s-surf','s-budget','s-statut'].includes(document.activeElement?.id)) {
+    lancerRecherche();
+  }
 });
 
 // ── MODAL ──

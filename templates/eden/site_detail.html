@@ -265,8 +265,7 @@ footer{background:var(--g800);color:#fff;padding:3rem 2rem 1.5rem;}
       <!-- Description -->
       <div class="section-title">Description du site</div>
       <h2 class="block-title">{{ site.nom }}</h2>
-      <div class="description">{{ site.description }}</div>
-
+      <div class="description">{{ site.description|safe }}</div>
       {% if site.prix_min %}
       <div style="background:linear-gradient(135deg,rgba(27,79,219,0.06),rgba(200,16,46,0.04));border:1.5px solid var(--g200);border-radius:16px;padding:1.2rem;margin-bottom:2rem;display:flex;gap:2rem;flex-wrap:wrap;">
         {% if site.prix_min %}<div><div style="font-size:1.3rem;font-weight:700;color:var(--red);">{{ site.prix_min|intcomma }} FCFA</div><div style="font-size:11px;color:var(--g400);text-transform:uppercase;letter-spacing:0.5px;">prix du m²</div></div>{% endif %}
