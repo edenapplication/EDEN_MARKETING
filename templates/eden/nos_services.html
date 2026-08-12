@@ -328,11 +328,12 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
   .services-content{padding:1.5rem 1rem;}
   .eng-inner{grid-template-columns:1fr;}
   .proc-track{overflow-x:auto;}
-  .footer-grid{grid-template-columns:1fr;gap:1.5rem;}
-  .footer-grid>div:first-child{grid-column:1;}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:1.5rem;}
+  .footer-grid>div:first-child{grid-column:1/-1;}
   .footer-bot{flex-direction:column;text-align:center;}
 }
 @media(max-width:480px){.services-grid{grid-template-columns:1fr;}.hero-tit{font-size:1.8rem;}}
+
 </style>
 </head>
 <body>

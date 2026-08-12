@@ -255,6 +255,223 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
 @media(max-width:480px){
   .footer-grid{grid-template-columns:1fr;}
 }
+
+/* ══ DÉFILEMENT HORIZONTAL SUR MOBILE ══ */
+@media(max-width: 768px) {
+    /* ── MISSIONS (Notre raison d'être) ── */
+    .missions-grid {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 0.8rem;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+        padding: 0.5rem 0.5rem 1rem 0.5rem;
+        margin: 0 -0.5rem;
+        scrollbar-width: none;
+        grid-template-columns: none;
+    }
+    .missions-grid::-webkit-scrollbar {
+        display: none;
+    }
+    .mission-card {
+        flex: 0 0 auto;
+        min-width: 220px;
+        max-width: 260px;
+        scroll-snap-align: start;
+        padding: 1.2rem;
+    }
+    .mission-card:last-child {
+        margin-right: 0.5rem;
+    }
+    
+    /* ── VALEURS ── */
+    .vals {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 0.8rem;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+        padding: 0.5rem 0.5rem 1rem 0.5rem;
+        margin: 0 -0.5rem;
+        scrollbar-width: none;
+        grid-template-columns: none;
+    }
+    .vals::-webkit-scrollbar {
+        display: none;
+    }
+    .val {
+        flex: 0 0 auto;
+        min-width: 220px;
+        max-width: 260px;
+        scroll-snap-align: start;
+        padding: 1.2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 0.6rem;
+    }
+    .val .val-ico {
+        width: 48px;
+        height: 48px;
+        flex-shrink: 0;
+    }
+    .val:last-child {
+        margin-right: 0.5rem;
+    }
+    
+    /* ── ÉQUIPE ── */
+    .team-grid {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 0.8rem;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+        padding: 0.5rem 0.5rem 1rem 0.5rem;
+        margin: 0 -0.5rem;
+        scrollbar-width: none;
+        grid-template-columns: none;
+    }
+    .team-grid::-webkit-scrollbar {
+        display: none;
+    }
+    .team-card {
+        flex: 0 0 auto;
+        min-width: 160px;
+        max-width: 200px;
+        scroll-snap-align: start;
+        padding: 1.2rem;
+    }
+    .team-card:last-child {
+        margin-right: 0.5rem;
+    }
+}
+
+@media(max-width: 480px) {
+    .mission-card {
+        min-width: 180px;
+        max-width: 210px;
+        padding: 1rem;
+    }
+    .val {
+        min-width: 180px;
+        max-width: 210px;
+        padding: 1rem;
+    }
+    .team-card {
+        min-width: 140px;
+        max-width: 170px;
+        padding: 1rem;
+    }
+    .val .val-ico {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+}
+
+/* ══ DÉFILEMENT HORIZONTAL DES TÉMOIGNAGES SUR MOBILE ══ */
+@media(max-width: 768px) {
+    .testi-grid {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 0.8rem;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+        padding: 0.5rem 0.5rem 1rem 0.5rem;
+        margin: 0 -0.5rem;
+        scrollbar-width: none;
+        grid-template-columns: none;
+    }
+    .testi-grid::-webkit-scrollbar {
+        display: none;
+    }
+    .testi-card {
+        flex: 0 0 auto;
+        min-width: 240px;
+        max-width: 280px;
+        scroll-snap-align: start;
+        padding: 1.2rem;
+        border-radius: 12px;
+    }
+    .testi-card:last-child {
+        margin-right: 0.5rem;
+    }
+    .tc-quote {
+        font-size: 12px;
+        line-height: 1.6;
+        margin-bottom: 0.8rem;
+    }
+    .tc-stars {
+        margin-bottom: 0.5rem;
+    }
+    .tc-star {
+        font-size: 11px;
+    }
+    .tc-auth {
+        gap: 8px;
+    }
+    .tc-av {
+        width: 32px;
+        height: 32px;
+        font-size: 11px;
+    }
+    .tc-name {
+        font-size: 12px;
+    }
+    .tc-role {
+        font-size: 10px;
+    }
+    
+    /* Indicateurs de défilement pour témoignages */
+    .testi-scroll-hint {
+        display: flex;
+        justify-content: center;
+        gap: 6px;
+        padding: 6px 0 0 0;
+        margin-top: 4px;
+    }
+    .testi-scroll-hint span {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--g200);
+        transition: all 0.3s ease;
+    }
+    .testi-scroll-hint span.active {
+        background: var(--blue);
+        width: 16px;
+        border-radius: 100px;
+    }
+}
+
+@media(max-width: 480px) {
+    .testi-card {
+        min-width: 200px;
+        max-width: 230px;
+        padding: 1rem;
+    }
+    .tc-quote {
+        font-size: 11px;
+    }
+    .tc-quote::before {
+        font-size: 1.5rem;
+    }
+}
+
+@media(min-width: 769px) {
+    .testi-scroll-hint {
+        display: none;
+    }
+}
+
+.footer-grid{grid-template-columns:1fr 1fr;gap:1.5rem;}
+  .footer-grid>div:first-child{grid-column:1/-1;}
+
 </style>
 </head>
 <body>
@@ -379,7 +596,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
   <div style="max-width:1200px;margin:0 auto;">
     <div class="s-ey">💬 Temoignages clients</div>
     <h2 class="s-tit" style="margin-bottom:1.5rem;">Ils nous font <em>confiance</em></h2>
-    <div class="testi-grid">
+    <div class="testi-grid" id="testi-grid">
       {% for t in temoignages %}
       <div class="testi-card">
         <div class="tc-stars">{% for i in "12345" %}<span class="tc-star">{% if forloop.counter <= t.note %}★{% else %}☆{% endif %}</span>{% endfor %}</div>
@@ -389,6 +606,12 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
           <div><div class="tc-name">{{ t.nom }}</div><div class="tc-role">{{ t.role }}</div></div>
         </div>
       </div>
+      {% endfor %}
+    </div>
+    <!-- Indicateurs de défilement -->
+    <div class="testi-scroll-hint" id="testi-scroll-hint">
+      {% for t in temoignages %}
+      <span {% if forloop.first %}class="active"{% endif %}></span>
       {% endfor %}
     </div>
   </div>
@@ -497,6 +720,31 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
 </div>
 
 <script>
+  // ── INDICATEURS DE DÉFILEMENT ──
+function initScrollHint(containerSelector, hintSelector) {
+    const container = document.querySelector(containerSelector);
+    const dots = document.querySelectorAll(`${hintSelector} span`);
+    if (!container || dots.length === 0) return;
+    
+    container.addEventListener('scroll', function() {
+        const scrollLeft = this.scrollLeft;
+        const maxScroll = this.scrollWidth - this.clientWidth;
+        const ratio = maxScroll > 0 ? scrollLeft / maxScroll : 0;
+        const activeIndex = Math.round(ratio * (dots.length - 1));
+        
+        dots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === activeIndex);
+        });
+    });
+}
+
+// Initialisation au chargement
+document.addEventListener('DOMContentLoaded', function() {
+    initScrollHint('.missions-grid', '#scroll-hint-missions');
+    initScrollHint('.vals', '#scroll-hint-valeurs');
+    initScrollHint('.team-grid', '#scroll-hint-equipe');
+});
+
 // ── NAV ──
 function toggleMob() {
   document.getElementById('mob-menu').classList.toggle('open');

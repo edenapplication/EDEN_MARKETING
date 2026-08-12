@@ -1589,6 +1589,530 @@ footer{
     text-align: left;
 }
 
+/* ════════════════════════════════════════════════
+   AMÉLIORATIONS RESPONSIVE MOBILE
+   ════════════════════════════════════════════════ */
+
+/* ── 1. HERO - Texte ne passe plus derrière la nav ── */
+@media(max-width: 768px) {
+    .hero {
+        height: min(70vh, 500px);
+        min-height: 350px;
+    }
+    .hero-inner {
+        padding-top: 85px;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+    .hero-left {
+        max-width: 100%;
+        margin-top: 5px;
+    }
+    .hero-p-tit {
+        font-size: 1.6rem;
+        line-height: 1.1;
+        text-shadow: 0 2px 20px rgba(0,0,0,0.6);
+    }
+    .hero-p-desc {
+        font-size: 0.85rem;
+        text-shadow: 0 2px 16px rgba(0,0,0,0.6);
+        margin-bottom: 1rem;
+    }
+    .hero-btns {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .btn-hero-p,
+    .btn-hero-o {
+        font-size: 11px;
+        padding: 8px 16px;
+        width: auto;
+        flex: 1;
+        min-width: 140px;
+        justify-content: center;
+    }
+    .hero-overlay {
+        background: linear-gradient(to bottom, rgba(10,22,40,0.7) 0%, rgba(10,22,40,0.5) 50%, rgba(10,22,40,0.3) 100%);
+    }
+}
+
+@media(max-width: 480px) {
+    .hero {
+        height: min(65vh, 420px);
+        min-height: 300px;
+    }
+    .hero-p-tit {
+        font-size: 1.3rem;
+    }
+    .hero-p-desc {
+        font-size: 0.75rem;
+    }
+    .btn-hero-p,
+    .btn-hero-o {
+        font-size: 10px;
+        padding: 6px 12px;
+        min-width: 120px;
+    }
+}
+
+/* ── 2. STATS BAND - Une seule ligne avec défilement ── */
+@media(max-width: 768px) {
+    .stats-band {
+        padding: 0.5rem 0;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .stats-band::-webkit-scrollbar {
+        display: none;
+    }
+    .stats-band-inner {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 0;
+        min-width: max-content;
+        padding: 0.5rem 0.5rem;
+        grid-template-columns: none;
+    }
+    .stats-band-item {
+        flex: 0 0 auto;
+        padding: 0.3rem 1rem;
+        border-right: 1px solid rgba(255,255,255,0.15);
+        border-bottom: none;
+        gap: 8px;
+        min-width: 120px;
+        justify-content: center;
+    }
+    .stats-band-item:last-child {
+        border-right: none;
+        padding-right: 1.5rem;
+    }
+    .sbi-ico {
+        font-size: 1.1rem;
+    }
+    .sbi-n {
+        font-size: 0.9rem;
+        white-space: nowrap;
+    }
+    .sbi-l {
+        font-size: 8px;
+        white-space: nowrap;
+    }
+}
+
+@media(max-width: 480px) {
+    .stats-band-item {
+        min-width: 90px;
+        padding: 0.2rem 0.6rem;
+    }
+    .sbi-ico {
+        font-size: 0.9rem;
+    }
+    .sbi-n {
+        font-size: 0.75rem;
+    }
+    .sbi-l {
+        font-size: 7px;
+    }
+}
+
+/* ── 3. SERVICES - Défilement horizontal continu ── */
+// ── INDICATEURS DE DÉFILEMENT SERVICES ──
+const servicesWrapper = document.querySelector('.services-grid-wrapper');
+const scrollDots = document.querySelectorAll('.services-scroll-hint span');
+
+if (servicesWrapper) {
+    servicesWrapper.addEventListener('scroll', function() {
+        const scrollLeft = this.scrollLeft;
+        const maxScroll = this.scrollWidth - this.clientWidth;
+        const ratio = maxScroll > 0 ? scrollLeft / maxScroll : 0;
+        const activeIndex = Math.round(ratio * (scrollDots.length - 1));
+        
+        scrollDots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === activeIndex);
+        });
+    });
+}
+
+/* ── 4. ACTUALITÉS - Défilement horizontal avec même taille que les sites ── */
+@media(max-width: 768px) {
+    .journal-section {
+        padding: 1.5rem 0.5rem;
+        overflow: hidden;
+    }
+    .journal-slider {
+        overflow: visible;
+        padding: 0.5rem 0;
+    }
+    .journal-grid {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 0.8rem;
+        width: max-content;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+        padding: 0 1rem;
+        scrollbar-width: none;
+    }
+    .journal-grid::-webkit-scrollbar {
+        display: none;
+    }
+    .journal-card {
+        flex: 0 0 auto;
+        min-width: 200px;
+        max-width: 240px;
+        scroll-snap-align: start;
+        border-radius: 12px;
+    }
+    .journal-card:last-child {
+        margin-right: 0.5rem;
+    }
+    .jc-img {
+        height: 130px;
+    }
+    .jc-tit {
+        font-size: 12px;
+        line-height: 1.3;
+    }
+    .jc-desc {
+        font-size: 10px;
+        line-height: 1.4;
+        margin-bottom: 0.4rem;
+    }
+    .jc-body {
+        padding: 0.6rem 0.8rem;
+    }
+    .jc-lire {
+        font-size: 10px;
+    }
+}
+
+@media(max-width: 480px) {
+    .journal-card {
+        min-width: 160px;
+        max-width: 190px;
+    }
+    .jc-img {
+        height: 100px;
+    }
+    .jc-tit {
+        font-size: 11px;
+    }
+    .jc-desc {
+        font-size: 9px;
+    }
+    .jc-date-badge {
+        padding: 4px 8px;
+    }
+    .jc-date-day {
+        font-size: 1rem;
+    }
+    .jc-date-month {
+        font-size: 8px;
+    }
+}
+
+/* ── 5. CARROUSEL SITES - Mobile ── */
+@media(max-width: 768px) {
+    .carousel-nav {
+        display: none;
+    }
+    .carousel-track-wrap {
+        padding: 0 0.5rem;
+    }
+    .site-card {
+        min-width: 160px;
+        max-width: 190px;
+        border-radius: 12px;
+    }
+    .sc-img-zone {
+        height: 110px;
+    }
+    .sc-body {
+        padding: 0.6rem 0.8rem;
+    }
+    .sc-nom {
+        font-size: 11px;
+    }
+    .sc-prix {
+        font-size: 0.8rem;
+    }
+    .sc-sup {
+        font-size: 9px;
+    }
+    .sc-voir-link {
+        font-size: 9px;
+    }
+    .sc-badge {
+        font-size: 7px;
+        padding: 2px 6px;
+    }
+}
+
+@media(max-width: 480px) {
+    .site-card {
+        min-width: 130px;
+        max-width: 160px;
+    }
+    .sc-img-zone {
+        height: 90px;
+    }
+    .sc-nom {
+        font-size: 10px;
+    }
+    .sc-prix {
+        font-size: 0.7rem;
+    }
+}
+
+/* ── 6. PROMOTIONS - Mobile ── */
+@media(max-width: 768px) {
+    .promos-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.8rem;
+    }
+    .pc-top {
+        height: 70px;
+    }
+    .pc-disc {
+        font-size: 2rem;
+    }
+    .pc-body {
+        padding: 0.6rem 0.8rem;
+    }
+    .pc-name {
+        font-size: 12px;
+        margin: 2px 0 4px;
+    }
+    .pc-new {
+        font-size: 1rem;
+    }
+    .pc-cta {
+        font-size: 11px;
+        padding: 6px;
+    }
+}
+
+@media(max-width: 480px) {
+    .promos-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ── 7. ÉTAPES - Mobile ── */
+@media(max-width: 768px) {
+    .etapes-section {
+        padding: 1.5rem 0;
+    }
+    .etapes-inner {
+        padding: 0 0.5rem;
+    }
+    .etapes-layout {
+        padding: 1rem;
+        min-height: auto;
+        flex-direction: column;
+        border-radius: 12px;
+    }
+    .etapes-steps {
+        width: 100%;
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 0.8rem;
+        padding: 0.5rem 0;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .etapes-steps::-webkit-scrollbar {
+        display: none;
+    }
+    .etape-item {
+        flex: 0 0 auto;
+        min-width: 80px;
+        max-width: 100px;
+        padding: 0.3rem 0;
+    }
+    .etape-num {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+        margin: 0 auto 0.3rem;
+    }
+    .etape-lbl {
+        font-size: 10px;
+    }
+    .etape-sub {
+        font-size: 8px;
+        margin-top: 2px;
+    }
+    .etape-arrow {
+        display: none;
+    }
+    .etapes-img-zone {
+        display: none;
+    }
+}
+
+@media(max-width: 480px) {
+    .etape-item {
+        min-width: 60px;
+        max-width: 80px;
+    }
+    .etape-num {
+        width: 28px;
+        height: 28px;
+        font-size: 10px;
+    }
+    .etape-lbl {
+        font-size: 9px;
+    }
+}
+
+/* ── 8. LIVRET CARD - Mobile ── */
+@media(max-width: 768px) {
+    .livret-card {
+        min-height: auto;
+        border-radius: 16px;
+        margin-top: 1rem;
+    }
+    .livret-content {
+        width: 100%;
+        padding: 1.2rem;
+    }
+    .livret-tit {
+        font-size: 1rem;
+    }
+    .livret-desc {
+        font-size: 11px;
+    }
+    .livret-check {
+        font-size: 11px;
+    }
+    .btn-livret {
+        font-size: 12px;
+        padding: 8px 16px;
+    }
+}
+
+/* ── 9. ACADEMIE - Mobile ── */
+@media(max-width: 768px) {
+    .academy-section {
+        padding: 1.5rem 0.5rem;
+    }
+    .academy-card {
+        border-radius: 16px;
+        min-height: auto;
+        grid-template-columns: 1fr;
+    }
+    .academy-left {
+        padding: 1rem;
+        order: 1;
+    }
+    .academy-left h2 {
+        font-size: 1.1rem;
+    }
+    .academy-left p {
+        font-size: 11px;
+        margin: 6px 0 12px;
+    }
+    .academy-features {
+        order: 2;
+        padding: 0.8rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+    .feature {
+        gap: 8px;
+    }
+    .feature i {
+        width: 28px;
+        height: 28px;
+        min-width: 28px;
+        font-size: 12px;
+    }
+    .feature strong {
+        font-size: 10px;
+    }
+    .feature span {
+        font-size: 9px;
+    }
+    .academy-image {
+        order: 3;
+        min-height: 120px;
+    }
+    .academy-modules {
+        order: 4;
+        padding: 0.8rem;
+    }
+    .academy-modules h3 {
+        font-size: 0.85rem;
+    }
+    .academy-modules ul {
+        grid-template-columns: 1fr 1fr;
+        gap: 4px;
+        margin: 0.4rem 0;
+    }
+    .academy-modules li {
+        font-size: 10px;
+    }
+    .academy-modules li::before {
+        width: 16px;
+        height: 16px;
+        min-width: 16px;
+        font-size: 7px;
+    }
+    .academy-btn {
+        font-size: 11px;
+        padding: 6px 14px;
+    }
+}
+
+@media(max-width: 480px) {
+    .academy-features {
+        grid-template-columns: 1fr;
+    }
+    .academy-modules ul {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ── 10. BOTTOM SECTION - Mobile ── */
+@media(max-width: 768px) {
+    .bottom-section {
+        padding: 1.5rem 0.5rem;
+    }
+    .bottom-inner {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        min-height: auto;
+    }
+    .tc-quote {
+        font-size: 12px;
+    }
+    .souvenir-card {
+        min-height: auto;
+        padding: 1rem;
+    }
+    .contact-col {
+        padding: 1rem;
+        border-radius: 12px;
+    }
+    .contact-hd-tit {
+        font-size: 1rem;
+    }
+    .contact-hd-sub {
+        font-size: 12px;
+    }
+}
+
+.footer-grid{grid-template-columns:1fr 1fr;gap:1.5rem;}
+  .footer-grid>div:first-child{grid-column:1/-1;}
+
 </style>
 </head>
 <body>

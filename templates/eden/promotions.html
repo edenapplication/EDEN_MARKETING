@@ -4,95 +4,196 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Promotions — EDEN GROUP</title>
+{% load static %}
 {% load humanize %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g400:#9CA3AF;--g600:#4B5563;--g800:#1F2937;}
-body{font-family:'Segoe UI',Arial,sans-serif;background:#fff;color:var(--g800);}
-h1,h2,h3{font-family:Georgia,serif;}
-nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;background:rgba(255,255,255,0.95);border-bottom:1.5px solid var(--g200);backdrop-filter:blur(20px);}
+:root{
+  --blue:#1B4FDB;--blue-d:#0A2494;--blue-pale:#EEF3FF;
+  --red:#C8102E;--red-d:#A00C24;
+  --grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
+  --grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
+  --g50:#F8FAFF;--g100:#F0F4FF;--g200:#E2E8F0;
+  --g400:#94A3B8;--g500:#64748B;--g600:#475569;--g800:#1E293B;
+  --sh:0 2px 12px rgba(0,0,0,0.08);
+  --sh-lg:0 8px 40px rgba(27,79,219,0.15);
+  --r:10px;--rl:16px;--rxl:24px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:#fff;color:var(--g800);overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-thumb{background:var(--grad-h);border-radius:100px;}
+
+/* ══ NAV TRANSPARENTE ══ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;height:70px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 clamp(1rem, 3vw, 2rem);
+  background:transparent;
+  border-bottom:1px solid transparent;
+  box-shadow:none;
+  transition:background .4s ease,backdrop-filter .4s ease,border-color .4s ease,box-shadow .4s ease;
+}
+nav.scrolled{
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(22px);
+  -webkit-backdrop-filter:blur(22px);
+  border-bottom:1px solid rgba(226,232,240,.9);
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
-.logo-em{width:40px;height:40px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-weight:700;font-size:18px;color:#fff;}
-.logo-name{font-family:Georgia,serif;font-size:19px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.nav-lnk{padding:8px 16px;font-size:13px;font-weight:500;color:var(--g600);text-decoration:none;border-radius:8px;transition:all 0.2s;}
-.nav-lnk:hover,.nav-lnk.active{color:var(--blue);background:var(--bpale);}
-.btn-cta{background:var(--grad);color:#fff;padding:9px 20px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;}
+.logo-box{width:42px;height:42px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#fff;}
+.logo-name{font-size:18px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.logo-tagline{font-size:9px;color:var(--g500);letter-spacing:1.5px;text-transform:uppercase;}
+.nav-links{display:flex;align-items:center;gap:0;}
+.nav-lnk{padding:6px 13px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.85);text-decoration:none;border-radius:7px;transition:all 0.18s;position:relative;}
+.nav-lnk:hover,.nav-lnk.active{color:#fff;}
+.nav-lnk.active::after{content:'';position:absolute;bottom:-4px;left:13px;right:13px;height:2px;background:var(--red);border-radius:100px;}
+nav.scrolled .nav-lnk{color:var(--g600);}
+nav.scrolled .nav-lnk:hover,nav.scrolled .nav-lnk.active{color:var(--blue);}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.btn-rdv{background:var(--red);color:#fff;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:7px;text-decoration:none;}
+.btn-rdv:hover{background:var(--red-d);transform:translateY(-1px);box-shadow:0 4px 16px rgba(200,16,46,0.3);}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:none;padding:6px;}
+.hamburger span{width:22px;height:2px;background:#fff;border-radius:2px;display:block;transition:background 0.3s;}
+nav.scrolled .hamburger span{background:var(--g800);}
+.mob-menu{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(255,255,255,0.98);border-bottom:1px solid var(--g200);padding:1rem 1.5rem;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.1);backdrop-filter:blur(10px);}
+.mob-menu.open{display:flex;flex-direction:column;gap:4px;}
+.mob-menu .nav-lnk{color:var(--g600);padding:8px 0;}
+.mob-menu .nav-lnk.active{color:var(--blue);}
+.mob-menu .nav-lnk.active::after{display:none;}
 
-.page-head{padding:8rem 2rem 3rem;background:linear-gradient(to bottom,var(--bpale),#fff);border-bottom:1.5px solid var(--g200);}
-.container{max-width:1200px;margin:0 auto;padding:0 2rem;}
-.ph-eyebrow{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.5rem;}
-.ph-title{font-family:Georgia,serif;font-size:2.4rem;font-weight:700;color:var(--g800);}
-.ph-title em{font-style:italic;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+/* ══ PAGE HEAD ══ */
+.page-head{padding:8rem 2rem 3rem;background:linear-gradient(135deg,var(--blue-pale) 0%,#fff 100%);border-bottom:1px solid var(--g200);}
+.container{max-width:1280px;margin:0 auto;padding:0 clamp(1rem, 2vw, 2rem);}
+.ph-eyebrow{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:0.5rem;}
+.ph-title{font-size:clamp(2rem,3.5vw,2.8rem);font-weight:900;color:var(--g800);line-height:1.1;}
+.ph-title span{color:var(--blue);}
 
-.promo-hero{background:linear-gradient(135deg,rgba(27,79,219,0.06),rgba(200,16,46,0.04));border:1.5px solid var(--g200);border-radius:24px;padding:2.5rem;margin:2rem 0;position:relative;overflow:hidden;}
-.promo-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(200,16,46,0.1),transparent 70%);}
+/* ══ PROMO HERO ══ */
+.promo-hero{background:linear-gradient(135deg,rgba(27,79,219,0.06),rgba(200,16,46,0.04));border:1.5px solid var(--g200);border-radius:var(--rxl);padding:2.5rem;margin:2rem 0;position:relative;overflow:hidden;}
+.promo-hero::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(200,16,46,0.08),transparent 70%);}
+.ph-title-sm{font-size:clamp(1.4rem,2vw,1.8rem);font-weight:800;color:var(--g800);margin-bottom:0.5rem;}
+.ph-title-sm span{color:var(--blue);}
+.ph-stats{display:flex;gap:2rem;margin-top:1.5rem;flex-wrap:wrap;}
+.ph-stat{display:flex;flex-direction:column;}
+.ph-stat-n{font-size:2rem;font-weight:900;color:var(--blue);}
+.ph-stat-l{font-size:12px;color:var(--g400);text-transform:uppercase;letter-spacing:0.5px;}
 
+/* ══ PROMO GRID ══ */
 .promo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;padding:2rem 0;}
-.promo-card{background:#fff;border:1.5px solid var(--g200);border-radius:20px;overflow:hidden;cursor:pointer;transition:all 0.3s;position:relative;}
-.promo-card:hover{transform:translateY(-4px);box-shadow:0 8px 40px rgba(27,79,219,0.15);border-color:rgba(27,79,219,0.2);}
+.promo-card{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);overflow:hidden;cursor:pointer;transition:all 0.3s;position:relative;}
+.promo-card:hover{transform:translateY(-4px);box-shadow:var(--sh-lg);border-color:rgba(27,79,219,0.2);}
 .pc-ribbon{position:absolute;top:14px;left:0;z-index:2;}
 .pc-ribbon span{background:var(--grad);color:#fff;padding:5px 16px 5px 12px;font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;display:block;clip-path:polygon(0 0,100% 0,93% 50%,100% 100%,0 100%);}
-.pc-top{height:130px;background:linear-gradient(135deg,var(--bpale),#F0F4FF);display:flex;align-items:center;justify-content:center;position:relative;}
-.pc-discount{font-family:Georgia,serif;font-size:4rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.pc-top{height:130px;background:linear-gradient(135deg,var(--blue-pale),#F0F4FF);display:flex;align-items:center;justify-content:center;position:relative;}
+.pc-discount{font-family:'Playfair Display',serif;font-size:4rem;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .pc-body{padding:1.2rem;}
 .pc-site{font-size:10px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:0.5px;}
 .pc-name{font-size:14px;font-weight:700;color:var(--g800);margin:3px 0 0.7rem;}
 .pc-prices{display:flex;align-items:baseline;gap:10px;margin-bottom:0.8rem;}
 .pc-old{font-size:13px;color:var(--g400);text-decoration:line-through;}
-.pc-new{font-size:1.3rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.pc-info{display:flex;gap:8px;margin-bottom:0.8rem;}
-.pc-tag{background:var(--bpale);color:var(--blue);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;}
+.pc-new{font-size:1.3rem;font-weight:800;color:var(--red);}
+.pc-info{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:0.8rem;}
+.pc-tag{background:var(--blue-pale);color:var(--blue);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:600;}
+.pc-tag.green{background:#f0fdf4;color:#16a34a;}
 .pc-cd{display:flex;gap:6px;margin-bottom:0.8rem;}
 .cd-b{background:var(--g50);border:1px solid var(--g200);border-radius:8px;padding:6px 10px;text-align:center;min-width:46px;}
 .cd-n{font-size:1.1rem;font-weight:800;color:var(--g800);font-variant-numeric:tabular-nums;}
 .cd-l{font-size:8px;color:var(--g400);text-transform:uppercase;letter-spacing:0.5px;}
-.pc-cta{width:100%;background:var(--grad);border:none;color:#fff;padding:11px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;}
-.pc-cta:hover{opacity:0.88;}
+.pc-cta{width:100%;background:var(--grad);border:none;color:#fff;padding:11px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;font-family:'Outfit',sans-serif;}
+.pc-cta:hover{opacity:0.88;transform:translateY(-1px);}
 
+/* ══ NO PROMO ══ */
 .no-promo{text-align:center;padding:4rem;color:var(--g400);}
 .no-promo-ico{font-size:3rem;margin-bottom:1rem;}
 
+/* ══ SECTION SITES PROMO ══ */
 .section{padding:4rem 0;}
-.s-ey{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.5rem;}
-.s-tit{font-family:Georgia,serif;font-size:2rem;font-weight:700;color:var(--g800);margin-bottom:1.5rem;}
-.s-tit em{font-style:italic;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.s-ey{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:0.5rem;}
+.s-tit{font-size:clamp(1.6rem,2.5vw,2.1rem);font-weight:800;color:var(--g800);margin-bottom:1.5rem;}
+.s-tit span{color:var(--blue);}
 
 .sites-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.5rem;padding-bottom:4rem;}
-.site-card{background:#fff;border:1.5px solid var(--g200);border-radius:20px;overflow:hidden;transition:all 0.3s;text-decoration:none;color:inherit;display:block;}
-.site-card:hover{transform:translateY(-4px);border-color:rgba(27,79,219,0.3);box-shadow:0 8px 40px rgba(27,79,219,0.15);}
-.sc-img{height:200px;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--bpale),#F0F4FF);display:flex;align-items:center;justify-content:center;}
+.site-card{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);overflow:hidden;transition:all 0.3s;text-decoration:none;color:inherit;display:block;}
+.site-card:hover{transform:translateY(-4px);border-color:rgba(27,79,219,0.3);box-shadow:var(--sh-lg);}
+.sc-img{height:200px;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--blue-pale),#F0F4FF);}
 .sc-img img{width:100%;height:100%;object-fit:cover;}
 .sc-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,22,40,0.65) 0%,transparent 55%);}
 .sc-status{position:absolute;top:12px;left:12px;padding:4px 12px;border-radius:100px;font-size:10px;font-weight:700;text-transform:uppercase;}
-.st-a{background:rgba(22,163,74,0.9);color:#fff;}.st-p{background:rgba(27,79,219,0.9);color:#fff;}.st-c{background:rgba(200,16,46,0.9);color:#fff;}
-.sc-loc{position:absolute;bottom:14px;left:14px;font-size:11px;color:rgba(255,255,255,0.9);}
+.st-a{background:rgba(22,163,74,0.9);color:#fff;}
+.st-p{background:rgba(27,79,219,0.9);color:#fff;}
+.st-c{background:rgba(200,16,46,0.9);color:#fff;}
+.sc-loc{position:absolute;bottom:14px;left:14px;font-size:11px;color:rgba(255,255,255,0.9);display:flex;align-items:center;gap:4px;}
 .sc-body{padding:1.2rem;}
-.sc-name{font-family:Georgia,serif;font-size:1.1rem;font-weight:700;color:var(--g800);margin-bottom:0.3rem;}
-.prog-bar{height:4px;background:var(--g200);border-radius:100px;overflow:hidden;margin:0.5rem 0;}
+.sc-name{font-size:1.1rem;font-weight:800;color:var(--g800);margin-bottom:0.3rem;}
+.sc-desc{font-size:12px;color:var(--g400);margin-bottom:0.5rem;}
+.prog-hd{display:flex;justify-content:space-between;margin-bottom:4px;}
+.prog-lbl{font-size:10px;color:var(--g400);font-weight:500;}
+.prog-pct{font-size:11px;font-weight:700;color:var(--blue);}
+.prog-bar{height:4px;background:var(--g200);border-radius:100px;overflow:hidden;margin:0.3rem 0 0.5rem;}
 .prog-fill{height:100%;background:var(--grad-h);border-radius:100px;}
 .sc-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--g400);}
 
-.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.5);z-index:3000;display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px);}
+/* ══ BOUTON CATALOGUE ══ */
+.btn-catalogue{display:inline-flex;align-items:center;gap:8px;background:var(--grad);color:#fff;padding:12px 28px;border-radius:12px;text-decoration:none;font-weight:600;font-size:14px;transition:all 0.2s;font-family:'Outfit',sans-serif;}
+.btn-catalogue:hover{opacity:0.88;transform:translateY(-2px);}
+
+/* ══ MODAL ══ */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.6);z-index:3000;display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px);}
 .modal-overlay.open{display:flex;}
-.modal{background:#fff;border-radius:24px;padding:2rem;max-width:480px;width:100%;position:relative;box-shadow:0 24px 80px rgba(0,0,0,0.12);}
-.m-close{position:absolute;top:1rem;right:1rem;background:var(--g100);border:none;color:var(--g400);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:16px;}
-.m-title{font-family:Georgia,serif;font-size:1.5rem;font-weight:700;color:var(--g800);margin-bottom:0.3rem;}
+.modal{background:#fff;border-radius:var(--rxl);padding:2rem;max-width:480px;width:100%;position:relative;box-shadow:0 24px 80px rgba(0,0,0,0.2);max-height:90vh;overflow-y:auto;}
+.m-close{position:absolute;top:1rem;right:1rem;background:var(--g100);border:none;color:var(--g400);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:16px;transition:background 0.2s;}
+.m-close:hover{background:#fee2e2;color:#dc2626;}
+.m-tag{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);margin-bottom:0.3rem;}
+.m-title{font-size:1.5rem;font-weight:800;color:var(--g800);margin-bottom:0.3rem;}
 .m-desc{font-size:13px;color:var(--g400);margin-bottom:1.2rem;}
-.m-tag{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.3rem;}
 .fg{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
 .fg label{font-size:11px;font-weight:600;color:var(--g400);}
-.fi{width:100%;background:#fff;border:1.5px solid var(--g200);border-radius:10px;padding:11px 14px;color:var(--g800);font-size:14px;outline:none;transition:border-color 0.2s;}
+.fi{width:100%;background:#fff;border:1.5px solid var(--g200);border-radius:10px;padding:11px 14px;color:var(--g800);font-size:14px;font-family:'Outfit',sans-serif;outline:none;transition:border-color 0.2s;}
 .fi:focus{border-color:var(--blue);}
-.m-submit{width:100%;background:var(--grad);border:none;color:#fff;padding:13px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-top:6px;}
-.toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1.5px solid var(--g200);border-radius:12px;padding:14px 20px;font-size:13px;z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(80px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 8px 32px rgba(0,0,0,0.1);}
+.m-submit{width:100%;background:var(--grad);border:none;color:#fff;padding:13px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;margin-top:6px;transition:all 0.2s;}
+.m-submit:hover{opacity:0.88;}
+
+/* ══ TOAST ══ */
+.toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1px solid var(--g200);border-radius:var(--r);padding:14px 20px;font-size:13px;color:var(--g800);z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(100px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.12);}
 .toast.show{transform:none;opacity:1;}
-footer{background:var(--g800);color:#fff;padding:2rem;text-align:center;margin-top:2rem;}
-.footer-copy{font-size:12px;color:#6b7280;}
+.toast-bar{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:var(--r) 0 0 var(--r);background:var(--grad-h);}
+
+/* ══ FOOTER ══ */
+.footer-bar{height:3px;background:var(--grad-h);}
+footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1px solid #334155;}
+.footer-copy{font-size:12px;color:#64748B;text-align:center;}
 .footer-copy span{background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700;}
-@media(max-width:768px){nav{padding:0 1rem;}.container{padding:0 1rem;}.promo-grid,.sites-grid{grid-template-columns:1fr;}.page-head{padding:6rem 1rem 2rem;}}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:768px){
+  nav{padding:0 1rem;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .page-head{padding:6rem 1rem 2rem;}
+  .container{padding:0 1rem;}
+  .promo-hero{padding:1.5rem;}
+  .ph-stats{gap:1rem;}
+  .promo-grid,.sites-grid{grid-template-columns:1fr;}
+  .site-card .sc-img{height:160px;}
+}
+@media(max-width:480px){
+  .ph-title{font-size:1.6rem;}
+  .pc-discount{font-size:3rem;}
+  .pc-cd{gap:4px;}
+  .cd-b{min-width:38px;padding:4px 6px;}
+  .cd-n{font-size:0.9rem;}
+}
 </style>
 </head>
 <body>
+
+<div class="toast" id="toast"><div class="toast-bar"></div><span id="t-ico" style="font-size:18px;">✅</span><span id="t-msg"></span></div>
+
+<!-- ══ NAV ══ -->
 <nav id="navbar">
   <a class="nav-logo" href="{% url 'home' %}">
     <div class="logo-box">E</div>
@@ -104,54 +205,57 @@ footer{background:var(--g800);color:#fff;padding:2rem;text-align:center;margin-t
   <div class="nav-links">
     <a class="nav-lnk {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
     <a class="nav-lnk {% if request.resolver_match.url_name == 'sites_list' or request.resolver_match.url_name == 'site_detail' %}active{% endif %}" href="{% url 'sites_list' %}">Nos Terrains</a>
-    <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_projets' %}active{% endif %}" href="{% url 'nos_projets' %}">Nos Projets</a>
     <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
     <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
-        <a class="nav-lnk" href="{% url 'academie_accueil' %}">Académie</a>
-
     <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' or request.resolver_match.url_name == 'une_evenement_detail' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+    <a class="nav-lnk" href="{% url 'academie_accueil' %}">Académie</a>
     <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
     {% if user.is_staff %}
     <a class="nav-lnk" href="{% url 'dashboard_home' %}" style="color:var(--blue);font-weight:700;">Dashboard</a>
     {% endif %}
   </div>
   <div class="nav-right">
-    <button class="btn-rdv" onclick="document.getElementById('cc-form')?.scrollIntoView({behavior:'smooth'})">📅 Contact</button>
+    <button class="btn-rdv" onclick="openModal()">📅 Contact</button>
   </div>
   <button class="hamburger" onclick="toggleMob()"><span></span><span></span><span></span></button>
 </nav>
 
 <div class="mob-menu" id="mob-menu">
-  <a class="nav-lnk {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
-  <a class="nav-lnk {% if request.resolver_match.url_name == 'sites_list' or request.resolver_match.url_name == 'site_detail' %}active{% endif %}" href="{% url 'sites_list' %}">Nos Terrains</a>
-  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
-  <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
-      
-
-  <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' or request.resolver_match.url_name == 'une_evenement_detail' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+  <a class="nav-lnk" href="{% url 'home' %}">Accueil</a>
+  <a class="nav-lnk" href="{% url 'sites_list' %}">Nos Terrains</a>
+  <a class="nav-lnk" href="{% url 'nos_projets' %}">Nos Projets</a>
+  <a class="nav-lnk" href="{% url 'nos_services' %}">Nos Services</a>
+  <a class="nav-lnk" href="{% url 'nos_agences' %}">Nos Agences</a>
   <a class="nav-lnk" href="{% url 'academie_accueil' %}">Académie</a>
-  <a class="nav-lnk {% if request.resolver_match.url_name == 'promotions' %}active{% endif %}" href="{% url 'promotions' %}">Promotions</a>
-  <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
-  
+  <a class="nav-lnk" href="{% url 'une_evenements_accueil' %}">Actualités</a>
+  <a class="nav-lnk" href="{% url 'promotions' %}">Promotions</a>
+  <a class="nav-lnk" href="{% url 'a_propos' %}">À propos</a>
   {% if user.is_staff %}<a class="nav-lnk" href="{% url 'dashboard_home' %}">Dashboard</a>{% endif %}
-  <button class="btn-rdv" style="width:100%;margin-top:8px;justify-content:center;" onclick="document.getElementById('cc-form')?.scrollIntoView({behavior:'smooth'})">📅 Contact</button>
+  <button class="btn-rdv" style="width:100%;margin-top:8px;justify-content:center;" onclick="openModal()">📅 Contact</button>
 </div>
 
+<!-- ══ PAGE HEAD ══ -->
 <div class="page-head">
   <div class="container">
-    <div class="ph-eyebrow">🔥 Offres a duree limitee</div>
-    <h1 class="ph-title">Promotions <em>EDEN GROUP</em></h1>
+    <div class="ph-eyebrow">🔥 Offres à durée limitée</div>
+    <h1 class="ph-title">Promotions <span>EDEN GROUP</span></h1>
   </div>
 </div>
 
 <div class="container">
   {% if promos %}
   <div class="promo-hero">
-    <h2 style="font-family:Georgia,serif;font-size:1.8rem;font-weight:700;color:var(--g800);margin-bottom:0.5rem;">Des reductions <em style="font-style:italic;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">exceptionnelles</em></h2>
-    <p style="font-size:14px;color:var(--g400);">Offres valables jusqu'a epuisement des stocks. Saisissez ces opportunites uniques.</p>
-    <div style="display:flex;gap:2rem;margin-top:1.5rem;flex-wrap:wrap;">
-      <div><div style="font-family:Georgia,serif;font-size:2rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">{{ promos.count }}</div><div style="font-size:12px;color:var(--g400);text-transform:uppercase;letter-spacing:0.5px;">Offres actives</div></div>
-      <div><div style="font-family:Georgia,serif;font-size:2rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">-10%</div><div style="font-size:12px;color:var(--g400);text-transform:uppercase;letter-spacing:0.5px;">a -30% de reduction</div></div>
+    <h2 class="ph-title-sm">Des réductions <span>exceptionnelles</span></h2>
+    <p style="font-size:14px;color:var(--g400);max-width:600px;">Offres valables jusqu'à épuisement des stocks. Saisissez ces opportunités uniques.</p>
+    <div class="ph-stats">
+      <div class="ph-stat">
+        <div class="ph-stat-n">{{ promos.count }}</div>
+        <div class="ph-stat-l">Offres actives</div>
+      </div>
+      <div class="ph-stat">
+        <div class="ph-stat-n" style="color:var(--red);">-10%</div>
+        <div class="ph-stat-l">à -30% de réduction</div>
+      </div>
     </div>
   </div>
 
@@ -169,7 +273,7 @@ footer{background:var(--g800);color:#fff;padding:2rem;text-align:center;margin-t
         </div>
         <div class="pc-info">
           <span class="pc-tag">{{ p.superficie|floatformat:0 }} m²</span>
-          <span class="pc-tag" style="background:#f0fdf4;color:#16a34a;">Disponible</span>
+          <span class="pc-tag green">Disponible</span>
           {% if p.prix_m2 %}<span class="pc-tag">{{ p.prix_m2|intcomma }} FCFA/m²</span>{% endif %}
         </div>
         {% if p.promo_fin %}
@@ -181,7 +285,7 @@ footer{background:var(--g800);color:#fff;padding:2rem;text-align:center;margin-t
           <div class="cd-b"><div class="cd-n cd-s">--</div><div class="cd-l">Sec</div></div>
         </div>
         {% endif %}
-        <button class="pc-cta" onclick="event.stopPropagation();document.getElementById('msite').value='{{ p.site.nom }} — Parcelle {{ p.numero }}';document.getElementById('modal').classList.add('open')">Saisir l'offre →</button>
+        <button class="pc-cta" onclick="event.stopPropagation();openModal('{{ p.site.nom }} — Parcelle {{ p.numero }}')">Saisir l'offre →</button>
       </div>
     </div>
     {% endfor %}
@@ -189,30 +293,34 @@ footer{background:var(--g800);color:#fff;padding:2rem;text-align:center;margin-t
   {% else %}
   <div class="no-promo">
     <div class="no-promo-ico">🔥</div>
-    <h2 style="font-family:Georgia,serif;font-size:1.5rem;margin-bottom:0.5rem;">Aucune promotion en cours</h2>
-    <p>Revenez bientot pour decouvrir nos offres exclusives.</p>
-    <div style="margin-top:1.5rem;"><a href="{% url 'sites_list' %}" style="background:var(--grad);color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600;font-size:14px;">Voir tous nos sites →</a></div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;margin-bottom:0.5rem;color:var(--g800);">Aucune promotion en cours</h2>
+    <p style="color:var(--g400);">Revenez bientôt pour découvrir nos offres exclusives.</p>
+    <div style="margin-top:1.5rem;"><a href="{% url 'sites_list' %}" class="btn-catalogue">🏡 Voir tous nos sites →</a></div>
   </div>
   {% endif %}
 
   {% if sites_promo %}
   <div class="section">
     <div class="s-ey">🏡 Sites en promotion</div>
-    <h2 class="s-tit">Sites <em>avec offres speciales</em></h2>
+    <h2 class="s-tit">Sites <span>avec offres spéciales</span></h2>
     <div class="sites-grid">
       {% for site in sites_promo %}
       <a class="site-card" href="{% url 'site_detail' site.slug %}">
         <div class="sc-img">
-          {% if site.image_principale %}<img src="{{ site.image_principale.url }}" alt="{{ site.nom }}">{% endif %}
+          {% if site.image_principale %}<img src="{{ site.image_principale.url }}" alt="{{ site.nom }}" loading="lazy">{% endif %}
           <div class="sc-overlay"></div>
           <span class="sc-status st-a">{{ site.get_statut_display }}</span>
           <div class="sc-loc">📍 {{ site.localisation }}</div>
         </div>
         <div class="sc-body">
           <div class="sc-name">{{ site.nom }}</div>
-          <div style="font-size:11px;color:var(--g400);margin-bottom:0.5rem;">{{ site.promotion_description }}</div>
-          <div class="prog-bar"><div class="prog-fill" style="width:{{ site.pourcentage_vendu }}%"></div></div>
-          <div class="sc-meta"><span>{{ site.nb_disponibles }} disponibles</span><span>{{ site.pourcentage_vendu }}% vendu</span></div>
+          <div class="sc-desc">{{ site.promotion_description|default:"Offre spéciale sur ce site" }}</div>
+          <div class="prog-hd">
+            <span class="prog-lbl">Parcelles vendues</span>
+            <span class="prog-pct">{{ site.pourcentage_vendu|default:0 }}%</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill" style="width:{{ site.pourcentage_vendu|default:0 }}%"></div></div>
+          <div class="sc-meta"><span>{{ site.nb_disponibles }} disponibles</span><span>{{ site.pourcentage_vendu|default:0 }}% vendu</span></div>
         </div>
       </a>
       {% endfor %}
@@ -222,57 +330,76 @@ footer{background:var(--g800);color:#fff;padding:2rem;text-align:center;margin-t
 
   <div class="section" style="padding-top:0;">
     <div class="s-ey">📋 Tous nos sites</div>
-    <h2 class="s-tit">Catalogue <em>complet</em></h2>
-    <div style="text-align:center;"><a href="{% url 'sites_list' %}" style="background:var(--grad);color:#fff;padding:12px 28px;border-radius:12px;text-decoration:none;font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:8px;">🏡 Voir tous les sites fonciers →</a></div>
+    <h2 class="s-tit">Catalogue <span>complet</span></h2>
+    <div style="text-align:center;"><a href="{% url 'sites_list' %}" class="btn-catalogue">🏡 Voir tous les sites fonciers →</a></div>
   </div>
 </div>
 
-<!-- MODAL -->
+<!-- ══ MODAL ══ -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
-    <button class="m-close" onclick="document.getElementById('modal').classList.remove('open')">✕</button>
+    <button class="m-close" onclick="closeModal()">✕</button>
     <div class="m-tag">✦ EDEN GROUP</div>
     <div class="m-title">Saisir cette offre</div>
-    <div class="m-desc">Remplissez ce formulaire et notre equipe vous contactera sous 24h.</div>
+    <div class="m-desc">Remplissez ce formulaire et notre équipe vous contactera sous 24h.</div>
     <form id="mform">
       {% csrf_token %}
       <input type="hidden" name="type_demande" value="reservation">
       <div class="fg"><label>Nom complet *</label><input class="fi" type="text" name="nom" placeholder="Votre nom complet" required></div>
-      <div class="fg"><label>Telephone *</label><input class="fi" type="tel" name="telephone" placeholder="+237 6XX XXX XXX" required></div>
+      <div class="fg"><label>Téléphone *</label><input class="fi" type="tel" name="telephone" placeholder="+237 6XX XXX XXX" required></div>
       <div class="fg"><label>Email *</label><input class="fi" type="email" name="email" placeholder="votre@email.com" required></div>
-      <div class="fg"><label>Offre souhaitee</label><input class="fi" type="text" name="message" id="msite" placeholder="Site et parcelle"></div>
+      <div class="fg"><label>Offre souhaitée</label><input class="fi" type="text" name="message" id="msite" placeholder="Site et parcelle"></div>
       <button type="button" class="m-submit" onclick="submitForm()">Saisir l'offre →</button>
     </form>
   </div>
 </div>
 
-<div class="toast" id="toast"><span>✅</span><span id="tmsg"></span></div>
-
-<footer><div class="footer-copy">© 2025 <span>EDEN GROUP</span>. Tous droits reserves.</div></footer>
+<!-- ══ FOOTER ══ -->
+<div class="footer-bar"></div>
+<footer>
+  <div class="footer-copy">© 2026 <span>EDEN GROUP</span>. Tous droits réservés.</div>
+</footer>
 
 <script>
+// ── NAV ──
+function toggleMob(){document.getElementById('mob-menu').classList.toggle('open');}
+window.addEventListener('scroll', function() {
+  const nav = document.getElementById('navbar');
+  if (window.scrollY > 40) nav.classList.add('scrolled');
+  else nav.classList.remove('scrolled');
+});
+
+// ── MODAL ──
+function openModal(s) { if (s) { const f = document.getElementById('msite'); if (f) f.value = s; } document.getElementById('modal').classList.add('open'); }
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+document.getElementById('modal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+
 function submitForm() {
   const form = document.getElementById('mform');
   const data = new FormData(form);
   fetch('{% url "contact" %}', {
     method: 'POST', headers: {'X-Requested-With': 'XMLHttpRequest'}, body: data
-  }).then(r => r.json()).then(d => {
-    document.getElementById('modal').classList.remove('open');
-    const t = document.getElementById('toast');
-    document.getElementById('tmsg').textContent = 'Demande envoyee ! Nous vous contacterons sous 24h.';
-    t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 4000);
-  });
+  }).then(r => r.json()).then(() => {
+    closeModal();
+    showToast('✅', 'Demande envoyée ! Nous vous contacterons sous 24h.');
+  }).catch(() => showToast('⚠️', 'Erreur réseau.'));
 }
 
-document.getElementById('modal').addEventListener('click', function(e) {
-  if (e.target === this) this.classList.remove('open');
-});
+// ── TOAST ──
+function showToast(ico, msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('t-ico').textContent = ico;
+  document.getElementById('t-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4500);
+}
 
+// ── COMPTEUR À REBOURS ──
 document.querySelectorAll('.pc-cd[data-end]').forEach(cd => {
   const end = new Date(cd.dataset.end);
   const tick = () => {
     const diff = end - new Date();
-    if (diff <= 0) return;
+    if (diff <= 0) { cd.innerHTML = '<div style="color:var(--red);font-weight:700;font-size:13px;">Terminé</div>'; return; }
     const d = Math.floor(diff / 86400000);
     const h = Math.floor((diff % 86400000) / 3600000);
     const m = Math.floor((diff % 3600000) / 60000);

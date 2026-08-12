@@ -181,6 +181,21 @@ footer{background:var(--g800);color:#fff;padding:3rem 2rem 1.5rem;}
   .footer-grid>div:first-child{grid-column:1/-1;}
 }
 @media(max-width:480px){.hero-title{font-size:1.4rem;}}
+
+.mob-menu .nav-lnk{
+    color: var(--g800) !important;
+    padding: 8px 0;
+    font-size: 14px;
+    font-weight: 500;
+}
+.mob-menu .nav-lnk:hover,
+.mob-menu .nav-lnk.active{
+    color: var(--blue) !important;
+}
+.mob-menu .nav-lnk.active::after{
+    display: none;
+}
+
 </style>
 </head>
 <body>

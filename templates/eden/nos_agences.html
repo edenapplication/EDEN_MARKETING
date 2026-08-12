@@ -333,6 +333,168 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
 .toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1px solid var(--g200);border-radius:var(--r);padding:14px 20px;font-size:13px;color:var(--g800);z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(100px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.12);}
 .toast.show{transform:none;opacity:1;}
 
+/* ══ DÉFILEMENT HORIZONTAL DES AGENCES - MOBILE ══ */
+@media(max-width: 768px) {
+    /* Conteneurs des agences avec défilement horizontal */
+    .agences-principales,
+    .bureaux-relais {
+        width: 100%;
+        overflow: visible;
+        position: relative;
+        margin: 0.5rem 0;
+    }
+    
+    .agences-principales .agences-section-title,
+    .bureaux-relais .agences-section-title {
+        padding: 0 0.5rem;
+    }
+    
+    .agences-principales .agences-row,
+    .bureaux-relais .agences-row {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 0.8rem;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+        padding: 0.5rem 0.5rem 1rem 0.5rem;
+        margin: 0 -0.5rem;
+        scrollbar-width: none;
+        grid-template-columns: none;
+    }
+    
+    .agences-principales .agences-row::-webkit-scrollbar,
+    .bureaux-relais .agences-row::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .agences-principales .agence-card,
+    .bureaux-relais .agence-card {
+        flex: 0 0 auto;
+        min-width: 220px;
+        max-width: 260px;
+        scroll-snap-align: start;
+        border-radius: 12px;
+        height: auto;
+    }
+    
+    .agences-principales .agence-card:last-child,
+    .bureaux-relais .agence-card:last-child {
+        margin-right: 0.5rem;
+    }
+    
+    .agences-principales .ac-img-wrap,
+    .bureaux-relais .ac-img-wrap {
+        height: 140px;
+    }
+    
+    .agences-principales .ac-img-wrap img,
+    .bureaux-relais .ac-img-wrap img {
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .agences-principales .ac-img-ph,
+    .bureaux-relais .ac-img-ph {
+        height: 140px;
+    }
+    
+    .agences-principales .ac-body,
+    .bureaux-relais .ac-body {
+        padding: 0.8rem 0.9rem;
+    }
+    
+    .agences-principales .ac-ville,
+    .bureaux-relais .ac-ville {
+        font-size: 0.85rem;
+    }
+    
+    .agences-principales .ac-info-row,
+    .bureaux-relais .ac-info-row {
+        font-size: 10px;
+    }
+    
+    .agences-principales .ac-btns,
+    .bureaux-relais .ac-btns {
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .agences-principales .btn-detail,
+    .bureaux-relais .btn-detail,
+    .agences-principales .btn-itineraire,
+    .bureaux-relais .btn-itineraire {
+        font-size: 10px;
+        padding: 6px;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    /* Indicateurs de défilement */
+    .agences-scroll-hint {
+        display: flex;
+        justify-content: center;
+        gap: 6px;
+        padding: 6px 0 0 0;
+        margin-top: 4px;
+    }
+    .agences-scroll-hint span {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--g200);
+        transition: all 0.3s ease;
+    }
+    .agences-scroll-hint span.active {
+        background: var(--blue);
+        width: 16px;
+        border-radius: 100px;
+    }
+}
+
+@media(max-width: 480px) {
+    .agences-principales .agence-card,
+    .bureaux-relais .agence-card {
+        min-width: 180px;
+        max-width: 210px;
+    }
+    
+    .agences-principales .ac-img-wrap,
+    .bureaux-relais .ac-img-wrap {
+        height: 110px;
+    }
+    
+    .agences-principales .ac-img-ph,
+    .bureaux-relais .ac-img-ph {
+        height: 110px;
+    }
+    
+    .agences-principales .ac-ville,
+    .bureaux-relais .ac-ville {
+        font-size: 0.8rem;
+    }
+}
+
+/* ── SIEGE SOCIAL - reste normal sur mobile ── */
+@media(max-width: 768px) {
+    .agence-card.siege-card {
+        margin-bottom: 0.5rem;
+    }
+    .agence-card.siege-card .ac-img-wrap {
+        height: 160px;
+    }
+    .agence-card.siege-card .ac-btns {
+        flex-direction: row;
+    }
+    .agence-card.siege-card .btn-detail,
+    .agence-card.siege-card .btn-itineraire {
+        font-size: 11px;
+        padding: 7px;
+        width: auto;
+        flex: 1;
+    }
+}
+
 /* RESPONSIVE */
 @media(max-width:1200px){.agences-layout{grid-template-columns:1fr auto;}.stats-card{display:none;}.services-grid{grid-template-columns:repeat(3,1fr);}.footer-grid{grid-template-columns:1fr 1fr 1fr;}
 }
@@ -351,8 +513,8 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
   .cta-inner{flex-direction:column;text-align:center;}
   .cta-contacts{justify-content:center;}
   .section{padding:2.5rem 1rem;}
-  .footer-grid{grid-template-columns:1fr;gap:1.5rem;}
-  .footer-grid>div:first-child{grid-column:1;}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:1.5rem;}
+  .footer-grid>div:first-child{grid-column:1/-1;}
   .footer-bot{flex-direction:column;text-align:center;}
 }
 @media(max-width:480px){
@@ -387,11 +549,8 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
     <a class="nav-lnk {% if request.resolver_match.url_name == 'sites_list' or request.resolver_match.url_name == 'site_detail' %}active{% endif %}" href="{% url 'sites_list' %}">Nos Terrains</a>
     <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
     <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
-        
-
     <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' or request.resolver_match.url_name == 'une_evenement_detail' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
-        <a class="nav-lnk" href="{% url 'academie_accueil' %}">Académie</a>
-
+    <a class="nav-lnk" href="{% url 'academie_accueil' %}">Académie</a>
     <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
     {% if user.is_staff %}
     <a class="nav-lnk" href="{% url 'dashboard_home' %}" style="color:var(--blue);font-weight:700;">Dashboard</a>
@@ -409,8 +568,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
   <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_projets' %}active{% endif %}" href="{% url 'nos_projets' %}">Nos Projets</a>
   <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
   <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
-      <a class="nav-lnk" href="{% url 'academie_accueil' %}">Académie</a>
-
+  <a class="nav-lnk" href="{% url 'academie_accueil' %}">Académie</a>
   <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' or request.resolver_match.url_name == 'une_evenement_detail' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
   <a class="nav-lnk {% if request.resolver_match.url_name == 'promotions' %}active{% endif %}" href="{% url 'promotions' %}">Promotions</a>
   <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
@@ -538,81 +696,92 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
   </div>
 </section>
 
+<!-- ============================================================ -->
+<!-- AGENCES PRINCIPALES (conteneur indépendant)                   -->
+<!-- ============================================================ -->
+{% if agences_principales %}
+<div class="agences-principales">
+  <div class="agences-section-title">
+    <span>🏢 Nos agences principales</span>
+  </div>
+  <div class="agences-row" id="agences-principales-row">
+    {% for ag in agences_principales %}
+    <div class="agence-card">
+      <div class="ac-img-wrap">
+        {% if ag.image %}
+          <img src="{{ ag.image.url }}" alt="{{ ag.nom }}">
+        {% else %}
+          <div class="ac-img-ph">🏢</div>
+        {% endif %}
+        <div class="ac-badge" style="background:{{ ag.badge_color }};">{{ ag.badge_label }}</div>
+      </div>
+      <div class="ac-body">
+        <div class="ac-ville">{{ ag.ville }}</div>
+        {% if ag.adresse %}<div class="ac-info-row"><span class="ac-info-ico">📍</span>{{ ag.adresse }}</div>{% endif %}
+        {% if ag.telephone %}<div class="ac-info-row"><span class="ac-info-ico">📞</span>{{ ag.telephone }}</div>{% endif %}
+        {% if ag.email %}<div class="ac-info-row"><span class="ac-info-ico">✉</span>{{ ag.email }}</div>{% endif %}
+        {% if ag.horaires %}<div class="ac-info-row"><span class="ac-info-ico">🕐</span>{{ ag.horaires }}</div>{% endif %}
+        <div class="ac-btns">
+          <button class="btn-detail" onclick="ouvrirModal({{ ag.pk }})">Voir les détails</button>
+          {% if ag.lien_itineraire %}
+          <a class="btn-itineraire" href="{{ ag.lien_itineraire }}" target="_blank">📍 Itinéraire</a>
+          {% else %}
+          <button class="btn-itineraire" onclick="showToast('📍','Itinéraire bientôt disponible.')">📍 Itinéraire</button>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <!-- Indicateurs de défilement -->
+  <div class="agences-scroll-hint" id="scroll-hint-principales">
+    {% for ag in agences_principales %}
+    <span {% if forloop.first %}class="active"{% endif %}></span>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
 
 <!-- ============================================================ -->
-        <!-- AGENCES PRINCIPALES (conteneur indépendant)                   -->
-        <!-- ============================================================ -->
-        {% if agences_principales %}
-        <div class="agences-principales">
-          <div class="agences-section-title">
-            <span>🏢 Nos agences principales</span>
-          </div>
-          <div class="agences-row">
-            {% for ag in agences_principales %}
-            <div class="agence-card">
-              <div class="ac-img-wrap">
-                {% if ag.image %}
-                  <img src="{{ ag.image.url }}" alt="{{ ag.nom }}">
-                {% else %}
-                  <div class="ac-img-ph">🏢</div>
-                {% endif %}
-                <div class="ac-badge" style="background:{{ ag.badge_color }};">{{ ag.badge_label }}</div>
-              </div>
-              <div class="ac-body">
-                <div class="ac-ville">{{ ag.ville }}</div>
-                {% if ag.adresse %}<div class="ac-info-row"><span class="ac-info-ico">📍</span>{{ ag.adresse }}</div>{% endif %}
-                {% if ag.telephone %}<div class="ac-info-row"><span class="ac-info-ico">📞</span>{{ ag.telephone }}</div>{% endif %}
-                {% if ag.email %}<div class="ac-info-row"><span class="ac-info-ico">✉</span>{{ ag.email }}</div>{% endif %}
-                {% if ag.horaires %}<div class="ac-info-row"><span class="ac-info-ico">🕐</span>{{ ag.horaires }}</div>{% endif %}
-                <div class="ac-btns">
-                  <button class="btn-detail" onclick="ouvrirModal({{ ag.pk }})">Voir les détails</button>
-                  {% if ag.lien_itineraire %}
-                  <a class="btn-itineraire" href="{{ ag.lien_itineraire }}" target="_blank">📍 Itinéraire</a>
-                  {% else %}
-                  <button class="btn-itineraire" onclick="showToast('📍','Itinéraire bientôt disponible.')">📍 Itinéraire</button>
-                  {% endif %}
-                </div>
-              </div>
-            </div>
-            {% endfor %}
-          </div>
+<!-- BUREAUX RELAIS (conteneur indépendant)                        -->
+<!-- ============================================================ -->
+{% if bureaux_relais %}
+<div class="bureaux-relais">
+  <div class="agences-section-title">
+    <span>🏪 Bureaux relais</span>
+  </div>
+  <div class="agences-row" id="bureaux-relais-row">
+    {% for br in bureaux_relais %}
+    <div class="agence-card">
+      <div class="ac-img-wrap" style="height:120px;">
+        {% if br.image %}<img src="{{ br.image.url }}" alt="{{ br.nom }}">
+        {% else %}<div class="ac-img-ph" style="height:120px;">🏪</div>{% endif %}
+        <div class="ac-badge" style="background:{{ br.badge_color }};">{{ br.badge_label }}</div>
+      </div>
+      <div class="ac-body">
+        <div class="ac-ville" style="font-size:0.9rem;">{{ br.ville }}</div>
+        {% if br.adresse %}<div class="ac-info-row"><span class="ac-info-ico">📍</span>{{ br.adresse }}</div>{% endif %}
+        {% if br.telephone %}<div class="ac-info-row"><span class="ac-info-ico">📞</span>{{ br.telephone }}</div>{% endif %}
+        <div class="ac-btns">
+          <button class="btn-detail" onclick="ouvrirModal({{ br.pk }})">Voir les détails</button>
+          {% if br.lien_itineraire %}
+          <a class="btn-itineraire" href="{{ br.lien_itineraire }}" target="_blank">📍 Itinéraire</a>
+          {% else %}
+          <button class="btn-itineraire" onclick="showToast('📍','Itinéraire bientôt disponible.')">📍 Itinéraire</button>
+          {% endif %}
         </div>
-        {% endif %}
-
-        <!-- ============================================================ -->
-        <!-- BUREAUX RELAIS (conteneur indépendant)                        -->
-        <!-- ============================================================ -->
-        {% if bureaux_relais %}
-        <div class="bureaux-relais">
-          <div class="agences-section-title">
-            <span>🏪 Bureaux relais</span>
-          </div>
-          <div class="agences-row">
-            {% for br in bureaux_relais %}
-            <div class="agence-card">
-              <div class="ac-img-wrap" style="height:120px;">
-                {% if br.image %}<img src="{{ br.image.url }}" alt="{{ br.nom }}">
-                {% else %}<div class="ac-img-ph" style="height:120px;">🏪</div>{% endif %}
-                <div class="ac-badge" style="background:{{ br.badge_color }};">{{ br.badge_label }}</div>
-              </div>
-              <div class="ac-body">
-                <div class="ac-ville" style="font-size:0.9rem;">{{ br.ville }}</div>
-                {% if br.adresse %}<div class="ac-info-row"><span class="ac-info-ico">📍</span>{{ br.adresse }}</div>{% endif %}
-                {% if br.telephone %}<div class="ac-info-row"><span class="ac-info-ico">📞</span>{{ br.telephone }}</div>{% endif %}
-                <div class="ac-btns">
-                  <button class="btn-detail" onclick="ouvrirModal({{ br.pk }})">Voir les détails</button>
-                  {% if br.lien_itineraire %}
-                  <a class="btn-itineraire" href="{{ br.lien_itineraire }}" target="_blank">📍 Itinéraire</a>
-                  {% else %}
-                  <button class="btn-itineraire" onclick="showToast('📍','Itinéraire bientôt disponible.')">📍 Itinéraire</button>
-                  {% endif %}
-                </div>
-              </div>
-            </div>
-            {% endfor %}
-          </div>
-        </div>
-        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <!-- Indicateurs de défilement -->
+  <div class="agences-scroll-hint" id="scroll-hint-relais">
+    {% for br in bureaux_relais %}
+    <span {% if forloop.first %}class="active"{% endif %}></span>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
 
 <!-- SERVICES EN BAS -->
 <div class="services-bar">
@@ -857,6 +1026,25 @@ function souscrireFooter() {
   document.getElementById('footer-nl').value = '';
 }
 
+// ── INDICATEURS DE DÉFILEMENT DES AGENCES ──
+function initScrollHints(containerId, hintId) {
+    const container = document.getElementById(containerId);
+    const dots = document.querySelectorAll(`#${hintId} span`);
+    
+    if (!container || dots.length === 0) return;
+    
+    container.addEventListener('scroll', function() {
+        const scrollLeft = this.scrollLeft;
+        const maxScroll = this.scrollWidth - this.clientWidth;
+        const ratio = maxScroll > 0 ? scrollLeft / maxScroll : 0;
+        const activeIndex = Math.round(ratio * (dots.length - 1));
+        
+        dots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === activeIndex);
+        });
+    });
+}
+
 // Gestion du scroll pour la navbar
 window.addEventListener('scroll', () => {
   const nav = document.getElementById('navbar');
@@ -875,6 +1063,10 @@ document.addEventListener('DOMContentLoaded', function() {
   } else {
     nav.classList.remove('scrolled');
   }
+  
+  // Initialiser les indicateurs de défilement
+  initScrollHints('agences-principales-row', 'scroll-hint-principales');
+  initScrollHints('bureaux-relais-row', 'scroll-hint-relais');
 });
 </script>
 </body>
