@@ -676,7 +676,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
     padding: 6px 18px;
     font-size: 12px;
     font-weight: 800;
-    text-transform: uppercase;
+    
 
     clip-path: polygon(
         10% 0,
@@ -876,9 +876,8 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
         <div class="sf-inp-wrap">
           <select class="sf-select" id="s-statut" onchange="analyserFiltre()">
   <option value="">Tous les terrains</option>
-  <option value="site_titre">🔵 Site titré</option>
-  <option value="en_cours_immatriculation">🟡 En cours d'immatriculation</option>
-  <option value="titre_et_lotis">🟣 Titré et lotis</option>
+  <option value="en_cours_immatriculation">🟡 Terrain En cours d'immatriculation</option>
+  <option value="titre_et_lotis">🟣 Terrain Titré et lotis</option>
   <option value="prochainement">🔷 Prochainement</option>
 </select>
         </div>
@@ -915,9 +914,8 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
     </div>
     <div class="filter-pills">
   <button class="fpill active" onclick="setFilter(this,'all')">📋 Tous</button>
-  <button class="fpill" onclick="setFilter(this,'site_titre')">🔵 Titrés</button>
-  <button class="fpill" onclick="setFilter(this,'en_cours_immatriculation')">🟡 En cours immatriculation</button>
-  <button class="fpill" onclick="setFilter(this,'titre_et_lotis')">🟣 Titrés et lotis</button>
+  <button class="fpill" onclick="setFilter(this,'en_cours_immatriculation')">🟡 Terrain En cours immatriculation</button>
+  <button class="fpill" onclick="setFilter(this,'titre_et_lotis')">🟣 Terrain Titrés et lotis</button>
   <button class="fpill" onclick="setFilter(this,'prochainement')">🔷 Prochainement</button>
 </div>
     <div class="nb-resultats" id="nb-resultats"></div>

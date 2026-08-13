@@ -8,10 +8,10 @@ import string
 
 class SiteFoncier(models.Model):
     STATUT_CHOICES = [
-        ('disponible', '🟢 Disponible'),
-        ('site_titre', '🔵 Site titré'),
-        ('en_cours_immatriculation', '🟡 En cours d\'immatriculation'),
-        ('titre_et_lotis', '🟣 Titré et lotis'),
+        ('disponible', '🟢 Terrain Disponible'),
+        ('site_titre', '🔵 Terrain titré'),
+        ('en_cours_immatriculation', '🟡 Terrain En cours d\'immatriculation'),
+        ('titre_et_lotis', '🟣 Terrain Titré et lotis'),
         ('complet', '🔴 Complet'),
         ('prochainement', '🔷 Prochainement'),
     ]

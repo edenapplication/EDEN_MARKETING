@@ -91,6 +91,22 @@ def home(request):
     # Trier par date (les plus récentes d'abord)
     actualites_une = sorted(actualites_une, key=lambda x: x.date_evenement or x.created_at, reverse=True)[:8]
 
+    # ═══ PRÉPARER LES DONNÉES POUR LE JAVASCRIPT (FILTRAGE AJAX) ═══
+    sites_json = []
+    for site in sites:
+        sites_json.append({
+            'slug': site.slug,
+            'nom': site.nom,
+            'localisation': site.localisation,
+            'statut': site.statut,
+            'prix_m2': float(site.prix_min or 0),
+            'morcellement': float(site.superficie_min_effective or 0),
+            'superficie_affichage': float(site.superficie_minimale_affichage or 0),
+            'prix_min': float(site.prix_min or 0),
+            'nb_dispo': site.nb_disponibles,
+            'url': site.get_absolute_url(),
+        })
+
     if request.method == 'POST':
         form = DemandeContactForm(request.POST)
         if form.is_valid():
@@ -117,12 +133,12 @@ def home(request):
         'etapes': etapes,
         'livret': livret,
         'actualites': actualites,
-        'actualites_une': actualites_une,  # ⬅️ NOUVELLE VARIABLE
+        'actualites_une': actualites_une,
         'stats_home': stats_home,
         'journaux': journaux,
         'villes': villes,
+        'sites_json': sites_json,  # ⬅️ AJOUTÉ POUR LE FILTRAGE AJAX
     })
-
 
 def sites_list(request):
     from .models import HeroConfig, HeroSlide

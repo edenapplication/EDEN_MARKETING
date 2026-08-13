@@ -340,14 +340,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
   z-index:10;
   margin-top:-clamp(20px, 3vw, 40px);
 }
-.search-fields{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr 1fr auto;
-  gap:8px;
-  align-items:end;
-}
-.sf-grp{display:flex;flex-direction:column;gap:4px;}
-.sf-lbl{
+.sf-lbl {
   font-size:10px;
   font-weight:700;
   color:var(--g400);
@@ -357,6 +350,13 @@ nav.scrolled .hamburger span{background:var(--g800);}
   align-items:center;
   gap:4px;
 }
+.search-fields{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr 1fr auto;
+  gap:8px;
+  align-items:end;
+}
+.sf-grp{display:flex;flex-direction:column;gap:4px;}
 .sf-inp-wrap{
   display:flex;
   align-items:center;
@@ -409,6 +409,94 @@ nav.scrolled .hamburger span{background:var(--g800);}
   transition:all 0.2s;
 }
 .btn-rech:hover{background:var(--red-d);transform:translateY(-1px);}
+
+/* ══ AJAX PANEL FLOTTANT ══ */
+.ajax-result-panel{
+  display:none;
+  position:fixed;
+  bottom:2rem;
+  right:2rem;
+  width:380px;
+  max-width:calc(100vw - 2rem);
+  max-height:65vh;
+  background:linear-gradient(160deg,#0A2494 0%,#1B4FDB 60%,#7B20B4 100%);
+  border-radius:var(--rl);
+  box-shadow:0 12px 48px rgba(0,0,0,0.35);
+  z-index:2000;
+  flex-direction:column;
+  overflow:hidden;
+  border:1.5px solid rgba(255,255,255,0.15);
+  animation:ajaxIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes ajaxIn{
+  from{opacity:0;transform:translateY(40px) scale(0.95);}
+  to{opacity:1;transform:none;}
+}
+.ajax-result-panel.visible{display:flex;}
+
+.arp-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;
+  background:rgba(0,0,0,0.2);
+  border-bottom:1px solid rgba(255,255,255,0.1);
+  flex-shrink:0;
+}
+.arp-tit{
+  font-size:13px;font-weight:700;color:#fff;
+  display:flex;align-items:center;gap:6px;
+  flex:1;
+}
+.arp-close{
+  background:rgba(255,255,255,0.15);border:none;color:#fff;
+  width:26px;height:26px;border-radius:50%;cursor:pointer;
+  font-size:13px;display:flex;align-items:center;justify-content:center;
+  transition:background 0.2s;flex-shrink:0;
+}
+.arp-close:hover{background:rgba(200,16,46,0.6);}
+
+.arp-items{
+  overflow-y:auto;
+  padding:10px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.arp-items::-webkit-scrollbar{width:4px;}
+.arp-items::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.3);border-radius:100px;}
+
+.arp-item{
+  background:rgba(255,255,255,0.1);
+  border:1px solid rgba(255,255,255,0.15);
+  border-radius:10px;
+  padding:10px 12px;
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.arp-item:hover{background:rgba(255,255,255,0.2);transform:translateY(-1px);}
+
+.arp-item-site{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:6px;
+}
+.arp-item-site span:first-child{font-size:13px;font-weight:800;color:#fff;}
+.arp-item-loc{font-size:10px;color:rgba(255,255,255,0.6);font-weight:500;}
+
+.arp-item-lignes{display:flex;flex-direction:column;gap:3px;margin-bottom:8px;}
+.arp-ligne{font-size:11px;color:rgba(255,255,255,0.85);line-height:1.5;}
+.arp-hl{color:#FFD700;font-weight:700;}
+
+.arp-voir{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:11px;font-weight:700;color:#FFD700;
+  text-decoration:none;transition:gap 0.2s;
+}
+.arp-voir:hover{gap:7px;}
+
+.arp-empty{
+  font-size:12px;color:rgba(255,255,255,0.7);
+  text-align:center;padding:1rem;
+  line-height:1.6;
+}
 
 /* ══ SECTIONS ══ */
 .section{padding:clamp(1.5rem, 3vw, 2rem);}
@@ -594,13 +682,19 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .stats-band{
   background:var(--blue-d);
   padding:clamp(1rem, 1.5vw, 1.5rem) clamp(1rem, 2vw, 2rem);
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
 }
+.stats-band::-webkit-scrollbar{display:none;}
 .stats-band-inner{
   max-width:1280px;
   margin:0 auto;
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:1rem;
+  display:flex;
+  flex-wrap:nowrap;
+  gap:0;
+  min-width:max-content;
+  padding:0.5rem 0.5rem;
 }
 .stats-band-item{
   display:flex;
@@ -1546,42 +1640,25 @@ footer{
   color: #fff;
   z-index: 2;
 }
-
-/* Couleurs des statuts */
-.statut-disponible { background: rgba(22, 163, 74, 0.92); }      /* Vert */
-.statut-site-titre { background: rgba(59, 130, 246, 0.92); }     /* Bleu */
-.statut-en-cours { background: rgba(245, 158, 11, 0.92); }       /* Orange */
-.statut-titre-lotis { background: rgba(139, 92, 246, 0.92); }    /* Violet */
-.statut-complet { background: rgba(239, 68, 68, 0.92); }         /* Rouge */
-.statut-prochainement { background: rgba(6, 182, 212, 0.92); }   /* Cyan */
-
+.statut-disponible { background: rgba(22, 163, 74, 0.92); }
+.statut-site-titre { background: rgba(59, 130, 246, 0.92); }
+.statut-en-cours { background: rgba(245, 158, 11, 0.92); }
+.statut-titre-lotis { background: rgba(139, 92, 246, 0.92); }
+.statut-complet { background: rgba(239, 68, 68, 0.92); }
+.statut-prochainement { background: rgba(6, 182, 212, 0.92); }
 
 .sc-popularite {
     position: absolute;
     top: 135px;
     right: 0;
-    
-    
     background: #dc2626;
     color: white;
-
     padding: 6px 18px 6px 14px;
     font-size: 12px;
     font-weight: 800;
-    text-transform: uppercase;
-
-    /* ═══ FORME : Pointe à gauche, biseau à droite ═══ */
-    clip-path: polygon(
-        0 50%,
-        8px 0,
-        100% 0,
-        100% 100%,
-        8px 100%
-    );
-
+    clip-path: polygon(0 50%, 8px 0, 100% 0, 100% 100%, 8px 100%);
     box-shadow: 0 4px 10px rgba(0,0,0,0.25);
     z-index: 5;
-
     white-space: nowrap;
     max-width: 200px;
     overflow: hidden;
@@ -1589,530 +1666,38 @@ footer{
     text-align: left;
 }
 
-/* ════════════════════════════════════════════════
-   AMÉLIORATIONS RESPONSIVE MOBILE
-   ════════════════════════════════════════════════ */
-
-/* ── 1. HERO - Texte ne passe plus derrière la nav ── */
-@media(max-width: 768px) {
-    .hero {
-        height: min(70vh, 500px);
-        min-height: 350px;
-    }
-    .hero-inner {
-        padding-top: 85px;
-        padding-left: 1rem;
-        padding-right: 1rem;
-        align-items: flex-start;
-        justify-content: flex-start;
-    }
-    .hero-left {
-        max-width: 100%;
-        margin-top: 5px;
-    }
-    .hero-p-tit {
-        font-size: 1.6rem;
-        line-height: 1.1;
-        text-shadow: 0 2px 20px rgba(0,0,0,0.6);
-    }
-    .hero-p-desc {
-        font-size: 0.85rem;
-        text-shadow: 0 2px 16px rgba(0,0,0,0.6);
-        margin-bottom: 1rem;
-    }
-    .hero-btns {
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-    .btn-hero-p,
-    .btn-hero-o {
-        font-size: 11px;
-        padding: 8px 16px;
-        width: auto;
-        flex: 1;
-        min-width: 140px;
-        justify-content: center;
-    }
-    .hero-overlay {
-        background: linear-gradient(to bottom, rgba(10,22,40,0.7) 0%, rgba(10,22,40,0.5) 50%, rgba(10,22,40,0.3) 100%);
-    }
-}
-
-@media(max-width: 480px) {
-    .hero {
-        height: min(65vh, 420px);
-        min-height: 300px;
-    }
-    .hero-p-tit {
-        font-size: 1.3rem;
-    }
-    .hero-p-desc {
-        font-size: 0.75rem;
-    }
-    .btn-hero-p,
-    .btn-hero-o {
-        font-size: 10px;
-        padding: 6px 12px;
-        min-width: 120px;
-    }
-}
-
-/* ── 2. STATS BAND - Une seule ligne avec défilement ── */
-@media(max-width: 768px) {
-    .stats-band {
-        padding: 0.5rem 0;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-    }
-    .stats-band::-webkit-scrollbar {
-        display: none;
-    }
-    .stats-band-inner {
-        display: flex;
-        flex-wrap: nowrap;
-        gap: 0;
-        min-width: max-content;
-        padding: 0.5rem 0.5rem;
-        grid-template-columns: none;
-    }
-    .stats-band-item {
-        flex: 0 0 auto;
-        padding: 0.3rem 1rem;
-        border-right: 1px solid rgba(255,255,255,0.15);
-        border-bottom: none;
-        gap: 8px;
-        min-width: 120px;
-        justify-content: center;
-    }
-    .stats-band-item:last-child {
-        border-right: none;
-        padding-right: 1.5rem;
-    }
-    .sbi-ico {
-        font-size: 1.1rem;
-    }
-    .sbi-n {
-        font-size: 0.9rem;
-        white-space: nowrap;
-    }
-    .sbi-l {
-        font-size: 8px;
-        white-space: nowrap;
-    }
-}
-
-@media(max-width: 480px) {
-    .stats-band-item {
-        min-width: 90px;
-        padding: 0.2rem 0.6rem;
-    }
-    .sbi-ico {
-        font-size: 0.9rem;
-    }
-    .sbi-n {
-        font-size: 0.75rem;
-    }
-    .sbi-l {
-        font-size: 7px;
-    }
-}
-
-/* ── 3. SERVICES - Défilement horizontal continu ── */
-// ── INDICATEURS DE DÉFILEMENT SERVICES ──
-const servicesWrapper = document.querySelector('.services-grid-wrapper');
-const scrollDots = document.querySelectorAll('.services-scroll-hint span');
-
-if (servicesWrapper) {
-    servicesWrapper.addEventListener('scroll', function() {
-        const scrollLeft = this.scrollLeft;
-        const maxScroll = this.scrollWidth - this.clientWidth;
-        const ratio = maxScroll > 0 ? scrollLeft / maxScroll : 0;
-        const activeIndex = Math.round(ratio * (scrollDots.length - 1));
-        
-        scrollDots.forEach((dot, i) => {
-            dot.classList.toggle('active', i === activeIndex);
-        });
-    });
-}
-
-/* ── 4. ACTUALITÉS - Défilement horizontal avec même taille que les sites ── */
-@media(max-width: 768px) {
-    .journal-section {
-        padding: 1.5rem 0.5rem;
-        overflow: hidden;
-    }
-    .journal-slider {
-        overflow: visible;
-        padding: 0.5rem 0;
-    }
-    .journal-grid {
-        display: flex;
-        flex-wrap: nowrap;
-        gap: 0.8rem;
-        width: max-content;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scroll-snap-type: x mandatory;
-        padding: 0 1rem;
-        scrollbar-width: none;
-    }
-    .journal-grid::-webkit-scrollbar {
-        display: none;
-    }
-    .journal-card {
-        flex: 0 0 auto;
-        min-width: 200px;
-        max-width: 240px;
-        scroll-snap-align: start;
-        border-radius: 12px;
-    }
-    .journal-card:last-child {
-        margin-right: 0.5rem;
-    }
-    .jc-img {
-        height: 130px;
-    }
-    .jc-tit {
-        font-size: 12px;
-        line-height: 1.3;
-    }
-    .jc-desc {
-        font-size: 10px;
-        line-height: 1.4;
-        margin-bottom: 0.4rem;
-    }
-    .jc-body {
-        padding: 0.6rem 0.8rem;
-    }
-    .jc-lire {
-        font-size: 10px;
-    }
-}
-
-@media(max-width: 480px) {
-    .journal-card {
-        min-width: 160px;
-        max-width: 190px;
-    }
-    .jc-img {
-        height: 100px;
-    }
-    .jc-tit {
-        font-size: 11px;
-    }
-    .jc-desc {
-        font-size: 9px;
-    }
-    .jc-date-badge {
-        padding: 4px 8px;
-    }
-    .jc-date-day {
-        font-size: 1rem;
-    }
-    .jc-date-month {
-        font-size: 8px;
-    }
-}
-
-/* ── 5. CARROUSEL SITES - Mobile ── */
-@media(max-width: 768px) {
-    .carousel-nav {
-        display: none;
-    }
-    .carousel-track-wrap {
-        padding: 0 0.5rem;
-    }
-    .site-card {
-        min-width: 160px;
-        max-width: 190px;
-        border-radius: 12px;
-    }
-    .sc-img-zone {
-        height: 110px;
-    }
-    .sc-body {
-        padding: 0.6rem 0.8rem;
-    }
-    .sc-nom {
-        font-size: 11px;
-    }
-    .sc-prix {
-        font-size: 0.8rem;
-    }
-    .sc-sup {
-        font-size: 9px;
-    }
-    .sc-voir-link {
-        font-size: 9px;
-    }
-    .sc-badge {
-        font-size: 7px;
-        padding: 2px 6px;
-    }
-}
-
-@media(max-width: 480px) {
-    .site-card {
-        min-width: 130px;
-        max-width: 160px;
-    }
-    .sc-img-zone {
-        height: 90px;
-    }
-    .sc-nom {
-        font-size: 10px;
-    }
-    .sc-prix {
-        font-size: 0.7rem;
-    }
-}
-
-/* ── 6. PROMOTIONS - Mobile ── */
-@media(max-width: 768px) {
-    .promos-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 0.8rem;
-    }
-    .pc-top {
-        height: 70px;
-    }
-    .pc-disc {
-        font-size: 2rem;
-    }
-    .pc-body {
-        padding: 0.6rem 0.8rem;
-    }
-    .pc-name {
-        font-size: 12px;
-        margin: 2px 0 4px;
-    }
-    .pc-new {
-        font-size: 1rem;
-    }
-    .pc-cta {
-        font-size: 11px;
-        padding: 6px;
-    }
-}
-
-@media(max-width: 480px) {
-    .promos-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* ── 7. ÉTAPES - Mobile ── */
-@media(max-width: 768px) {
-    .etapes-section {
-        padding: 1.5rem 0;
-    }
-    .etapes-inner {
-        padding: 0 0.5rem;
-    }
-    .etapes-layout {
-        padding: 1rem;
-        min-height: auto;
-        flex-direction: column;
-        border-radius: 12px;
-    }
-    .etapes-steps {
-        width: 100%;
-        display: flex;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        gap: 0.8rem;
-        padding: 0.5rem 0;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-    }
-    .etapes-steps::-webkit-scrollbar {
-        display: none;
-    }
-    .etape-item {
-        flex: 0 0 auto;
-        min-width: 80px;
-        max-width: 100px;
-        padding: 0.3rem 0;
-    }
-    .etape-num {
-        width: 32px;
-        height: 32px;
-        font-size: 12px;
-        margin: 0 auto 0.3rem;
-    }
-    .etape-lbl {
-        font-size: 10px;
-    }
-    .etape-sub {
-        font-size: 8px;
-        margin-top: 2px;
-    }
-    .etape-arrow {
-        display: none;
-    }
-    .etapes-img-zone {
-        display: none;
-    }
-}
-
-@media(max-width: 480px) {
-    .etape-item {
-        min-width: 60px;
-        max-width: 80px;
-    }
-    .etape-num {
-        width: 28px;
-        height: 28px;
-        font-size: 10px;
-    }
-    .etape-lbl {
-        font-size: 9px;
-    }
-}
-
-/* ── 8. LIVRET CARD - Mobile ── */
-@media(max-width: 768px) {
-    .livret-card {
-        min-height: auto;
-        border-radius: 16px;
-        margin-top: 1rem;
-    }
-    .livret-content {
-        width: 100%;
-        padding: 1.2rem;
-    }
-    .livret-tit {
-        font-size: 1rem;
-    }
-    .livret-desc {
-        font-size: 11px;
-    }
-    .livret-check {
-        font-size: 11px;
-    }
-    .btn-livret {
-        font-size: 12px;
-        padding: 8px 16px;
-    }
-}
-
-/* ── 9. ACADEMIE - Mobile ── */
-@media(max-width: 768px) {
-    .academy-section {
-        padding: 1.5rem 0.5rem;
-    }
-    .academy-card {
-        border-radius: 16px;
-        min-height: auto;
-        grid-template-columns: 1fr;
-    }
-    .academy-left {
-        padding: 1rem;
-        order: 1;
-    }
-    .academy-left h2 {
-        font-size: 1.1rem;
-    }
-    .academy-left p {
-        font-size: 11px;
-        margin: 6px 0 12px;
-    }
-    .academy-features {
-        order: 2;
-        padding: 0.8rem;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-    }
-    .feature {
-        gap: 8px;
-    }
-    .feature i {
-        width: 28px;
-        height: 28px;
-        min-width: 28px;
-        font-size: 12px;
-    }
-    .feature strong {
-        font-size: 10px;
-    }
-    .feature span {
-        font-size: 9px;
-    }
-    .academy-image {
-        order: 3;
-        min-height: 120px;
-    }
-    .academy-modules {
-        order: 4;
-        padding: 0.8rem;
-    }
-    .academy-modules h3 {
-        font-size: 0.85rem;
-    }
-    .academy-modules ul {
-        grid-template-columns: 1fr 1fr;
-        gap: 4px;
-        margin: 0.4rem 0;
-    }
-    .academy-modules li {
-        font-size: 10px;
-    }
-    .academy-modules li::before {
-        width: 16px;
-        height: 16px;
-        min-width: 16px;
-        font-size: 7px;
-    }
-    .academy-btn {
-        font-size: 11px;
-        padding: 6px 14px;
-    }
-}
-
-@media(max-width: 480px) {
-    .academy-features {
-        grid-template-columns: 1fr;
-    }
-    .academy-modules ul {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* ── 10. BOTTOM SECTION - Mobile ── */
-@media(max-width: 768px) {
-    .bottom-section {
-        padding: 1.5rem 0.5rem;
-    }
-    .bottom-inner {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-        min-height: auto;
-    }
-    .tc-quote {
-        font-size: 12px;
-    }
-    .souvenir-card {
-        min-height: auto;
-        padding: 1rem;
-    }
-    .contact-col {
-        padding: 1rem;
-        border-radius: 12px;
-    }
-    .contact-hd-tit {
-        font-size: 1rem;
-    }
-    .contact-hd-sub {
-        font-size: 12px;
-    }
-}
-
-.footer-grid{grid-template-columns:1fr 1fr;gap:1.5rem;}
+/* ══ RESPONSIVE MOBILE ══ */
+@media(max-width:768px){
+  .hero-overlay{background:linear-gradient(to bottom,rgba(10,22,40,0.7) 0%,rgba(10,22,40,0.5) 50%,rgba(10,22,40,0.3) 100%);}
+  .hero{height:min(60vh,400px);}
+  .hero-inner{padding-top:80px;padding-left:1rem;padding-right:1rem;align-items:flex-start;justify-content:flex-start;}
+  .hero-left{max-width:100%;margin-top:5px;}
+  .hero-p-tit{font-size:1.5rem;line-height:1.1;text-shadow:0 2px 20px rgba(0,0,0,0.6);}
+  .hero-p-desc{font-size:0.8rem;text-shadow:0 2px 16px rgba(0,0,0,0.6);margin-bottom:1rem;}
+  .hero-btns{flex-direction:row;flex-wrap:wrap;gap:6px;}
+  .btn-hero-p,.btn-hero-o{font-size:10px;padding:6px 12px;width:auto;flex:1;min-width:120px;justify-content:center;}
+  .hero-right{display:none;}
+  .hero-nav{display:none;}
+  .hero-indicators{bottom:15px;}
+  .search-wrap{margin:0 1rem;margin-top:-20px;padding:0.8rem;}
+  .search-fields{grid-template-columns:1fr;}
+  .section,.services-section,.etapes-section,.journal-section,.academy-section{padding:1rem;}
+  .bottom-section{padding:1rem;}
+  .bottom-inner{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:1rem;}
   .footer-grid>div:first-child{grid-column:1/-1;}
-
+  .services-grid{grid-template-columns:1fr;}
+  .journal-card{flex:0 0 220px;}
+  .promos-grid{grid-template-columns:1fr;}
+  .stats-band{padding:0.3rem 0;overflow-x:auto;scrollbar-width:none;}
+  .stats-band::-webkit-scrollbar{display:none;}
+  .stats-band-inner{display:flex;flex-wrap:nowrap;gap:0;min-width:max-content;padding:0.3rem 0.5rem;grid-template-columns:none;}
+  .stats-band-item{flex:0 0 auto;padding:0.2rem 0.8rem;border-right:1px solid rgba(255,255,255,0.15);border-bottom:none;gap:6px;min-width:80px;justify-content:center;}
+  .stats-band-item:last-child{border-right:none;padding-right:1rem;}
+  .sbi-ico{font-size:0.9rem;}
+  .sbi-n{font-size:0.7rem;white-space:nowrap;}
+  .sbi-l{font-size:6px;white-space:nowrap;}
+}
 </style>
 </head>
 <body>
@@ -2135,8 +1720,7 @@ if (servicesWrapper) {
     <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
     <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
     <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' or request.resolver_match.url_name == 'une_evenement_detail' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
-        <a class="nav-lnk {% if request.resolver_match.url_name == 'academie_accueil' %}active{% endif %}" href="{% url 'academie_accueil' %}">Académie</a>
-
+    <a class="nav-lnk {% if request.resolver_match.url_name == 'academie_accueil' %}active{% endif %}" href="{% url 'academie_accueil' %}">Académie</a>
     <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
     {% if user.is_staff %}
     <a class="nav-lnk" href="{% url 'dashboard_home' %}" style="color:var(--blue);font-weight:700;">Dashboard</a>
@@ -2269,7 +1853,7 @@ if (servicesWrapper) {
   </div>
 </section>
 
-<!-- ══ SEARCH BOX ══ -->
+<!-- ══ SEARCH BOX AVEC FILTRAGE AJAX ══ -->
 <div class="search-section" style="margin-top:-1px;">
   <div class="search-wrap">
     <div class="sf-lbl" style="color: #0e0d0d; margin-bottom: 8px;">Complétez les informations ci-dessous afin de trouver le site qui correspond à vos critères.</div>
@@ -2278,10 +1862,19 @@ if (servicesWrapper) {
       <div class="sf-grp">
         <div class="sf-lbl">📍 Site / Localisation</div>
         <div class="sf-inp-wrap">
-          <select class="sf-select" id="s-loc">
+          <select class="sf-select" id="s-loc" onchange="analyserFiltre()">
             <option value="">Tous les sites</option>
             {% for site in sites %}
-            <option value="{{ site.slug }}">{{ site.nom }} — {{ site.localisation }}</option>
+            <option value="{{ site.slug }}"
+              data-nom="{{ site.nom }}"
+              data-loc="{{ site.localisation }}"
+              data-prix-min="{{ site.prix_min_effectif|default:0 }}"
+              data-prix-max="{{ site.prix_max_effectif|default:0 }}"
+              data-sup-min="{{ site.superficie_min_effectif|default:0 }}"
+              data-sup-max="{{ site.superficie_max_effectif|default:0 }}"
+              data-nb-dispo="{{ site.nb_disponibles|default:0 }}">
+              {{ site.nom }} — {{ site.localisation }}
+            </option>
             {% endfor %}
           </select>
         </div>
@@ -2291,7 +1884,7 @@ if (servicesWrapper) {
       <div class="sf-grp">
         <div class="sf-lbl">📐 Superficie souhaitée (m²)</div>
         <div class="sf-inp-wrap">
-          <input class="sf-inp" type="number" id="s-surf" placeholder="Ex: 500" min="1">
+          <input class="sf-inp" type="number" id="s-surf" placeholder="Ex: 500" oninput="analyserFiltre()" min="1">
         </div>
       </div>
 
@@ -2299,7 +1892,7 @@ if (servicesWrapper) {
       <div class="sf-grp">
         <div class="sf-lbl">💰 Budget (FCFA)</div>
         <div class="sf-inp-wrap">
-          <input class="sf-inp" type="number" id="s-budget" placeholder="Ex: 5000000" min="1">
+          <input class="sf-inp" type="number" id="s-budget" placeholder="Ex: 5000000" oninput="analyserFiltre()" min="1">
         </div>
       </div>
 
@@ -2307,9 +1900,8 @@ if (servicesWrapper) {
       <div class="sf-grp">
         <div class="sf-lbl">✅ Statut</div>
         <div class="sf-inp-wrap">
-          <select class="sf-select" id="s-statut">
+          <select class="sf-select" id="s-statut" onchange="analyserFiltre()">
             <option value="">Tous les terrains</option>
-            <option value="site_titre">🔵 Site titré</option>
             <option value="en_cours_immatriculation">🟡 En cours d'immatriculation</option>
             <option value="titre_et_lotis">🟣 Titré et lotis</option>
             <option value="prochainement">🔷 Prochainement</option>
@@ -2321,6 +1913,17 @@ if (servicesWrapper) {
     </div>
   </div>
 </div>
+
+<!-- ══ AJAX PANEL FLOTTANT ══ -->
+<div class="ajax-result-panel" id="ajax-panel">
+  <div class="arp-header">
+    <div class="arp-tit" id="arp-tit">🎯 Résultats de votre recherche</div>
+    <button class="arp-close" onclick="fermerAjaxPanel()" title="Fermer">✕</button>
+  </div>
+  <div class="arp-items" id="arp-items"></div>
+</div>
+
+{{ sites_json|json_script:"sites-data" }}
 
 <!-- ══ NOS SITES DISPONIBLES ══ -->
 <section class="section" style="background:#fff;">
@@ -2344,7 +1947,6 @@ if (servicesWrapper) {
               {% else %}
                 <div class="sc-img-placeholder">🏡</div>
               {% endif %}
-              <!-- ═══ BADGE STATUT DU SITE ═══ -->
               <span class="sc-badge sc-badge-statut {% if site.statut == 'disponible' %}statut-disponible{% elif site.statut == 'site_titre' %}statut-site-titre{% elif site.statut == 'en_cours_immatriculation' %}statut-en-cours{% elif site.statut == 'titre_et_lotis' %}statut-titre-lotis{% elif site.statut == 'complet' %}statut-complet{% elif site.statut == 'prochainement' %}statut-prochainement{% endif %}">
                 {{ site.popularite }}
               </span>
@@ -2352,19 +1954,18 @@ if (servicesWrapper) {
             </div>
             <div class="sc-body">
               <div class="sc-nom">{{ site.nom }}</div>
-              <!-- ═══ SUPERFICIE RÉELLE DU SITE ═══ -->
               <div class="sc-sup">
-  📐 
-  {% if site.superficie_totale %}
-    {{ site.superficie_totale }}
-  {% elif site.superficie_max_effectif %}
-    {{ site.superficie_max_effectif|floatformat:0 }} m²
-  {% elif site.superficie_min_effectif %}
-    {{ site.superficie_min_effectif|floatformat:0 }} m²
-  {% else %}
-    {{ site.parcelles.first.superficie|default:"500"|floatformat:0 }} m²
-  {% endif %}
-</div>
+                📐 
+                {% if site.superficie_totale %}
+                  {{ site.superficie_totale }}
+                {% elif site.superficie_max_effectif %}
+                  {{ site.superficie_max_effectif|floatformat:0 }} m²
+                {% elif site.superficie_min_effectif %}
+                  {{ site.superficie_min_effectif|floatformat:0 }} m²
+                {% else %}
+                  {{ site.parcelles.first.superficie|default:"500"|floatformat:0 }} m²
+                {% endif %}
+              </div>
               <div class="sc-prix">
                 {% if site.prix_min_effectif %}
                   {{ site.prix_min_effectif|intcomma }} <span class="sc-prix-unit">FCFA/ m²</span>
@@ -2739,8 +2340,7 @@ if (servicesWrapper) {
       <a class="footer-lnk" href="{% url 'nos_services' %}">Nos Services</a>
       <a class="footer-lnk" href="{% url 'nos_agences' %}">Nos Agences</a>
       <a class="footer-lnk" href="{% url 'une_evenements_accueil' %}">Actualités</a>
-            <a class="footer-lnk" href="{% url 'academie_accueil' %}">Académie</a>
-
+      <a class="footer-lnk" href="{% url 'academie_accueil' %}">Académie</a>
       <a class="footer-lnk" href="{% url 'a_propos' %}">À propos</a>
     </div>
     <div class="footer-col"><h4>Nos agences</h4>
@@ -2819,15 +2419,71 @@ if (servicesWrapper) {
 
 <!-- ══ SCRIPTS ══ -->
 <script>
-// ── NAV ──
-function toggleMob(){document.getElementById('mob-menu').classList.toggle('open');}
+// ══════════════════════════════════════════════
+// DONNÉES SITES
+// ══════════════════════════════════════════════
+let SITES_DATA = [];
+
+(function() {
+    const element = document.getElementById('sites-data');
+    if (element && element.textContent) {
+        try {
+            const parsed = JSON.parse(element.textContent);
+            SITES_DATA = Array.isArray(parsed) ? parsed : Object.values(parsed);
+            console.log('✅ SITES_DATA chargés :', SITES_DATA.length);
+        } catch(e) {
+            console.error('❌ Erreur parsing JSON:', e);
+            SITES_DATA = [];
+        }
+    } else {
+        console.warn('⚠️ sites-data non trouvé');
+        SITES_DATA = [];
+    }
+})();
+
+// ══════════════════════════════════════════════
+// FONCTIONS UTILITAIRES
+// ══════════════════════════════════════════════
+function formatFCFA(n) {
+  if (n === undefined || n === null || isNaN(n)) return '0';
+  return new Intl.NumberFormat('fr-FR').format(Math.round(n));
+}
+
+function formatSup(n) {
+  if (n === undefined || n === null || isNaN(n)) return '0';
+  if (n === Math.floor(n)) return Math.floor(n).toString();
+  return n.toFixed(2);
+}
+
+function showToast(ico, msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('t-ico').textContent = ico;
+  document.getElementById('t-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4500);
+}
+
+// ══════════════════════════════════════════════
+// NAV
+// ══════════════════════════════════════════════
+function toggleMob() { document.getElementById('mob-menu').classList.toggle('open'); }
+
 window.addEventListener('scroll', function() {
   const nav = document.getElementById('navbar');
   if (window.scrollY > 40) nav.classList.add('scrolled');
   else nav.classList.remove('scrolled');
 });
 
-// ── HERO CARROUSEL ──
+function souscrireFooter() {
+  const e = document.getElementById('footer-nl')?.value;
+  if (!e) return;
+  showToast('✅', 'Inscription confirmée !');
+  document.getElementById('footer-nl').value = '';
+}
+
+// ══════════════════════════════════════════════
+// HERO CARROUSEL
+// ══════════════════════════════════════════════
 const heroSlides = document.querySelectorAll('.hero-slide');
 const heroDots = document.querySelectorAll('.hero-dot');
 let heroIdx = 0, heroTimer, heroPlaying = true;
@@ -2850,7 +2506,9 @@ function resetHeroTimer() {
 
 if (heroSlides.length > 1) resetHeroTimer();
 
-// ── CAROUSEL SITES ──
+// ══════════════════════════════════════════════
+// CAROUSEL SITES
+// ══════════════════════════════════════════════
 const track = document.getElementById('carousel-track');
 const wrap = document.getElementById('carousel-wrap');
 let cPos = 0, isPlaying = true, autoTimer, isDrag = false, startX = 0, startPos = 0;
@@ -2887,29 +2545,288 @@ if (wrap) {
   document.addEventListener('mouseup', () => { isDrag = false; wrap.classList.remove('grabbed'); });
 }
 
-// ── RECHERCHE (comportement original) ──
-function lancerRecherche(){
-  const loc = document.getElementById('s-loc')?.value || '';
-  const budget = document.getElementById('s-budget')?.value || '';
-  const statut = document.getElementById('s-statut')?.value || '';
-  const surf = document.getElementById('s-surf')?.value || '';
-  let url = '{% url "sites_list" %}?';
-  if (loc) url += 'site=' + encodeURIComponent(loc) + '&';
-  if (budget) url += 'budget=' + budget + '&';
-  if (statut && statut !== 'promo') url += 'statut=' + statut + '&';
-  if (statut === 'promo') url += 'promo=1&';
-  if (surf) url += 'superficie_min=' + surf + '&';
-  window.location = url;
+// ══════════════════════════════════════════════
+// AJAX FLOTTANT — PANEL RÉSULTATS
+// ══════════════════════════════════════════════
+let analyseTimer = null;
+
+function analyserFiltre() {
+    // Vérifier que SITES_DATA est un tableau
+    if (!Array.isArray(SITES_DATA) || SITES_DATA.length === 0) {
+        console.warn('⚠️ Aucune donnée de site disponible');
+        document.getElementById('arp-tit').textContent = '😕 Données non disponibles';
+        document.getElementById('arp-items').innerHTML = `
+            <div class="arp-empty">
+                <div style="color:#fff;font-size:13px;margin-bottom:6px;">Les données des sites ne sont pas encore chargées.</div>
+                <div style="color:rgba(255,255,255,0.7);font-size:11px;">🔃 Veuillez recharger la page.</div>
+            </div>`;
+        document.getElementById('ajax-panel').classList.add('visible');
+        return;
+    }
+
+  const siteSlug   = document.getElementById('s-loc')?.value || '';
+  const budgetStr  = (document.getElementById('s-budget')?.value || '').replace(/[\s,]/g,'');
+  const supStr     = (document.getElementById('s-surf')?.value  || '').replace(/[\s,]/g,'');
+  const statut     = document.getElementById('s-statut')?.value || '';
+
+  const budget     = budgetStr ? parseFloat(budgetStr) : null;
+  const superficie = supStr    ? parseFloat(supStr)    : null;
+
+  if (!siteSlug && budget === null && superficie === null && !statut) {
+    fermerAjaxPanel();
+    return;
+  }
+
+  let pool = SITES_DATA.filter(s => {
+    if (siteSlug && s.slug !== siteSlug) return false;
+    if (statut && s.statut !== statut) return false;
+    return true;
+  });
+
+  const resultats = [];
+
+  pool.forEach(site => {
+    const prixM2 = Number(site.prix_m2) || 0;
+    const morcellement = Number(site.morcellement) || 0;
+    const superficieAffichage = Number(site.superficie_affichage) || morcellement;
+    const nbDispo = Number(site.nb_dispo) || 0;
+
+    if (!prixM2 || !morcellement) return;
+
+    const prixMorcellement = morcellement * prixM2;
+    const lignes = [];
+
+    // CAS 1 : BUDGET seul
+    if (budget !== null && superficie === null) {
+      const supPossible = budget / prixM2;
+      if (supPossible < superficieAffichage) return;
+      
+      lignes.push(
+        `💰 <span class="arp-hl">${formatFCFA(budget)} FCFA</span> vous permet d'avoir une superficie de ` +
+        `<span class="arp-hl">${formatSup(supPossible)} m²</span> dans ce site`
+      );
+
+      if (supPossible >= superficieAffichage && supPossible < morcellement) {
+        const manque = prixMorcellement - budget;
+        lignes.push(
+          `⚠️ Votre budget actuel ne vous permet pas d'accéder à ce site`
+        );
+        lignes.push(
+          `💰 Il vous manque <span class="arp-hl">${formatFCFA(manque)} FCFA</span> ` +
+          `pour accéder à ce site`
+        );
+        lignes.push(
+          `📏 Ce site est morcellable à partir de <span class="arp-hl">${formatSup(morcellement)} m²</span>`
+        );
+      }
+
+      if (supPossible >= morcellement) {
+        lignes.push(
+          `✅ Votre budget vous permet d'accéder à ce site`
+        );
+        lignes.push(
+          `📏 Ce site est morcellable à partir de <span class="arp-hl">${formatSup(morcellement)} m²</span>`
+        );
+      }
+
+      lignes.push(`📐 Prix au m² : <span class="arp-hl">${formatFCFA(prixM2)} FCFA/m²</span>`);
+      lignes.push(`📦 ${nbDispo} lot${nbDispo > 1 ? 's' : ''} disponible${nbDispo > 1 ? 's' : ''}`);
+
+    // CAS 2 : SUPERFICIE seule
+    } else if (superficie !== null && budget === null) {
+      const prixTotal = prixM2 * superficie;
+      if (superficie < superficieAffichage) return;
+      
+      lignes.push(
+        `📐 <span class="arp-hl">${formatSup(superficie)} m²</span> → ` +
+        `<span class="arp-hl">${formatFCFA(prixTotal)} FCFA</span>`
+      );
+
+      if (superficie >= superficieAffichage && superficie < morcellement) {
+        const manque = prixMorcellement - prixTotal;
+        lignes.push(
+          `⚠️ Votre superficie actuelle ne vous permet pas d'accéder à ce site`
+        );
+        lignes.push(
+          `💰 Il vous manque <span class="arp-hl">${formatFCFA(manque)} FCFA</span> ` +
+          `pour accéder à ce site`
+        );
+        lignes.push(
+          `📏 Ce site est morcellable à partir de <span class="arp-hl">${formatSup(morcellement)} m²</span>`
+        );
+      }
+
+      if (superficie >= morcellement) {
+        lignes.push(
+          `✅ Votre superficie vous permet d'accéder à ce site`
+        );
+        lignes.push(
+          `📏 Ce site est morcellable à partir de <span class="arp-hl">${formatSup(morcellement)} m²</span>`
+        );
+      }
+
+      lignes.push(`📐 Prix au m² : <span class="arp-hl">${formatFCFA(prixM2)} FCFA/m²</span>`);
+      lignes.push(`📦 ${nbDispo} lot${nbDispo > 1 ? 's' : ''} disponible${nbDispo > 1 ? 's' : ''}`);
+
+    // CAS 3 : BUDGET + SUPERFICIE
+    } else if (budget !== null && superficie !== null) {
+      const prixTotal = prixM2 * superficie;
+      const supPossible = budget / prixM2;
+      if (superficie < superficieAffichage) return;
+      
+      lignes.push(
+        `📐 <span class="arp-hl">${formatSup(superficie)} m²</span> → ` +
+        `<span class="arp-hl">${formatFCFA(prixTotal)} FCFA</span>`
+      );
+
+      if (superficie >= superficieAffichage && superficie < morcellement) {
+        lignes.push(
+          `⚠️ Votre superficie actuelle ne vous permet pas d'accéder à ce site`
+        );
+        lignes.push(
+          `📏 Ce site est morcellable à partir de <span class="arp-hl">${formatSup(morcellement)} m²</span>`
+        );
+        if (budget >= prixTotal) {
+          const reste = budget - prixTotal;
+          lignes.push(
+            `💰 Votre budget est suffisant · Reste : <span class="arp-hl">${formatFCFA(reste)} FCFA</span>`
+          );
+          const manqueMorcellement = prixMorcellement - prixTotal;
+          lignes.push(
+            `💰 Il vous manque <span class="arp-hl">${formatFCFA(manqueMorcellement)} FCFA</span> ` +
+            `pour accéder à ce site`
+          );
+        } else {
+          const manque = prixTotal - budget;
+          lignes.push(
+            `⚠️ Votre budget actuel ne vous permet pas d'atteindre la superficie que vous souhaitez`
+          );
+          lignes.push(
+            `💡 Avec <span class="arp-hl">${formatFCFA(budget)} FCFA</span> → vous pouvez accéder à ` +
+            `<span class="arp-hl">${formatSup(supPossible)} m²</span> dans ce site`
+          );
+          lignes.push(
+            `💰 Il vous manque <span class="arp-hl">${formatFCFA(manque)} FCFA</span> ` +
+            `pour accéder à ${formatSup(superficie)} m²`
+          );
+        }
+      }
+
+      if (superficie >= morcellement) {
+        lignes.push(
+          `✅ Cette superficie vous permet d'accéder à ce site`
+        );
+        lignes.push(
+          `📏 Ce site est morcellable à partir de <span class="arp-hl">${formatSup(morcellement)} m²</span>`
+        );
+        if (budget >= prixTotal) {
+          const reste = budget - prixTotal;
+          lignes.push(
+            `✅ Budget suffisant · Reste : <span class="arp-hl">${formatFCFA(reste)} FCFA</span>`
+          );
+        } else {
+          const manque = prixTotal - budget;
+          lignes.push(
+            `⚠️ Votre budget est insuffisant pour cette superficie`
+          );
+          lignes.push(
+            `💰 Il vous manque <span class="arp-hl">${formatFCFA(manque)} FCFA</span>`
+          );
+        }
+      }
+
+      lignes.push(`📐 Prix au m² : <span class="arp-hl">${formatFCFA(prixM2)} FCFA/m²</span>`);
+      lignes.push(`📦 ${nbDispo} lot${nbDispo > 1 ? 's' : ''} disponible${nbDispo > 1 ? 's' : ''}`);
+
+    // CAS 4 : Site seul sélectionné
+    } else if (siteSlug && site.slug === siteSlug) {
+      lignes.push(`📐 Prix au m² : <span class="arp-hl">${formatFCFA(prixM2)} FCFA/m²</span>`);
+      lignes.push(`📏 Seuil d'affichage : <span class="arp-hl">${formatSup(superficieAffichage)} m²</span>`);
+      lignes.push(`📏 Ce site est morcellable à partir de : <span class="arp-hl">${formatSup(morcellement)} m²</span>`);
+      lignes.push(`💡 Morcellement minimal → <span class="arp-hl">${formatFCFA(prixMorcellement)} FCFA</span>`);
+      lignes.push(`📦 ${nbDispo} lot${nbDispo > 1 ? 's' : ''} disponible${nbDispo > 1 ? 's' : ''}`);
+    }
+
+    if (lignes.length > 0) {
+      resultats.push({ site, lignes });
+    }
+  });
+
+  // Aucun résultat
+  if (resultats.length === 0) {
+    let message = 'Aucun site ne correspond à vos critères.';
+    let detail = '💡 Modifiez vos critères ou augmentez votre budget.';
+
+    if (budget !== null) {
+      const sitesCompatibles = SITES_DATA.filter(s => s.prix_m2 > 0 && s.superficie_affichage > 0);
+      if (sitesCompatibles.length > 0) {
+        const moinsCher = sitesCompatibles.reduce((a, b) => 
+          (a.prix_m2 * a.superficie_affichage) < (b.prix_m2 * b.superficie_affichage) ? a : b
+        );
+        const prixMinSeuil = moinsCher.prix_m2 * moinsCher.superficie_affichage;
+        if (budget < prixMinSeuil) {
+          detail = `💡 Le site le moins cher (${moinsCher.nom}) nécessite ${formatFCFA(prixMinSeuil)} FCFA pour ${formatSup(moinsCher.superficie_affichage)} m². Il vous manque ${formatFCFA(prixMinSeuil - budget)} FCFA.`;
+        }
+      }
+    }
+
+    document.getElementById('arp-tit').textContent = '😕 Aucun résultat';
+    document.getElementById('arp-items').innerHTML = `
+      <div class="arp-empty" style="text-align:left;padding:1.2rem;">
+        <div style="color:#fff;font-size:13px;margin-bottom:6px;">${message}</div>
+        <div style="color:rgba(255,255,255,0.7);font-size:11px;">${detail}</div>
+        <div style="margin-top:10px;font-size:10px;color:rgba(255,255,255,0.5);">
+          ${SITES_DATA.length} site(s) disponible(s) en base de données
+        </div>
+        <a href="#" onclick="fermerAjaxPanel();return false;"
+           style="display:inline-block;margin-top:10px;color:#FFD700;text-decoration:underline;font-size:12px;">
+          Voir tous les sites →
+        </a>
+      </div>`;
+    document.getElementById('ajax-panel').classList.add('visible');
+    return;
+  }
+
+  // Afficher les résultats
+  const msgs = [];
+  if (budget !== null)     msgs.push(`<strong>${formatFCFA(budget)} FCFA</strong>`);
+  if (superficie !== null) msgs.push(`<strong>${formatSup(superficie)} m²</strong>`);
+  document.getElementById('arp-tit').innerHTML =
+    `🎯 ${resultats.length} site${resultats.length > 1 ? 's' : ''} ${msgs.length ? '— ' + msgs.join(' + ') : ''}`;
+
+  document.getElementById('arp-items').innerHTML = resultats.map(r => `
+    <div class="arp-item" onclick="window.location.href='${r.site.url}'">
+      <div class="arp-item-site">
+        <span>📍 ${r.site.nom}</span>
+        <span class="arp-item-loc">${r.site.localisation}</span>
+      </div>
+      <div class="arp-item-lignes">
+        ${r.lignes.map(l => `<div class="arp-ligne">• ${l}</div>`).join('')}
+      </div>
+      <a href="${r.site.url}" class="arp-voir" onclick="event.stopPropagation()">
+        Voir ce site →
+      </a>
+    </div>
+  `).join('');
+
+  document.getElementById('ajax-panel').classList.add('visible');
 }
 
-// Recherche avec la touche Entrée
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Enter' && ['s-loc','s-surf','s-budget','s-statut'].includes(document.activeElement?.id)) {
-    lancerRecherche();
-  }
-});
+function fermerAjaxPanel() {
+  const panel = document.getElementById('ajax-panel');
+  if (panel) panel.classList.remove('visible');
+}
 
-// ── MODAL ──
+// ══════════════════════════════════════════════
+// RECHERCHE
+// ══════════════════════════════════════════════
+function lancerRecherche() {
+  analyserFiltre();
+}
+
+// ══════════════════════════════════════════════
+// MODAL
+// ══════════════════════════════════════════════
 function openModal(s) { if (s) { const f = document.getElementById('msite'); if (f) f.value = s; } document.getElementById('modal').classList.add('open'); }
 function closeModal() { document.getElementById('modal').classList.remove('open'); }
 document.getElementById('modal').addEventListener('click', e => { if (e.target === document.getElementById('modal')) closeModal(); });
@@ -2931,22 +2848,30 @@ function submitModal() {
     }).catch(() => showToast('⚠️', 'Erreur réseau.'));
 }
 
-// ── TOAST ──
-function showToast(ico, msg) {
-  const t = document.getElementById('toast');
-  document.getElementById('t-ico').textContent = ico;
-  document.getElementById('t-msg').textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 4500);
-}
+// ══════════════════════════════════════════════
+// ATTACHER LES ÉVÉNEMENTS
+// ══════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function() {
+  ['s-loc', 's-surf', 's-budget', 's-statut'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', function() {
+        clearTimeout(analyseTimer);
+        analyseTimer = setTimeout(analyserFiltre, 400);
+      });
+      el.addEventListener('change', function() {
+        clearTimeout(analyseTimer);
+        analyseTimer = setTimeout(analyserFiltre, 400);
+      });
+    }
+  });
 
-function souscrireFooter() {
-  const e = document.getElementById('footer-nl')?.value;
-  if (!e) return;
-  showToast('✅', 'Inscription confirmée !');
-  document.getElementById('footer-nl').value = '';
-}
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && ['s-loc','s-surf','s-budget','s-statut'].includes(document.activeElement?.id)) {
+      lancerRecherche();
+    }
+  });
+});
 </script>
-
 </body>
 </html>
