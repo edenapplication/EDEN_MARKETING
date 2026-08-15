@@ -1,3 +1,5 @@
+{% extends 'base_admin.html' %}
+{% block admin_content %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -96,25 +98,6 @@ body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
 </nav>
 
 <div class="wrap">
-  <div class="sidebar">
-    <div class="sb-sec">Principal</div>
-    <a class="sb-lnk" href="{% url 'dashboard_home' %}"><span class="sb-ico">📊</span>Tableau de bord</a>
-    <a class="sb-lnk" href="{% url 'dashboard_sites' %}"><span class="sb-ico">🏡</span>Sites fonciers</a>
-    <a class="sb-lnk" href="{% url 'dashboard_parcelles' %}"><span class="sb-ico">📐</span>Parcelles</a>
-    <a class="sb-lnk" href="{% url 'dashboard_reservations' %}"><span class="sb-ico">📋</span>Reservations</a>
-    <a class="sb-lnk" href="{% url 'dashboard_contacts' %}"><span class="sb-ico">📩</span>Contacts</a>
-    <div class="sb-sec">Gestion</div>
-    <a class="sb-lnk" href="{% url 'dashboard_visites' %}"><span class="sb-ico">📅</span>Visites</a>
-    <a class="sb-lnk" href="{% url 'dashboard_promotions' %}"><span class="sb-ico">🔥</span>Promotions</a>
-    <a class="sb-lnk" href="{% url 'dashboard_temoignages' %}"><span class="sb-ico">💬</span>Temoignages</a>
-    <a class="sb-lnk active" href="{% url 'dashboard_groupy' %}"><span class="sb-ico">🤖</span>GROUPY</a>
-    {% if user.is_superuser %}<a class="sb-lnk" href="{% url 'dashboard_utilisateurs' %}"><span class="sb-ico">👥</span>Utilisateurs</a>{% endif %}
-    <a class="sb-lnk" href="{% url 'dashboard_parametres' %}"><span class="sb-ico">⚙</span>Paramètres</a>
-    <div class="sb-user">
-      <div style="font-size:13px;font-weight:700;color:var(--g800);">{{ user.get_full_name|default:user.username }}</div>
-      <div style="font-size:11px;color:var(--g400);">{% if user.is_superuser %}Super Admin{% else %}Admin{% endif %}</div>
-    </div>
-  </div>
 
   <div class="main">
     <div class="page-hd">
@@ -291,3 +274,4 @@ function copyVar(v) {
 </script>
 </body>
 </html>
+{% endblock %}

@@ -1,3 +1,5 @@
+{% extends 'base_admin.html' %}
+{% block admin_content %}
 <!DOCTYPE html>
 <html lang="fr">
 <head><meta charset="UTF-8"><title>Visites — EDEN GROUP</title>
@@ -7,7 +9,6 @@
 <body>
 <nav class="topnav"><div style="display:flex;align-items:center;gap:8px;"><div class="tn-em">E</div><div class="tn-name">EDEN GROUP</div></div><div style="display:flex;gap:8px;"><a class="tn-btn" href="{% url 'dashboard_home' %}">← Dashboard</a><a class="tn-btn" href="{% url 'logout' %}" style="background:#fee2e2;border-color:#fca5a5;color:#dc2626;">Deconnexion</a></div></nav>
 <div class="wrap">
-  <div class="sidebar"><div class="sb-sec">Principal</div><a class="sb-lnk" href="{% url 'dashboard_home' %}">📊 Tableau de bord</a><a class="sb-lnk" href="{% url 'dashboard_sites' %}">🏡 Sites</a><a class="sb-lnk" href="{% url 'dashboard_parcelles' %}">📐 Parcelles</a><a class="sb-lnk" href="{% url 'dashboard_reservations' %}">📋 Reservations</a><a class="sb-lnk" href="{% url 'dashboard_contacts' %}">📩 Contacts</a><div class="sb-sec">Gestion</div><a class="sb-lnk active" href="{% url 'dashboard_visites' %}">📅 Visites</a><a class="sb-lnk" href="{% url 'dashboard_promotions' %}">🔥 Promotions</a></div>
   <div class="main">
     <div class="page-tit">Visites Programmees</div>
     <div class="dash-card"><table><thead><tr><th>Client</th><th>Telephone</th><th>Site</th><th>Date visite</th><th>Statut</th></tr></thead><tbody>
@@ -18,3 +19,4 @@
 </div>
 </body>
 </html>
+{% endblock %}

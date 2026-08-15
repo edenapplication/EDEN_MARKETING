@@ -1,0 +1,360 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard — EDEN GROUP{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        :root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g600:#4B5563;--g800:#1F2937;--r:12px;--rl:20px;}
+        body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
+        h1,h2{font-family:'Playfair Display',serif;}
+
+        /* TOPNAV */
+        .topnav{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;border-bottom:1.5px solid var(--g200);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
+        .tn-logo{display:flex;align-items:center;gap:8px;}
+        .tn-em{width:36px;height:36px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:#fff;}
+        .tn-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+        .tn-sub{font-size:11px;color:var(--g400);margin-left:8px;letter-spacing:1px;text-transform:uppercase;}
+        .tn-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+        .tn-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--g200);background:#fff;color:var(--g600);transition:all 0.2s;}
+        .tn-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--bpale);}
+        .tn-btn.danger{background:#fee2e2;border-color:#fca5a5;color:#dc2626;}
+        .tn-btn.danger:hover{background:#fecaca;}
+        .tn-notif{position:relative;}
+        .notif-badge{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;width:16px;height:16px;border-radius:50%;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+
+        /* SIDEBAR */
+        .wrap{display:flex;padding-top:64px;min-height:100vh;}
+        .sidebar{width:240px;background:#fff;border-right:1.5px solid var(--g200);position:fixed;top:64px;left:0;bottom:0;overflow-y:auto;z-index:900;transition:transform 0.3s ease;}
+        .sb-sec{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g400);padding:1.2rem 1.5rem 0.4rem;}
+        .sb-lnk{display:flex;align-items:center;gap:10px;padding:10px 1.5rem;font-size:13px;font-weight:500;color:var(--g600);cursor:pointer;border-left:2px solid transparent;text-decoration:none;transition:all 0.15s;position:relative;}
+        .sb-lnk:hover,.sb-lnk.active{color:var(--blue);background:var(--bpale);border-left-color:var(--blue);}
+        .sb-ico{font-size:16px;width:20px;text-align:center;flex-shrink:0;}
+        .sb-badge{margin-left:auto;background:var(--red);color:#fff;font-size:9px;font-weight:800;padding:2px 7px;border-radius:100px;}
+        .sb-user{padding:1.2rem 1.5rem;border-top:1px solid var(--g200);margin-top:1rem;}
+        .sb-avatar{width:36px;height:36px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;margin-bottom:8px;}
+        .sb-uname{font-size:13px;font-weight:700;color:var(--g800);}
+        .sb-urole{font-size:11px;color:var(--g400);margin-top:1px;}
+
+        /* SIDEBAR OVERLAY */
+        .sidebar-overlay{
+            display:none;
+            position:fixed;
+            top:64px;
+            left:0;
+            right:0;
+            bottom:0;
+            background:rgba(0,0,0,0.4);
+            z-index:899;
+        }
+        .sidebar-overlay.active{display:block;}
+
+        /* MAIN */
+        .main{flex:1;padding:2rem;margin-left:240px;min-height:100vh;width:100%;overflow-x:hidden;}
+        .page-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;}
+        .page-tit{font-size:1.5rem;font-weight:700;color:var(--g800);}
+        .page-sub{font-size:13px;color:var(--g500);margin-top:2px;}
+        .btn-add{background:var(--grad);color:#fff;padding:10px 18px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s;}
+        .btn-add:hover{opacity:0.88;transform:translateY(-1px);}
+
+        /* MENU TOGGLE BUTTON (mobile) */
+        .menu-toggle{
+            display:none;
+            position:fixed;
+            bottom:1.5rem;
+            left:1.5rem;
+            z-index:1000;
+            background:var(--grad);
+            color:#fff;
+            border:none;
+            border-radius:50%;
+            width:52px;
+            height:52px;
+            font-size:22px;
+            cursor:pointer;
+            box-shadow:0 4px 20px rgba(27,79,219,0.35);
+            transition:all 0.3s ease;
+        }
+        .menu-toggle:hover{
+            transform:scale(1.05);
+            box-shadow:0 6px 30px rgba(27,79,219,0.45);
+        }
+        .menu-toggle.close{
+            background:var(--red);
+        }
+
+        /* RESPONSIVE */
+        @media(max-width:1024px){
+            .sidebar{
+                transform:translateX(-100%);
+                display:block !important;
+            }
+            .sidebar.open{
+                transform:translateX(0);
+            }
+            .main{
+                margin-left:0;
+                padding:1.5rem;
+                width:100%;
+            }
+            .menu-toggle{
+                display:flex;
+                align-items:center;
+                justify-content:center;
+            }
+            .sidebar-overlay.active{
+                display:block;
+            }
+            .tn-right .tn-btn{font-size:11px;padding:5px 10px;}
+            .tn-sub{display:none;}
+        }
+
+        @media(max-width:768px){
+            .main{padding:1rem;}
+            .page-tit{font-size:1.2rem;}
+            .tn-right span{display:none;}
+            .tn-btn{font-size:10px;padding:4px 8px;}
+        }
+        
+        @media(max-width:480px){
+            .main{padding:0.8rem;}
+            .page-hd{flex-direction:column;align-items:flex-start;}
+            .btn-add{width:100%;justify-content:center;}
+            .menu-toggle{width:44px;height:44px;font-size:18px;bottom:1rem;left:1rem;}
+        }
+        
+        {% block extra_admin_css %}{% endblock %}
+    </style>
+</head>
+<body>
+
+<!-- ══ TOPNAV ══ -->
+<nav class="topnav">
+    <div class="tn-logo">
+        <div class="tn-em">E</div>
+        <div class="tn-name">EDEN GROUP</div>
+        <span class="tn-sub">Dashboard</span>
+    </div>
+    <div class="tn-right">
+        <span style="font-size:13px;color:var(--g500);">{{ user.get_full_name|default:user.username }}</span>
+        <a class="tn-btn" href="{% url 'home' %}" target="_blank">🌐 Site</a>
+        <a class="tn-btn" href="{% url 'logout' %}" class="tn-btn danger">Déconnexion</a>
+    </div>
+</nav>
+
+<!-- ══ OVERLAY (mobile) ══ -->
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<!-- ══ MENU TOGGLE (mobile) ══ -->
+<button class="menu-toggle" id="menu-toggle" onclick="toggleSidebar()" aria-label="Menu">
+    ☰
+</button>
+
+<!-- ══ WRAP ══ -->
+<div class="wrap">
+
+    <!-- ══ SIDEBAR ══ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sb-sec">Principal</div>
+        <a class="sb-lnk {% if request.resolver_match.url_name == 'dashboard_home' %}active{% endif %}" href="{% url 'dashboard_home' %}">
+            <span class="sb-ico">📊</span>Tableau de bord
+        </a>
+        <a class="sb-lnk {% if 'dashboard_site' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_sites' %}">
+            <span class="sb-ico">🏡</span>Sites fonciers
+        </a>
+        <a class="sb-lnk {% if 'dashboard_parcelle' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_parcelles' %}">
+            <span class="sb-ico">📐</span>Parcelles
+        </a>
+        <a class="sb-lnk {% if 'dashboard_reservation' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_reservations' %}">
+            <span class="sb-ico">📋</span>Réservations
+        </a>
+        <a class="sb-lnk {% if 'dashboard_contact' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_contacts' %}">
+            <span class="sb-ico">📩</span>Contacts
+        </a>
+        <a class="sb-lnk {% if 'dashboard_visite' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_visites' %}">
+            <span class="sb-ico">📅</span>Visites
+        </a>
+        <a class="sb-lnk {% if 'dashboard_promotion' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_promotions' %}">
+            <span class="sb-ico">🔥</span>Promotions
+        </a>
+
+        <div class="sb-sec">Académie</div>
+        <a class="sb-lnk {% if 'dashboard_academie_liste' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_academie_liste' %}">
+            <span class="sb-ico">📚</span>Documents
+        </a>
+        <a class="sb-lnk {% if 'dashboard_academie_videos' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_academie_videos' %}">
+            <span class="sb-ico">🎬</span>Vidéos
+        </a>
+        <a class="sb-lnk {% if 'dashboard_academie_faq' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_academie_faq' %}">
+            <span class="sb-ico">❓</span>FAQ
+        </a>
+        <a class="sb-lnk {% if 'dashboard_academie_parcours' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_academie_parcours' %}">
+            <span class="sb-ico">📋</span>Parcours
+        </a>
+        <a class="sb-lnk {% if 'dashboard_academie_stats' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_academie_stats' %}">
+            <span class="sb-ico">📊</span>Statistiques
+        </a>
+
+        <div class="sb-sec">Projets & Contenu</div>
+        <a class="sb-lnk {% if 'dashboard_projet' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_projets_liste' %}">
+            <span class="sb-ico">🏗</span>Nos Projets
+        </a>
+        <a class="sb-lnk {% if 'dashboard_une' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_une_liste' %}">
+            <span class="sb-ico">📰</span>Une & Événements
+        </a>
+        <a class="sb-lnk {% if 'dashboard_journal' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_journal' %}">
+            <span class="sb-ico">📰</span>Journal EDEN
+        </a>
+        <a class="sb-lnk {% if 'dashboard_temoignage' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_temoignages' %}">
+            <span class="sb-ico">💬</span>Témoignages
+        </a>
+
+        <div class="sb-sec">Services & Agences</div>
+        <a class="sb-lnk {% if 'dashboard_services_module' in request.resolver_match.url_name or 'dashboard_service' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_services_liste' %}">
+            <span class="sb-ico">⚡</span>Services
+        </a>
+        <a class="sb-lnk {% if 'dashboard_agences' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_agences_liste' %}">
+            <span class="sb-ico">📍</span>Agences
+        </a>
+
+        <div class="sb-sec">Configuration</div>
+        <a class="sb-lnk {% if 'dashboard_home_config' in request.resolver_match.url_name or 'dashboard_hero' in request.resolver_match.url_name or 'dashboard_service' in request.resolver_match.url_name or 'dashboard_etape' in request.resolver_match.url_name or 'dashboard_livret' in request.resolver_match.url_name or 'dashboard_actualite' in request.resolver_match.url_name or 'dashboard_commentaire' in request.resolver_match.url_name or 'dashboard_stats_home' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_home_config' %}">
+            <span class="sb-ico">🏠</span>Config page d'accueil
+        </a>
+        <a class="sb-lnk {% if 'dashboard_hero_slides' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_hero_slides' %}">
+            <span class="sb-ico">🖼</span>Slides Hero
+        </a>
+        <a class="sb-lnk {% if 'dashboard_groupy' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_groupy' %}">
+            <span class="sb-ico">🤖</span>GROUPY
+        </a>
+        <a class="sb-lnk {% if 'dashboard_services_categories' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_services_categories' %}">
+            <span class="sb-ico">📂</span>Catégories Services
+        </a>
+        <a class="sb-lnk {% if 'dashboard_services_processus' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_services_processus' %}">
+            <span class="sb-ico">🔄</span>Processus Services
+        </a>
+        <a class="sb-lnk {% if 'dashboard_services_engagements' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_services_engagements' %}">
+            <span class="sb-ico">🤝</span>Engagements Services
+        </a>
+        <a class="sb-lnk {% if 'dashboard_agences_stats' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_agences_stats' %}">
+            <span class="sb-ico">📊</span>Stats Agences
+        </a>
+
+        <div class="sb-sec">Administration</div>
+        {% if user.is_superuser %}
+        <a class="sb-lnk {% if 'dashboard_utilisateur' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_utilisateurs' %}">
+            <span class="sb-ico">👥</span>Utilisateurs
+        </a>
+        <a class="sb-lnk {% if 'dashboard_utilisateur_ajouter' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_utilisateur_ajouter' %}">
+            <span class="sb-ico">➕</span>Ajouter un utilisateur
+        </a>
+        {% endif %}
+        <a class="sb-lnk {% if request.resolver_match.url_name == 'dashboard_parametres' %}active{% endif %}" href="{% url 'dashboard_parametres' %}">
+            <span class="sb-ico">⚙</span>Paramètres
+        </a>
+
+        <div class="sb-sec">Liens rapides</div>
+        <a class="sb-lnk" href="{% url 'carte' %}" target="_blank"><span class="sb-ico">🗺</span>Carte publique</a>
+        <a class="sb-lnk" href="{% url 'journal_kiosque' %}" target="_blank"><span class="sb-ico">📰</span>Voir le kiosque</a>
+        <a class="sb-lnk" href="{% url 'nos_projets' %}" target="_blank"><span class="sb-ico">🏗</span>Projets publics</a>
+        <a class="sb-lnk" href="{% url 'nos_services' %}" target="_blank"><span class="sb-ico">⚡</span>Services publics</a>
+        <a class="sb-lnk" href="{% url 'nos_agences' %}" target="_blank"><span class="sb-ico">📍</span>Agences publiques</a>
+        <a class="sb-lnk" href="{% url 'une_evenements_accueil' %}" target="_blank"><span class="sb-ico">📰</span>Une & Événements</a>
+        <a class="sb-lnk" href="{% url 'home' %}" target="_blank"><span class="sb-ico">🌐</span>Site public</a>
+
+        <div class="sb-user">
+            <div style="font-size:13px;font-weight:700;color:var(--g800);">{{ user.get_full_name|default:user.username }}</div>
+            <div style="font-size:11px;color:var(--g400);">{% if user.is_superuser %}Super Admin{% elif user.is_staff %}Administrateur{% endif %}</div>
+            <a href="{% url 'logout' %}" style="display:block;margin-top:4px;font-size:11px;color:var(--g400);text-decoration:none;">🚪 Déconnexion</a>
+        </div>
+    </aside>
+
+    <!-- ══ MAIN CONTENT ══ -->
+    <main class="main">
+
+        {% block admin_content %}{% endblock %}
+    </main>
+
+</div>
+
+<!-- ══ SCRIPTS ══ -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // ═══ TOGGLE SIDEBAR ═══
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        const toggle = document.getElementById('menu-toggle');
+        
+        if (window.innerWidth <= 1024) {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+            toggle.classList.toggle('close');
+            
+            if (toggle.classList.contains('close')) {
+                toggle.innerHTML = '✕';
+            } else {
+                toggle.innerHTML = '☰';
+            }
+        }
+    }
+
+    function closeSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        const toggle = document.getElementById('menu-toggle');
+        
+        if (window.innerWidth <= 1024) {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+            toggle.classList.remove('close');
+            toggle.innerHTML = '☰';
+        }
+    }
+
+    // ═══ FERMER AVEC LA TOUCHE ESCAPE ═══
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeSidebar();
+        }
+    });
+
+    // ═══ FERMER EN CLIQUANT SUR L'OVERLAY ═══
+    document.getElementById('sidebar-overlay').addEventListener('click', closeSidebar);
+
+    // ═══ RÉINITIALISER SUR REDIMENSIONNEMENT ═══
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 1024) {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const toggle = document.getElementById('menu-toggle');
+            
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+            toggle.classList.remove('close');
+            toggle.innerHTML = '☰';
+        }
+    });
+
+    // ═══ GESTION DU SCROLL POUR LA SIDEBAR ═══
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mettre en surbrillance le lien actif en fonction de l'URL
+        const currentUrl = window.location.pathname;
+        document.querySelectorAll('.sb-lnk').forEach(link => {
+            const href = link.getAttribute('href');
+            if (href && currentUrl.includes(href) && href !== '/') {
+                link.classList.add('active');
+            }
+        });
+    });
+</script>
+
+{% block extra_admin_js %}{% endblock %}
+
+</body>
+</html>

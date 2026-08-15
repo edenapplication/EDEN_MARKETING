@@ -1,3 +1,5 @@
+{% extends 'base_admin.html' %}
+{% block admin_content %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -77,25 +79,6 @@ body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
 </nav>
 
 <div class="wrap">
-  <div class="sidebar">
-    <div class="sb-sec">Académie</div>
-    <a class="sb-lnk active" href="{% url 'dashboard_academie_liste' %}"><span class="sb-ico">📋</span>Documents</a>
-    <a class="sb-lnk" href="{% url 'dashboard_academie_videos' %}"><span class="sb-ico">🎬</span>Vidéos</a>
-    <a class="sb-lnk" href="{% url 'dashboard_academie_faq' %}"><span class="sb-ico">❓</span>FAQ</a>
-    <a class="sb-lnk" href="{% url 'dashboard_academie_parcours' %}"><span class="sb-ico">🗺</span>Parcours investisseur</a>
-    <a class="sb-lnk" href="{% url 'dashboard_academie_stats' %}"><span class="sb-ico">📊</span>Statistiques</a>
-    <div class="sb-sec">Navigation</div>
-    <a class="sb-lnk" href="{% url 'dashboard_home' %}"><span class="sb-ico">📊</span>Tableau de bord</a>
-    <a class="sb-lnk" href="{% url 'dashboard_services_liste' %}"><span class="sb-ico">🔧</span>Nos Services</a>
-    <a class="sb-lnk" href="{% url 'dashboard_agences_liste' %}"><span class="sb-ico">🏢</span>Nos Agences</a>
-    <a class="sb-lnk" href="{% url 'dashboard_projets_liste' %}"><span class="sb-ico">🏗</span>Nos Projets</a>
-    <a class="sb-lnk" href="{% url 'dashboard_une_liste' %}"><span class="sb-ico">📰</span>Une &amp; Événements</a>
-    <div class="sb-user">
-      <div style="font-size:13px;font-weight:700;color:var(--g800);">{{ user.get_full_name|default:user.username }}</div>
-      <div style="font-size:11px;color:var(--g400);">{% if user.is_superuser %}Super Admin{% else %}Admin{% endif %}</div>
-    </div>
-  </div>
-
   <div class="main">
     <div class="page-hd">
       <div>
@@ -211,3 +194,4 @@ function supprimerDoc(pk,titre){
 </script>
 </body>
 </html>
+{% endblock %}

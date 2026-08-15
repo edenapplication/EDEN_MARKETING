@@ -1,3 +1,5 @@
+{% extends 'base.html' %}
+{% block content %}
 {% load static %}
 {% load humanize %}
 <!DOCTYPE html>
@@ -445,48 +447,6 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
   </div>
 </div>
 
-<!-- ══ NAV ══ -->
-<nav id="navbar">
-  <a class="nav-logo" href="{% url 'home' %}">
-    <div class="logo-box">E</div>
-    <div>
-      <div class="logo-name">EDEN GROUP</div>
-      <div class="logo-tagline">Le foncier sécurisé, notre engagement</div>
-    </div>
-  </a>
-  <div class="nav-links">
-    <a class="nav-lnk" href="{% url 'home' %}">Accueil</a>
-    <a class="nav-lnk" href="{% url 'sites_list' %}">Nos Terrains</a>
-    <a class="nav-lnk" href="{% url 'nos_services' %}">Nos Services</a>
-    <a class="nav-lnk" href="{% url 'nos_agences' %}">Nos Agences</a>
-    <a class="nav-lnk" href="{% url 'une_evenements_accueil' %}">Actualités</a>
-        <a class="nav-lnk active" href="{% url 'academie_accueil' %}">Académie</a>
-
-    <a class="nav-lnk" href="{% url 'a_propos' %}">À propos</a>
-    {% if user.is_staff %}
-    <a class="nav-lnk" href="{% url 'dashboard_home' %}" style="color:var(--blue);font-weight:700;">Dashboard</a>
-    {% endif %}
-  </div>
-  <div class="nav-right">
-    <button class="btn-rdv" onclick="openModal()">📅 Contact</button>
-  </div>
-  <button class="hamburger" onclick="toggleMob()"><span></span><span></span><span></span></button>
-</nav>
-
-<div class="mob-menu" id="mob-menu">
-  <a class="nav-lnk" href="{% url 'home' %}">Accueil</a>
-  <a class="nav-lnk" href="{% url 'sites_list' %}">Nos Terrains</a>
-  <a class="nav-lnk" href="{% url 'nos_projets' %}">Nos Projets</a>
-  <a class="nav-lnk" href="{% url 'nos_services' %}">Nos Services</a>
-  <a class="nav-lnk" href="{% url 'nos_agences' %}">Nos Agences</a>
-  <a class="nav-lnk active" href="{% url 'academie_accueil' %}">Académie</a>
-  <a class="nav-lnk" href="{% url 'une_evenements_accueil' %}">Actualités</a>
-  <a class="nav-lnk" href="{% url 'promotions' %}">Promotions</a>
-  <a class="nav-lnk" href="{% url 'a_propos' %}">À propos</a>
-  {% if user.is_staff %}<a class="nav-lnk" href="{% url 'dashboard_home' %}">Dashboard</a>{% endif %}
-  <button class="btn-rdv" style="width:100%;margin-top:8px;justify-content:center;" onclick="openModal()">📅 Contact</button>
-</div>
-
 <!-- ══ HERO ══ -->
 <div class="hero-academie">
   <div class="hero-bg">
@@ -873,64 +833,6 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
   </div><!-- fin academie-content -->
 </div><!-- fin academie-layout -->
 
-<!-- ══ FOOTER ══ -->
-<div class="footer-bar"></div>
-<footer>
-  <div class="footer-grid">
-    <div>
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.8rem;">
-        <div class="logo-box" style="width:36px;height:36px;font-size:15px;border-radius:8px;">E</div>
-        <div style="font-size:15px;font-weight:900;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">EDEN GROUP</div>
-      </div>
-      <p class="footer-desc">Votre partenaire foncier de confiance depuis 2018.</p>
-      <div class="footer-tagline">Le foncier sécurisé, notre engagement</div>
-    </div>
-    <div class="footer-col">
-      <h4>Liens rapides</h4>
-      <a class="footer-lnk" href="{% url 'home' %}">Accueil</a>
-      <a class="footer-lnk" href="{% url 'sites_list' %}">Nos Terrains</a>
-      <a class="footer-lnk" href="{% url 'nos_projets' %}">Nos Projets</a>
-      <a class="footer-lnk" href="{% url 'nos_services' %}">Nos Services</a>
-      <a class="footer-lnk" href="{% url 'nos_agences' %}">Nos Agences</a>
-      <a class="footer-lnk" href="{% url 'academie_accueil' %}">Académie</a>
-      <a class="footer-lnk" href="{% url 'une_evenements_accueil' %}">Actualités</a>
-      <a class="footer-lnk" href="{% url 'journal_kiosque' %}">Journal</a>
-      <a class="footer-lnk" href="{% url 'a_propos' %}">À propos</a>
-    </div>
-    <div class="footer-col">
-      <h4>Nos agences</h4>
-      <div class="footer-agences-item">📍 Yaoundé (Siège)</div>
-      <div class="footer-agences-item">📍 Bafoussam</div>
-      <div class="footer-agences-item">📍 Dschang</div>
-      <div class="footer-agences-item">📍 Bangangté</div>
-    </div>
-    <div class="footer-col">
-      <h4>Suivez-nous</h4>
-      <div class="footer-socials">
-        <a href="#" class="footer-social-btn fs-fb">f</a>
-        <a href="#" class="footer-social-btn fs-tt" style="color:#fff;">T</a>
-        <a href="#" class="footer-social-btn fs-yt" style="color:#fff;">▶</a>
-        <a href="#" class="footer-social-btn fs-li" style="color:#fff;">in</a>
-        <a href="#" class="footer-social-btn fs-ig" style="color:#fff;">📷</a>
-      </div>
-    </div>
-    <div class="footer-col">
-      <h4>Newsletter</h4>
-      <div style="font-size:12px;color:#94A3B8;margin-bottom:0.8rem;">Recevez nos offres et actualités</div>
-      <div class="footer-nl-wrap">
-        <input class="footer-nl-input" type="email" placeholder="Votre email" id="footer-nl">
-        <button class="footer-nl-btn" onclick="souscrireFooter()">→</button>
-      </div>
-    </div>
-  </div>
-  <div class="footer-bot">
-    <div class="footer-copy">© 2026 EDEN GROUP ENTREPRISE. Tous droits réservés.</div>
-    <div class="footer-links-bot">
-      <a href="#">Mentions légales</a>
-      <a href="#">Politique de confidentialité</a>
-    </div>
-  </div>
-</footer>
 
 <!-- ══ SCRIPTS ══ -->
 <script>
@@ -1252,3 +1154,4 @@ document.querySelectorAll('.mob-menu .nav-lnk').forEach(link => {
 </script>
 </body>
 </html>
+{% endblock %}

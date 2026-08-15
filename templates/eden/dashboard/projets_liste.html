@@ -1,3 +1,5 @@
+{% extends 'base_admin.html' %}
+{% block admin_content %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -79,62 +81,6 @@ body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
 </nav>
 
 <div class="wrap">
-  <!-- SIDEBAR -->
-<div class="sidebar">
-  <div class="sb-sec">Principal</div>
-  <a class="sb-lnk {% if request.resolver_match.url_name == 'dashboard_home' %}active{% endif %}" href="{% url 'dashboard_home' %}"><span class="sb-ico">📊</span>Tableau de bord</a>
-  <a class="sb-lnk {% if 'dashboard_site' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_sites' %}"><span class="sb-ico">🏡</span>Sites fonciers</a>
-  <a class="sb-lnk {% if 'dashboard_parcelle' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_parcelles' %}"><span class="sb-ico">📐</span>Parcelles</a>
-  <a class="sb-lnk {% if 'dashboard_reservation' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_reservations' %}"><span class="sb-ico">📋</span>Réservations</a>
-  <a class="sb-lnk {% if 'dashboard_contact' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_contacts' %}"><span class="sb-ico">📩</span>Contacts</a>
-  <a class="sb-lnk {% if 'dashboard_visite' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_visites' %}"><span class="sb-ico">📅</span>Visites</a>
-  <a class="sb-lnk {% if 'dashboard_promotion' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_promotions' %}"><span class="sb-ico">🔥</span>Promotions</a>
-
-  <div class="sb-sec">Projets & Contenu</div>
-  <a class="sb-lnk {% if 'dashboard_projet' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_projets_liste' %}"><span class="sb-ico">🏗</span>Nos Projets</a>
-  <a class="sb-lnk {% if 'dashboard_une' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_une_liste' %}"><span class="sb-ico">📰</span>Une &amp; Événements</a>
-  <a class="sb-lnk {% if 'dashboard_journal' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_journal' %}"><span class="sb-ico">📰</span>Journal EDEN</a>
-  <a class="sb-lnk {% if 'dashboard_temoignage' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_temoignages' %}"><span class="sb-ico">💬</span>Témoignages</a>
-
-  <div class="sb-sec">Services & Agences</div>
-  <a class="sb-lnk {% if 'dashboard_services_module' in request.resolver_match.url_name or 'dashboard_service' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_services_liste' %}"><span class="sb-ico">⚡</span>Services</a>
-  <a class="sb-lnk {% if 'dashboard_agences' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_agences_liste' %}"><span class="sb-ico">📍</span>Agences</a>
-
-  <div class="sb-sec">Configuration</div>
-  <a class="sb-lnk {% if 'dashboard_home_config' in request.resolver_match.url_name or 'dashboard_hero' in request.resolver_match.url_name or 'dashboard_service' in request.resolver_match.url_name or 'dashboard_etape' in request.resolver_match.url_name or 'dashboard_livret' in request.resolver_match.url_name or 'dashboard_actualite' in request.resolver_match.url_name or 'dashboard_commentaire' in request.resolver_match.url_name or 'dashboard_stats_home' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_home_config' %}">
-    <span class="sb-ico">🏠</span>Config page d'accueil
-  </a>
-  <a class="sb-lnk {% if 'dashboard_hero_slides' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_hero_slides' %}">
-    <span class="sb-ico">🖼</span>Slides Hero
-  </a>
-  <a class="sb-lnk {% if 'dashboard_groupy' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_groupy' %}"><span class="sb-ico">🤖</span>GROUPY</a>
-  <a class="sb-lnk {% if 'dashboard_services_categories' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_services_categories' %}"><span class="sb-ico">📂</span>Catégories Services</a>
-  <a class="sb-lnk {% if 'dashboard_services_processus' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_services_processus' %}"><span class="sb-ico">🔄</span>Processus Services</a>
-  <a class="sb-lnk {% if 'dashboard_services_engagements' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_services_engagements' %}"><span class="sb-ico">🤝</span>Engagements Services</a>
-  <a class="sb-lnk {% if 'dashboard_agences_stats' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_agences_stats' %}"><span class="sb-ico">📊</span>Stats Agences</a>
-
-  <div class="sb-sec">Administration</div>
-  {% if user.is_superuser %}
-  <a class="sb-lnk {% if 'dashboard_utilisateur' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_utilisateurs' %}"><span class="sb-ico">👥</span>Utilisateurs</a>
-  <a class="sb-lnk {% if 'dashboard_utilisateur_ajouter' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_utilisateur_ajouter' %}"><span class="sb-ico">➕</span>Ajouter un utilisateur</a>
-  {% endif %}
-  <a class="sb-lnk {% if request.resolver_match.url_name == 'dashboard_parametres' %}active{% endif %}" href="{% url 'dashboard_parametres' %}"><span class="sb-ico">⚙</span>Paramètres</a>
-
-  <div class="sb-sec">Liens rapides</div>
-  <a class="sb-lnk" href="{% url 'carte' %}" target="_blank"><span class="sb-ico">🗺</span>Carte publique</a>
-  <a class="sb-lnk" href="{% url 'journal_kiosque' %}" target="_blank"><span class="sb-ico">📰</span>Voir le kiosque</a>
-  <a class="sb-lnk" href="{% url 'nos_projets' %}" target="_blank"><span class="sb-ico">🏗</span>Projets publics</a>
-  <a class="sb-lnk" href="{% url 'nos_services' %}" target="_blank"><span class="sb-ico">⚡</span>Services publics</a>
-  <a class="sb-lnk" href="{% url 'nos_agences' %}" target="_blank"><span class="sb-ico">📍</span>Agences publiques</a>
-  <a class="sb-lnk" href="{% url 'une_evenements_accueil' %}" target="_blank"><span class="sb-ico">📰</span>Une & Événements</a>
-  <a class="sb-lnk" href="{% url 'home' %}" target="_blank"><span class="sb-ico">🌐</span>Site public</a>
-
-  <div class="sb-user">
-    <div style="font-size:13px;font-weight:700;color:var(--g800);">{{ user.get_full_name|default:user.username }}</div>
-    <div style="font-size:11px;color:var(--g400);">{% if user.is_superuser %}Super Admin{% elif user.is_staff %}Administrateur{% endif %}</div>
-    <a href="{% url 'logout' %}" style="display:block;margin-top:4px;font-size:11px;color:var(--g400);text-decoration:none;">🚪 Déconnexion</a>
-  </div>
-</div>
 
   <div class="main">
     <div class="page-hd">
@@ -221,3 +167,4 @@ function supprimerProjet(pk, nom) {
 </script>
 </body>
 </html>
+{% endblock %}
