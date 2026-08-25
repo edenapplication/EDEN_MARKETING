@@ -1,0 +1,652 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDEN GROUP — Leader en sécurité foncière</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+    <style>
+        /* =====================================================
+           RESET
+        ===================================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            font-family: 'Outfit', Arial, Helvetica, sans-serif;
+            overflow: hidden;
+        }
+
+        body {
+            background: #ffffff;
+        }
+
+        /* =====================================================
+           INTRODUCTION
+        ===================================================== */
+        #eden-intro {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100vh;
+            background: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            overflow: hidden;
+        }
+
+        /* =====================================================
+           PARTICULES
+        ===================================================== */
+        #particles-canvas {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* =====================================================
+           MOTIFS DÉCORATIFS
+        ===================================================== */
+        .deco-line {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, rgba(27, 79, 219, 0.06), transparent);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .deco-line-top {
+            top: 5%;
+            left: 10%;
+            width: 80%;
+            height: 1px;
+        }
+
+        .deco-line-bottom {
+            bottom: 5%;
+            left: 10%;
+            width: 80%;
+            height: 1px;
+        }
+
+        .deco-circle {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(27, 79, 219, 0.04);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .deco-circle-1 {
+            top: -10%;
+            right: -5%;
+            width: 300px;
+            height: 300px;
+        }
+
+        .deco-circle-2 {
+            bottom: -10%;
+            left: -5%;
+            width: 400px;
+            height: 400px;
+            border-color: rgba(200, 16, 46, 0.04);
+        }
+
+        .deco-circle-3 {
+            top: 20%;
+            left: -10%;
+            width: 200px;
+            height: 200px;
+            border-color: rgba(27, 79, 219, 0.03);
+        }
+
+        /* =====================================================
+           CONTENU PRINCIPAL (EDEN GROUP + Boureau)
+        ===================================================== */
+        .eden-main-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .eden-main-content.fading {
+            opacity: 0;
+            transform: scale(0.9) translateY(-30px);
+            pointer-events: none;
+        }
+
+        /* =====================================================
+           EDEN GROUP — APPARITION DIRECTE
+        ===================================================== */
+        .eden-brand {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 5px;
+            opacity: 0;
+            transform: scale(0.8) translateY(20px);
+            animation: brandAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s forwards;
+        }
+
+        @keyframes brandAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .brand-letter {
+            display: inline-block;
+            font-size: clamp(48px, 8vw, 90px);
+            font-weight: 900;
+            letter-spacing: 4px;
+            background: linear-gradient(180deg, #1B4FDB 0%, #C8102E 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand-letter.space {
+            width: 25px;
+            background: none;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* =====================================================
+           BOIREAU DES DOUBLES VENTES (avec EDEN GROUP)
+        ===================================================== */
+        .eden-securite {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            margin-top: 5px;
+            opacity: 0;
+            transform: scale(0.5) translateY(15px);
+            transition: all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .eden-securite.visible {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        .securite-texte {
+            font-size: clamp(10px, 1vw, 14px);
+            font-weight: 600;
+            color: #1B4FDB;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: textFadeIn 0.8s ease 0.3s forwards;
+        }
+
+        .securite-texte .rouge {
+            color: #C8102E;
+        }
+
+        @keyframes textFadeIn {
+            0% { opacity: 0; transform: translateY(8px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* =====================================================
+           SLOGAN "Leader en sécurité foncière" + LOGO
+        ===================================================== */
+        .eden-slogan-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 3;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.1s ease;
+        }
+
+        .eden-slogan-container.visible {
+            opacity: 1;
+        }
+
+        .slogan-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Petit logo (bouclier) avec Leader */
+        .slogan-shield {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #1B4FDB, #C8102E);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 40px rgba(27, 79, 219, 0.12);
+            border: 2px solid rgba(27, 79, 219, 0.08);
+            font-size: 22px;
+            color: #fff;
+            animation: shieldPulse 3s ease-in-out infinite;
+            transform: scale(0.5);
+            opacity: 0;
+            transition: all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .slogan-shield.visible {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .slogan-shield::after {
+            content: '⚔';
+            font-size: 22px;
+            filter: drop-shadow(0 0 20px rgba(200, 16, 46, 0.2));
+            animation: swordGlow 2.5s ease-in-out infinite;
+        }
+
+        @keyframes shieldPulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(27, 79, 219, 0.1); }
+            50% { box-shadow: 0 0 60px rgba(200, 16, 46, 0.15); }
+        }
+
+        @keyframes swordGlow {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(27, 79, 219, 0.15)); }
+            50% { filter: drop-shadow(0 0 30px rgba(200, 16, 46, 0.3)); }
+        }
+
+        .slogan-line {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(18px, 2.5vw, 32px);
+            font-weight: 700;
+            color: #1B4FDB;
+            letter-spacing: 3px;
+            white-space: nowrap;
+            transform: scale(0.5);
+            opacity: 0;
+            transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .slogan-line .highlight {
+            color: #C8102E;
+        }
+
+        .slogan-line.growing {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        /* Animation de croissance finale */
+        .slogan-line.final-grow {
+            animation: sloganFinalGrow 2.5s ease-in-out forwards;
+        }
+
+        @keyframes sloganFinalGrow {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+                filter: blur(0px);
+            }
+            100% {
+                transform: scale(10);
+                opacity: 0;
+                filter: blur(25px);
+            }
+        }
+
+        /* Le bouclier grandit aussi avec le slogan */
+        .slogan-shield.final-grow {
+            animation: shieldFinalGrow 2.5s ease-in-out forwards;
+        }
+
+        @keyframes shieldFinalGrow {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+                filter: blur(0px);
+            }
+            100% {
+                transform: scale(10);
+                opacity: 0;
+                filter: blur(25px);
+            }
+        }
+
+        /* =====================================================
+           SORTIE DE L'INTRO
+        ===================================================== */
+        #eden-intro.fade-out {
+            animation: introDisappearWhite 1.5s ease forwards;
+        }
+
+        @keyframes introDisappearWhite {
+            0% {
+                opacity: 1;
+                background: #ffffff;
+            }
+            100% {
+                opacity: 0;
+                background: #ffffff;
+                pointer-events: none;
+            }
+        }
+
+        /* =====================================================
+           BARRE DE PROGRESSION (plus rapide)
+        ===================================================== */
+        .eden-progress {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 2px;
+            background: rgba(27, 79, 219, 0.08);
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeInSlow 0.8s ease 1.5s forwards;
+            z-index: 2;
+        }
+
+        .eden-progress span {
+            display: block;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, #1B4FDB, #C8102E);
+            animation: progressFillSlow 2.5s ease-in-out 2s forwards;
+        }
+
+        @keyframes fadeInSlow {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes progressFillSlow {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+        @media (max-width: 768px) {
+            .brand-letter { font-size: clamp(32px, 6vw, 48px); }
+            .slogan-shield { width: 45px; height: 45px; font-size: 18px; }
+            .slogan-shield::after { font-size: 18px; }
+            .slogan-line { font-size: clamp(14px, 2vw, 20px); white-space: normal; }
+            .securite-texte { font-size: 9px; letter-spacing: 2px; }
+            .eden-progress { width: 100px; bottom: 30px; }
+            .deco-circle-1 { width: 150px; height: 150px; }
+            .deco-circle-2 { width: 200px; height: 200px; }
+            .deco-circle-3 { width: 100px; height: 100px; }
+        }
+
+        @media (max-width: 480px) {
+            .brand-letter { font-size: clamp(24px, 5vw, 32px); }
+            .brand-letter.space { width: 10px; }
+            .slogan-shield { width: 35px; height: 35px; font-size: 14px; }
+            .slogan-shield::after { font-size: 14px; }
+            .slogan-line { font-size: clamp(12px, 1.8vw, 16px); }
+            .securite-texte { font-size: 7px; letter-spacing: 1.5px; }
+            .eden-progress { width: 80px; bottom: 25px; height: 1.5px; }
+            .deco-circle-1 { width: 100px; height: 100px; }
+            .deco-circle-2 { width: 150px; height: 150px; }
+            .deco-circle-3 { width: 80px; height: 80px; }
+        }
+
+        /* =====================================================
+           CONTENU PRINCIPAL (HOME)
+        ===================================================== */
+        #main-content {
+            display: none;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        #main-content.visible {
+            display: block;
+            animation: contentReveal 0.8s ease forwards;
+        }
+
+        @keyframes contentReveal {
+            0% { opacity: 0; transform: scale(0.98); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- =====================================================
+         ANIMATION D'OUVERTURE EDEN GROUP
+    ===================================================== -->
+    <div id="eden-intro">
+        <!-- PARTICULES -->
+        <canvas id="particles-canvas"></canvas>
+
+        <!-- MOTIFS DÉCORATIFS -->
+        <div class="deco-line deco-line-top"></div>
+        <div class="deco-line deco-line-bottom"></div>
+        <div class="deco-circle deco-circle-1"></div>
+        <div class="deco-circle deco-circle-2"></div>
+        <div class="deco-circle deco-circle-3"></div>
+
+        <!-- CONTENU PRINCIPAL (EDEN GROUP + Boureau) -->
+        <div class="eden-main-content" id="eden-main-content">
+            <!-- EDEN GROUP -->
+            <div class="eden-brand">
+                <span class="brand-letter">E</span>
+                <span class="brand-letter">D</span>
+                <span class="brand-letter">E</span>
+                <span class="brand-letter">N</span>
+                <span class="brand-letter space"></span>
+                <span class="brand-letter">G</span>
+                <span class="brand-letter">R</span>
+                <span class="brand-letter">O</span>
+                <span class="brand-letter">U</span>
+                <span class="brand-letter">P</span>
+            </div>
+
+            <!-- BOIREAU DES DOUBLES VENTES -->
+            <div class="eden-securite" id="eden-securite">
+                <div class="securite-texte">
+                    <span class="rouge">✦</span> Reservez votre parcelle et garantissez votre futur <span class="rouge">✦</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLOGAN "Leader en sécurité foncière" + LOGO -->
+        <div class="eden-slogan-container" id="eden-slogan-container">
+            <div class="slogan-wrapper">
+                <!-- Petit logo (bouclier) -->
+                <div class="slogan-shield" id="slogan-shield"></div>
+                
+                <!-- Texte du slogan -->
+                <div class="slogan-line" id="slogan-line">
+                    Leader en <span class="highlight">sécurité foncière</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Barre de progression -->
+        <div class="eden-progress">
+            <span></span>
+        </div>
+    </div>
+
+    <!-- =====================================================
+         CONTENU PRINCIPAL (HOME)
+    ===================================================== -->
+    <div id="main-content"></div>
+
+    <script>
+        // =====================================================
+        // 1. PARTICULES
+        // =====================================================
+        (function initParticles() {
+            const canvas = document.getElementById('particles-canvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            let w, h;
+            const particles = [];
+            const COUNT = 80;
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            const colors = ['#1B4FDB', '#C8102E', '#7B20B4'];
+
+            for (let i = 0; i < COUNT; i++) {
+                particles.push({
+                    x: Math.random() * w,
+                    y: Math.random() * h,
+                    r: Math.random() * 3 + 1,
+                    dx: (Math.random() - 0.5) * 0.2,
+                    dy: (Math.random() - 0.5) * 0.2,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    alpha: Math.random() * 0.15 + 0.05
+                });
+            }
+
+            function drawParticles() {
+                ctx.clearRect(0, 0, w, h);
+                
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 200) {
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.strokeStyle = `rgba(27, 79, 219, ${0.04 * (1 - dist / 200)})`;
+                            ctx.lineWidth = 0.5;
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                for (let p of particles) {
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.globalAlpha = p.alpha;
+                    ctx.fill();
+                    ctx.globalAlpha = 1;
+                    
+                    p.x += p.dx;
+                    p.y += p.dy;
+                    
+                    if (p.x < 0 || p.x > w) p.dx *= -1;
+                    if (p.y < 0 || p.y > h) p.dy *= -1;
+                }
+
+                requestAnimationFrame(drawParticles);
+            }
+
+            drawParticles();
+        })();
+
+        // =====================================================
+        // 2. ANIMATION
+        // =====================================================
+        (function initAnimation() {
+            const intro = document.getElementById('eden-intro');
+            const mainContent = document.getElementById('eden-main-content');
+            const securite = document.getElementById('eden-securite');
+            const sloganContainer = document.getElementById('eden-slogan-container');
+            const sloganLine = document.getElementById('slogan-line');
+            const sloganShield = document.getElementById('slogan-shield');
+            const contentHome = document.getElementById('main-content');
+            let isFinished = false;
+
+            // === ÉTAPE 1 : EDEN GROUP apparaît (0.2s) + Boureau apparaît (0.3s) ===
+            setTimeout(() => {
+                securite.classList.add('visible');
+            }, 300);
+
+            // === ÉTAPE 2 : EDEN GROUP + Boureau disparaissent (à 3.5s au lieu de 5s) ===
+            // Leader + Logo apparaissent
+            setTimeout(() => {
+                // EDEN GROUP + Boureau disparaissent
+                mainContent.classList.add('fading');
+                
+                // Leader + Logo apparaissent
+                sloganContainer.classList.add('visible');
+                sloganShield.classList.add('visible');
+                
+                // Leader grossit
+                setTimeout(() => {
+                    sloganLine.classList.add('growing');
+                }, 200);
+
+            }, 3500); // ← Raccourci à 3.5s (au lieu de 5s)
+
+            // === ÉTAPE 3 : Leader + Logo grandissent et s'effacent ===
+            setTimeout(() => {
+                if (isFinished) return;
+                isFinished = true;
+
+                // Leader grandit et se floute
+                sloganLine.classList.remove('growing');
+                sloganLine.classList.add('final-grow');
+                
+                // Logo grandit et se floute aussi
+                sloganShield.classList.add('final-grow');
+
+                // L'intro disparaît
+                setTimeout(() => {
+                    intro.classList.add('fade-out');
+                }, 500);
+
+                // Redirection vers HOME
+                setTimeout(() => {
+                    window.location.href = "{% url 'home' %}";
+                }, 800);
+
+                // Supprimer l'intro (fallback)
+                setTimeout(() => {
+                    intro.style.display = 'none';
+                }, 2000);
+
+            }, 7000); // ← Raccourci à 7s (au lieu de 8.5s)
+
+            // Fallback de sécurité
+            setTimeout(() => {
+                if (!isFinished) {
+                    isFinished = true;
+                    window.location.href = "{% url 'home' %}";
+                }
+            }, 10000);
+
+        })();
+    </script>
+
+</body>
+</html>

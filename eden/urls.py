@@ -3,7 +3,8 @@ from . import views
 
 urlpatterns = [
     # ── PAGES PUBLIQUES ──
-    path('', views.home, name='home'),
+     path('', views.splash, name='splash'),
+     path('accueil/', views.home, name='home'),
     path('sites/', views.sites_list, name='sites_list'),
     path('sites/<slug:slug>/', views.site_detail, name='site_detail'),
     path('carte/', views.carte, name='carte'),

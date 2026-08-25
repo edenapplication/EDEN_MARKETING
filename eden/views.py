@@ -35,6 +35,9 @@ def is_agent(user):
 # ═══════════════════════════════════════════════
 # PAGES PUBLIQUES
 # ═══════════════════════════════════════════════
+def splash(request):
+    """Page de chargement avec animation 3D — redirige vers home après 5s"""
+    return render(request, 'eden/splash.html')
 
 def home(request):
     from .models import (
@@ -139,6 +142,7 @@ def home(request):
         'villes': villes,
         'sites_json': sites_json,  # ⬅️ AJOUTÉ POUR LE FILTRAGE AJAX
     })
+    
 
 def sites_list(request):
     from .models import HeroConfig, HeroSlide
@@ -2724,10 +2728,10 @@ def dashboard_agences_stats(request):
 # ══════════════════════════════════════════════
 # MODULE NOS SERVICES
 # ══════════════════════════════════════════════
-
 def nos_services(request):
     cat_slug = request.GET.get('cat', '')
     categories = ServiceCategorie.objects.filter(is_active=True).order_by('ordre')
+    
     if cat_slug and cat_slug != 'tous':
         services = Service.objects.filter(
             is_active=True,
@@ -2735,6 +2739,21 @@ def nos_services(request):
         ).order_by('ordre', 'numero')
     else:
         services = Service.objects.filter(is_active=True).order_by('ordre', 'numero')
+
+    # Récupérer tous les services avec image pour le carrousel (limité à 10 max)
+    services_carousel = Service.objects.filter(
+        is_active=True,
+        image__isnull=False
+    ).exclude(image='').order_by('ordre', 'numero')[:10]
+    
+    # Si aucun service avec image, utiliser un service par défaut ou un placeholder
+    if not services_carousel:
+        # Créer un service factice pour le carrousel
+        class PlaceholderService:
+            def __init__(self):
+                self.nom = "EDEN GROUP"
+                self.image = None
+        services_carousel = [PlaceholderService()]
 
     etapes = EtapeProcessus.objects.filter(is_active=True).order_by('ordre', 'numero')
     engagements = EngagementService.objects.filter(is_active=True).order_by('ordre')
@@ -2750,12 +2769,12 @@ def nos_services(request):
     return render(request, 'eden/nos_services.html', {
         'categories': categories,
         'services': services,
+        'services_carousel': services_carousel,  # Ajout pour le carrousel
         'etapes': etapes,
         'engagements': engagements if engagements.exists() else engagements_defaults,
         'engagements_are_objects': engagements.exists(),
         'cat_actif': cat_slug or 'tous',
     })
-
 
 def service_detail(request, slug):
     cat = get_object_or_404(ServiceCategorie, slug=slug, is_active=True)
