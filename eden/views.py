@@ -2595,24 +2595,52 @@ def dashboard_projet_infrastructures(request, pk):
 
 def nos_agences(request):
     agences = Agence.objects.filter(is_active=True).prefetch_related('services').order_by('ordre')
+    
+    # Récupérer le siège
+    siege = agences.filter(type_agence='siege').first()
+    
+    # Créer la liste des agences pour le carrousel (siège en premier)
+    agences_list = []
+    if siege:
+        agences_list.append(siege)
+    # Ajouter les autres agences (hors siège)
+    agences_list.extend(agences.filter(type_agence__in=['agence', 'bureau']).order_by('ordre'))
+    
+    # Créer des slides de 3 agences avec décalage pour carrousel circulaire
+    agences_slides = []
+    n = len(agences_list)
+    if n > 0:
+        # Créer des slides avec décalage : 0,1,2 puis 1,2,3 puis 2,3,4 ...
+        for i in range(n):
+            slide = []
+            for j in range(3):
+                idx = (i + j) % n
+                slide.append(agences_list[idx])
+            agences_slides.append(slide)
+    else:
+        agences_slides = [[]]
+    
+    # Image fixe pour la colonne 2 (URL directe)
+    stats_image_url = "/static/images/cameroun.png" # À personnaliser
+    
+    # Stats
     stats = StatAgence.objects.filter(is_active=True).order_by('ordre')
-
-    # Stats par défaut si aucune en base
     stats_defaults = [
         {'valeur': str(agences.filter(type_agence__in=['siege','agence']).count()), 'label': 'Agences principales', 'icone': '🏢'},
         {'valeur': str(agences.filter(type_agence='bureau').count()) + '+', 'label': 'Bureaux relais', 'icone': '🏪'},
         {'valeur': '50+', 'label': 'Collaborateurs à votre service', 'icone': '👥'},
-        {'valeur': '20+', 'label': 'Ans d\'expérience dans le foncier', 'icone': '🏆'},
+        {'valeur': '20+', 'label': "Ans d'expérience", 'icone': '🏆'},
     ]
 
     return render(request, 'eden/nos_agences.html', {
         'agences': agences,
-        'siege': agences.filter(type_agence='siege').first(),
-        'agences_principales': agences.filter(type_agence='agence'),
-        'bureaux_relais': agences.filter(type_agence='bureau'),
+        'agences_slides': agences_slides,
+        'siege': siege,
+        'stats_image_url': stats_image_url,  # URL de l'image fixe
         'stats': stats if stats.exists() else stats_defaults,
         'stats_are_objects': stats.exists(),
     })
+
 
 
 @login_required

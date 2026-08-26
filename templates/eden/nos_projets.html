@@ -103,7 +103,6 @@ nav.scrolled .hamburger span{background:var(--g800);}
     display:block;
 }
 
-/* voile bleu gauche */
 .hero-projets-overlay{
     position:absolute;
     inset:0;
@@ -118,8 +117,6 @@ nav.scrolled .hamburger span{background:var(--g800);}
     z-index:1;
 }
 
-
-/* contenu */
 .hero-projets-content{
     position:absolute;
     inset:0;
@@ -468,26 +465,151 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
 @media(max-width:1024px){
   .projets-grid{grid-template-columns:repeat(2,1fr);}
   .footer-grid{grid-template-columns:1fr 1fr;}
+  .info-infra-grid{grid-template-columns:1fr;}
+  .infos-grid{grid-template-columns:repeat(2,1fr);}
 }
 @media(max-width:768px){
   nav{padding:0 1rem;}
   .nav-links{display:none;}
   .hamburger{display:flex;}
-  .hero-projets{height:220px;}
-  .hero-projets-content{padding-left:1.5rem;transform:translateY(40px);}
-  .hero-p-tit{font-size:28px;}
-  .stats-bar{gap:8px;}
-  .stat-chip{padding:8px 12px;}
-  .projets-grid{grid-template-columns:1fr 1fr;}
-  .infos-grid{grid-template-columns:1fr 1fr;}
-  .main-content{padding:1rem;}
-  .footer-grid{grid-template-columns:1fr;gap:1.5rem;}
-  .footer-grid>div:first-child{grid-column:1;}
-  .footer-bot{flex-direction:column;text-align:center;}
+  .logo-name{font-size:15px;}
+  .nav-icon-btn{width:32px;height:32px;font-size:13px;}
+  .btn-rdv{padding:6px 12px;font-size:11px;}
+  
+  .hero-projets{height:auto;min-height:280px;padding-bottom:1rem;}
+  .hero-projets-content{padding:5rem 1.2rem 1.5rem;transform:none;position:relative;z-index:2;}
+  .hero-p-tit{font-size:28px;margin-bottom:6px;}
+  .hero-p-desc{font-size:13px;margin-bottom:15px;}
+  
+  .stats-bar{display:grid;grid-template-columns:1fr 1fr;gap:8px;flex-wrap:wrap;}
+  .stat-chip{width:100%;height:auto;padding:8px 12px;gap:10px;border-radius:10px;}
+  .stat-chip:last-child{width:100%;grid-column:1/-1;}
+  .stat-chip-ico{font-size:24px;width:32px;height:32px;}
+  .stat-chip-n{font-size:20px;}
+  .stat-chip-l{font-size:10px;white-space:normal;}
+  
+  .filtres-bar{padding:0.5rem 0.8rem;gap:4px;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;}
+  .filtre-btn{padding:8px 14px;font-size:11px;white-space:nowrap;flex-shrink:0;}
+  .filtre-btn.active{border-radius:8px;}
+  
+  .main-content{padding:0.8rem;}
+  
+  .projets-grid{grid-template-columns:1fr 1fr;gap:0.8rem;}
+  .pcm-img{height:120px;}
+  .pcm-body{padding:0.6rem 0.7rem 0.8rem;}
+  .pcm-nom{font-size:12px;}
+  .pcm-loc{font-size:10px;}
+  .pcm-desc{font-size:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .pcm-statut{font-size:8px;padding:2px 8px;top:6px;left:6px;}
+  
+  .sidebar-projets{margin-top:0.5rem;}
+  .sp-header{padding:8px 12px;}
+  .sp-title{font-size:12px;}
+  .sp-item{padding:8px 12px;gap:8px;}
+  .sp-img{width:40px;height:34px;}
+  .sp-info-nom{font-size:11px;}
+  .sp-info-loc{font-size:9px;}
+  .sp-info-lots{font-size:9px;}
+  .sp-pct-wrap{width:32px;height:32px;}
+  .sp-pct-svg{width:32px;height:32px;}
+  .sp-pct-text{font-size:7px;}
+  .sp-list{max-height:300px;}
+  
+  #vue-detail > div:first-child{grid-template-columns:1fr !important;gap:0.8rem;}
+  .pd-hero{height:200px;border-radius:var(--r);}
+  .pd-hero-info{padding:1rem 0.8rem 0.8rem;}
+  .pd-nom{font-size:1.1rem;}
+  .pd-loc{font-size:11px;}
+  .pd-statut-badge{font-size:9px;padding:3px 10px;top:8px;left:8px;}
+  .pd-card{padding:0.8rem;border-radius:var(--r);}
+  .pd-card-tit{font-size:12px;margin-bottom:0.6rem;padding-bottom:0.4rem;}
+  .pd-desc{font-size:12px;line-height:1.6;}
+  
+  .info-infra-grid{grid-template-columns:1fr;gap:0.8rem;}
+  .infos-grid{grid-template-columns:repeat(2,1fr);gap:6px;}
+  .info-item{padding:6px 8px;}
+  .info-item-ico{font-size:14px;}
+  .info-item-lbl{font-size:8px;}
+  .info-item-val{font-size:0.9rem;}
+  
+  .lots-row{flex-wrap:nowrap;gap:4px;}
+  .lot-chip{padding:4px 6px;}
+  .lot-chip-n{font-size:1rem;}
+  .lot-chip-l{font-size:8px;}
+  
+  .infras-grid{grid-template-columns:1fr 1fr;gap:6px;}
+  .infra-item{padding:6px 8px;font-size:11px;border-radius:6px;}
+  .infra-check{width:14px;height:14px;font-size:8px;}
+  
+  .docs-row{gap:4px;}
+  .doc-btn{padding:5px 10px;font-size:10px;border-radius:6px;}
+  
+  .pd-actions{flex-direction:column;gap:6px;}
+  .btn-reserver{padding:10px 16px;font-size:13px;border-radius:var(--r);}
+  .btn-brochure{padding:10px 16px;font-size:12px;justify-content:center;}
+  
+  .diagramme-zone{padding:0.8rem;border-radius:var(--r);}
+  .dz-tit{font-size:12px;margin-bottom:0.6rem;}
+  .diagram-svg{width:140px;height:140px;}
+  .diagram-center-n{font-size:1.2rem;}
+  .diagram-center-l{font-size:8px;}
+  .dl-item{padding:4px 6px;font-size:11px;}
+  .dl-dot{width:10px;height:10px;}
+  .dl-pct{font-size:11px;}
+  
+  #grandes-etapes-row{gap:2px;}
+  #grandes-etapes-row > div{min-width:36px;}
+  
+  #sep-chapelet-items > div{min-width:40px;}
+  #sep-chapelet-items > div div:first-child div{width:24px !important;height:24px !important;font-size:8px !important;}
+  #sep-chapelet-items > div > div:last-child{font-size:8px !important;max-width:44px !important;}
+  
+  .galerie-img{min-width:140px;max-width:140px;height:100px;border-radius:var(--r);}
+  .galerie-carousel-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .galerie-track{gap:6px;}
+  
+  .trust-bottom{padding:0.8rem 1rem;gap:0.6rem 1.2rem;justify-content:center;}
+  .tb-item{font-size:10px;gap:4px;}
+  .tb-item span{font-size:12px;}
+  
+  .footer-grid{grid-template-columns:1fr 1fr;gap:1.2rem;}
+  .footer-grid > div:first-child{grid-column:1/-1;}
+  .footer-desc{max-width:100%;}
+  footer{padding:1.5rem 1rem 1rem;}
+  .footer-bot{flex-direction:column;text-align:center;gap:0.5rem;}
+  .footer-links-bot{flex-wrap:wrap;justify-content:center;gap:0.8rem;}
+  
+  .lb-img{max-width:95vw;max-height:80vh;}
+  .lb-nav{width:32px;height:32px;font-size:16px;}
+  .lb-nav.prev{left:0.3rem;}
+  .lb-nav.next{right:0.3rem;}
+  .lb-close{width:32px;height:32px;font-size:16px;top:0.5rem;right:0.5rem;}
 }
+
 @media(max-width:480px){
-  .projets-grid{grid-template-columns:1fr;}
-  .lots-row{flex-wrap:wrap;}
+  .hero-p-tit{font-size:22px;}
+  .hero-p-desc{font-size:12px;}
+  
+  .stats-bar{grid-template-columns:1fr 1fr;gap:5px;}
+  .stat-chip{padding:5px 8px;gap:6px;border-radius:8px;}
+  .stat-chip-ico{font-size:18px;width:26px;height:26px;}
+  .stat-chip-n{font-size:16px;}
+  .stat-chip-l{font-size:8px;}
+  
+  .projets-grid{grid-template-columns:1fr;gap:0.8rem;}
+  .pcm-img{height:160px;}
+  
+  .infos-grid{grid-template-columns:1fr 1fr;}
+  .infras-grid{grid-template-columns:1fr;}
+  
+  .filtre-btn{padding:6px 10px;font-size:10px;}
+  
+  .footer-grid{grid-template-columns:1fr;gap:1rem;}
+  .footer-grid > div:first-child{grid-column:1;}
+  .footer-col h4{font-size:9px;margin-bottom:0.5rem;}
+  .footer-lnk{font-size:11px;}
+  
+  .sp-list{max-height:250px;}
 }
 </style>
 </head>
@@ -502,7 +624,6 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
   <img class="lb-img" id="lb-img" src="" alt="">
   <button class="lb-nav next" onclick="navLightbox(1)">›</button>
 </div>
-
 
 <!-- HERO -->
 <div class="hero-projets">
@@ -666,7 +787,6 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
   <div class="tb-item"><span>👤</span>Assistance personnalisée</div>
   <div class="tb-item"><span>🏆</span>Plus de 20 ans d'expérience</div>
 </div>
-
 
 <script>
 // ── NAV ──
@@ -958,22 +1078,12 @@ function rendreEtapes(etapes) {
   const etapesH = document.getElementById('etapes-horizontales');
   if (!container) return;
 
-  // Barre avancement global
-  if (etapes && etapes.length > 0) {
-    const progMoy = Math.round(etapes.reduce((s,e) => s + e.progression, 0) / etapes.length);
-    const bar = document.getElementById('avancement-bar');
-    const pct = document.getElementById('avancement-pct');
-    if (bar) bar.style.width = progMoy + '%';
-    if (pct) pct.textContent = progMoy + '%';
-  }
-
   if (!etapes || etapes.length === 0) {
     if (container) container.innerHTML = `<div style="text-align:center;padding:2rem;color:#94A3B8;font-size:12px;"><div style="font-size:2rem;margin-bottom:0.5rem;">📋</div>Aucune étape configurée.</div>`;
     if (etapesH) etapesH.innerHTML = '';
     return;
   }
 
-  // ── COL 3 HAUT : Diagramme circulaire + info étape ──
   const cx = 100, cy = 100, r = 72;
   const n = etapes.length;
   const gap = 3;
@@ -991,14 +1101,12 @@ function rendreEtapes(etapes) {
     const y2 = cy + r * Math.sin(toRad(currentAngle + anglePerSeg));
     const la = anglePerSeg > 180 ? 1 : 0;
 
-    // Fond segment
     svgContent += `<path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${la} 1 ${x2},${y2} Z"
       fill="${col}" opacity="0.15"
       onclick="selectionnerEtape(${i})"
       style="cursor:pointer;transition:opacity 0.2s;"
       id="seg-bg-${i}"/>`;
 
-    // Progression remplie
     if (pct > 0) {
       const progAngle = anglePerSeg * pct;
       const px2 = cx + r * Math.cos(toRad(currentAngle + progAngle));
@@ -1011,7 +1119,6 @@ function rendreEtapes(etapes) {
         id="seg-prog-${i}"/>`;
     }
 
-    // Icône au milieu du segment
     const midRad = toRad(currentAngle + anglePerSeg / 2);
     const ir = r * 0.60;
     const ix = cx + ir * Math.cos(midRad);
@@ -1025,11 +1132,9 @@ function rendreEtapes(etapes) {
 
   const progMoy = Math.round(etapes.reduce((s,e) => s + e.progression, 0) / etapes.length);
 
-  // Panneau info étape (affiché à la place du diagramme au clic)
   container.innerHTML = `
     <div style="position:relative;">
 
-      <!-- VUE DIAGRAMME -->
       <div id="vue-diagramme" style="display:flex;flex-direction:column;align-items:center;">
         <svg viewBox="0 0 200 200" width="200" height="200">
           ${svgContent}
@@ -1042,7 +1147,6 @@ function rendreEtapes(etapes) {
         </div>
       </div>
 
-      <!-- VUE INFO ÉTAPE (cachée par défaut) -->
       <div id="vue-etape-info" style="display:none;padding:1rem;min-height:200px;">
         <button onclick="retourDiagramme()"
           style="display:flex;align-items:center;gap:5px;background:none;border:none;cursor:pointer;font-size:12px;font-weight:600;color:var(--blue);margin-bottom:1rem;padding:0;font-family:'Outfit',sans-serif;">
@@ -1055,10 +1159,8 @@ function rendreEtapes(etapes) {
 
   `;
 
-  // ── COL 3 BAS : Grandes étapes horizontales + sous-étapes ──
   if (etapesH) {
     etapesH.innerHTML = `
-      <!-- GRANDES ÉTAPES — chapelet horizontal -->
       <div id="grandes-etapes-row"
         style="display:flex;align-items:flex-start;width:100%;overflow-x:auto;padding-bottom:6px;">
         ${etapes.map((etape, i) => {
@@ -1098,7 +1200,6 @@ function rendreEtapes(etapes) {
         }).join('')}
       </div>
 
-      <!-- SOUS-ÉTAPES — chapelet horizontal de l'étape sélectionnée -->
       <div id="sous-etapes-chapelet" style="display:none;margin-top:1.2rem;padding-top:1rem;border-top:1px solid #F0F4FF;">
         <div id="sep-tit-h" style="font-size:11px;font-weight:700;margin-bottom:0.8rem;"></div>
         <div id="sep-chapelet-items" style="display:flex;align-items:flex-start;overflow-x:auto;padding-bottom:4px;"></div>
@@ -1113,7 +1214,6 @@ function selectionnerEtape(idx) {
   const etape = etapes[idx];
   const col = etape.couleur || '#1B4FDB';
 
-  // ── 1. Diagramme : basculer vers info étape ──
   const vueDiag = document.getElementById('vue-diagramme');
   const vueInfo = document.getElementById('vue-etape-info');
   const infoContent = document.getElementById('etape-info-content');
@@ -1139,7 +1239,6 @@ function selectionnerEtape(idx) {
         </div>
       </div>
 
-      <!-- Barre de progression -->
       <div style="margin-bottom:1.2rem;">
         <div style="height:8px;background:#E2E8F0;border-radius:100px;overflow:hidden;">
           <div style="height:100%;background:${col};border-radius:100px;
@@ -1147,7 +1246,6 @@ function selectionnerEtape(idx) {
         </div>
       </div>
 
-      <!-- Description -->
       ${etape.description ? `
       <div style="background:${col}0D;border-left:3px solid ${col};
         border-radius:0 8px 8px 0;padding:12px 14px;margin-bottom:1rem;">
@@ -1164,7 +1262,6 @@ function selectionnerEtape(idx) {
         Aucune description pour cette étape.
       </div>`}
 
-      <!-- Nombre de sous-étapes -->
       <div style="font-size:11px;color:var(--g400);text-align:center;margin-top:0.5rem;">
         ${etape.sous_etapes && etape.sous_etapes.length > 0
           ? `${etape.sous_etapes.length} sous-étape${etape.sous_etapes.length > 1 ? 's' : ''} — voir le chapelet ci-dessous`
@@ -1173,13 +1270,11 @@ function selectionnerEtape(idx) {
     `;
   }
 
-  // ── 2. Légende diagramme : highlight ──
   document.querySelectorAll('[id^="dl-"]').forEach((el, i) => {
     el.style.background = i === idx ? col + '18' : '';
     el.style.borderColor = i === idx ? col + '44' : 'transparent';
   });
 
-  // ── 3. Grandes étapes horizontales : highlight ──
   document.querySelectorAll('[id^="eth-"]').forEach((el, i) => {
     el.style.opacity = i === idx ? '1' : '0.5';
     el.style.transform = i === idx ? 'scale(1.08)' : 'scale(1)';
@@ -1194,7 +1289,6 @@ function selectionnerEtape(idx) {
     }
   });
 
-  // ── 4. Sous-étapes en chapelet horizontal ──
   const chapelet = document.getElementById('sous-etapes-chapelet');
   const chapeletItems = document.getElementById('sep-chapelet-items');
   const sepTit = document.getElementById('sep-tit-h');
@@ -1257,6 +1351,13 @@ function selectionnerEtape(idx) {
   }
 }
 
+function retourDiagramme() {
+  const vueDiag = document.getElementById('vue-diagramme');
+  const vueInfo = document.getElementById('vue-etape-info');
+  if (vueDiag) vueDiag.style.display = 'flex';
+  if (vueInfo) vueInfo.style.display = 'none';
+}
+
 // ══════════════════════════════════════
 // GALERIE
 // ══════════════════════════════════════
@@ -1310,13 +1411,6 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft') navLightbox(-1);
   if (e.key === 'ArrowRight') navLightbox(1);
 });
-
-// ══════════════════════════════════════
-// RESET VUE (retour liste)
-// ══════════════════════════════════════
-function resetVue() {
-  projetActif = null;
-}
 
 // ══════════════════════════════════════
 // TOAST
