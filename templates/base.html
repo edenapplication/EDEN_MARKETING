@@ -10,13 +10,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
     
-    <!-- Font Awesome (optionnel) -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     
-    <!-- Bootstrap (optionnel) -->
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
-    <!-- Leaflet CSS (pour les cartes) -->
+    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     
     <!-- Styles personnalisés -->
@@ -210,8 +210,8 @@
         }
         .footer-links-bot a:hover{color:#fff;}
 
-        /* ══ TOAST ══ */
-        .toast{
+        /* ══ TOAST PERSONNALISÉ (évite conflit Bootstrap) ══ */
+        .toast-custom{
           position:fixed;
           bottom:2rem;
           right:2rem;
@@ -231,7 +231,7 @@
           max-width:340px;
           box-shadow:0 8px 32px rgba(0,0,0,0.12);
         }
-        .toast.show{transform:none;opacity:1;}
+        .toast-custom.show{transform:none;opacity:1;}
         .toast-bar{
           position:absolute;
           left:0;
@@ -242,7 +242,7 @@
           background:var(--grad-h);
         }
 
-        /* ══ MODAL ══ */
+        /* ══ MODAL CONTACT (renommé pour éviter conflit Bootstrap) ══ */
         .overlay{
           position:fixed;
           inset:0;
@@ -255,7 +255,8 @@
           backdrop-filter:blur(4px);
         }
         .overlay.open{display:flex;}
-        .modal{
+
+        .contact-modal{
           background:#fff;
           border-radius:var(--rxl);
           padding:2rem;
@@ -315,6 +316,7 @@
           font-family:'Outfit',sans-serif;
           outline:none;
           transition:border-color 0.2s;
+          background:#fff;
         }
         .fi:focus{border-color:var(--blue);}
         .fi::placeholder{color:var(--g400);}
@@ -335,7 +337,64 @@
         }
         .m-submit:hover{background:var(--red-d);}
 
-        /* ══ RESPONSIVE FOOTER ══ */
+        /* ══ MODAL SERVICE (dans base.html) ══ */
+        .srv-modal-overlay{
+          position:fixed;
+          inset:0;
+          background:rgba(15,23,42,0.6);
+          z-index:3000;
+          display:none;
+          align-items:center;
+          justify-content:center;
+          padding:1rem;
+          backdrop-filter:blur(4px);
+        }
+        .srv-modal-overlay.open{display:flex;}
+
+        .srv-modal-box{
+          background:#fff;
+          border-radius:var(--rxl);
+          max-width:480px;
+          width:100%;
+          animation:mIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+          box-shadow:0 24px 80px rgba(0,0,0,0.2);
+          overflow:hidden;
+        }
+        .srv-modal-header{
+          background:var(--blue-d);
+          padding:1.5rem;
+          position:relative;
+        }
+        .srv-modal-close{
+          position:absolute;
+          top:1rem;
+          right:1rem;
+          background:rgba(255,255,255,0.1);
+          border:none;
+          color:#fff;
+          width:30px;
+          height:30px;
+          border-radius:50%;
+          cursor:pointer;
+          font-size:14px;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+        }
+        .srv-modal-close:hover{background:rgba(255,255,255,0.2);}
+        .srv-modal-header-top{font-size:11px;color:rgba(255,255,255,0.5);font-weight:700;letter-spacing:2px;margin-bottom:0.5rem;}
+        .srv-modal-header-bottom{display:flex;align-items:center;gap:12px;}
+        .srv-modal-icon{width:52px;height:52px;border-radius:12px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:24px;}
+        .srv-modal-title{font-size:1.2rem;font-weight:900;color:#fff;}
+        .srv-modal-body{padding:1.5rem;}
+        .srv-modal-desc{font-size:13px;color:var(--g600);line-height:1.75;margin-bottom:1.2rem;}
+        .srv-modal-actions{display:flex;gap:10px;}
+        .srv-btn-primary{flex:1;background:var(--red);color:#fff;border:none;padding:12px;border-radius:var(--r);font-size:13px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;}
+        .srv-btn-primary:hover{background:var(--red-d);}
+        .srv-btn-secondary{padding:12px 18px;background:var(--g50);border:1.5px solid var(--g200);border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;color:var(--g600);}
+        .srv-btn-secondary:hover{background:var(--g200);}
+
+        /* ══ RESPONSIVE ══ */
         @media(max-width:1024px){
           .footer-grid{grid-template-columns:1fr 1fr 1fr;}
         }
@@ -345,9 +404,16 @@
           .hamburger{display:flex;}
           .footer-grid{grid-template-columns:1fr 1fr;gap:1.5rem;}
           .footer-grid>div:first-child{grid-column:1/-1;}
+          .contact-modal{padding:1.5rem;margin:1rem;}
+          .f-row{grid-template-columns:1fr;}
+          .srv-modal-box{margin:1rem;}
         }
         @media(max-width:480px){
           .footer-grid{grid-template-columns:1fr;}
+          .contact-modal{padding:1rem;}
+          .srv-modal-box{margin:0.5rem;}
+          .srv-modal-header{padding:1rem;}
+          .srv-modal-body{padding:1rem;}
         }
 
         {% block extra_css %}{% endblock %}
@@ -356,7 +422,7 @@
 <body>
 
 <!-- ══ TOAST ══ -->
-<div class="toast" id="toast"><div class="toast-bar"></div><span id="t-ico" style="font-size:18px;">✅</span><span id="t-msg"></span></div>
+<div class="toast-custom" id="toast"><div class="toast-bar"></div><span id="t-ico" style="font-size:18px;">✅</span><span id="t-msg"></span></div>
 
 <!-- ══ NAVBAR ══ -->
 <nav id="navbar">
@@ -419,7 +485,6 @@
       <h4>Liens rapides</h4>
       <a class="footer-lnk" href="{% url 'home' %}">Accueil</a>
       <a class="footer-lnk" href="{% url 'sites_list' %}">Nos Terrains</a>
-      <a class="footer-lnk" href="{% url 'nos_projets' %}">Nos Projets</a>
       <a class="footer-lnk" href="{% url 'nos_services' %}">Nos Services</a>
       <a class="footer-lnk" href="{% url 'nos_agences' %}">Nos Agences</a>
       <a class="footer-lnk" href="{% url 'une_evenements_accueil' %}">Actualités</a>
@@ -461,43 +526,87 @@
   </div>
 </footer>
 
-<!-- ══ MODAL ══ -->
+<!-- ══ MODAL CONTACT ══ -->
 <div class="overlay" id="modal">
-  <div class="modal">
+  <div class="contact-modal">
     <button class="m-close" onclick="closeModal()">✕</button>
     <div id="modal-content">
       <div class="m-tag">✦ EDEN GROUP</div>
       <div class="m-tit">Prendre rendez-vous</div>
       <div class="m-desc">Notre équipe vous contactera sous 24 heures.</div>
-      <form id="mform">
+      <form id="mform" method="post" action="/contact/">
         {% csrf_token %}
         <div class="f-row">
-          <div class="fg"><label>Prénom *</label><input class="fi" type="text" name="prenom" placeholder="Jean-Marie" required></div>
-          <div class="fg"><label>Nom *</label><input class="fi" type="text" name="nom" placeholder="Nguema" required></div>
+          <div class="fg">
+            <label>Prénom *</label>
+            <input class="fi" type="text" name="prenom" placeholder="Jean-Marie" required>
+          </div>
+          <div class="fg">
+            <label>Nom *</label>
+            <input class="fi" type="text" name="nom" placeholder="Nguema" required>
+          </div>
         </div>
-        <div class="fg"><label>Téléphone / WhatsApp *</label><input class="fi" type="tel" name="telephone" placeholder="+237 6XX XXX XXX" required></div>
-        <div class="fg"><label>Email</label><input class="fi" type="email" name="email" placeholder="votre@email.com"></div>
-        <div class="fg"><label>Site ou terrain d'intérêt</label><input class="fi" type="text" id="msite" placeholder="Ex: NTOUESSONG 5, lot 500m²"></div>
-        <div class="fg"><label>Budget (FCFA)</label>
-          <select class="fi" name="budget" style="appearance:none;">
+        <div class="fg">
+          <label>Téléphone / WhatsApp *</label>
+          <input class="fi" type="tel" name="telephone" placeholder="+237 6XX XXX XXX" required>
+        </div>
+        <div class="fg">
+          <label>Email</label>
+          <input class="fi" type="email" name="email" placeholder="votre@email.com">
+        </div>
+        <div class="fg">
+          <label>Site ou terrain d'intérêt</label>
+          <input class="fi" type="text" id="msite" name="site_interet" placeholder="Ex: NTOUESSONG 5, lot 500m²">
+        </div>
+        <div class="fg">
+          <label>Budget (FCFA)</label>
+          <select class="fi" name="budget">
+            <option value="">Sélectionnez un budget</option>
             <option>Moins de 3 000 000</option>
             <option>3 000 000 – 6 000 000</option>
             <option>6 000 000 – 12 000 000</option>
             <option>Plus de 12 000 000</option>
           </select>
         </div>
-        <div class="fg"><label>Type de demande</label>
-          <select class="fi" name="type_demande" style="appearance:none;">
+        <div class="fg">
+          <label>Type de demande</label>
+          <select class="fi" name="type_demande">
             <option value="visite">Visite de site</option>
             <option value="achat">Achat de terrain</option>
             <option value="information">Renseignements</option>
             <option value="reservation">Réservation</option>
           </select>
         </div>
-        <div class="fg"><label>Message</label><textarea class="fi" name="message" rows="2" placeholder="Vos questions..." style="resize:none;"></textarea></div>
+        <div class="fg">
+          <label>Message</label>
+          <textarea class="fi" name="message" rows="2" placeholder="Vos questions..." style="resize:none;"></textarea>
+        </div>
         <button type="button" class="m-submit" onclick="submitModal()">Envoyer la demande →</button>
-        <a href="https://wa.me/237650701638" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;background:#25D366;color:#fff;padding:12px;border-radius:9px;font-size:14px;font-weight:700;text-decoration:none;">💬 Ou discuter sur WhatsApp</a>
+        <a href="https://wa.me/237650701638" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;background:#25D366;color:#fff;padding:12px;border-radius:9px;font-size:14px;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1">💬 Ou discuter sur WhatsApp</a>
       </form>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL SERVICE ══ -->
+<div class="srv-modal-overlay" id="modal-service">
+  <div class="srv-modal-box">
+    <div class="srv-modal-header">
+      <button class="srv-modal-close" onclick="fermerModalSrv()">✕</button>
+      <div class="srv-modal-header-top" id="ms-num">SERVICE 01</div>
+      <div class="srv-modal-header-bottom">
+        <div class="srv-modal-icon" id="ms-ico">🏠</div>
+        <div class="srv-modal-title" id="ms-nom">Nom du service</div>
+      </div>
+    </div>
+    <div class="srv-modal-body">
+      <div class="srv-modal-desc" id="ms-desc">Description du service...</div>
+      <div class="srv-modal-actions">
+        <button class="srv-btn-primary" onclick="showToast('📅','Notre équipe vous contactera sous 24h.');fermerModalSrv();">
+          Demander ce service
+        </button>
+        <button class="srv-btn-secondary" onclick="fermerModalSrv()">Fermer</button>
+      </div>
     </div>
   </div>
 </div>
@@ -521,54 +630,204 @@
         }
     });
 
+    document.querySelectorAll('.mob-menu .nav-lnk').forEach(function(link) {
+        link.addEventListener('click', function() {
+            document.getElementById('mob-menu').classList.remove('open');
+        });
+    });
+
     // ── NEWSLETTER ──
     function souscrireFooter() {
-        const e = document.getElementById('footer-nl')?.value;
-        if (!e) return;
+        const e = document.getElementById('footer-nl');
+        if (!e || !e.value) {
+            showToast('⚠️', 'Veuillez entrer votre email.');
+            return;
+        }
         showToast('✅', 'Inscription confirmée !');
-        document.getElementById('footer-nl').value = '';
+        e.value = '';
     }
 
-    // ── MODAL ──
-    function openModal(s) {
-        if (s) {
-            const f = document.getElementById('msite');
-            if (f) f.value = s;
+    // ── MODAL CONTACT ──
+    function openModal(site) {
+        // Réinitialiser le formulaire
+        const form = document.getElementById('mform');
+        if (form) form.reset();
+        
+        // Si un site est passé en paramètre, le mettre dans le champ
+        if (site) {
+            const msite = document.getElementById('msite');
+            if (msite) msite.value = site;
         }
+        
         document.getElementById('modal').classList.add('open');
+        document.body.style.overflow = 'hidden';
     }
 
     function closeModal() {
         document.getElementById('modal').classList.remove('open');
+        document.body.style.overflow = '';
     }
 
     document.getElementById('modal').addEventListener('click', function(e) {
         if (e.target === this) closeModal();
     });
 
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            if (document.getElementById('modal').classList.contains('open')) {
+                closeModal();
+            }
+            if (document.getElementById('modal-service').classList.contains('open')) {
+                fermerModalSrv();
+            }
+        }
+    });
+
+    // ── SOUMISSION DU FORMULAIRE CONTACT ──
     function submitModal() {
         const form = document.getElementById('mform');
+        if (!form) return;
+        
         const data = new FormData(form);
-        const nom = (data.get('prenom') || '') + ' ' + (data.get('nom') || '');
-        data.set('nom', nom.trim());
+        
+        // Vérification des champs obligatoires
+        const prenom = data.get('prenom');
+        const nom = data.get('nom');
+        const telephone = data.get('telephone');
+        
+        if (!prenom || !nom || !telephone) {
+            showToast('⚠️', 'Veuillez remplir tous les champs obligatoires.');
+            return;
+        }
+        
+        const nomComplet = prenom + ' ' + nom;
+        data.set('nom', nomComplet.trim());
+        
         fetch('/contact/', {
             method: 'POST',
-            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
             body: data
         })
-        .then(r => r.json())
-        .then(() => {
-            document.getElementById('modal-content').innerHTML =
-                '<div style="text-align:center;padding:2rem 0;">' +
-                '<div style="font-size:3.5rem;margin-bottom:0.8rem;">✅</div>' +
-                '<div style="font-size:1.3rem;font-weight:800;color:var(--g800);margin-bottom:0.5rem;">Demande envoyée !</div>' +
-                '<p style="font-size:13px;color:var(--g500);margin-bottom:1.5rem;">Notre équipe vous contactera sous 24h.</p>' +
-                '<button class="m-submit" onclick="closeModal()" style="background:var(--red);">Fermer</button>' +
-                '</div>';
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+            const modalContent = document.getElementById('modal-content');
+            modalContent.innerHTML = `
+                <div style="text-align:center;padding:1rem 0;">
+                    <div style="font-size:3.5rem;margin-bottom:0.8rem;">✅</div>
+                    <div style="font-size:1.3rem;font-weight:800;color:var(--g800);margin-bottom:0.5rem;">Demande envoyée !</div>
+                    <p style="font-size:13px;color:var(--g500);margin-bottom:1.5rem;">Notre équipe vous contactera sous 24h.</p>
+                    <button class="m-submit" onclick="fermerModalEtRestaurer()" style="background:var(--blue);">Fermer</button>
+                </div>
+            `;
             showToast('✅', 'Demande envoyée ! Nous vous contacterons sous 24h.');
         })
-        .catch(() => showToast('⚠️', 'Erreur réseau.'));
+        .catch(function(error) {
+            showToast('⚠️', 'Erreur réseau. Veuillez réessayer.');
+            console.error('Erreur:', error);
+        });
     }
+
+    function fermerModalEtRestaurer() {
+        closeModal();
+        setTimeout(function() {
+            restaurerFormulaire();
+        }, 300);
+    }
+
+    function restaurerFormulaire() {
+        const modalContent = document.getElementById('modal-content');
+        if (!modalContent) return;
+        
+        modalContent.innerHTML = `
+            <div class="m-tag">✦ EDEN GROUP</div>
+            <div class="m-tit">Prendre rendez-vous</div>
+            <div class="m-desc">Notre équipe vous contactera sous 24 heures.</div>
+            <form id="mform" method="post" action="/contact/">
+                {% csrf_token %}
+                <div class="f-row">
+                    <div class="fg">
+                        <label>Prénom *</label>
+                        <input class="fi" type="text" name="prenom" placeholder="Jean-Marie" required>
+                    </div>
+                    <div class="fg">
+                        <label>Nom *</label>
+                        <input class="fi" type="text" name="nom" placeholder="Nguema" required>
+                    </div>
+                </div>
+                <div class="fg">
+                    <label>Téléphone / WhatsApp *</label>
+                    <input class="fi" type="tel" name="telephone" placeholder="+237 6XX XXX XXX" required>
+                </div>
+                <div class="fg">
+                    <label>Email</label>
+                    <input class="fi" type="email" name="email" placeholder="votre@email.com">
+                </div>
+                <div class="fg">
+                    <label>Site ou terrain d'intérêt</label>
+                    <input class="fi" type="text" id="msite" name="site_interet" placeholder="Ex: NTOUESSONG 5, lot 500m²">
+                </div>
+                <div class="fg">
+                    <label>Budget (FCFA)</label>
+                    <select class="fi" name="budget">
+                        <option value="">Sélectionnez un budget</option>
+                        <option>Moins de 3 000 000</option>
+                        <option>3 000 000 – 6 000 000</option>
+                        <option>6 000 000 – 12 000 000</option>
+                        <option>Plus de 12 000 000</option>
+                    </select>
+                </div>
+                <div class="fg">
+                    <label>Type de demande</label>
+                    <select class="fi" name="type_demande">
+                        <option value="visite">Visite de site</option>
+                        <option value="achat">Achat de terrain</option>
+                        <option value="information">Renseignements</option>
+                        <option value="reservation">Réservation</option>
+                    </select>
+                </div>
+                <div class="fg">
+                    <label>Message</label>
+                    <textarea class="fi" name="message" rows="2" placeholder="Vos questions..." style="resize:none;"></textarea>
+                </div>
+                <button type="button" class="m-submit" onclick="submitModal()">Envoyer la demande →</button>
+                <a href="https://wa.me/237650701638" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;background:#25D366;color:#fff;padding:12px;border-radius:9px;font-size:14px;font-weight:700;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1">💬 Ou discuter sur WhatsApp</a>
+            </form>
+        `;
+    }
+
+    // ── MODAL SERVICE ──
+    function ouvrirDetailService(nom, desc, ico, num) {
+        const modal = document.getElementById('modal-service');
+        if (!modal) return;
+        
+        document.getElementById('ms-num').textContent = `SERVICE 0${num}`;
+        document.getElementById('ms-ico').textContent = ico;
+        document.getElementById('ms-nom').textContent = nom;
+        document.getElementById('ms-desc').textContent = desc;
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function fermerModalSrv() {
+        const modal = document.getElementById('modal-service');
+        if (modal) {
+            modal.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+    }
+
+    // Gestion du clic sur l'overlay du modal service
+    document.addEventListener('DOMContentLoaded', function() {
+        const modalSrv = document.getElementById('modal-service');
+        if (modalSrv) {
+            modalSrv.addEventListener('click', function(e) {
+                if (e.target === this) fermerModalSrv();
+            });
+        }
+    });
 
     // ── TOAST ──
     function showToast(ico, msg) {
@@ -576,15 +835,10 @@
         document.getElementById('t-ico').textContent = ico;
         document.getElementById('t-msg').textContent = msg;
         t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 4500);
+        setTimeout(function() {
+            t.classList.remove('show');
+        }, 4500);
     }
-
-    // Fermer le menu mobile au clic
-    document.querySelectorAll('.mob-menu .nav-lnk').forEach(link => {
-        link.addEventListener('click', () => {
-            document.getElementById('mob-menu').classList.remove('open');
-        });
-    });
 
     {% block extra_js %}{% endblock %}
 </script>

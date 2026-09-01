@@ -406,46 +406,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
   <div class="lb-info"><div class="lb-tit" id="lb-tit"></div><div class="lb-desc" id="lb-desc"></div></div>
 </div>
 
-<!-- ══ MODAL ══ -->
-<div class="overlay" id="modal">
-  <div class="modal">
-    <button class="m-close" onclick="closeModal()">✕</button>
-    <div id="modal-content">
-      <div class="m-tag">✦ EDEN GROUP</div>
-      <div class="m-tit">Prendre rendez-vous</div>
-      <div class="m-desc">Notre équipe vous contactera sous 24 heures.</div>
-      <form id="mform">
-        {% csrf_token %}
-        <div class="f-row">
-          <div class="fg"><label>Prénom *</label><input class="fi" type="text" name="prenom" placeholder="Jean-Marie" required></div>
-          <div class="fg"><label>Nom *</label><input class="fi" type="text" name="nom" placeholder="Nguema" required></div>
-        </div>
-        <div class="fg"><label>Téléphone / WhatsApp *</label><input class="fi" type="tel" name="telephone" placeholder="+237 6XX XXX XXX" required></div>
-        <div class="fg"><label>Email</label><input class="fi" type="email" name="email" placeholder="votre@email.com"></div>
-        <div class="fg"><label>Site ou terrain d'intérêt</label><input class="fi" type="text" id="msite" placeholder="Ex: NTOUESSONG 5"></div>
-        <div class="fg"><label>Budget (FCFA)</label>
-          <select class="fi" name="budget" style="appearance:none;">
-            <option>Moins de 3 000 000</option>
-            <option>3 000 000 – 6 000 000</option>
-            <option>6 000 000 – 12 000 000</option>
-            <option>Plus de 12 000 000</option>
-          </select>
-        </div>
-        <div class="fg"><label>Type de demande</label>
-          <select class="fi" name="type_demande" style="appearance:none;">
-            <option value="visite">Visite de site</option>
-            <option value="achat">Achat de terrain</option>
-            <option value="information">Renseignements</option>
-            <option value="reservation">Réservation</option>
-          </select>
-        </div>
-        <div class="fg"><label>Message</label><textarea class="fi" name="message" rows="2" placeholder="Vos questions..." style="resize:none;"></textarea></div>
-        <button type="button" class="m-submit" onclick="submitModal()">Envoyer la demande →</button>
-        <a href="https://wa.me/2376XXXXXXXX" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;background:#25D366;color:#fff;padding:10px;border-radius:9px;font-size:13px;font-weight:700;text-decoration:none;">💬 Ou discuter sur WhatsApp</a>
-      </form>
-    </div>
-  </div>
-</div>
+
 
 <!-- ══ HERO ══ -->
 <div class="hero-academie">
