@@ -2765,13 +2765,8 @@ def escape_js(text):
         return ''
     return json.dumps(text)[1:-1]
 
-def truncate_text(text, length=120):
-    """Tronque un texte à une longueur donnée."""
-    if not text:
-        return ''
-    if len(text) > length:
-        return text[:length] + '...'
-    return text
+
+
 
 def nos_services(request):
     """Page des services avec affichage dynamique"""
@@ -2789,10 +2784,6 @@ def nos_services(request):
                 service = None
             
             if service:
-                # Utiliser json.dumps pour échapper proprement
-                nom_esc = json.dumps(service.nom)
-                desc_esc = json.dumps(service.description or '')
-                ico_esc = json.dumps(service.icone or '')
                 description_longue = service.description_longue or service.description or ''
                 lien_detail = service.lien_detail if service.lien_detail and service.lien_detail != '#' else '#'
                 
@@ -2822,18 +2813,19 @@ def nos_services(request):
                 '''
                 return JsonResponse({'html': html, 'type': 'empty'})
         
-        # Grille de tous les services
+        # ═══ Grille de tous les services ═══
         html_cartes = ''
         for srv in all_services:
-            # Utiliser json.dumps pour échapper proprement
+            # ═══ Utiliser json.dumps pour échapper correctement ═══
             nom_esc = json.dumps(srv.nom)
             desc_esc = json.dumps(srv.description or '')
             ico_esc = json.dumps(srv.icone or '')
             description = truncate_text(srv.description, 120)
             lien_detail = srv.lien_detail if srv.lien_detail and srv.lien_detail != '#' else '#'
             
+            # ═══ Utiliser des guillemets simples pour l'attribut onclick ═══
             html_cartes += f'''
-            <div class="service-card" onclick="ouvrirDetailService({nom_esc},{desc_esc},{ico_esc},{srv.numero})">
+            <div class="service-card" onclick='ouvrirDetailService({nom_esc},{desc_esc},{ico_esc},{srv.numero})'>
                 <div class="sc-num">0{srv.numero}</div>
                 <div class="sc-ico-box">{srv.icone}</div>
                 <div class="sc-nom">{srv.nom}</div>
@@ -2885,6 +2877,15 @@ def nos_services(request):
     }
     
     return render(request, 'eden/nos_services.html', context)
+
+
+def truncate_text(text, length=120):
+    """Tronque un texte à une longueur donnée."""
+    if not text:
+        return ''
+    if len(text) > length:
+        return text[:length] + '...'
+    return text
 
 def service_detail(request, slug):
     cat = get_object_or_404(ServiceCategorie, slug=slug, is_active=True)
