@@ -654,11 +654,12 @@ function showToast(ico, msg) {
 }
 
 function ouvrirDetailService(nom, desc, ico, num) {
-  document.getElementById('ms-num').textContent = `SERVICE 0${num}`;
-  document.getElementById('ms-ico').textContent = ico;
-  document.getElementById('ms-nom').textContent = nom;
-  document.getElementById('ms-desc').textContent = desc;
-  document.getElementById('modal-service').classList.add('open');
+    // Les paramètres sont déjà échappés par json.dumps
+    document.getElementById('ms-num').textContent = 'SERVICE 0' + num;
+    document.getElementById('ms-ico').textContent = ico;
+    document.getElementById('ms-nom').textContent = nom;
+    document.getElementById('ms-desc').textContent = desc;
+    document.getElementById('modal-service').classList.add('open');
 }
 
 function fermerModalSrv() {
