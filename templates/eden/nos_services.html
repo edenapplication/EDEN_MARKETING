@@ -511,7 +511,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
       <span class="sm-item-ico">📋</span>Tous les services
     </a>
     
-    <!-- Liste des services (utilise l'ID) -->
+    <!-- Liste des services -->
     {% for srv in services %}
     <a href="#" class="sm-item" data-id="{{ srv.id }}" onclick="chargerContenu('{{ srv.id }}', this);return false;">
       <span class="sm-item-ico">{{ srv.icone }}</span>{{ srv.nom }}
@@ -532,7 +532,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
       <!-- Grille de tous les services (affichée par défaut) -->
       <div class="services-grid" id="services-grid">
         {% for srv in services %}
-        <div class="service-card" onclick='ouvrirDetailService("{{ srv.nom|escapejs }}","{{ srv.description|escapejs }}","{{ srv.icone|escapejs }}",{{ srv.numero }})'>
+        <div class="service-card" onclick='ouvrirDetailService({{ srv.nom|escapejs }},{{ srv.description|escapejs }},{{ srv.icone|escapejs }},{{ srv.numero }})'>
           <div class="sc-num">0{{ srv.numero }}</div>
           <div class="sc-ico-box">{{ srv.icone }}</div>
           <div class="sc-nom">{{ srv.nom }}</div>
@@ -606,22 +606,24 @@ const AUTOPLAY_DELAY = 5000;
 
 function getSlideCount() { return document.querySelectorAll('.hero-slide').length; }
 function updateDots(index) {
-  const dots = document.querySelectorAll('.carousel-dot');
-  dots.forEach((dot, i) => { dot.classList.toggle('active', i === index); });
+  var dots = document.querySelectorAll('.carousel-dot');
+  dots.forEach(function(dot, i) {
+    dot.classList.toggle('active', i === index);
+  });
 }
 function goToSlide(index) {
-  const track = document.getElementById('carouselTrack');
-  const count = getSlideCount();
+  var track = document.getElementById('carouselTrack');
+  var count = getSlideCount();
   if (count === 0) return;
   if (index < 0) index = count - 1;
   if (index >= count) index = 0;
   currentSlide = index;
-  track.style.transform = `translateX(-${index * 100}%)`;
+  track.style.transform = 'translateX(-' + (index * 100) + '%)';
   updateDots(index);
   resetAutoPlay();
 }
 function changeSlide(direction) {
-  const count = getSlideCount();
+  var count = getSlideCount();
   if (count === 0) return;
   goToSlide(currentSlide + direction);
 }
@@ -630,36 +632,36 @@ function resetAutoPlay() {
   startAutoPlay();
 }
 function startAutoPlay() {
-  const count = getSlideCount();
+  var count = getSlideCount();
   if (count <= 1) return;
   if (autoPlayInterval) { clearInterval(autoPlayInterval); }
-  autoPlayInterval = setInterval(() => {
-    const count = getSlideCount();
+  autoPlayInterval = setInterval(function() {
+    var count = getSlideCount();
     if (count > 0) { goToSlide((currentSlide + 1) % count); }
   }, AUTOPLAY_DELAY);
 }
 
-window.addEventListener('scroll', () => {
-  const nav = document.getElementById('navbar');
+window.addEventListener('scroll', function() {
+  var nav = document.getElementById('navbar');
   if (window.scrollY > 40) { nav.classList.add('scrolled'); } 
   else { nav.classList.remove('scrolled'); }
 });
 
 function showToast(ico, msg) {
-  const t = document.getElementById('toast');
+  var t = document.getElementById('toast');
   document.getElementById('t-ico').textContent = ico;
   document.getElementById('t-msg').textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 4000);
+  setTimeout(function() { t.classList.remove('show'); }, 4000);
 }
 
 function ouvrirDetailService(nom, desc, ico, num) {
-    // Les paramètres sont déjà échappés par json.dumps
-    document.getElementById('ms-num').textContent = 'SERVICE 0' + num;
-    document.getElementById('ms-ico').textContent = ico;
-    document.getElementById('ms-nom').textContent = nom;
-    document.getElementById('ms-desc').textContent = desc;
-    document.getElementById('modal-service').classList.add('open');
+  // Les paramètres sont déjà des chaînes échappées
+  document.getElementById('ms-num').textContent = 'SERVICE 0' + num;
+  document.getElementById('ms-ico').textContent = ico;
+  document.getElementById('ms-nom').textContent = nom;
+  document.getElementById('ms-desc').textContent = desc;
+  document.getElementById('modal-service').classList.add('open');
 }
 
 function fermerModalSrv() {
@@ -671,7 +673,7 @@ function toggleMob() {
 }
 
 function souscrireFooter() {
-  const e = document.getElementById('footer-nl').value;
+  var e = document.getElementById('footer-nl').value;
   if (!e) return;
   showToast('✅', 'Inscription confirmée !');
   document.getElementById('footer-nl').value = '';
@@ -683,14 +685,14 @@ function souscrireFooter() {
 
 function chargerContenu(id, element) {
   // Mettre à jour le menu
-  document.querySelectorAll('.sidebar-menu .sm-item').forEach(el => {
+  document.querySelectorAll('.sidebar-menu .sm-item').forEach(function(el) {
     el.classList.remove('active');
   });
   if (element) {
     element.classList.add('active');
   }
 
-  const container = document.getElementById('contenu-principal');
+  var container = document.getElementById('contenu-principal');
   container.innerHTML = `
     <div style="text-align:center;padding:4rem;color:var(--g400);">
       <div style="font-size:2rem;margin-bottom:1rem;">⏳</div>
@@ -698,20 +700,20 @@ function chargerContenu(id, element) {
     </div>
   `;
 
-  const url = id === 'tous' ? '/services/' : `/services/?service=${id}`;
+  var url = id === 'tous' ? '/services/' : '/services/?service=' + id;
   
   fetch(url, {
     headers: { 'X-Requested-With': 'XMLHttpRequest' }
   })
-  .then(response => response.json())
-  .then(data => {
+  .then(function(response) {
+    return response.json();
+  })
+  .then(function(data) {
     if (data.html) {
-      // Si c'est un détail, on l'affiche en grand
       if (data.type === 'detail') {
         container.innerHTML = data.html;
       } else {
-        // Sinon c'est la grille
-        container.innerHTML = `<div class="services-grid">${data.html}</div>`;
+        container.innerHTML = '<div class="services-grid">' + data.html + '</div>';
       }
     } else {
       container.innerHTML = `
@@ -722,7 +724,7 @@ function chargerContenu(id, element) {
       `;
     }
   })
-  .catch(error => {
+  .catch(function(error) {
     console.error('Erreur:', error);
     container.innerHTML = `
       <div style="text-align:center;padding:4rem;color:var(--g400);">
@@ -735,19 +737,19 @@ function chargerContenu(id, element) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  const nav = document.getElementById('navbar');
+  var nav = document.getElementById('navbar');
   if (window.scrollY > 40) { nav.classList.add('scrolled'); } 
   else { nav.classList.remove('scrolled'); }
   
-  const count = getSlideCount();
+  var count = getSlideCount();
   if (count > 0) { goToSlide(0); startAutoPlay(); }
   
-  const hero = document.getElementById('heroCarousel');
+  var hero = document.getElementById('heroCarousel');
   if (hero) {
-    hero.addEventListener('mouseenter', () => {
+    hero.addEventListener('mouseenter', function() {
       if (autoPlayInterval) { clearInterval(autoPlayInterval); autoPlayInterval = null; }
     });
-    hero.addEventListener('mouseleave', () => { startAutoPlay(); });
+    hero.addEventListener('mouseleave', function() { startAutoPlay(); });
   }
 });
 
@@ -755,7 +757,7 @@ document.getElementById('modal-service').addEventListener('click', function(e) {
   if (e.target === this) fermerModalSrv();
 });
 
-document.addEventListener('keydown', e => {
+document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') fermerModalSrv();
 });
 </script>
