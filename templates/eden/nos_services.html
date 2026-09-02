@@ -532,7 +532,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
       <!-- Grille de tous les services (affichée par défaut) -->
       <div class="services-grid" id="services-grid">
         {% for srv in services %}
-        <div class="service-card" onclick="ouvrirDetailService('{{ srv.nom|escapejs }}','{{ srv.description|escapejs }}','{{ srv.icone|escapejs }}',{{ srv.numero }})">
+        <div class="service-card" onclick='ouvrirDetailService("{{ srv.nom|escapejs }}","{{ srv.description|escapejs }}","{{ srv.icone|escapejs }}",{{ srv.numero }})'>
           <div class="sc-num">0{{ srv.numero }}</div>
           <div class="sc-ico-box">{{ srv.icone }}</div>
           <div class="sc-nom">{{ srv.nom }}</div>

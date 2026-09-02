@@ -2782,7 +2782,6 @@ def nos_services(request):
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         service_id = request.GET.get('service', '')
         
-        # Si un service est sélectionné → retourner son détail
         if service_id and service_id != 'tous':
             try:
                 service = all_services.filter(id=service_id).first()
@@ -2790,10 +2789,10 @@ def nos_services(request):
                 service = None
             
             if service:
-                # Générer le HTML du détail du service
-                nom_esc = escape_js(service.nom)
-                desc_esc = escape_js(service.description)
-                ico_esc = escape_js(service.icone)
+                # Utiliser json.dumps pour échapper proprement
+                nom_esc = json.dumps(service.nom)
+                desc_esc = json.dumps(service.description or '')
+                ico_esc = json.dumps(service.icone or '')
                 description_longue = service.description_longue or service.description or ''
                 lien_detail = service.lien_detail if service.lien_detail and service.lien_detail != '#' else '#'
                 
@@ -2815,7 +2814,6 @@ def nos_services(request):
                 '''
                 return JsonResponse({'html': html, 'type': 'detail'})
             else:
-                # Service non trouvé
                 html = '''
                 <div style="text-align:center;padding:4rem;color:var(--g400);">
                     <div style="font-size:3rem;margin-bottom:0.8rem;">🔍</div>
@@ -2824,17 +2822,18 @@ def nos_services(request):
                 '''
                 return JsonResponse({'html': html, 'type': 'empty'})
         
-        # Sinon → retourner la grille de tous les services
+        # Grille de tous les services
         html_cartes = ''
         for srv in all_services:
-            nom_esc = escape_js(srv.nom)
-            desc_esc = escape_js(srv.description)
-            ico_esc = escape_js(srv.icone)
+            # Utiliser json.dumps pour échapper proprement
+            nom_esc = json.dumps(srv.nom)
+            desc_esc = json.dumps(srv.description or '')
+            ico_esc = json.dumps(srv.icone or '')
             description = truncate_text(srv.description, 120)
             lien_detail = srv.lien_detail if srv.lien_detail and srv.lien_detail != '#' else '#'
             
             html_cartes += f'''
-            <div class="service-card" onclick="ouvrirDetailService('{nom_esc}','{desc_esc}','{ico_esc}',{srv.numero})">
+            <div class="service-card" onclick="ouvrirDetailService({nom_esc},{desc_esc},{ico_esc},{srv.numero})">
                 <div class="sc-num">0{srv.numero}</div>
                 <div class="sc-ico-box">{srv.icone}</div>
                 <div class="sc-nom">{srv.nom}</div>
@@ -2855,7 +2854,6 @@ def nos_services(request):
         return JsonResponse({'html': html_cartes, 'type': 'grid'})
     
     # ═══ Requête normale (page complète) ═══
-    # Récupérer les images pour le carrousel
     services_carousel = Service.objects.filter(
         is_active=True,
         image__isnull=False
@@ -2878,7 +2876,6 @@ def nos_services(request):
         {'icone': '⭐', 'titre': 'Qualité & Professionnalisme', 'description': 'Une équipe d\'experts à votre service.', 'couleur': 'purple'},
     ]
 
-    # ✅ LE CONTEXTE DOIT ÊTRE UN DICTIONNAIRE {}
     context = {
         'services': all_services,
         'services_carousel': services_carousel,
