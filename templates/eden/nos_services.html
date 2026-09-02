@@ -197,7 +197,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .carousel-arrow.prev{left:1.5rem;}
 .carousel-arrow.next{right:1.5rem;}
 
-/* ══ CONTENU HERO (au-dessus du carrousel) ══ */
+/* ══ CONTENU HERO ══ */
 .hero-inner{
   position:relative;
   z-index:2;
@@ -314,7 +314,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .btn-conseiller{background:var(--red);color:#fff;border:none;padding:9px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;width:100%;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s;}
 .btn-conseiller:hover{background:var(--red-d);}
 
-/* ══ CONTENU SERVICES ══ */
+/* ══ CONTENU PRINCIPAL ══ */
 .services-content{padding:2rem 2rem;background:var(--g50);}
 .services-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1.2rem;margin-bottom:0;}
 
@@ -454,68 +454,41 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
     <div class="modal-body">
       <div class="modal-desc" id="ms-desc">Description du service...</div>
       <div class="modal-actions">
-        <button class="btn-modal-primary" onclick="showToast('📅','Notre équipe vous contactera sous 24h.');fermerModalSrv();">
-          Demander ce service
-        </button>
+        <button class="btn-modal-primary" onclick="showToast('📅','Notre équipe vous contactera sous 24h.');fermerModalSrv();">Demander ce service</button>
         <button class="btn-modal-secondary" onclick="fermerModalSrv()">Fermer</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- HERO AVEC CARROUSEL -->
+<!-- HERO -->
 <div class="hero-services" id="heroCarousel">
   <div class="hero-carousel" id="carouselTrack">
     {% for srv in services_carousel %}
     <div class="hero-slide">
-      {% if srv.image %}
-        <img src="{{ srv.image.url }}" alt="{{ srv.nom }}">
-      {% else %}
-        <div class="slide-placeholder"></div>
-      {% endif %}
+      {% if srv.image %}<img src="{{ srv.image.url }}" alt="{{ srv.nom }}">{% else %}<div class="slide-placeholder"></div>{% endif %}
     </div>
     {% empty %}
-    <div class="hero-slide">
-      <div class="slide-placeholder"></div>
-    </div>
+    <div class="hero-slide"><div class="slide-placeholder"></div></div>
     {% endfor %}
   </div>
   <div class="hero-overlay"></div>
-
-  <!-- Flèches de navigation -->
   <button class="carousel-arrow prev" onclick="changeSlide(-1)" aria-label="Précédent">❮</button>
   <button class="carousel-arrow next" onclick="changeSlide(1)" aria-label="Suivant">❯</button>
-
-  <!-- Indicateurs -->
   <div class="carousel-dots" id="carouselDots">
     {% for srv in services_carousel %}
     <button class="carousel-dot {% if forloop.first %}active{% endif %}" onclick="goToSlide({{ forloop.counter0 }})" aria-label="Diapositive {{ forloop.counter }}"></button>
-    {% empty %}
-    <button class="carousel-dot active"></button>
-    {% endfor %}
+    {% empty %}<button class="carousel-dot active"></button>{% endfor %}
   </div>
-
   <div class="hero-inner">
     <div>
       <h1 class="hero-tit">Nos Services</h1>
       <p class="hero-desc">Un accompagnement complet et professionnel à chaque étape de votre projet foncier.</p>
       <div class="hero-badges">
-        <div class="hero-badge">
-          <div class="hb-ico">🎓</div>
-          <div class="hb-txt">Expertise &amp;<br>Expérience</div>
-        </div>
-        <div class="hero-badge">
-          <div class="hb-ico">🔒</div>
-          <div class="hb-txt">Sécurité<br>Garantie</div>
-        </div>
-        <div class="hero-badge">
-          <div class="hb-ico">🤝</div>
-          <div class="hb-txt">Accompagnement<br>Personnalisé</div>
-        </div>
-        <div class="hero-badge">
-          <div class="hb-ico">⭐</div>
-          <div class="hb-txt">Satisfaction<br>Client</div>
-        </div>
+        <div class="hero-badge"><div class="hb-ico">🎓</div><div class="hb-txt">Expertise &amp;<br>Expérience</div></div>
+        <div class="hero-badge"><div class="hb-ico">🔒</div><div class="hb-txt">Sécurité<br>Garantie</div></div>
+        <div class="hero-badge"><div class="hb-ico">🤝</div><div class="hb-txt">Accompagnement<br>Personnalisé</div></div>
+        <div class="hero-badge"><div class="hb-ico">⭐</div><div class="hb-txt">Satisfaction<br>Client</div></div>
       </div>
     </div>
     <div class="hero-engagement-card">
@@ -531,49 +504,44 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
 
   <!-- MENU GAUCHE -->
   <div class="sidebar-menu">
-    <div class="sm-title">NOS DOMAINES D'EXPERTISE</div>
-    <a href="{% url 'nos_services' %}" class="sm-item {% if cat_actif == 'tous' %}active{% endif %}">
-      <span class="sm-item-ico">🏠</span>Tous nos services
+    <div class="sm-title">NOS SERVICES</div>
+    
+    <!-- Tous les services -->
+    <a href="#" class="sm-item active" id="menu-tous" onclick="chargerContenu('tous', this);return false;">
+      <span class="sm-item-ico">📋</span>Tous les services
     </a>
-    {% for cat in categories %}
-    <a href="{% url 'nos_services' %}?cat={{ cat.slug }}"
-       class="sm-item {% if cat_actif == cat.slug %}active{% endif %}">
-      <span class="sm-item-ico">{{ cat.icone }}</span>{{ cat.nom }}
+    
+    <!-- Liste des services (utilise l'ID) -->
+    {% for srv in services %}
+    <a href="#" class="sm-item" data-id="{{ srv.id }}" onclick="chargerContenu('{{ srv.id }}', this);return false;">
+      <span class="sm-item-ico">{{ srv.icone }}</span>{{ srv.nom }}
     </a>
     {% endfor %}
-
+    
     <!-- Box conseil -->
     <div class="sm-conseil-box">
       <div class="scb-tit">Besoin d'un conseil personnalisé ?</div>
       <div class="scb-desc">Nos experts sont à votre disposition.</div>
-      <button class="btn-conseiller" onclick="showToast('💬','Notre équipe vous contactera sous 24h.')">
-        Parler à un conseiller 💬
-      </button>
+      <button class="btn-conseiller" onclick="showToast('💬','Notre équipe vous contactera sous 24h.')">Parler à un conseiller 💬</button>
     </div>
   </div>
 
-  <!-- GRILLE SERVICES -->
-  <div class="services-content">
-    {% if services %}
-    <div class="services-grid">
-      {% for srv in services %}
-      <div class="service-card" onclick="ouvrirDetailService('{{ srv.nom|escapejs }}','{{ srv.description|escapejs }}','{{ srv.icone|escapejs }}',{{ srv.numero }})">
-        <div class="sc-num">0{{ srv.numero }}</div>
-        <div class="sc-ico-box">{{ srv.icone }}</div>
-        <div class="sc-nom">{{ srv.nom }}</div>
-        <div class="sc-desc">{{ srv.description|truncatechars:120 }}</div>
-        <a class="sc-lire" href="{% if srv.lien_detail and srv.lien_detail != '#' %}{{ srv.lien_detail }}{% else %}#{% endif %}"
-           onclick="event.stopPropagation();">En savoir plus →</a>
+  <!-- CONTENU PRINCIPAL -->
+  <div class="services-content" id="services-content">
+    <div id="contenu-principal">
+      <!-- Grille de tous les services (affichée par défaut) -->
+      <div class="services-grid" id="services-grid">
+        {% for srv in services %}
+        <div class="service-card" onclick="ouvrirDetailService('{{ srv.nom|escapejs }}','{{ srv.description|escapejs }}','{{ srv.icone|escapejs }}',{{ srv.numero }})">
+          <div class="sc-num">0{{ srv.numero }}</div>
+          <div class="sc-ico-box">{{ srv.icone }}</div>
+          <div class="sc-nom">{{ srv.nom }}</div>
+          <div class="sc-desc">{{ srv.description|truncatechars:120 }}</div>
+          <a class="sc-lire" href="{% if srv.lien_detail and srv.lien_detail != '#' %}{{ srv.lien_detail }}{% else %}#{% endif %}" onclick="event.stopPropagation();">En savoir plus →</a>
+        </div>
+        {% endfor %}
       </div>
-      {% endfor %}
     </div>
-    {% else %}
-    <div style="text-align:center;padding:4rem;color:var(--g400);">
-      <div style="font-size:3rem;margin-bottom:0.8rem;">🔍</div>
-      <div style="font-size:15px;font-weight:600;color:var(--g800);margin-bottom:0.4rem;">Aucun service</div>
-      <div style="font-size:13px;">Aucun service dans cette catégorie pour le moment.</div>
-    </div>
-    {% endif %}
   </div>
 </div>
 
@@ -591,20 +559,12 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
       {% for etape in etapes %}
       <div class="proc-step">
         <div class="proc-step-top">
-          {% if not forloop.first %}
-          <div class="proc-line-l"></div>
-          {% else %}
-          <div class="proc-line-blank"></div>
-          {% endif %}
+          {% if not forloop.first %}<div class="proc-line-l"></div>{% else %}<div class="proc-line-blank"></div>{% endif %}
           <div class="proc-circle" style="position:relative;">
             <div class="proc-step-num">{{ forloop.counter }}</div>
             {{ etape.icone }}
           </div>
-          {% if not forloop.last %}
-          <div class="proc-line-r"></div>
-          {% else %}
-          <div class="proc-line-blank"></div>
-          {% endif %}
+          {% if not forloop.last %}<div class="proc-line-r"></div>{% else %}<div class="proc-line-blank"></div>{% endif %}
         </div>
         <div class="proc-body">
           <div class="proc-nom">{{ etape.titre }}</div>
@@ -624,20 +584,14 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
       {% for eng in engagements %}
       <div class="eng-item">
         <div class="eng-ico eng-{{ eng.couleur }}">{{ eng.icone }}</div>
-        <div>
-          <div class="eng-tit">{{ eng.titre }}</div>
-          <div class="eng-desc">{{ eng.description }}</div>
-        </div>
+        <div><div class="eng-tit">{{ eng.titre }}</div><div class="eng-desc">{{ eng.description }}</div></div>
       </div>
       {% endfor %}
     {% else %}
       {% for eng in engagements %}
       <div class="eng-item">
         <div class="eng-ico eng-{{ eng.couleur }}">{{ eng.icone }}</div>
-        <div>
-          <div class="eng-tit">{{ eng.titre }}</div>
-          <div class="eng-desc">{{ eng.description }}</div>
-        </div>
+        <div><div class="eng-tit">{{ eng.titre }}</div><div class="eng-desc">{{ eng.description }}</div></div>
       </div>
       {% endfor %}
     {% endif %}
@@ -648,77 +602,49 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
 let currentSlide = 0;
 let slideCount = {{ services_carousel|length|default:1 }};
 let autoPlayInterval = null;
-const AUTOPLAY_DELAY = 5000; // 5 secondes
+const AUTOPLAY_DELAY = 5000;
 
-function getSlideCount() {
-  return document.querySelectorAll('.hero-slide').length;
-}
-
+function getSlideCount() { return document.querySelectorAll('.hero-slide').length; }
 function updateDots(index) {
   const dots = document.querySelectorAll('.carousel-dot');
-  dots.forEach((dot, i) => {
-    dot.classList.toggle('active', i === index);
-  });
+  dots.forEach((dot, i) => { dot.classList.toggle('active', i === index); });
 }
-
 function goToSlide(index) {
   const track = document.getElementById('carouselTrack');
   const count = getSlideCount();
   if (count === 0) return;
-  
-  // Normaliser l'index
   if (index < 0) index = count - 1;
   if (index >= count) index = 0;
-  
   currentSlide = index;
   track.style.transform = `translateX(-${index * 100}%)`;
   updateDots(index);
-  
-  // Réinitialiser l'auto-play
   resetAutoPlay();
 }
-
 function changeSlide(direction) {
   const count = getSlideCount();
   if (count === 0) return;
   goToSlide(currentSlide + direction);
 }
-
 function resetAutoPlay() {
-  if (autoPlayInterval) {
-    clearInterval(autoPlayInterval);
-    autoPlayInterval = null;
-  }
+  if (autoPlayInterval) { clearInterval(autoPlayInterval); autoPlayInterval = null; }
   startAutoPlay();
 }
-
 function startAutoPlay() {
   const count = getSlideCount();
   if (count <= 1) return;
-  
-  if (autoPlayInterval) {
-    clearInterval(autoPlayInterval);
-  }
-  
+  if (autoPlayInterval) { clearInterval(autoPlayInterval); }
   autoPlayInterval = setInterval(() => {
     const count = getSlideCount();
-    if (count > 0) {
-      goToSlide((currentSlide + 1) % count);
-    }
+    if (count > 0) { goToSlide((currentSlide + 1) % count); }
   }, AUTOPLAY_DELAY);
 }
 
-// Gestion du scroll pour la navbar
 window.addEventListener('scroll', () => {
   const nav = document.getElementById('navbar');
-  if (window.scrollY > 40) {
-    nav.classList.add('scrolled');
-  } else {
-    nav.classList.remove('scrolled');
-  }
+  if (window.scrollY > 40) { nav.classList.add('scrolled'); } 
+  else { nav.classList.remove('scrolled'); }
 });
 
-// Fonctions existantes
 function showToast(ico, msg) {
   const t = document.getElementById('toast');
   document.getElementById('t-ico').textContent = ico;
@@ -750,39 +676,80 @@ function souscrireFooter() {
   document.getElementById('footer-nl').value = '';
 }
 
-// Initialisation
+// ════════════════════════════════════════════════
+// CHARGEMENT DU CONTENU (grille ou détail)
+// ════════════════════════════════════════════════
+
+function chargerContenu(id, element) {
+  // Mettre à jour le menu
+  document.querySelectorAll('.sidebar-menu .sm-item').forEach(el => {
+    el.classList.remove('active');
+  });
+  if (element) {
+    element.classList.add('active');
+  }
+
+  const container = document.getElementById('contenu-principal');
+  container.innerHTML = `
+    <div style="text-align:center;padding:4rem;color:var(--g400);">
+      <div style="font-size:2rem;margin-bottom:1rem;">⏳</div>
+      <div style="font-size:14px;font-weight:600;color:var(--g800);">Chargement...</div>
+    </div>
+  `;
+
+  const url = id === 'tous' ? '/services/' : `/services/?service=${id}`;
+  
+  fetch(url, {
+    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.html) {
+      // Si c'est un détail, on l'affiche en grand
+      if (data.type === 'detail') {
+        container.innerHTML = data.html;
+      } else {
+        // Sinon c'est la grille
+        container.innerHTML = `<div class="services-grid">${data.html}</div>`;
+      }
+    } else {
+      container.innerHTML = `
+        <div style="text-align:center;padding:4rem;color:var(--g400);">
+          <div style="font-size:3rem;margin-bottom:0.8rem;">🔍</div>
+          <div style="font-size:15px;font-weight:600;color:var(--g800);margin-bottom:0.4rem;">Contenu non disponible</div>
+        </div>
+      `;
+    }
+  })
+  .catch(error => {
+    console.error('Erreur:', error);
+    container.innerHTML = `
+      <div style="text-align:center;padding:4rem;color:var(--g400);">
+        <div style="font-size:3rem;margin-bottom:0.8rem;">⚠️</div>
+        <div style="font-size:15px;font-weight:600;color:var(--red);margin-bottom:0.4rem;">Erreur de chargement</div>
+        <div style="font-size:13px;">Veuillez réessayer.</div>
+      </div>
+    `;
+  });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-  // Navbar
   const nav = document.getElementById('navbar');
-  if (window.scrollY > 40) {
-    nav.classList.add('scrolled');
-  } else {
-    nav.classList.remove('scrolled');
-  }
+  if (window.scrollY > 40) { nav.classList.add('scrolled'); } 
+  else { nav.classList.remove('scrolled'); }
   
-  // Initialiser le carrousel
   const count = getSlideCount();
-  if (count > 0) {
-    goToSlide(0);
-    startAutoPlay();
-  }
+  if (count > 0) { goToSlide(0); startAutoPlay(); }
   
-  // Pause auto-play au survol
   const hero = document.getElementById('heroCarousel');
   if (hero) {
     hero.addEventListener('mouseenter', () => {
-      if (autoPlayInterval) {
-        clearInterval(autoPlayInterval);
-        autoPlayInterval = null;
-      }
+      if (autoPlayInterval) { clearInterval(autoPlayInterval); autoPlayInterval = null; }
     });
-    hero.addEventListener('mouseleave', () => {
-      startAutoPlay();
-    });
+    hero.addEventListener('mouseleave', () => { startAutoPlay(); });
   }
 });
 
-// Gestion du clic sur la modale
 document.getElementById('modal-service').addEventListener('click', function(e) {
   if (e.target === this) fermerModalSrv();
 });

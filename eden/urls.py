@@ -91,8 +91,7 @@ path('dashboard/groupy/categorie/<int:pk>/supprimer/', views.dashboard_groupy_ca
 
 # ── Journal public ──
 path('journal/', views.journal_kiosque, name='journal_kiosque'),
-path('journal/<slug:numero>/', views.journal_lire, name='journal_lire'),
-
+path('journal/<path:numero>/', views.journal_lire, name='journal_lire'),
 # ── Dashboard Journal ──
 path('dashboard/journal/', views.dashboard_journal, name='dashboard_journal'),
 path('dashboard/journal/ajouter/', views.dashboard_journal_edition_form, name='dashboard_journal_edition_ajouter'),

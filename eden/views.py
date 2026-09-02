@@ -2756,27 +2756,112 @@ def dashboard_agences_stats(request):
 # ══════════════════════════════════════════════
 # MODULE NOS SERVICES
 # ══════════════════════════════════════════════
-def nos_services(request):
-    cat_slug = request.GET.get('cat', '')
-    categories = ServiceCategorie.objects.filter(is_active=True).order_by('ordre')
-    
-    if cat_slug and cat_slug != 'tous':
-        services = Service.objects.filter(
-            is_active=True,
-            categorie__slug=cat_slug
-        ).order_by('ordre', 'numero')
-    else:
-        services = Service.objects.filter(is_active=True).order_by('ordre', 'numero')
 
-    # Récupérer tous les services avec image pour le carrousel (limité à 10 max)
+import json
+
+def escape_js(text):
+    """Échappe une chaîne pour l'utiliser dans du JavaScript."""
+    if not text:
+        return ''
+    return json.dumps(text)[1:-1]
+
+def truncate_text(text, length=120):
+    """Tronque un texte à une longueur donnée."""
+    if not text:
+        return ''
+    if len(text) > length:
+        return text[:length] + '...'
+    return text
+
+def nos_services(request):
+    """Page des services avec affichage dynamique"""
+    
+    all_services = Service.objects.filter(is_active=True).order_by('ordre', 'numero')
+    
+    # ═══ Vérifier si c'est une requête AJAX ═══
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        service_id = request.GET.get('service', '')
+        
+        # Si un service est sélectionné → retourner son détail
+        if service_id and service_id != 'tous':
+            try:
+                service = all_services.filter(id=service_id).first()
+            except (ValueError, TypeError):
+                service = None
+            
+            if service:
+                # Générer le HTML du détail du service
+                nom_esc = escape_js(service.nom)
+                desc_esc = escape_js(service.description)
+                ico_esc = escape_js(service.icone)
+                description_longue = service.description_longue or service.description or ''
+                lien_detail = service.lien_detail if service.lien_detail and service.lien_detail != '#' else '#'
+                
+                html = f'''
+                <div style="padding:0;">
+                    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+                        <div style="width:64px;height:64px;border-radius:16px;background:var(--blue-pale);display:flex;align-items:center;justify-content:center;font-size:2rem;">{service.icone}</div>
+                        <div>
+                            <div style="font-size:0.7rem;font-weight:700;color:var(--g400);letter-spacing:1px;text-transform:uppercase;">SERVICE 0{service.numero}</div>
+                            <div style="font-size:1.5rem;font-weight:900;color:var(--g800);">{service.nom}</div>
+                        </div>
+                    </div>
+                    <div style="font-size:0.9rem;color:var(--g600);line-height:1.8;margin-bottom:1.5rem;">{description_longue}</div>
+                    <div style="display:flex;gap:0.8rem;flex-wrap:wrap;">
+                        <button class="btn-modal-primary" onclick="showToast('📅','Notre équipe vous contactera sous 24h.')" style="background:var(--red);color:#fff;border:none;padding:12px 24px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;">📅 Demander ce service</button>
+                        <a href="{lien_detail}" class="btn-modal-secondary" style="padding:12px 24px;background:var(--g50);border:1.5px solid var(--g200);border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;color:var(--g600);text-decoration:none;display:inline-flex;align-items:center;gap:6px;">En savoir plus →</a>
+                    </div>
+                </div>
+                '''
+                return JsonResponse({'html': html, 'type': 'detail'})
+            else:
+                # Service non trouvé
+                html = '''
+                <div style="text-align:center;padding:4rem;color:var(--g400);">
+                    <div style="font-size:3rem;margin-bottom:0.8rem;">🔍</div>
+                    <div style="font-size:15px;font-weight:600;color:var(--g800);margin-bottom:0.4rem;">Service non trouvé</div>
+                </div>
+                '''
+                return JsonResponse({'html': html, 'type': 'empty'})
+        
+        # Sinon → retourner la grille de tous les services
+        html_cartes = ''
+        for srv in all_services:
+            nom_esc = escape_js(srv.nom)
+            desc_esc = escape_js(srv.description)
+            ico_esc = escape_js(srv.icone)
+            description = truncate_text(srv.description, 120)
+            lien_detail = srv.lien_detail if srv.lien_detail and srv.lien_detail != '#' else '#'
+            
+            html_cartes += f'''
+            <div class="service-card" onclick="ouvrirDetailService('{nom_esc}','{desc_esc}','{ico_esc}',{srv.numero})">
+                <div class="sc-num">0{srv.numero}</div>
+                <div class="sc-ico-box">{srv.icone}</div>
+                <div class="sc-nom">{srv.nom}</div>
+                <div class="sc-desc">{description}</div>
+                <a class="sc-lire" href="{lien_detail}" onclick="event.stopPropagation();">En savoir plus →</a>
+            </div>
+            '''
+        
+        if not html_cartes:
+            html_cartes = '''
+            <div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--g400);">
+                <div style="font-size:3rem;margin-bottom:0.8rem;">🔍</div>
+                <div style="font-size:15px;font-weight:600;color:var(--g800);margin-bottom:0.4rem;">Aucun service</div>
+                <div style="font-size:13px;">Aucun service disponible pour le moment.</div>
+            </div>
+            '''
+        
+        return JsonResponse({'html': html_cartes, 'type': 'grid'})
+    
+    # ═══ Requête normale (page complète) ═══
+    # Récupérer les images pour le carrousel
     services_carousel = Service.objects.filter(
         is_active=True,
         image__isnull=False
     ).exclude(image='').order_by('ordre', 'numero')[:10]
     
-    # Si aucun service avec image, utiliser un service par défaut ou un placeholder
     if not services_carousel:
-        # Créer un service factice pour le carrousel
         class PlaceholderService:
             def __init__(self):
                 self.nom = "EDEN GROUP"
@@ -2786,7 +2871,6 @@ def nos_services(request):
     etapes = EtapeProcessus.objects.filter(is_active=True).order_by('ordre', 'numero')
     engagements = EngagementService.objects.filter(is_active=True).order_by('ordre')
 
-    # Engagements par défaut si vide
     engagements_defaults = [
         {'icone': '🔒', 'titre': 'Sécurité garantie', 'description': 'Tous nos terrains sont sécurisés avec titres fonciers authentiques.', 'couleur': 'blue'},
         {'icone': '👤', 'titre': 'Accompagnement personnalisé', 'description': 'Un conseiller dédié pour un suivi rigoureux de votre projet.', 'couleur': 'red'},
@@ -2794,15 +2878,16 @@ def nos_services(request):
         {'icone': '⭐', 'titre': 'Qualité & Professionnalisme', 'description': 'Une équipe d\'experts à votre service.', 'couleur': 'purple'},
     ]
 
-    return render(request, 'eden/nos_services.html', {
-        'categories': categories,
-        'services': services,
-        'services_carousel': services_carousel,  # Ajout pour le carrousel
+    # ✅ LE CONTEXTE DOIT ÊTRE UN DICTIONNAIRE {}
+    context = {
+        'services': all_services,
+        'services_carousel': services_carousel,
         'etapes': etapes,
         'engagements': engagements if engagements.exists() else engagements_defaults,
         'engagements_are_objects': engagements.exists(),
-        'cat_actif': cat_slug or 'tous',
-    })
+    }
+    
+    return render(request, 'eden/nos_services.html', context)
 
 def service_detail(request, slug):
     cat = get_object_or_404(ServiceCategorie, slug=slug, is_active=True)
