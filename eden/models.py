@@ -1477,3 +1477,48 @@ class AcademieStatistique(models.Model):
 
     def __str__(self):
         return f"{self.valeur} {self.label}"
+
+
+# Dans eden/models.py
+
+class VideoGlobale(models.Model):
+    titre = models.CharField(max_length=200, verbose_name="Titre")
+    video = models.FileField(
+        upload_to='videos/globale/', 
+        verbose_name="Fichier vidéo",
+        help_text="Formats acceptés : MP4, WebM"
+    )
+    is_active = models.BooleanField(default=True, verbose_name="Activer l'affichage")
+    position = models.CharField(
+        max_length=20,
+        choices=[
+            ('bottom-right', 'En bas à droite'),
+            ('bottom-left', 'En bas à gauche'),
+            ('top-right', 'En haut à droite'),
+            ('top-left', 'En haut à gauche'),
+        ],
+        default='bottom-right',
+        verbose_name="Position à l'écran"
+    )
+    largeur = models.PositiveIntegerField(
+        default=500, 
+        verbose_name="Largeur (px)",
+        help_text="Largeur de la vidéo en pixels"
+    )
+    # ✅ NOUVEAU CHAMP HAUTEUR
+    hauteur = models.PositiveIntegerField(
+        default=280,
+        verbose_name="Hauteur (px)",
+        help_text="Hauteur de la vidéo en pixels"
+    )
+    ordre = models.PositiveIntegerField(default=0, verbose_name="Ordre")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Vidéo globale"
+        verbose_name_plural = "Vidéos globales"
+        ordering = ['ordre']
+
+    def __str__(self):
+        return f"{self.titre} ({'Active' if self.is_active else 'Inactive'}) - {self.largeur}x{self.hauteur}"

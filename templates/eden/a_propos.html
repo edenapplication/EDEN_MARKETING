@@ -337,7 +337,7 @@ body.loaded .section-nav {
 }
 
 /* ================================================================
-   TIMELINE ALIOS FINANCE - STRUCTURE CORRECTE
+   TIMELINE ALIOS FINANCE
    ================================================================ */
 .dima-timeline {
     position: relative;
@@ -357,7 +357,6 @@ body.loaded .section-nav {
     border-radius: 100px;
 }
 
-/* CHAQUE ÉVÉNEMENT - OCCUPE 50% DE LA LARGEUR */
 .timeline_element {
     position: relative;
     width: 50%;
@@ -378,7 +377,6 @@ body.loaded .section-nav {
     }
 }
 
-/* ÉVÉNEMENT À GAUCHE : DATE à gauche du point */
 .timeline_element-left {
     float: left;
     clear: left;
@@ -386,7 +384,6 @@ body.loaded .section-nav {
     text-align: right;
 }
 
-/* ÉVÉNEMENT À DROITE : DATE à droite du point */
 .timeline_element-right {
     float: right;
     clear: right;
@@ -394,7 +391,6 @@ body.loaded .section-nav {
     text-align: left;
 }
 
-/* POINT SUR LA LIGNE - UN POINT PAR ÉVÉNEMENT */
 .timeline_element::before {
     content: '';
     position: absolute;
@@ -416,12 +412,10 @@ body.loaded .section-nav {
     left: -8px;
 }
 
-/* CONTENU DE L'ÉVÉNEMENT */
 .timeline_element-content {
     display: block;
 }
 
-/* DATE - seule de son côté du point */
 .timeline_element-content .date {
     display: block;
 }
@@ -435,7 +429,6 @@ body.loaded .section-nav {
     white-space: nowrap;
 }
 
-/* DESCRIPTION - seule de l'autre côté du point */
 .timeline_element-content .post.box {
     display: block;
     background: #fff;
@@ -485,7 +478,6 @@ body.loaded .section-nav {
     font-weight: 700;
 }
 
-/* ===== ALIGNEMENT : DATE à gauche du point ===== */
 .timeline_element-left .timeline_element-content .date {
     text-align: right;
     margin-bottom: 0;
@@ -496,7 +488,6 @@ body.loaded .section-nav {
     margin-top: 8px;
 }
 
-/* ===== ALIGNEMENT : DATE à droite du point ===== */
 .timeline_element-right .timeline_element-content .date {
     text-align: left;
     margin-bottom: 0;
@@ -507,7 +498,182 @@ body.loaded .section-nav {
     margin-top: 8px;
 }
 
-/* ===== GRILLES ===== */
+/* ================================================================
+   CHIFFRES CLÉS - STYLE ALIOS FINANCE
+   ================================================================ */
+.chiffres-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+}
+
+.chiffre-card {
+    background: #fff;
+    border: 1.5px solid var(--g200);
+    border-radius: var(--rl);
+    padding: 24px 16px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.chiffre-card:hover {
+    border-color: var(--blue);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(27, 79, 219, 0.08);
+}
+
+.chiffre-card .chiffre-icon {
+    font-size: 28px;
+    color: var(--blue);
+    margin-bottom: 10px;
+}
+
+.chiffre-card .chiffre-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--g800);
+    line-height: 1.1;
+}
+
+.chiffre-card .chiffre-number .chiffre-suffix {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--g500);
+}
+
+.chiffre-card .chiffre-label {
+    font-size: 0.8rem;
+    color: var(--g500);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ===== TABLEAUX CHIFFRES ===== */
+.chiffres-table-wrapper {
+    margin-top: 30px;
+}
+
+.chiffres-table-wrapper h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--g800);
+    margin-bottom: 4px;
+}
+
+.chiffres-table-wrapper .hr-start {
+    margin-bottom: 16px;
+}
+
+.chiffres-table-wrapper .hr-start i {
+    color: var(--gold);
+    font-size: 12px;
+}
+
+.table_chiffre {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    background: #fff;
+    border-radius: var(--r);
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.table_chiffre thead th {
+    background: var(--grad);
+    color: #fff;
+    font-weight: 600;
+    padding: 10px 14px;
+    text-align: center;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table_chiffre thead th:first-child {
+    text-align: left;
+}
+
+.table_chiffre tbody td {
+    padding: 8px 14px;
+    text-align: center;
+    border-bottom: 1px solid var(--g200);
+    color: var(--g600);
+}
+
+.table_chiffre tbody td:first-child {
+    text-align: left;
+    font-weight: 600;
+    color: var(--g800);
+}
+
+.table_chiffre tbody tr:hover {
+    background: var(--bpale);
+}
+
+.table_chiffre tbody tr.total {
+    background: var(--g50);
+    font-weight: 700;
+}
+
+.table_chiffre tbody tr.total td {
+    color: var(--g800);
+    border-bottom: 2px solid var(--blue);
+}
+
+/* ===== DIAGRAMME ===== */
+.chart-container {
+    margin-top: 30px;
+    background: #fff;
+    border: 1.5px solid var(--g200);
+    border-radius: var(--rl);
+    padding: 20px 20px 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.chart-container h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--g800);
+    margin-bottom: 4px;
+    text-align: center;
+}
+
+.chart-container .hr-start {
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.chart-container .hr-start i {
+    color: var(--gold);
+    font-size: 12px;
+}
+
+.chart-wrapper {
+    width: 100%;
+    height: 350px;
+    position: relative;
+}
+
+.chart-wrapper canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* ================================================================
+   GRILLES
+   ================================================================ */
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
 .grid-2 {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -556,10 +722,12 @@ body.loaded .section-nav {
     line-height: 1.6;
 }
 
-/* ===== VALEURS ===== */
+/* ================================================================
+   VALEURS / ACTIVITÉS
+   ================================================================ */
 .val-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 16px;
 }
 
@@ -604,46 +772,9 @@ body.loaded .section-nav {
     line-height: 1.5;
 }
 
-/* ===== STATS ===== */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 16px;
-}
-
-.stat-card {
-    background: #fff;
-    border: 1.5px solid var(--g200);
-    border-radius: var(--r);
-    padding: 20px 16px;
-    text-align: center;
-    transition: all 0.25s ease;
-}
-
-.stat-card:hover {
-    border-color: rgba(27, 79, 219, 0.2);
-    transform: translateY(-2px);
-}
-
-.stat-card .number {
-    font-size: 2.4rem;
-    font-weight: 700;
-    background: var(--grad);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    line-height: 1.1;
-}
-
-.stat-card .label {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--g400);
-    margin-top: 4px;
-}
-
-/* ===== ÉQUIPE ===== */
+/* ================================================================
+   ÉQUIPE
+   ================================================================ */
 .team-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -690,7 +821,9 @@ body.loaded .section-nav {
     margin-top: 2px;
 }
 
-/* ===== TÉMOIGNAGES AVEC DÉFILEMENT HORIZONTAL ===== */
+/* ================================================================
+   TÉMOIGNAGES
+   ================================================================ */
 .testi-scroll-wrapper {
     overflow: hidden;
     position: relative;
@@ -841,7 +974,9 @@ body.loaded .section-nav {
     border-radius: 100px;
 }
 
-/* ===== CTA ===== */
+/* ================================================================
+   CTA
+   ================================================================ */
 .btn-primary {
     display: inline-flex;
     align-items: center;
@@ -940,7 +1075,9 @@ body.loaded .section-nav {
     background-clip: text;
 }
 
-/* ===== RESPONSIVE ===== */
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
 @media (max-width: 768px) {
     .banner-container {
         min-height: 280px;
@@ -958,14 +1095,18 @@ body.loaded .section-nav {
     .section-wrapper {
         padding: 20px 16px 30px;
     }
-    .grid-2 {
+    .grid-3, .grid-2 {
         grid-template-columns: 1fr;
     }
     .val-grid {
         grid-template-columns: 1fr;
     }
-    .stats-grid {
-        grid-template-columns: 1fr 1fr;
+    .chiffres-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+    .chiffre-card .chiffre-number {
+        font-size: 1.6rem;
     }
     .team-grid {
         grid-template-columns: 1fr 1fr;
@@ -992,7 +1133,6 @@ body.loaded .section-nav {
         flex-shrink: 0;
     }
     
-    /* Timeline responsive */
     .dima-timeline .line {
         left: 20px;
     }
@@ -1031,6 +1171,10 @@ body.loaded .section-nav {
     .timeline_element {
         padding-bottom: 40px;
     }
+    
+    .chart-wrapper {
+        height: 250px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1041,16 +1185,22 @@ body.loaded .section-nav {
         font-size: 0.6rem;
         padding: 4px 12px;
     }
-    .stats-grid {
-        grid-template-columns: 1fr 1fr;
+    .chiffres-grid {
+        grid-template-columns: repeat(2, 1fr);
         gap: 10px;
+    }
+    .chiffre-card {
+        padding: 16px 12px;
+    }
+    .chiffre-card .chiffre-number {
+        font-size: 1.3rem;
+    }
+    .chiffre-card .chiffre-icon {
+        font-size: 20px;
     }
     .team-grid {
         grid-template-columns: 1fr 1fr;
         gap: 10px;
-    }
-    .stat-card .number {
-        font-size: 1.8rem;
     }
     .section-bg-light, .section-bg-dark {
         padding: 20px 16px 30px;
@@ -1059,12 +1209,22 @@ body.loaded .section-nav {
         flex: 0 0 220px;
         padding: 16px 18px;
     }
+    .table_chiffre {
+        font-size: 0.6rem;
+    }
+    .table_chiffre thead th,
+    .table_chiffre tbody td {
+        padding: 4px 6px;
+    }
+    .chart-wrapper {
+        height: 200px;
+    }
 }
 </style>
 </head>
 <body>
 
-<!-- ===== BANNIÈRE AVEC TITRE ET SOUS-TITRE INTÉGRÉS ===== -->
+<!-- ===== BANNIÈRE ===== -->
 <div class="banner-container">
     <img class="banner-bg" src="https://www.alios-finance.com/images/banniere/11.jpg" alt="À propos d'EDEN GROUP">
     <div class="banner-overlay"></div>
@@ -1076,17 +1236,20 @@ body.loaded .section-nav {
             <i>◆</i>
             <span class="line"></span>
         </div>
-        <p class="banner-subtitle" id="bannerSubtitle">EDEN GROUP est un acteur de référence dans l'ingenieuri foncière au Cameroun et en Afrique central.</p>
+        <p class="banner-subtitle" id="bannerSubtitle">EDEN GROUP est un acteur de référence dans l'ingénierie foncière au Cameroun et en Afrique centrale.</p>
     </div>
 </div>
 
-<!-- ===== NAVIGATION PAR SECTIONS ===== -->
+<!-- ===== NAVIGATION ===== -->
 <nav class="section-nav" id="sectionNav">
     <button class="nav-btn active" data-section="presentation" onclick="switchSection('presentation')">
         🏢 Présentation
     </button>
     <button class="nav-btn" data-section="histoire" onclick="switchSection('histoire')">
         📖 Notre Histoire
+    </button>
+    <button class="nav-btn" data-section="activites" onclick="switchSection('activites')">
+        ⚡ Nos Activités
     </button>
     <button class="nav-btn" data-section="chiffres" onclick="switchSection('chiffres')">
         📊 Chiffres clés
@@ -1112,171 +1275,127 @@ body.loaded .section-nav {
 
     <!-- SECTION 1 : PRÉSENTATION -->
     <div class="section-wrapper active" id="section-presentation">
-        <h3 class="section-title">Un acteur de référence <em>au service de l'ingenieuri foncière</em></h3>
-        <p class="section-desc">Depuis 2018, nous accompagnons les professionnels et les particuliers et surtout les familles autoctone dans la sécurisation de leur patrimoine foncier et la protection de leurs droits ancestraux.</p>
+        <h3 class="section-title">Un acteur de référence <em>au service de l'ingénierie foncière</em></h3>
+        <p class="section-desc">Depuis 2018, nous accompagnons les professionnels, les particuliers et surtout les familles autochtones dans la sécurisation de leur patrimoine foncier et la protection de leurs droits ancestraux.</p>
 
-        <div class="grid-2">
+        <div class="grid-3">
             <div class="card">
                 <div class="icon">🏢</div>
                 <h4>Notre Groupe</h4>
-                <p>EDEN GROUP est un acteur de référence au Cameroun et en Afrique central, spécialisé dans la promotion immobilière et le conseil foncier. Nous sommes implantés dans plusieurs pays d'Afrique subsaharienne.</p>
+                <p>EDEN GROUP est un acteur de référence au Cameroun et en Afrique centrale, spécialisé dans la promotion immobilière et le conseil foncier.</p>
             </div>
             <div class="card">
                 <div class="icon">📜</div>
                 <h4>Notre Mission</h4>
-                <p>Nous facilitons l'accès à la propriété foncière en offrant des solutions transparentes, sécurisées et adaptées aux besoins de notre clientèle, contribuant ainsi au développement économique local.</p>
+                <p>Nous facilitons l'accès à la propriété foncière en offrant des solutions transparentes, sécurisées et adaptées aux besoins de notre clientèle.</p>
             </div>
             <div class="card">
                 <div class="icon">🎯</div>
                 <h4>Nos Cibles</h4>
-                <p>Nous accompagnons aussi bien les PME et grandes entreprises dans leurs projets immobiliers, que les particuliers dans l'acquisition de leur résidence principale ou secondaire.</p>
+                <p>Nous accompagnons les PME, grandes entreprises et particuliers dans l'acquisition de leur résidence principale ou secondaire.</p>
             </div>
             <div class="card">
-                <div class="icon">🌟</div>
-                <h4>Nos Valeurs</h4>
-                <p>La proximité, le partenariat, l'innovation et l'excellence sont les valeurs partagées par tous nos collaborateurs, au service de nos clients et partenaires.</p>
+                <div class="icon">🛡️</div>
+                <h4>Protection des droits</h4>
+                <p>Nous œuvrons pour la protection des droits fonciers des familles autochtones et des communautés locales.</p>
+            </div>
+            <div class="card">
+                <div class="icon">🤝</div>
+                <h4>Partenariats publics</h4>
+                <p>Nous collaborons avec les institutions publiques pour faciliter la régularisation foncière et l'aménagement du territoire.</p>
+            </div>
+            <div class="card">
+                <div class="icon">🌍</div>
+                <h4>Développement durable</h4>
+                <p>Nos projets intègrent les objectifs de développement durable, conciliant croissance économique et protection de l'environnement.</p>
             </div>
         </div>
     </div>
 
-    <!-- SECTION 2 : NOTRE HISTOIRE (TIMELINE ALIOS FINANCE) -->
+    <!-- SECTION 2 : NOTRE HISTOIRE -->
     <div class="section-wrapper" id="section-histoire">
         <h3 class="section-title">Notre <em>histoire</em></h3>
         <p class="section-desc">Un parcours de croissance et d'innovation depuis 1956.</p>
 
         <div class="dima-timeline clearfix">
-
             <div class="line"></div>
 
-            <!-- ÉVÉNEMENT 1 : 1956 à gauche -->
             <div class="timeline_element timeline_element-left">
                 <div class="timeline_element-content">
-                    <div class="date">
-                        <h5>1956</h5>
-                    </div>
-                    <div class="post box">
-                        <p>Création de SAFCA (Société Africaine de Crédit Automobile) au Sénégal par Renault, UNILEVER, NIGER FRANCE, OPTORG, CFAO et SCOA.</p>
-                    </div>
+                    <div class="date"><h5>1956</h5></div>
+                    <div class="post box"><p>Création de SAFCA (Société Africaine de Crédit Automobile) au Sénégal par Renault, UNILEVER, NIGER FRANCE, OPTORG, CFAO et SCOA.</p></div>
                 </div>
             </div>
 
-            <!-- ÉVÉNEMENT 2 : 1958 à droite -->
             <div class="timeline_element timeline_element-right">
                 <div class="timeline_element-content">
-                    <div class="post box">
-                        <p>Transfert de SAFCA du Sénégal vers la Côte d'Ivoire, devenant ainsi sa première institution financière.</p>
-                    </div>
-                    <div class="date">
-                        <h5>1958</h5>
-                    </div>
+                    <div class="post box"><p>Transfert de SAFCA du Sénégal vers la Côte d'Ivoire, devenant ainsi sa première institution financière.</p></div>
+                    <div class="date"><h5>1958</h5></div>
                 </div>
             </div>
 
-            <!-- ÉVÉNEMENT 3 : 1959 à gauche -->
             <div class="timeline_element timeline_element-left">
                 <div class="timeline_element-content">
-                    <div class="date">
-                        <h5>1959</h5>
-                    </div>
-                    <div class="post box">
-                        <p>Création de SOCCA (Société Camerounaise de Crédit Automobile) au Cameroun.</p>
-                    </div>
+                    <div class="date"><h5>1959</h5></div>
+                    <div class="post box"><p>Création de SOCCA (Société Camerounaise de Crédit Automobile) au Cameroun.</p></div>
                 </div>
             </div>
 
-            <!-- ÉVÉNEMENT 4 : 1966 à droite -->
             <div class="timeline_element timeline_element-right">
                 <div class="timeline_element-content">
-                    <div class="post box">
-                        <p>Création de SOGACA (Société Gabonaise de Crédit Automobile) au Gabon.</p>
-                    </div>
-                    <div class="date">
-                        <h5>1966</h5>
-                    </div>
+                    <div class="post box"><p>Création de SOGACA (Société Gabonaise de Crédit Automobile) au Gabon.</p></div>
+                    <div class="date"><h5>1966</h5></div>
                 </div>
             </div>
 
-            <!-- ÉVÉNEMENT 5 : 1976 à gauche -->
             <div class="timeline_element timeline_element-left">
                 <div class="timeline_element-content">
-                    <div class="date">
-                        <h5>1976</h5>
-                    </div>
-                    <div class="post box">
-                        <p>Création du GIEFCA (Groupement d'Intérêt Economique pour Favoriser le développement du Crédit Automobile et Industriel en Afrique) en France par SAFCA, SOCCA et SOGACA. Renault Crédit International (RCI) assure la gestion du GIEFCA.</p>
-                    </div>
+                    <div class="date"><h5>1976</h5></div>
+                    <div class="post box"><p>Création du GIEFCA en France par SAFCA, SOCCA et SOGACA. Renault Crédit International (RCI) assure la gestion du GIEFCA.</p></div>
                 </div>
             </div>
 
-            <!-- ÉVÉNEMENT 6 : 1990 à droite -->
             <div class="timeline_element timeline_element-right">
                 <div class="timeline_element-content">
-                    <div class="post box">
-                        <p>RCI (Renault Crédit International) se retire d'Afrique et confie la gestion du GIEFCA à CFAO.</p>
-                    </div>
-                    <div class="date">
-                        <h5>1990</h5>
-                    </div>
+                    <div class="post box"><p>RCI (Renault Crédit International) se retire d'Afrique et confie la gestion du GIEFCA à CFAO.</p></div>
+                    <div class="date"><h5>1990</h5></div>
                 </div>
             </div>
 
-            <!-- ÉVÉNEMENT 7 : 1997 à gauche -->
             <div class="timeline_element timeline_element-left">
                 <div class="timeline_element-content">
-                    <div class="date">
-                        <h5>1997</h5>
-                    </div>
-                    <div class="post box">
-                        <p>Création de SOMAFI (Société Malienne de Financement) au Mali et SOBFI (Société Burkinabé de Financement) au Burkina Faso.</p>
-                    </div>
+                    <div class="date"><h5>1997</h5></div>
+                    <div class="post box"><p>Création de SOMAFI au Mali et SOBFI au Burkina Faso.</p></div>
                 </div>
             </div>
 
-            <!-- ÉVÉNEMENT 8 : 1998 à droite -->
             <div class="timeline_element timeline_element-right">
                 <div class="timeline_element-content">
-                    <div class="post box">
-                        <p>Création de HOLDEFI, holding consolidant les intérêts de CFAO et OPTORG dans les filiales du GIEFCA. PROPARCO et Gras Savoye deviennent actionnaires de HOLDEFI.</p>
-                    </div>
-                    <div class="date">
-                        <h5>1998</h5>
-                    </div>
+                    <div class="post box"><p>Création de HOLDEFI, holding consolidant les intérêts de CFAO et OPTORG. PROPARCO et Gras Savoye deviennent actionnaires.</p></div>
+                    <div class="date"><h5>1998</h5></div>
                 </div>
             </div>
 
-            <!-- ÉVÉNEMENT 9 : 1999 à gauche -->
             <div class="timeline_element timeline_element-left">
                 <div class="timeline_element-content">
-                    <div class="date">
-                        <h5>1999</h5>
-                    </div>
-                    <div class="post box">
-                        <p>FMO et Africa Financial Holdings (holding de Bank of Africa) deviennent actionnaires de HOLDEFI.</p>
-                    </div>
+                    <div class="date"><h5>1999</h5></div>
+                    <div class="post box"><p>FMO et Africa Financial Holdings deviennent actionnaires de HOLDEFI.</p></div>
                 </div>
             </div>
 
-            <!-- ÉVÉNEMENT 10 : 2001 à droite -->
             <div class="timeline_element timeline_element-right">
                 <div class="timeline_element-content">
-                    <div class="post box">
-                        <p>Ouverture de SOCOFIN (Société Congolaise de Financement) au Congo Brazzaville.</p>
-                    </div>
-                    <div class="date">
-                        <h5>2001</h5>
-                    </div>
+                    <div class="post box"><p>Ouverture de SOCOFIN au Congo Brazzaville.</p></div>
+                    <div class="date"><h5>2001</h5></div>
                 </div>
             </div>
 
-            <!-- ÉVÉNEMENT 11 : 2006 à gauche -->
             <div class="timeline_element timeline_element-left">
                 <div class="timeline_element-content">
-                    <div class="date">
-                        <h5>2006</h5>
-                    </div>
+                    <div class="date"><h5>2006</h5></div>
                     <div class="post box">
                         <ul class="list-style angle">
-                            <li>Un consortium d'investissement composé d'Africinvest, FMO, Finfund, Tunisie Leasing et Africa Financial Holdings (Bank Of Africa) acquiert la majorité des parts de HOLDEFI.</li>
+                            <li>Un consortium (Africinvest, FMO, Finfund, Tunisie Leasing, Bank Of Africa) acquiert la majorité de HOLDEFI.</li>
                             <li>Création de GIEFCA Tunisie.</li>
                             <li>Création d'une succursale de SAFCA au Sénégal.</li>
                         </ul>
@@ -1284,109 +1403,182 @@ body.loaded .section-nav {
                 </div>
             </div>
 
-            <!-- ÉVÉNEMENT 12 : 2007 à droite -->
             <div class="timeline_element timeline_element-right">
                 <div class="timeline_element-content">
                     <div class="post box">
                         <ul class="list-style angle">
                             <li>HOLDEFI devient Alios Finance.</li>
-                            <li>Changement de nom commercial pour SAFCA, SOCCA, SOGACA, SOBFI, SOMAFI et SOCOFIN qui deviennent respectivement Alios Finance Côte d'Ivoire, Alios Finance Cameroun, Alios Finance Gabon, Alios Finance Burkina Faso, Alios Finance Mali et Alios Finance Congo.</li>
-                            <li>Fusion d'Alios Finance Côte d'Ivoire, Alios Finance Mali et Alios Finance Burkina Faso.</li>
+                            <li>Changement de nom pour SAFCA, SOCCA, SOGACA, SOBFI, SOMAFI et SOCOFIN.</li>
+                            <li>Fusion d'Alios Finance Côte d'Ivoire, Mali et Burkina Faso.</li>
                         </ul>
                     </div>
-                    <div class="date">
-                        <h5>2007</h5>
-                    </div>
+                    <div class="date"><h5>2007</h5></div>
                 </div>
             </div>
 
-            <!-- ÉVÉNEMENT 13 : 2008 à gauche -->
             <div class="timeline_element timeline_element-left">
                 <div class="timeline_element-content">
-                    <div class="date">
-                        <h5>2008</h5>
-                    </div>
-                    <div class="post box">
-                        <p>Cession d'Alios Finance Congo Brazzaville et lancement d'Alios Finance Zambie.</p>
-                    </div>
+                    <div class="date"><h5>2008</h5></div>
+                    <div class="post box"><p>Cession d'Alios Finance Congo Brazzaville et lancement d'Alios Finance Zambie.</p></div>
                 </div>
             </div>
 
-            <!-- ÉVÉNEMENT 14 : 2010 à droite -->
             <div class="timeline_element timeline_element-right">
                 <div class="timeline_element-content">
-                    <div class="post box">
-                        <p>Lancement d'Alios Finance Tanzanie.</p>
-                    </div>
-                    <div class="date">
-                        <h5>2010</h5>
-                    </div>
+                    <div class="post box"><p>Lancement d'Alios Finance Tanzanie.</p></div>
+                    <div class="date"><h5>2010</h5></div>
                 </div>
             </div>
 
-            <!-- ÉVÉNEMENT 15 : 2011 à gauche -->
             <div class="timeline_element timeline_element-left">
                 <div class="timeline_element-content">
-                    <div class="date">
-                        <h5>2011</h5>
-                    </div>
-                    <div class="post box">
-                        <p>Lancement d'Alios Finance Kenya.</p>
-                    </div>
+                    <div class="date"><h5>2011</h5></div>
+                    <div class="post box"><p>Lancement d'Alios Finance Kenya.</p></div>
                 </div>
             </div>
 
-            <!-- ÉVÉNEMENT 16 : 2015 à droite -->
             <div class="timeline_element timeline_element-right">
                 <div class="timeline_element-content">
-                    <div class="post box">
-                        <p>Un consortium d'investissement composé de Tunisie Leasing, Amen Bank, Proparco et ResponsAbility acquiert la majorité des parts d'Alios Finance SA (holding du Groupe Alios Finance).</p>
-                    </div>
-                    <div class="date">
-                        <h5>2015</h5>
-                    </div>
+                    <div class="post box"><p>Un consortium (Tunisie Leasing, Amen Bank, Proparco, ResponsAbility) acquiert la majorité d'Alios Finance SA.</p></div>
+                    <div class="date"><h5>2015</h5></div>
                 </div>
             </div>
-
         </div>
     </div>
 
-    <!-- SECTION 3 : CHIFFRES CLÉS -->
+    <!-- SECTION 3 : NOS ACTIVITÉS -->
+    <div class="section-wrapper" id="section-activites">
+        <h3 class="section-title">Nos <em>activités</em></h3>
+        <p class="section-desc">Des prestations variées au service de vos projets fonciers et immobiliers.</p>
+
+        <div class="val-grid">
+            <div class="val-item">
+                <div class="v-icon">📐</div>
+                <div class="v-content">
+                    <h4>Bornage et délimitation</h4>
+                    <p>Nous réalisons des opérations de bornage précises pour délimiter clairement les propriétés foncières, en conformité avec les normes cadastrales en vigueur.</p>
+                </div>
+            </div>
+            <div class="val-item">
+                <div class="v-icon">📋</div>
+                <div class="v-content">
+                    <h4>Études de sol et géotechniques</h4>
+                    <p>Nous effectuons des analyses approfondies du sol pour évaluer sa capacité portante, sa composition et son adaptabilité aux projets de construction.</p>
+                </div>
+            </div>
+            <div class="val-item">
+                <div class="v-icon">🏗️</div>
+                <div class="v-content">
+                    <h4>Études d'impact environnemental</h4>
+                    <p>Nous réalisons des études d'impact environnemental pour évaluer les conséquences des projets sur l'environnement et proposer des mesures d'atténuation.</p>
+                </div>
+            </div>
+            <div class="val-item">
+                <div class="v-icon">🗺️</div>
+                <div class="v-content">
+                    <h4>Aménagement et lotissement</h4>
+                    <p>Nous concevons et réalisons des projets d'aménagement et de lotissement, en intégrant les contraintes techniques, réglementaires et environnementales.</p>
+                </div>
+            </div>
+            <div class="val-item">
+                <div class="v-icon">🏛️</div>
+                <div class="v-content">
+                    <h4>Gestion de projets immobiliers</h4>
+                    <p>Nous accompagnons nos clients dans la gestion complète de leurs projets immobiliers, de la conception à la réalisation.</p>
+                </div>
+            </div>
+            <div class="val-item">
+                <div class="v-icon">💼</div>
+                <div class="v-content">
+                    <h4>Conseil et assistance foncière</h4>
+                    <p>Nous offrons des services de conseil et d'assistance pour toutes les démarches liées à la propriété foncière, à la régularisation et à la gestion des titres.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 4 : CHIFFRES CLÉS -->
     <div class="section-wrapper" id="section-chiffres">
-        <div class="section-bg-light">
-            <h3 class="section-title">Nos <em>chiffres clés</em></h3>
-            <p class="section-desc">Une équipe engagée et des résultats concrets pour nos clients.</p>
+        <h3 class="section-title">Nos <em>chiffres clés</em></h3>
+        <p class="section-desc">Une équipe engagée et des résultats concrets pour nos clients.</p>
 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="number">2018</div>
-                    <div class="label">Année de fondation</div>
-                </div>
-                <div class="stat-card">
-                    <div class="number">9</div>
-                    <div class="label">Pays d'implantation</div>
-                </div>
-                <div class="stat-card">
-                    <div class="number">30+</div>
-                    <div class="label">Experts fonciers</div>
-                </div>
-                <div class="stat-card">
-                    <div class="number">500+</div>
-                    <div class="label">Clients satisfaits</div>
-                </div>
-                <div class="stat-card">
-                    <div class="number">98%</div>
-                    <div class="label">Taux de satisfaction</div>
-                </div>
-                <div class="stat-card">
-                    <div class="number">6+</div>
-                    <div class="label">Années d'expérience</div>
-                </div>
+        <!-- ===== 5 INDICATEURS CLÉS ===== -->
+        <div class="chiffres-grid">
+            <div class="chiffre-card">
+                <div class="chiffre-icon"><i class="fa fa-calendar"></i></div>
+                <div class="chiffre-number">1956</div>
+                <div class="chiffre-label">Présence depuis</div>
+            </div>
+            <div class="chiffre-card">
+                <div class="chiffre-icon"><i class="fa fa-pie-chart"></i></div>
+                <div class="chiffre-number">25 <span class="chiffre-suffix">M€</span></div>
+                <div class="chiffre-label">Chiffre d'affaires</div>
+            </div>
+            <div class="chiffre-card">
+                <div class="chiffre-icon"><i class="fa fa-bar-chart"></i></div>
+                <div class="chiffre-number">58 730</div>
+                <div class="chiffre-label">Nombre de clients</div>
+            </div>
+            <div class="chiffre-card">
+                <div class="chiffre-icon"><i class="fa fa-users"></i></div>
+                <div class="chiffre-number">213</div>
+                <div class="chiffre-label">Nombre de salariés</div>
+            </div>
+            <div class="chiffre-card">
+                <div class="chiffre-icon"><i class="fa fa-map-marker"></i></div>
+                <div class="chiffre-number">11</div>
+                <div class="chiffre-label">Implantations</div>
+            </div>
+        </div>
+
+        <!-- ===== TABLEAU PRODUCTION & ENCOURS ===== -->
+        <div class="chiffres-table-wrapper">
+            <h4>Production et Encours</h4>
+            <div class="hr-start"><i class="di-separator-s"></i></div>
+
+            <table class="table_chiffre">
+                <thead>
+                    <tr>
+                        <th>(en M€)</th>
+                        <th>2019</th>
+                        <th>2020</th>
+                        <th>2021</th>
+                        <th>2022</th>
+                        <th>2023</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Production</td>
+                        <td>86</td>
+                        <td>73</td>
+                        <td>80</td>
+                        <td>92</td>
+                        <td>99</td>
+                    </tr>
+                    <tr>
+                        <td>Encours</td>
+                        <td>166</td>
+                        <td>144</td>
+                        <td>144</td>
+                        <td>157</td>
+                        <td>168</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ===== DIAGRAMME PRODUCTION & ENCOURS ===== -->
+        <div class="chart-container">
+            <h4>Production &amp; Encours</h4>
+            <div class="hr-start"><i class="di-separator-s"></i></div>
+            <div class="chart-wrapper">
+                <canvas id="productionEncoursChart"></canvas>
             </div>
         </div>
     </div>
 
-    <!-- SECTION 4 : VALEURS -->
+    <!-- SECTION 5 : VALEURS -->
     <div class="section-wrapper" id="section-valeurs">
         <h3 class="section-title">Ce en quoi <em>nous croyons</em></h3>
         <p class="section-desc">Nos valeurs fondamentales guident chacune de nos actions.</p>
@@ -1396,78 +1588,62 @@ body.loaded .section-nav {
                 <div class="v-icon">🔎</div>
                 <div class="v-content">
                     <h4>Le Respect</h4>
-                    <p>Nous plaçons le respect au coeur de nos interactions avec nos clients, partenaires,
-collaborateurs et l'environnement .Chaque action est guidée par la considération des droits, des
-opinionset des biens d'autrui.</p>
+                    <p>Nous plaçons le respect au cœur de nos interactions avec nos clients, partenaires, collaborateurs et l'environnement.</p>
                 </div>
             </div>
             <div class="val-item">
                 <div class="v-icon">⚖️</div>
                 <div class="v-content">
                     <h4>L'intégrité et l'Éthique</h4>
-                    <p>Nous agissons avec probité et transparence, en conformité stricte avec
-les normes légales et professionnelles, garantissant des pratiques irréprochables et fiables.</p>
+                    <p>Nous agissons avec probité et transparence, en conformité stricte avec les normes légales et professionnelles.</p>
                 </div>
             </div>
             <div class="val-item">
                 <div class="v-icon">🚀</div>
                 <div class="v-content">
-                    <h4>La Rigueur et l'Excellence Opérationnelle</h4>
-                    <p>:Nous appliquons des standards élevés de qualité et 
-de discipline dans toutes nos missions, afin d'assurer des prestations sécurisées et performantes.</p>
+                    <h4>La Rigueur et l'Excellence</h4>
+                    <p>Nous appliquons des standards élevés de qualité et de discipline dans toutes nos missions.</p>
                 </div>
             </div>
             <div class="val-item">
                 <div class="v-icon">🌱</div>
                 <div class="v-content">
-                    <h4>La Responsabilité et L'impact Durable</h4>
-                    <p>Nous contribuons
-au développement harmonieux des territoires et à la
-structuration du secteur foncier par des pratiques
-responsables et durables.</p>
+                    <h4>La Responsabilité et l'Impact Durable</h4>
+                    <p>Nous contribuons au développement harmonieux des territoires par des pratiques responsables et durables.</p>
                 </div>
             </div>
             <div class="val-item">
                 <div class="v-icon">🤝</div>
                 <div class="v-content">
                     <h4>L'Engagement Client</h4>
-                    <p>Nous adoptons une approche centrée sur le client, fondée sur l'écoute, la
-réactivité et la personnalisation des solutions, afin de répondre efficacement à chaque projet
-foncier
-</p>
+                    <p>Nous adoptons une approche centrée sur le client, fondée sur l'écoute, la réactivité et la personnalisation des solutions.</p>
                 </div>
             </div>
             <div class="val-item">
                 <div class="v-icon">💎</div>
                 <div class="v-content">
-                    <h4>L'Innovation et l'Amelioration Continue</h4>
-                    <p>Nous intégrons
-des méthodes modernes et des outils performants pour
-optimiser nos services et anticiper les évolutions du marché.</p>
+                    <h4>L'Innovation et l'Amélioration Continue</h4>
+                    <p>Nous intégrons des méthodes modernes et des outils performants pour optimiser nos services.</p>
                 </div>
             </div>
             <div class="val-item">
-                <div class="v-icon">💎</div>
+                <div class="v-icon">👥</div>
                 <div class="v-content">
-                    <h4>L'Esprit d'Équipe et le professionnalisme</h4>
-                    <p>Nous valorisons la collaboration, la compétence et de
-nos équipes comme leviers essentiels de performance et de
-réussite collective.</p>
+                    <h4>L'Esprit d'Équipe et le Professionnalisme</h4>
+                    <p>Nous valorisons la collaboration, la compétence et le dévouement de nos équipes.</p>
                 </div>
             </div>
             <div class="val-item">
-                <div class="v-icon">💎</div>
+                <div class="v-icon">🏆</div>
                 <div class="v-content">
-                    <h4>L'Innovation et l'Amelioration Continue</h4>
-                    <p>Nous intégrons
-des méthodes modernes et des outils performants pour
-optimiser nos services et anticiper les évolutions du marché.</p>
+                    <h4>L'Excellence et la Performance</h4>
+                    <p>Nous visons l'excellence dans toutes nos réalisations, en recherchant constamment la performance et la satisfaction de nos clients.</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- SECTION 5 : ÉQUIPE -->
+    <!-- SECTION 6 : ÉQUIPE -->
     <div class="section-wrapper" id="section-equipe">
         <div class="section-bg-light">
             <h3 class="section-title">Notre <em>équipe dirigeante</em></h3>
@@ -1508,7 +1684,7 @@ optimiser nos services et anticiper les évolutions du marché.</p>
         </div>
     </div>
 
-    <!-- SECTION 6 : TÉMOIGNAGES -->
+    <!-- SECTION 7 : TÉMOIGNAGES -->
     {% if temoignages %}
     <div class="section-wrapper" id="section-temoignages">
         <h3 class="section-title">Ils nous <em>font confiance</em></h3>
@@ -1552,7 +1728,7 @@ optimiser nos services et anticiper les évolutions du marché.</p>
     </div>
     {% endif %}
 
-    <!-- SECTION 7 : CONTACT -->
+    <!-- SECTION 8 : CONTACT -->
     <div class="section-wrapper" id="section-contact">
         <div class="section-bg-dark">
             <h3 class="section-title" style="color:#fff;">Prêt à investir dans <em>votre avenir foncier</em> ?</h3>
@@ -1567,16 +1743,21 @@ optimiser nos services et anticiper les évolutions du marché.</p>
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-// ===== DONNÉES DES SECTIONS POUR LA BANNIÈRE =====
+// ===== DONNÉES DES SECTIONS =====
 const sectionData = {
     presentation: {
         title: 'Qui <span class="highlight">sommes-nous ?</span>',
-        subtitle: 'EDEN GROUP est un acteur de référence dans le financement et l\'accompagnement des projets fonciers en Afrique.'
+        subtitle: 'EDEN GROUP est un acteur de référence dans l\'ingénierie foncière au Cameroun et en Afrique centrale.'
     },
     histoire: {
         title: 'Notre <span class="highlight">histoire</span>',
         subtitle: 'Un parcours de croissance et d\'innovation depuis 1956.'
+    },
+    activites: {
+        title: 'Nos <span class="highlight">activités</span>',
+        subtitle: 'Des prestations variées au service de vos projets fonciers et immobiliers.'
     },
     chiffres: {
         title: 'Nos <span class="highlight">chiffres clés</span>',
@@ -1600,14 +1781,13 @@ const sectionData = {
     }
 };
 
-// ===== ÉLÉMENTS =====
 const bannerTitle = document.getElementById('bannerTitle');
 const bannerSubtitle = document.getElementById('bannerSubtitle');
 
 let currentSection = 'presentation';
 let isTransitioning = false;
 
-// ===== CHARGEMENT DE LA PAGE =====
+// ===== CHARGEMENT =====
 document.addEventListener('DOMContentLoaded', function() {
     document.body.classList.add('loaded');
 
@@ -1650,7 +1830,110 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     initTestimonials();
+    initChart();
 });
+
+// ===== DIAGRAMME =====
+function initChart() {
+    const ctx = document.getElementById('productionEncoursChart');
+    if (!ctx) return;
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['2019', '2020', '2021', '2022', '2023'],
+            datasets: [
+                {
+                    label: 'Production',
+                    data: [86, 73, 80, 92, 99],
+                    backgroundColor: '#fec322',
+                    borderColor: '#fec322',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    order: 1
+                },
+                {
+                    label: 'Encours',
+                    type: 'line',
+                    data: [166, 144, 144, 157, 168],
+                    borderColor: '#0b4484',
+                    backgroundColor: 'rgba(11, 68, 132, 0.1)',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#0b4484',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    tension: 0.2,
+                    fill: true,
+                    order: 0
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                        padding: 20,
+                        font: {
+                            family: 'Outfit',
+                            size: 13,
+                            weight: '600'
+                        }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(255,255,255,0.95)',
+                    titleColor: '#1F2937',
+                    bodyColor: '#4B5563',
+                    borderColor: '#E5E7EB',
+                    borderWidth: 1,
+                    cornerRadius: 8,
+                    padding: 12,
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.parsed.y + ' M€';
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 250,
+                    ticks: {
+                        stepSize: 50,
+                        font: {
+                            family: 'Outfit',
+                            size: 11
+                        },
+                        color: '#6B7280'
+                    },
+                    grid: {
+                        color: 'rgba(0,0,0,0.06)'
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        font: {
+                            family: 'Outfit',
+                            size: 12,
+                            weight: '600'
+                        },
+                        color: '#4B5563'
+                    }
+                }
+            }
+        }
+    });
+}
 
 // ===== CHANGEMENT DE SECTION =====
 function switchSection(sectionId) {
@@ -1708,10 +1991,15 @@ function switchSection(sectionId) {
             setTimeout(initTestimonials, 100);
         }
 
+        // Réinitialiser le diagramme si on revient sur la section chiffres
+        if (sectionId === 'chiffres') {
+            setTimeout(initChart, 200);
+        }
+
     }, 450);
 }
 
-// ===== GESTION DU SCROLL =====
+// ===== SCROLL =====
 window.addEventListener('scroll', function() {
     const nav = document.getElementById('sectionNav');
     const bannerHeight = document.querySelector('.banner-container').offsetHeight;
@@ -1723,9 +2011,9 @@ window.addEventListener('scroll', function() {
     }
 });
 
-// ===== RACCOURCIS CLAVIER =====
+// ===== CLAVIER =====
 document.addEventListener('keydown', function(e) {
-    const sections = ['presentation', 'histoire', 'chiffres', 'valeurs', 'equipe', 'temoignages', 'contact'];
+    const sections = ['presentation', 'histoire', 'activites', 'chiffres', 'valeurs', 'equipe', 'temoignages', 'contact'];
     let availableSections = sections.filter(s => document.getElementById('section-' + s) !== null);
 
     let currentIndex = availableSections.indexOf(currentSection);
@@ -1798,6 +2086,9 @@ function testiScroll(direction) {
 window.addEventListener('resize', function() {
     if (document.getElementById('section-temoignages').classList.contains('active')) {
         setTimeout(updateTestiPosition, 100);
+    }
+    if (document.getElementById('section-chiffres').classList.contains('active')) {
+        setTimeout(initChart, 200);
     }
 });
 

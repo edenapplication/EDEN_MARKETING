@@ -19,7 +19,7 @@ from .models import (
     SectionLivret, ActualiteHome, CommentaireHome, StatistiqueHome,UneEvenement, UneEvenementCategorie, 
 Projet, ProjetImage, ProjetInfrastructure, EtapeProjet, SousEtapeProjet, Agence, AgenceService, StatAgence,ServiceCategorie, Service,
     EtapeProcessus, EngagementService, AcademieDocument, AcademieVideo, AcademieEtapeParcours,
-    AcademieFAQ, AcademieStatistique, AcademieCategorie
+    AcademieFAQ, AcademieStatistique, AcademieCategorie,VideoGlobale
 
 )
 from .forms import (
@@ -3993,3 +3993,60 @@ def dashboard_lexique_supprimer(request, pk):
             return JsonResponse({'success': True})
         return redirect('dashboard_lexique')
     return redirect('dashboard_lexique')
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_video_globale(request):
+    """Gestion de la vidéo globale"""
+    videos = VideoGlobale.objects.all().order_by('ordre')
+    
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        if action == 'ajouter':
+            titre = request.POST.get('titre', '').strip()
+            if titre and request.FILES.get('video'):
+                VideoGlobale.objects.create(
+                    titre=titre,
+                    video=request.FILES['video'],
+                    position=request.POST.get('position', 'bottom-right'),
+                    largeur=int(request.POST.get('largeur', 500)),
+                    hauteur=int(request.POST.get('hauteur', 280)),  # ✅ AJOUT
+                    is_active=request.POST.get('is_active') == 'on',
+                    ordre=VideoGlobale.objects.count(),
+                )
+                messages.success(request, 'Vidéo ajoutée.')
+            else:
+                messages.error(request, 'Titre et fichier vidéo obligatoires.')
+        
+        elif action == 'modifier':
+            pk = request.POST.get('pk')
+            video = get_object_or_404(VideoGlobale, pk=pk)
+            video.titre = request.POST.get('titre', video.titre)
+            video.position = request.POST.get('position', video.position)
+            video.largeur = int(request.POST.get('largeur', video.largeur))
+            video.hauteur = int(request.POST.get('hauteur', video.hauteur))  # ✅ AJOUT
+            video.is_active = request.POST.get('is_active') == 'on'
+            if request.FILES.get('video'):
+                video.video = request.FILES['video']
+            video.save()
+            messages.success(request, 'Vidéo modifiée.')
+        
+        elif action == 'supprimer':
+            pk = request.POST.get('pk')
+            VideoGlobale.objects.filter(pk=pk).delete()
+            messages.success(request, 'Vidéo supprimée.')
+        
+        elif action == 'toggle':
+            pk = request.POST.get('pk')
+            video = get_object_or_404(VideoGlobale, pk=pk)
+            video.is_active = not video.is_active
+            video.save()
+            messages.success(request, f'Vidéo {"activée" if video.is_active else "désactivée"}.')
+        
+        return redirect('dashboard_video_globale')
+    
+    return render(request, 'eden/dashboard/video_globale.html', {
+        'videos': videos,
+        'positions': VideoGlobale._meta.get_field('position').choices,
+    })

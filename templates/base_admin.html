@@ -257,6 +257,9 @@
         <a class="sb-lnk {% if request.resolver_match.url_name == 'dashboard_parametres' %}active{% endif %}" href="{% url 'dashboard_parametres' %}">
             <span class="sb-ico">⚙</span>Paramètres
         </a>
+        <a href="{% url 'dashboard_video_globale' %}" class="menu-item">
+    <span>🎬</span> Vidéo Globale
+</a>
 
         <div class="sb-sec">Liens rapides</div>
         <a class="sb-lnk" href="{% url 'carte' %}" target="_blank"><span class="sb-ico">🗺</span>Carte publique</a>

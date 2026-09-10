@@ -88,6 +88,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
 
                 'django.contrib.messages.context_processors.messages',
+                'eden.context_processors.video_globale_context',
 
             ],
         },

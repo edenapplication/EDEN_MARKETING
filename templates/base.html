@@ -6,20 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}EDEN GROUP — Le Foncier Sécurisé{% endblock %}</title>
     
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     
-    <!-- Styles personnalisés -->
     <style>
         *{margin:0;padding:0;box-sizing:border-box;}
         :root{
@@ -92,63 +84,14 @@
           max-width:1280px;
           margin:0 auto 2rem;
         }
-        .footer-desc{
-          font-size:12px;
-          color:#94A3B8;
-          line-height:1.75;
-          max-width:260px;
-          margin-bottom:1rem;
-          margin-top:0.8rem;
-        }
-        .footer-tagline{
-          font-size:11px;
-          color:rgba(255,255,255,0.4);
-          font-style:italic;
-        }
-        .footer-col h4{
-          font-size:10px;
-          font-weight:700;
-          letter-spacing:2px;
-          text-transform:uppercase;
-          background:var(--grad-h);
-          -webkit-background-clip:text;
-          -webkit-text-fill-color:transparent;
-          background-clip:text;
-          margin-bottom:0.9rem;
-        }
-        .footer-lnk{
-          display:block;
-          font-size:12px;
-          color:#94A3B8;
-          text-decoration:none;
-          margin-bottom:6px;
-          transition:color 0.2s;
-        }
+        .footer-desc{font-size:12px;color:#94A3B8;line-height:1.75;max-width:260px;margin-bottom:1rem;margin-top:0.8rem;}
+        .footer-tagline{font-size:11px;color:rgba(255,255,255,0.4);font-style:italic;}
+        .footer-col h4{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.9rem;}
+        .footer-lnk{display:block;font-size:12px;color:#94A3B8;text-decoration:none;margin-bottom:6px;transition:color 0.2s;}
         .footer-lnk:hover{color:#fff;}
-        .footer-agences-item{
-          display:flex;
-          align-items:center;
-          gap:5px;
-          font-size:12px;
-          color:#94A3B8;
-          margin-bottom:6px;
-        }
-        .footer-socials{
-          display:flex;
-          gap:8px;
-          margin-top:0.8rem;
-        }
-        .footer-social-btn{
-          width:36px;
-          height:36px;
-          border-radius:8px;
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          font-size:16px;
-          text-decoration:none;
-          transition:all 0.2s;
-        }
+        .footer-agences-item{display:flex;align-items:center;gap:5px;font-size:12px;color:#94A3B8;margin-bottom:6px;}
+        .footer-socials{display:flex;gap:8px;margin-top:0.8rem;}
+        .footer-social-btn{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;transition:all 0.2s;}
         .fs-fb{background:#1877F2;color:#fff;}
         .fs-tt{background:#010101;color:#fff;}
         .fs-yt{background:#FF0000;color:#fff;}
@@ -156,231 +99,46 @@
         .fs-ig{background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;}
         .footer-social-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.3);}
         .footer-nl-wrap{position:relative;}
-        .footer-nl-input{
-          width:100%;
-          background:rgba(255,255,255,0.07);
-          border:1.5px solid rgba(255,255,255,0.15);
-          border-radius:8px;
-          padding:9px 48px 9px 12px;
-          font-size:12px;
-          color:#fff;
-          font-family:'Outfit',sans-serif;
-          outline:none;
-        }
+        .footer-nl-input{width:100%;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);border-radius:8px;padding:9px 48px 9px 12px;font-size:12px;color:#fff;font-family:'Outfit',sans-serif;outline:none;}
         .footer-nl-input::placeholder{color:rgba(255,255,255,0.35);}
-        .footer-nl-btn{
-          position:absolute;
-          right:0;
-          top:0;
-          bottom:0;
-          background:var(--red);
-          border:none;
-          width:40px;
-          border-radius:0 8px 8px 0;
-          cursor:pointer;
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          color:#fff;
-          font-size:16px;
-          transition:background 0.2s;
-        }
+        .footer-nl-btn{position:absolute;right:0;top:0;bottom:0;background:var(--red);border:none;width:40px;border-radius:0 8px 8px 0;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;transition:background 0.2s;}
         .footer-nl-btn:hover{background:var(--red-d);}
-        .footer-bot{
-          border-top:1px solid #334155;
-          max-width:1280px;
-          margin:0 auto;
-          padding-top:1.5rem;
-          display:flex;
-          align-items:center;
-          justify-content:space-between;
-          flex-wrap:wrap;
-          gap:1rem;
-        }
+        .footer-bot{border-top:1px solid #334155;max-width:1280px;margin:0 auto;padding-top:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
         .footer-copy{font-size:12px;color:#64748B;}
-        .footer-links-bot{
-          display:flex;
-          gap:1.5rem;
-        }
-        .footer-links-bot a{
-          font-size:12px;
-          color:#64748B;
-          text-decoration:none;
-          transition:color 0.2s;
-        }
+        .footer-links-bot{display:flex;gap:1.5rem;}
+        .footer-links-bot a{font-size:12px;color:#64748B;text-decoration:none;transition:color 0.2s;}
         .footer-links-bot a:hover{color:#fff;}
 
-        /* ══ TOAST PERSONNALISÉ (évite conflit Bootstrap) ══ */
-        .toast-custom{
-          position:fixed;
-          bottom:2rem;
-          right:2rem;
-          background:#fff;
-          border:1px solid var(--g200);
-          border-radius:var(--r);
-          padding:14px 20px;
-          font-size:13px;
-          color:var(--g800);
-          z-index:5000;
-          display:flex;
-          align-items:center;
-          gap:10px;
-          transform:translateY(100px);
-          opacity:0;
-          transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);
-          max-width:340px;
-          box-shadow:0 8px 32px rgba(0,0,0,0.12);
-        }
+        /* ══ TOAST ══ */
+        .toast-custom{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1px solid var(--g200);border-radius:var(--r);padding:14px 20px;font-size:13px;color:var(--g800);z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(100px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.12);}
         .toast-custom.show{transform:none;opacity:1;}
-        .toast-bar{
-          position:absolute;
-          left:0;
-          top:0;
-          bottom:0;
-          width:4px;
-          border-radius:var(--r) 0 0 var(--r);
-          background:var(--grad-h);
-        }
+        .toast-bar{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:var(--r) 0 0 var(--r);background:var(--grad-h);}
 
-        /* ══ MODAL CONTACT (renommé pour éviter conflit Bootstrap) ══ */
-        .overlay{
-          position:fixed;
-          inset:0;
-          background:rgba(15,23,42,0.6);
-          z-index:3000;
-          display:none;
-          align-items:center;
-          justify-content:center;
-          padding:1rem;
-          backdrop-filter:blur(4px);
-        }
+        /* ══ MODAL CONTACT ══ */
+        .overlay{position:fixed;inset:0;background:rgba(15,23,42,0.6);z-index:3000;display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px);}
         .overlay.open{display:flex;}
-
-        .contact-modal{
-          background:#fff;
-          border-radius:var(--rxl);
-          padding:2rem;
-          max-width:500px;
-          width:100%;
-          position:relative;
-          animation:mIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
-          box-shadow:0 24px 80px rgba(0,0,0,0.2);
-          max-height:90vh;
-          overflow-y:auto;
-        }
+        .contact-modal{background:#fff;border-radius:var(--rxl);padding:2rem;max-width:500px;width:100%;position:relative;animation:mIn 0.3s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 24px 80px rgba(0,0,0,0.2);max-height:90vh;overflow-y:auto;}
         @keyframes mIn{from{opacity:0;transform:scale(0.92);}to{opacity:1;transform:none;}}
-        .m-close{
-          position:absolute;
-          top:1rem;
-          right:1rem;
-          background:var(--g100);
-          border:none;
-          color:var(--g500);
-          width:30px;
-          height:30px;
-          border-radius:7px;
-          cursor:pointer;
-          font-size:14px;
-          display:flex;
-          align-items:center;
-          justify-content:center;
-        }
+        .m-close{position:absolute;top:1rem;right:1rem;background:var(--g100);border:none;color:var(--g500);width:30px;height:30px;border-radius:7px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;}
         .m-close:hover{background:#fee2e2;color:#dc2626;}
-        .m-tag{
-          font-size:10px;
-          font-weight:700;
-          letter-spacing:1.5px;
-          text-transform:uppercase;
-          color:var(--red);
-          margin-bottom:0.3rem;
-        }
-        .m-tit{
-          font-size:1.4rem;
-          font-weight:800;
-          color:var(--g800);
-          margin-bottom:0.3rem;
-        }
-        .m-desc{
-          font-size:13px;
-          color:var(--g500);
-          margin-bottom:1.2rem;
-        }
+        .m-tag{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);margin-bottom:0.3rem;}
+        .m-tit{font-size:1.4rem;font-weight:800;color:var(--g800);margin-bottom:0.3rem;}
+        .m-desc{font-size:13px;color:var(--g500);margin-bottom:1.2rem;}
         .fg{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
         .fg label{font-size:11px;font-weight:600;color:var(--g500);}
-        .fi{
-          width:100%;
-          border:1.5px solid var(--g200);
-          border-radius:9px;
-          padding:11px 14px;
-          font-size:14px;
-          font-family:'Outfit',sans-serif;
-          outline:none;
-          transition:border-color 0.2s;
-          background:#fff;
-        }
+        .fi{width:100%;border:1.5px solid var(--g200);border-radius:9px;padding:11px 14px;font-size:14px;font-family:'Outfit',sans-serif;outline:none;transition:border-color 0.2s;background:#fff;}
         .fi:focus{border-color:var(--blue);}
         .fi::placeholder{color:var(--g400);}
         .f-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-        .m-submit{
-          width:100%;
-          background:var(--red);
-          border:none;
-          color:#fff;
-          padding:13px;
-          border-radius:9px;
-          font-size:14px;
-          font-weight:700;
-          cursor:pointer;
-          font-family:'Outfit',sans-serif;
-          margin-top:6px;
-          transition:all 0.2s;
-        }
+        .m-submit{width:100%;background:var(--red);border:none;color:#fff;padding:13px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;margin-top:6px;transition:all 0.2s;}
         .m-submit:hover{background:var(--red-d);}
 
-        /* ══ MODAL SERVICE (dans base.html) ══ */
-        .srv-modal-overlay{
-          position:fixed;
-          inset:0;
-          background:rgba(15,23,42,0.6);
-          z-index:3000;
-          display:none;
-          align-items:center;
-          justify-content:center;
-          padding:1rem;
-          backdrop-filter:blur(4px);
-        }
+        /* ══ MODAL SERVICE ══ */
+        .srv-modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.6);z-index:3000;display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px);}
         .srv-modal-overlay.open{display:flex;}
-
-        .srv-modal-box{
-          background:#fff;
-          border-radius:var(--rxl);
-          max-width:480px;
-          width:100%;
-          animation:mIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
-          box-shadow:0 24px 80px rgba(0,0,0,0.2);
-          overflow:hidden;
-        }
-        .srv-modal-header{
-          background:var(--blue-d);
-          padding:1.5rem;
-          position:relative;
-        }
-        .srv-modal-close{
-          position:absolute;
-          top:1rem;
-          right:1rem;
-          background:rgba(255,255,255,0.1);
-          border:none;
-          color:#fff;
-          width:30px;
-          height:30px;
-          border-radius:50%;
-          cursor:pointer;
-          font-size:14px;
-          display:flex;
-          align-items:center;
-          justify-content:center;
-        }
+        .srv-modal-box{background:#fff;border-radius:var(--rxl);max-width:480px;width:100%;animation:mIn 0.3s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 24px 80px rgba(0,0,0,0.2);overflow:hidden;}
+        .srv-modal-header{background:var(--blue-d);padding:1.5rem;position:relative;}
+        .srv-modal-close{position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,0.1);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;}
         .srv-modal-close:hover{background:rgba(255,255,255,0.2);}
         .srv-modal-header-top{font-size:11px;color:rgba(255,255,255,0.5);font-weight:700;letter-spacing:2px;margin-bottom:0.5rem;}
         .srv-modal-header-bottom{display:flex;align-items:center;gap:12px;}
@@ -393,6 +151,21 @@
         .srv-btn-primary:hover{background:var(--red-d);}
         .srv-btn-secondary{padding:12px 18px;background:var(--g50);border:1.5px solid var(--g200);border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;color:var(--g600);}
         .srv-btn-secondary:hover{background:var(--g200);}
+
+        /* ══ VIDÉO GLOBALE ══ */
+        #video-globale {
+            position: fixed;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            z-index: 2500;
+            background: #000;
+        }
+        #video-globale video {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
 
         /* ══ RESPONSIVE ══ */
         @media(max-width:1024px){
@@ -611,6 +384,247 @@
   </div>
 </div>
 
+<!-- ══ VIDÉO GLOBALE ══ -->
+{% if video_globale %}
+<div id="video-globale"
+     data-position="{{ video_globale.position }}"
+     data-largeur="{{ video_globale.largeur }}"
+     data-hauteur="{{ video_globale.hauteur }}">
+    <video 
+        id="video-globale-player"
+        autoplay 
+        loop 
+        playsinline
+        disablePictureInPicture
+        controlsList="nodownload nofullscreen noremoteplayback"
+    >
+        <source src="{{ video_globale.video.url }}" type="video/mp4">
+    </video>
+</div>
+
+<style>
+#video-globale {
+    position: fixed;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    z-index: 2500;
+    background: #000;
+}
+#video-globale video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+</style>
+
+<script>
+(function() {
+    'use strict';
+    
+    function initVideoGlobale() {
+        var container = document.getElementById('video-globale');
+        var video = document.getElementById('video-globale-player');
+        
+        if (!container || !video) return;
+        if (container.getAttribute('data-init') === 'true') return;
+        container.setAttribute('data-init', 'true');
+        
+        console.log('✅ Initialisation vidéo globale');
+        
+        // ═══ Récupérer les paramètres ═══
+        var position = container.getAttribute('data-position') || 'bottom-right';
+        var largeurFixe = parseInt(container.getAttribute('data-largeur')) || 500;
+        var hauteurFixe = parseInt(container.getAttribute('data-hauteur')) || 280;
+        
+        // ═══ Appliquer la position ═══
+        function appliquerPosition() {
+            var vw = window.innerWidth;
+            
+            container.style.top = '';
+            container.style.bottom = '';
+            container.style.left = '';
+            container.style.right = '';
+            
+            if (vw <= 1024) {
+                container.style.bottom = '15px';
+                container.style.right = '15px';
+                return;
+            }
+            
+            if (position === 'bottom-right') {
+                container.style.bottom = '80px';
+                container.style.right = '20px';
+            } else if (position === 'bottom-left') {
+                container.style.bottom = '80px';
+                container.style.left = '20px';
+            } else if (position === 'top-right') {
+                container.style.top = '80px';
+                container.style.right = '20px';
+            } else if (position === 'top-left') {
+                container.style.top = '80px';
+                container.style.left = '20px';
+            } else {
+                container.style.bottom = '80px';
+                container.style.right = '20px';
+            }
+        }
+        
+       function appliquerTaille() {
+    var vw = window.innerWidth;
+    var vh = window.innerHeight;
+    
+    var largeurFinale = largeurFixe;
+    var hauteurFinale = hauteurFixe;
+    
+    // ═══════════════════════════════════════════════
+    // AJUSTEMENT RESPONSIVE PROPORTIONNEL
+    // La vidéo reste proportionnelle à l'écran
+    // ═══════════════════════════════════════════════
+    
+    if (vw <= 480) {
+        // 📱 Très petit mobile : 45% de la largeur
+        largeurFinale = vw * 0.45;
+        hauteurFinale = largeurFinale * (hauteurFixe / largeurFixe);
+    } else if (vw <= 768) {
+        // 📱 Mobile / petite tablette : 40% de la largeur
+        largeurFinale = vw * 0.40;
+        hauteurFinale = largeurFinale * (hauteurFixe / largeurFixe);
+    } else if (vw <= 1024) {
+        // 📱 Tablette : 30% de la largeur
+        largeurFinale = vw * 0.30;
+        hauteurFinale = largeurFinale * (hauteurFixe / largeurFixe);
+    } else {
+        // 💻 Desktop : taille configurée par l'admin
+        largeurFinale = largeurFixe;
+        hauteurFinale = hauteurFixe;
+        
+        // Ajuster si trop grand pour l'écran
+        if (largeurFinale > vw - 40) {
+            var ratio = largeurFinale / hauteurFinale;
+            largeurFinale = vw - 40;
+            hauteurFinale = largeurFinale / ratio;
+        }
+        
+        var hauteurMax = vh * 0.60;
+        if (hauteurFinale > hauteurMax) {
+            var ratio2 = largeurFinale / hauteurFinale;
+            hauteurFinale = hauteurMax;
+            largeurFinale = hauteurFinale * ratio2;
+        }
+    }
+    
+    largeurFinale = Math.round(largeurFinale);
+    hauteurFinale = Math.round(hauteurFinale);
+    
+    container.style.width = largeurFinale + 'px';
+    container.style.height = hauteurFinale + 'px';
+    
+    video.style.width = '100%';
+    video.style.height = '100%';
+    video.style.objectFit = 'cover';
+    video.style.display = 'block';
+}
+
+        function appliquerTout() {
+            appliquerPosition();
+            appliquerTaille();
+        }
+        
+        appliquerTout();
+        
+        window.addEventListener('resize', appliquerTout);
+        window.addEventListener('orientationchange', function() {
+            setTimeout(appliquerTout, 300);
+        });
+        
+        // ═══ LANCER LA VIDÉO AVEC SON ═══
+        var videoLancee = false;
+        
+        function lancerVideo() {
+            if (videoLancee) return;
+            video.muted = false;
+            video.volume = 1.0;
+            var promise = video.play();
+            if (promise !== undefined) {
+                promise.then(function() {
+                    videoLancee = true;
+                    console.log('✅ Vidéo lancée avec son');
+                }).catch(function() {
+                    console.log('⏸ En attente interaction pour lancer la vidéo');
+                });
+            }
+        }
+        
+        lancerVideo();
+        
+        var surInteraction = function() {
+            lancerVideo();
+            if (videoLancee) {
+                window.removeEventListener('scroll', surInteraction);
+                document.removeEventListener('click', surInteraction);
+                document.removeEventListener('touchstart', surInteraction);
+                document.removeEventListener('keydown', surInteraction);
+                document.removeEventListener('mousemove', surInteraction);
+            }
+        };
+        
+        window.addEventListener('scroll', surInteraction, { passive: true });
+        document.addEventListener('click', surInteraction);
+        document.addEventListener('touchstart', surInteraction, { passive: true });
+        document.addEventListener('keydown', surInteraction);
+        document.addEventListener('mousemove', surInteraction, { passive: true });
+        
+        // Empêcher la pause
+        video.addEventListener('pause', function() {
+            if (videoLancee) video.play().catch(function() {});
+        });
+        
+        // Empêcher la coupure du son
+        video.addEventListener('volumechange', function() {
+            if (videoLancee && (video.volume < 1.0 || video.muted)) {
+                video.muted = false;
+                video.volume = 1.0;
+            }
+        });
+        
+        // Empêcher les interactions
+        video.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+        
+        video.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+        
+        container.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+        
+        video.addEventListener('stalled', function() {
+            if (videoLancee) video.play().catch(function() {});
+        });
+        
+        video.addEventListener('loadedmetadata', function() {
+            appliquerTout();
+        });
+    }
+    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initVideoGlobale);
+    } else {
+        initVideoGlobale();
+    }
+    
+    window.addEventListener('load', function() {
+        setTimeout(initVideoGlobale, 300);
+    });
+})();
+</script>
+{% endif %}
+
 <!-- ══ SCRIPTS ══ -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -618,11 +632,13 @@
 <script>
     // ── NAV ──
     function toggleMob() {
-        document.getElementById('mob-menu').classList.toggle('open');
+        var mobMenu = document.getElementById('mob-menu');
+        if (mobMenu) mobMenu.classList.toggle('open');
     }
 
     window.addEventListener('scroll', function() {
         const nav = document.getElementById('navbar');
+        if (!nav) return;
         if (window.scrollY > 40) {
             nav.classList.add('scrolled');
         } else {
@@ -632,7 +648,8 @@
 
     document.querySelectorAll('.mob-menu .nav-lnk').forEach(function(link) {
         link.addEventListener('click', function() {
-            document.getElementById('mob-menu').classList.remove('open');
+            var mobMenu = document.getElementById('mob-menu');
+            if (mobMenu) mobMenu.classList.remove('open');
         });
     });
 
@@ -649,35 +666,45 @@
 
     // ── MODAL CONTACT ──
     function openModal(site) {
-        // Réinitialiser le formulaire
         const form = document.getElementById('mform');
         if (form) form.reset();
         
-        // Si un site est passé en paramètre, le mettre dans le champ
         if (site) {
             const msite = document.getElementById('msite');
             if (msite) msite.value = site;
         }
         
-        document.getElementById('modal').classList.add('open');
-        document.body.style.overflow = 'hidden';
+        var modal = document.getElementById('modal');
+        if (modal) {
+            modal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
     }
 
     function closeModal() {
-        document.getElementById('modal').classList.remove('open');
-        document.body.style.overflow = '';
+        var modal = document.getElementById('modal');
+        if (modal) {
+            modal.classList.remove('open');
+            document.body.style.overflow = '';
+        }
     }
 
-    document.getElementById('modal').addEventListener('click', function(e) {
-        if (e.target === this) closeModal();
-    });
+    // ═══ MODAL CONTACT — Sécurisé ═══
+    var modalEl = document.getElementById('modal');
+    if (modalEl) {
+        modalEl.addEventListener('click', function(e) {
+            if (e.target === modalEl) closeModal();
+        });
+    }
 
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
-            if (document.getElementById('modal').classList.contains('open')) {
+            var modal = document.getElementById('modal');
+            var modalSrv = document.getElementById('modal-service');
+            if (modal && modal.classList.contains('open')) {
                 closeModal();
             }
-            if (document.getElementById('modal-service').classList.contains('open')) {
+            if (modalSrv && modalSrv.classList.contains('open')) {
                 fermerModalSrv();
             }
         }
@@ -690,7 +717,6 @@
         
         const data = new FormData(form);
         
-        // Vérification des champs obligatoires
         const prenom = data.get('prenom');
         const nom = data.get('nom');
         const telephone = data.get('telephone');
@@ -703,25 +729,29 @@
         const nomComplet = prenom + ' ' + nom;
         data.set('nom', nomComplet.trim());
         
+        var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        
         fetch('/contact/', {
             method: 'POST',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                'X-CSRFToken': csrfToken ? csrfToken.value : ''
             },
             body: data
         })
         .then(function(response) { return response.json(); })
         .then(function(data) {
             const modalContent = document.getElementById('modal-content');
-            modalContent.innerHTML = `
-                <div style="text-align:center;padding:1rem 0;">
-                    <div style="font-size:3.5rem;margin-bottom:0.8rem;">✅</div>
-                    <div style="font-size:1.3rem;font-weight:800;color:var(--g800);margin-bottom:0.5rem;">Demande envoyée !</div>
-                    <p style="font-size:13px;color:var(--g500);margin-bottom:1.5rem;">Notre équipe vous contactera sous 24h.</p>
-                    <button class="m-submit" onclick="fermerModalEtRestaurer()" style="background:var(--blue);">Fermer</button>
-                </div>
-            `;
+            if (modalContent) {
+                modalContent.innerHTML = `
+                    <div style="text-align:center;padding:1rem 0;">
+                        <div style="font-size:3.5rem;margin-bottom:0.8rem;">✅</div>
+                        <div style="font-size:1.3rem;font-weight:800;color:var(--g800);margin-bottom:0.5rem;">Demande envoyée !</div>
+                        <p style="font-size:13px;color:var(--g500);margin-bottom:1.5rem;">Notre équipe vous contactera sous 24h.</p>
+                        <button class="m-submit" onclick="fermerModalEtRestaurer()" style="background:var(--blue);">Fermer</button>
+                    </div>
+                `;
+            }
             showToast('✅', 'Demande envoyée ! Nous vous contacterons sous 24h.');
         })
         .catch(function(error) {
@@ -803,7 +833,7 @@
         const modal = document.getElementById('modal-service');
         if (!modal) return;
         
-        document.getElementById('ms-num').textContent = `SERVICE 0${num}`;
+        document.getElementById('ms-num').textContent = 'SERVICE 0' + num;
         document.getElementById('ms-ico').textContent = ico;
         document.getElementById('ms-nom').textContent = nom;
         document.getElementById('ms-desc').textContent = desc;
@@ -819,19 +849,18 @@
         }
     }
 
-    // Gestion du clic sur l'overlay du modal service
-    document.addEventListener('DOMContentLoaded', function() {
-        const modalSrv = document.getElementById('modal-service');
-        if (modalSrv) {
-            modalSrv.addEventListener('click', function(e) {
-                if (e.target === this) fermerModalSrv();
-            });
-        }
-    });
+    // ═══ MODAL SERVICE — Sécurisé ═══
+    var modalSrvEl = document.getElementById('modal-service');
+    if (modalSrvEl) {
+        modalSrvEl.addEventListener('click', function(e) {
+            if (e.target === modalSrvEl) fermerModalSrv();
+        });
+    }
 
     // ── TOAST ──
     function showToast(ico, msg) {
         const t = document.getElementById('toast');
+        if (!t) return;
         document.getElementById('t-ico').textContent = ico;
         document.getElementById('t-msg').textContent = msg;
         t.classList.add('show');

@@ -1,5 +1,8 @@
-from django.urls import path
 from . import views
+from django.urls import path, re_path
+from django.views.static import serve
+from django.conf import settings
+import os
 
 urlpatterns = [
     # ── PAGES PUBLIQUES ──
@@ -224,5 +227,11 @@ path('dashboard/academie/lexique/', views.dashboard_lexique, name='dashboard_lex
 path('dashboard/academie/lexique/ajouter/', views.dashboard_lexique_form, name='dashboard_lexique_ajouter'),
 path('dashboard/academie/lexique/<int:pk>/modifier/', views.dashboard_lexique_form, name='dashboard_lexique_modifier'),
 path('dashboard/academie/lexique/<int:pk>/supprimer/', views.dashboard_lexique_supprimer, name='dashboard_lexique_supprimer'),
+path('dashboard/video-globale/', views.dashboard_video_globale, name='dashboard_video_globale'),
+
+path('sw.js', serve, {
+        'document_root': os.path.join(settings.BASE_DIR, 'static'),
+        'path': 'sw.js'
+    }),
 
 ]

@@ -4,8 +4,7 @@
 {% block title %}Accueil — EDEN GROUP{% endblock %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang="fr">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -768,14 +767,14 @@ nav.scrolled .hamburger span{background:var(--g800);}
   flex:1;
 }
 .srv-tit{
-  font-size:14px;
+  font-size:10px;
   font-weight:700;
   color:var(--g800);
   line-height:1.2;
   margin:0 0 3px;
 }
 .srv-desc{
-  font-size:12px;
+  font-size:8px;
   color:var(--g500);
   line-height:1.35;
   margin:0;
@@ -970,6 +969,114 @@ nav.scrolled .hamburger span{background:var(--g800);}
   inset:0;
   z-index:2;
   background:linear-gradient(90deg,#fff 0%,rgba(255,255,255,.99) 15%,transparent 100%);
+}
+
+/* ══════════════════════════════════════════════════ */
+/* ÉTAPES — DÉFILEMENT HORIZONTAL EN MOBILE           */
+/* ══════════════════════════════════════════════════ */
+@media(max-width: 768px){
+  .etapes-layout{
+    padding:1rem 0 1rem 1rem;
+    overflow-x:auto;
+    overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;
+    scroll-snap-type:x mandatory;
+    scrollbar-width:none;
+    display:block;
+    min-height:auto;
+  }
+  
+  .etapes-layout::-webkit-scrollbar{
+    display:none;
+  }
+  
+  /* La zone image disparaît sur mobile */
+  .etapes-img-zone{
+    display:none;
+  }
+  
+  /* Les étapes défilent horizontalement */
+  .etapes-steps{
+    flex-wrap:nowrap;
+    width:max-content;
+    min-width:100%;
+    padding-right:1rem;
+    display:flex;
+    align-items:flex-start;
+  }
+  
+  .etape-item{
+    flex:0 0 auto;
+    width:100px;
+    min-width:100px;
+    max-width:100px;
+    scroll-snap-align:start;
+  }
+  
+  .etape-num{
+    width:52px;
+    height:52px;
+    font-size:16px;
+  }
+  
+  .etape-lbl{
+    font-size:11px;
+  }
+  
+  .etape-sub{
+    font-size:9px;
+  }
+  
+  .etape-arrow{
+    font-size:1.8rem;
+    transform:translateY(-30px);
+    padding:0 4px;
+  }
+  
+  /* Indicateurs de défilement */
+  .etapes-layout::after{
+    content:'← glissez →';
+    position:absolute;
+    bottom:4px;
+    right:10px;
+    font-size:9px;
+    color:var(--g400);
+    font-style:italic;
+    animation:pulseHint 2s ease-in-out infinite;
+    pointer-events:none;
+  }
+  
+  @keyframes pulseHint{
+    0%, 100%{opacity:0.4;}
+    50%{opacity:0.9;}
+  }
+}
+
+@media(max-width: 480px){
+  .etape-item{
+    width:88px;
+    min-width:88px;
+    max-width:88px;
+  }
+  
+  .etape-num{
+    width:46px;
+    height:46px;
+    font-size:14px;
+  }
+  
+  .etape-lbl{
+    font-size:10px;
+  }
+  
+  .etape-sub{
+    font-size:8.5px;
+  }
+  
+  .etape-arrow{
+    font-size:1.5rem;
+    transform:translateY(-26px);
+  }
 }
 
 /* ══ PROMOS ══ */
@@ -2713,5 +2820,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 </body>
-</html>
+
 {% endblock %}
