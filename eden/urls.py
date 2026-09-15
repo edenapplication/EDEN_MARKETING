@@ -234,4 +234,48 @@ path('sw.js', serve, {
         'path': 'sw.js'
     }),
 
+        # ══════════════════════════════════════════════
+    # MODULE À PROPOS — DASHBOARD
+    # ══════════════════════════════════════════════
+    path('dashboard/apropos/', views.dashboard_apropos, name='dashboard_apropos'),
+
+    # Sections
+    path('dashboard/apropos/section/creer/', views.dashboard_apropos_section_form, name='dashboard_apropos_section_create'),
+    path('dashboard/apropos/section/<int:pk>/', views.dashboard_apropos_section_form, name='dashboard_apropos_section_form'),
+    path('dashboard/apropos/section/<int:pk>/supprimer/', views.dashboard_apropos_section_supprimer, name='dashboard_apropos_section_supprimer'),
+
+    # Éléments (cartes, valeurs, membres, activités)
+    path('dashboard/apropos/section/<int:section_pk>/elements/', views.dashboard_apropos_elements, name='dashboard_apropos_elements'),
+    path('dashboard/apropos/element/creer/<int:section_pk>/', views.dashboard_apropos_element_form, name='dashboard_apropos_element_create'),
+    path('dashboard/apropos/element/<int:pk>/', views.dashboard_apropos_element_form, name='dashboard_apropos_element_form'),
+    path('dashboard/apropos/element/<int:pk>/supprimer/', views.dashboard_apropos_element_supprimer, name='dashboard_apropos_element_supprimer'),
+
+    # Indicateurs (chiffres clés)
+    path('dashboard/apropos/section/<int:section_pk>/indicateurs/', views.dashboard_apropos_indicateurs, name='dashboard_apropos_indicateurs'),
+    path('dashboard/apropos/indicateur/creer/<int:section_pk>/', views.dashboard_apropos_indicateur_form, name='dashboard_apropos_indicateur_create'),
+    path('dashboard/apropos/indicateur/<int:pk>/', views.dashboard_apropos_indicateur_form, name='dashboard_apropos_indicateur_form'),
+    path('dashboard/apropos/indicateur/<int:pk>/supprimer/', views.dashboard_apropos_indicateur_supprimer, name='dashboard_apropos_indicateur_supprimer'),
+
+    # Étapes timeline (histoire)
+    path('dashboard/apropos/section/<int:section_pk>/etapes/', views.dashboard_apropos_etapes, name='dashboard_apropos_etapes'),
+    path('dashboard/apropos/etape/creer/<int:section_pk>/', views.dashboard_apropos_etape_form, name='dashboard_apropos_etape_create'),
+    path('dashboard/apropos/etape/<int:pk>/', views.dashboard_apropos_etape_form, name='dashboard_apropos_etape_form'),
+    path('dashboard/apropos/etape/<int:pk>/supprimer/', views.dashboard_apropos_etape_supprimer, name='dashboard_apropos_etape_supprimer'),
+
+    # Tableaux (chiffres clés)
+    path('dashboard/apropos/section/<int:section_pk>/tableaux/', views.dashboard_apropos_tableaux, name='dashboard_apropos_tableaux'),
+    path('dashboard/apropos/tableau/creer/<int:section_pk>/', views.dashboard_apropos_tableau_form, name='dashboard_apropos_tableau_create'),
+    path('dashboard/apropos/tableau/<int:pk>/', views.dashboard_apropos_tableau_form, name='dashboard_apropos_tableau_form'),
+    path('dashboard/apropos/tableau/<int:pk>/supprimer/', views.dashboard_apropos_tableau_supprimer, name='dashboard_apropos_tableau_supprimer'),
+    path('dashboard/apropos/tableau/<int:pk>/editer/', views.dashboard_apropos_tableau_editer, name='dashboard_apropos_tableau_editer'),
+
+    # API AJAX pour l'éditeur de tableau
+    path('dashboard/apropos/api/colonne/ajouter/', views.api_apropos_colonne_ajouter, name='api_apropos_colonne_ajouter'),
+    path('dashboard/apropos/api/colonne/<int:pk>/supprimer/', views.api_apropos_colonne_supprimer, name='api_apropos_colonne_supprimer'),
+    path('dashboard/apropos/api/colonne/<int:pk>/renommer/', views.api_apropos_colonne_renommer, name='api_apropos_colonne_renommer'),
+    path('dashboard/apropos/api/ligne/ajouter/', views.api_apropos_ligne_ajouter, name='api_apropos_ligne_ajouter'),
+    path('dashboard/apropos/api/ligne/<int:pk>/supprimer/', views.api_apropos_ligne_supprimer, name='api_apropos_ligne_supprimer'),
+    path('dashboard/apropos/api/ligne/<int:pk>/renommer/', views.api_apropos_ligne_renommer, name='api_apropos_ligne_renommer'),
+    path('dashboard/apropos/api/cellule/sauvegarder/', views.api_apropos_cellule_sauvegarder, name='api_apropos_cellule_sauvegarder'),
+
 ]

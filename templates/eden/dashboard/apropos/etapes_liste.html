@@ -1,0 +1,110 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Étapes — {{ section.titre }}{% endblock %}
+
+{% block admin_content %}
+<div>
+
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+        <a href="{% url 'dashboard_apropos' %}" style="color: #6B7280; text-decoration: none; font-size: 1.3rem;">←</a>
+        <div>
+            <div style="font-size: 0.75rem; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: 1.5px;">
+                {{ section.get_type_section_display }}
+            </div>
+            <h1 style="font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: #1F2937;">
+                {{ section.titre }}
+                {% if section.titre_accent %}
+                <em style="background: linear-gradient(135deg, #1B4FDB, #C8102E); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                    {{ section.titre_accent }}
+                </em>
+                {% endif %}
+            </h1>
+        </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+        <p style="font-size: 0.9rem; color: #6B7280;">
+            {{ etapes|length }} étape{{ etapes|length|pluralize }} dans la timeline
+        </p>
+        <a href="{% url 'dashboard_apropos_etape_create' section.pk %}"
+           style="display: inline-flex; align-items: center; gap: 8px;
+                  background: linear-gradient(135deg, #1B4FDB, #7B20B4);
+                  color: #fff; text-decoration: none; padding: 12px 24px;
+                  border-radius: 12px; font-weight: 600; font-size: 0.9rem;
+                  box-shadow: 0 4px 14px rgba(27, 79, 219, 0.3);">
+            + Ajouter une étape
+        </a>
+    </div>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div style="background: #D1FAE5; border-left: 4px solid #10B981; padding: 14px 18px; border-radius: 10px; margin-bottom: 16px; color: #065F46; font-size: 0.9rem;">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div style="background: #fff; border: 1.5px solid #E5E7EB; border-radius: 16px; overflow: hidden;">
+        {% for etape in etapes %}
+        <div style="display: flex; align-items: center; gap: 16px; padding: 18px 22px; {% if not forloop.last %}border-bottom: 1px solid #F3F4F6;{% endif %}">
+
+            <div style="width: 80px; height: 80px; border-radius: 16px; background: linear-gradient(135deg, #1B4FDB, #7B20B4); display: flex; align-items: center; justify-content: center; color: #fff; font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; flex-shrink: 0;">
+                {{ etape.annee }}
+            </div>
+
+            <div style="flex: 1; min-width: 0;">
+                <p style="font-size: 0.92rem; color: #4B5563; line-height: 1.6; margin: 0;">
+                    {{ etape.description|truncatechars:180 }}
+                </p>
+                <div style="display: flex; align-items: center; gap: 10px; margin-top: 8px;">
+                    <span style="font-size: 0.7rem; font-weight: 700; padding: 3px 10px; border-radius: 50px;
+                                 {% if etape.position == 'gauche' %}background: #EEF3FF; color: #1B4FDB;{% else %}background: #FEF3C7; color: #92400E;{% endif %}">
+                        {% if etape.position == 'gauche' %}⬅️ Gauche{% else %}➡️ Droite{% endif %}
+                    </span>
+                    <span style="font-size: 0.7rem; font-weight: 600; padding: 3px 10px; border-radius: 50px;
+                                 {% if etape.is_active %}background: #D1FAE5; color: #065F46;{% else %}background: #F3F4F6; color: #9CA3AF;{% endif %}">
+                        {% if etape.is_active %}● Actif{% else %}○ Inactif{% endif %}
+                    </span>
+                    <span style="font-size: 0.7rem; color: #9CA3AF;">Ordre {{ etape.ordre }}</span>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 6px; flex-shrink: 0;">
+                <a href="{% url 'dashboard_apropos_etape_form' etape.pk %}"
+                   style="padding: 8px 14px; background: #F3F4F6; border-radius: 8px; text-decoration: none; color: #4B5563; font-size: 0.8rem; font-weight: 600;">
+                    ✏️ Modifier
+                </a>
+                <form method="POST" action="{% url 'dashboard_apropos_etape_supprimer' etape.pk %}"
+                      onsubmit="return confirm('Supprimer l\'étape {{ etape.annee }} ?');"
+                      style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit"
+                            style="padding: 8px 14px; background: #FEE2E2; border: none; border-radius: 8px; color: #DC2626; font-size: 0.8rem; font-weight: 600; cursor: pointer; font-family: inherit;">
+                        🗑
+                    </button>
+                </form>
+            </div>
+
+        </div>
+        {% empty %}
+        <div style="padding: 60px 30px; text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 12px;">📭</div>
+            <div style="font-size: 1.1rem; font-weight: 700; color: #1F2937; margin-bottom: 6px;">
+                Aucune étape
+            </div>
+            <div style="font-size: 0.9rem; color: #6B7280; margin-bottom: 20px;">
+                Créez la première étape de la timeline.
+            </div>
+            <a href="{% url 'dashboard_apropos_etape_create' section.pk %}"
+               style="display: inline-flex; align-items: center; gap: 8px;
+                      background: linear-gradient(135deg, #1B4FDB, #7B20B4);
+                      color: #fff; text-decoration: none; padding: 12px 24px;
+                      border-radius: 12px; font-weight: 600; font-size: 0.9rem;">
+                + Ajouter une étape
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

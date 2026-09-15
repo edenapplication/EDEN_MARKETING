@@ -298,9 +298,158 @@ def promotions(request):
 
 
 def a_propos(request):
-    temoignages = Temoignage.objects.filter(is_active=True)
-    return render(request, 'eden/a_propos.html', {'temoignages': temoignages})
+    """Page À Propos — 100% dynamique pilotée par l'admin."""
+    from .models import (
+        AProposSection, AProposElement, AProposIndicateur,
+        AProposTableau, AProposEtape, AProposCellule,
+        Temoignage,
+    )
+    import json
 
+    # ── Charger toutes les sections actives ──
+    sections = {
+        s.type_section: s
+        for s in AProposSection.objects.filter(is_active=True).order_by('ordre')
+    }
+
+    # ═══════════════════════════════════════════════
+    # SECTION PRÉSENTATION
+    # ═══════════════════════════════════════════════
+    pres = sections.get('presentation')
+    presentation_data = {
+        'section': pres,
+        'elements': AProposElement.objects.filter(
+            section=pres, is_active=True
+        ).order_by('ordre') if pres else [],
+    }
+
+    # ═══════════════════════════════════════════════
+    # SECTION HISTOIRE (timeline)
+    # ═══════════════════════════════════════════════
+    hist = sections.get('histoire')
+    histoire_data = {
+        'section': hist,
+        'etapes': AProposEtape.objects.filter(
+            section=hist, is_active=True
+        ).order_by('ordre') if hist else [],
+    }
+
+    # ═══════════════════════════════════════════════
+    # SECTION ACTIVITÉS
+    # ═══════════════════════════════════════════════
+    act = sections.get('activites')
+    activites_data = {
+        'section': act,
+        'elements': AProposElement.objects.filter(
+            section=act, is_active=True
+        ).order_by('ordre') if act else [],
+    }
+
+    # ═══════════════════════════════════════════════
+    # SECTION CHIFFRES CLÉS (indicateurs + tableaux + graphique)
+    # ═══════════════════════════════════════════════
+    chf = sections.get('chiffres')
+    chiffres_data = {
+        'section': chf,
+        'indicateurs': [],
+        'tableaux': [],
+        'chart_data': None,
+    }
+
+    if chf:
+        # Indicateurs
+        chiffres_data['indicateurs'] = AProposIndicateur.objects.filter(
+            section=chf, is_active=True
+        ).order_by('ordre')
+
+        # Tableaux
+        for tab in AProposTableau.objects.filter(section=chf).order_by('ordre'):
+            colonnes = list(tab.colonnes.order_by('ordre'))
+            lignes = []
+            for ligne in tab.lignes.order_by('ordre'):
+                valeurs = []
+                for colonne in colonnes:
+                    cellule = AProposCellule.objects.filter(ligne=ligne, colonne=colonne).first()
+                    valeurs.append(cellule.valeur if cellule else '')
+                lignes.append({
+                    'label': ligne.label,
+                    'valeurs': valeurs,
+                })
+            chiffres_data['tableaux'].append({
+                'obj': tab,
+                'titre': tab.titre,
+                'est_pour_graphique': tab.est_pour_graphique,
+                'colonnes': colonnes,
+                'lignes': lignes,
+            })
+
+        # Préparer les données JSON pour le graphique
+        for tab_data in chiffres_data['tableaux']:
+            if tab_data['est_pour_graphique']:
+                labels = [c.titre for c in tab_data['colonnes']]
+                datasets = []
+                palette = ['#fec322', '#1B4FDB', '#C8102E', '#0F6E56', '#d97706', '#7B20B4']
+
+                for i, ligne in enumerate(tab_data['lignes']):
+                    data = []
+                    for col in tab_data['colonnes']:
+                        val = ligne['cellules'].get(col.id, '0')
+                        try:
+                            data.append(float(str(val).replace(',', '.').replace(' ', '')))
+                        except (ValueError, TypeError):
+                            data.append(0)
+                    datasets.append({
+                        'label': ligne['label'],
+                        'data': data,
+                        'backgroundColor': palette[i % len(palette)],
+                        'borderColor': palette[i % len(palette)],
+                        'borderWidth': 1,
+                        'borderRadius': 4,
+                    })
+                chiffres_data['chart_data'] = json.dumps({
+                    'labels': labels,
+                    'datasets': datasets,
+                })
+                break
+
+    # ═══════════════════════════════════════════════
+    # SECTION VALEURS
+    # ═══════════════════════════════════════════════
+    val = sections.get('valeurs')
+    valeurs_data = {
+        'section': val,
+        'elements': AProposElement.objects.filter(
+            section=val, is_active=True
+        ).order_by('ordre') if val else [],
+    }
+
+    # ═══════════════════════════════════════════════
+    # SECTION ÉQUIPE
+    # ═══════════════════════════════════════════════
+    eq = sections.get('equipe')
+    equipe_data = {
+        'section': eq,
+        'elements': AProposElement.objects.filter(
+            section=eq, is_active=True
+        ).order_by('ordre') if eq else [],
+    }
+
+    # ═══════════════════════════════════════════════
+    # TÉMOIGNAGES (existants)
+    # ═══════════════════════════════════════════════
+    temoignages = Temoignage.objects.filter(is_active=True).order_by('ordre', '-created_at')
+
+    context = {
+        'presentation': presentation_data,
+        'histoire': histoire_data,
+        'activites': activites_data,
+        'chiffres': chiffres_data,
+        'valeurs': valeurs_data,
+        'equipe': equipe_data,
+        'temoignages': temoignages,
+    }
+
+    return render(request, 'eden/a_propos.html', context)
 
 def contact(request):
     if request.method == 'POST':
@@ -4050,3 +4199,651 @@ def dashboard_video_globale(request):
         'videos': videos,
         'positions': VideoGlobale._meta.get_field('position').choices,
     })
+
+# ══════════════════════════════════════════════
+# MODULE À PROPOS — DASHBOARD
+# ══════════════════════════════════════════════
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_apropos(request):
+    """Tableau de bord du module À Propos."""
+    from .models import (
+        AProposSection, AProposElement, AProposIndicateur,
+        AProposTableau, AProposEtape,
+    )
+
+    sections = AProposSection.objects.all().order_by('ordre')
+
+    sections_data = []
+    for s in sections:
+        nb_elements = 0
+        if s.type_section in ['presentation', 'activites', 'valeurs', 'equipe']:
+            nb_elements = s.elements.count()
+        elif s.type_section == 'histoire':
+            nb_elements = s.etapes.count()
+        elif s.type_section == 'chiffres':
+            nb_elements = s.indicateurs.count() + s.tableaux.count()
+        sections_data.append({'section': s, 'nb_elements': nb_elements})
+
+    return render(request, 'eden/dashboard/apropos/index.html', {
+        'sections_data': sections_data,
+        'nb_sections': sections.count(),
+        'nb_actives': sections.filter(is_active=True).count(),
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_apropos_section_form(request, pk=None):
+    """Créer/modifier une section À Propos."""
+    from .models import AProposSection
+
+    section = get_object_or_404(AProposSection, pk=pk) if pk else None
+
+    if request.method == 'POST':
+        titre = request.POST.get('titre', '').strip()
+        type_section = request.POST.get('type_section', '').strip()
+
+        if not titre or not type_section:
+            messages.error(request, 'Le type et le titre sont obligatoires.')
+            return render(request, 'eden/dashboard/apropos/section_form.html', {
+                'section': section,
+                'types': AProposSection.TYPE_CHOICES,
+            })
+
+        # Vérifier qu'on ne crée pas de doublon de type
+        if not section:
+            existing = AProposSection.objects.filter(type_section=type_section).first()
+            if existing:
+                messages.error(request, f'Une section "{existing.get_type_section_display()}" existe déjà. Modifiez-la au lieu d\'en créer une nouvelle.')
+                return redirect('dashboard_apropos')
+
+        if not section:
+            section = AProposSection()
+
+        section.type_section = type_section
+        section.titre = titre
+        section.titre_accent = request.POST.get('titre_accent', '').strip()
+        section.description = request.POST.get('description', '').strip()
+        section.ordre = int(request.POST.get('ordre', 0) or 0)
+        section.is_active = request.POST.get('is_active') == 'on'
+        section.save()
+
+        messages.success(request, f'Section "{section.titre}" enregistrée.')
+        return redirect('dashboard_apropos')
+
+    return render(request, 'eden/dashboard/apropos/section_form.html', {
+        'section': section,
+        'types': AProposSection.TYPE_CHOICES,
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_apropos_section_supprimer(request, pk):
+    from .models import AProposSection
+    section = get_object_or_404(AProposSection, pk=pk)
+    if request.method == 'POST':
+        titre = section.titre
+        section.delete()
+        messages.success(request, f'Section "{titre}" supprimée.')
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True})
+    return redirect('dashboard_apropos')
+
+
+# ══════════════════════════════════════════════
+# ÉLÉMENTS
+# ══════════════════════════════════════════════
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_apropos_elements(request, section_pk):
+    from .models import AProposSection, AProposElement
+
+    section = get_object_or_404(AProposSection, pk=section_pk)
+    elements = section.elements.all().order_by('ordre')
+
+    return render(request, 'eden/dashboard/apropos/elements_liste.html', {
+        'section': section,
+        'elements': elements,
+        'is_equipe': section.type_section == 'equipe',
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_apropos_element_form(request, section_pk=None, pk=None):
+    from .models import AProposSection, AProposElement
+
+    element = get_object_or_404(AProposElement, pk=pk) if pk else None
+
+    if element:
+        section = element.section
+    elif section_pk:
+        section = get_object_or_404(AProposSection, pk=section_pk)
+    else:
+        messages.error(request, 'Section introuvable.')
+        return redirect('dashboard_apropos')
+
+    if request.method == 'POST':
+        titre = request.POST.get('titre', '').strip()
+        if not titre:
+            messages.error(request, 'Le titre est obligatoire.')
+            return render(request, 'eden/dashboard/apropos/element_form.html', {
+                'section': section,
+                'element': element,
+                'is_equipe': section.type_section == 'equipe',
+            })
+
+        if not element:
+            element = AProposElement(section=section)
+
+        element.icone = request.POST.get('icone', '').strip()
+        element.initiales = request.POST.get('initiales', '').strip()
+        element.titre = titre
+        element.sous_titre = request.POST.get('sous_titre', '').strip()
+        element.description = request.POST.get('description', '').strip()
+        element.couleur_debut = request.POST.get('couleur_debut', '#1B4FDB').strip()
+        element.couleur_fin = request.POST.get('couleur_fin', '#7B20B4').strip()
+        element.ordre = int(request.POST.get('ordre', 0) or 0)
+        element.is_active = request.POST.get('is_active') == 'on'
+        element.save()
+
+        messages.success(request, f'Élément "{element.titre}" enregistré.')
+        return redirect('dashboard_apropos_elements', section_pk=section.pk)
+
+    return render(request, 'eden/dashboard/apropos/element_form.html', {
+        'section': section,
+        'element': element,
+        'is_equipe': section.type_section == 'equipe',
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_apropos_element_supprimer(request, pk):
+    from .models import AProposElement
+    element = get_object_or_404(AProposElement, pk=pk)
+    section_pk = element.section.pk
+
+    if request.method == 'POST':
+        element.delete()
+        messages.success(request, 'Élément supprimé.')
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True})
+        return redirect('dashboard_apropos_elements', section_pk=section_pk)
+
+    return render(request, 'eden/dashboard/confirm_delete.html', {
+        'objet': element,
+        'retour': 'dashboard_apropos_elements',
+    })
+
+
+# ══════════════════════════════════════════════
+# INDICATEURS
+# ══════════════════════════════════════════════
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_apropos_indicateurs(request, section_pk):
+    from .models import AProposSection, AProposIndicateur
+
+    section = get_object_or_404(AProposSection, pk=section_pk)
+    indicateurs = section.indicateurs.all().order_by('ordre')
+
+    return render(request, 'eden/dashboard/apropos/indicateurs_liste.html', {
+        'section': section,
+        'indicateurs': indicateurs,
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_apropos_indicateur_form(request, section_pk=None, pk=None):
+    from .models import AProposSection, AProposIndicateur
+
+    indicateur = get_object_or_404(AProposIndicateur, pk=pk) if pk else None
+
+    if indicateur:
+        section = indicateur.section
+    elif section_pk:
+        section = get_object_or_404(AProposSection, pk=section_pk)
+    else:
+        messages.error(request, 'Section introuvable.')
+        return redirect('dashboard_apropos')
+
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre', '').strip()
+        label = request.POST.get('label', '').strip()
+
+        if not nombre or not label:
+            messages.error(request, 'Valeur et label sont obligatoires.')
+            return render(request, 'eden/dashboard/apropos/indicateur_form.html', {
+                'section': section,
+                'indicateur': indicateur,
+                'icons': AProposIndicateur.ICON_CHOICES,
+            })
+
+        if not indicateur:
+            indicateur = AProposIndicateur(section=section)
+
+        indicateur.icone = request.POST.get('icone', 'fa-calendar')
+        indicateur.nombre = nombre
+        indicateur.suffixe = request.POST.get('suffixe', '').strip()
+        indicateur.label = label
+        indicateur.ordre = int(request.POST.get('ordre', 0) or 0)
+        indicateur.is_active = request.POST.get('is_active') == 'on'
+        indicateur.save()
+
+        messages.success(request, f'Indicateur "{indicateur.label}" enregistré.')
+        return redirect('dashboard_apropos_indicateurs', section_pk=section.pk)
+
+    return render(request, 'eden/dashboard/apropos/indicateur_form.html', {
+        'section': section,
+        'indicateur': indicateur,
+        'icons': AProposIndicateur.ICON_CHOICES,
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_apropos_indicateur_supprimer(request, pk):
+    from .models import AProposIndicateur
+    indicateur = get_object_or_404(AProposIndicateur, pk=pk)
+    section_pk = indicateur.section.pk
+
+    if request.method == 'POST':
+        indicateur.delete()
+        messages.success(request, 'Indicateur supprimé.')
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True})
+        return redirect('dashboard_apropos_indicateurs', section_pk=section_pk)
+
+    return render(request, 'eden/dashboard/confirm_delete.html', {
+        'objet': indicateur,
+        'retour': 'dashboard_apropos_indicateurs',
+    })
+
+
+# ══════════════════════════════════════════════
+# ÉTAPES TIMELINE
+# ══════════════════════════════════════════════
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_apropos_etapes(request, section_pk):
+    from .models import AProposSection, AProposEtape
+
+    section = get_object_or_404(AProposSection, pk=section_pk)
+    etapes = section.etapes.all().order_by('ordre')
+
+    return render(request, 'eden/dashboard/apropos/etapes_liste.html', {
+        'section': section,
+        'etapes': etapes,
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_apropos_etape_form(request, section_pk=None, pk=None):
+    from .models import AProposSection, AProposEtape
+
+    etape = get_object_or_404(AProposEtape, pk=pk) if pk else None
+
+    if etape:
+        section = etape.section
+    elif section_pk:
+        section = get_object_or_404(AProposSection, pk=section_pk)
+    else:
+        messages.error(request, 'Section introuvable.')
+        return redirect('dashboard_apropos')
+
+    if request.method == 'POST':
+        annee = request.POST.get('annee', '').strip()
+        description = request.POST.get('description', '').strip()
+
+        if not annee or not description:
+            messages.error(request, 'Année et description sont obligatoires.')
+            return render(request, 'eden/dashboard/apropos/etape_form.html', {
+                'section': section,
+                'etape': etape,
+            })
+
+        if not etape:
+            etape = AProposEtape(section=section)
+
+        etape.annee = annee
+        etape.description = description
+        etape.position = request.POST.get('position', 'gauche')
+        etape.ordre = int(request.POST.get('ordre', 0) or 0)
+        etape.is_active = request.POST.get('is_active') == 'on'
+        etape.save()
+
+        messages.success(request, f'Étape {etape.annee} enregistrée.')
+        return redirect('dashboard_apropos_etapes', section_pk=section.pk)
+
+    return render(request, 'eden/dashboard/apropos/etape_form.html', {
+        'section': section,
+        'etape': etape,
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_apropos_etape_supprimer(request, pk):
+    from .models import AProposEtape
+    etape = get_object_or_404(AProposEtape, pk=pk)
+    section_pk = etape.section.pk
+
+    if request.method == 'POST':
+        etape.delete()
+        messages.success(request, 'Étape supprimée.')
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True})
+        return redirect('dashboard_apropos_etapes', section_pk=section_pk)
+
+    return render(request, 'eden/dashboard/confirm_delete.html', {
+        'objet': etape,
+        'retour': 'dashboard_apropos_etapes',
+    })
+
+
+# ══════════════════════════════════════════════
+# TABLEAUX
+# ══════════════════════════════════════════════
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_apropos_tableaux(request, section_pk):
+    from .models import AProposSection, AProposTableau
+
+    section = get_object_or_404(AProposSection, pk=section_pk)
+    tableaux = section.tableaux.all().order_by('ordre')
+
+    return render(request, 'eden/dashboard/apropos/tableaux_liste.html', {
+        'section': section,
+        'tableaux': tableaux,
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_apropos_tableau_form(request, section_pk=None, pk=None):
+    from .models import AProposSection, AProposTableau
+
+    tableau = get_object_or_404(AProposTableau, pk=pk) if pk else None
+
+    if tableau:
+        section = tableau.section
+    elif section_pk:
+        section = get_object_or_404(AProposSection, pk=section_pk)
+    else:
+        messages.error(request, 'Section introuvable.')
+        return redirect('dashboard_apropos')
+
+    if request.method == 'POST':
+        titre = request.POST.get('titre', '').strip()
+        if not titre:
+            messages.error(request, 'Le titre est obligatoire.')
+            return render(request, 'eden/dashboard/apropos/tableau_form.html', {
+                'section': section,
+                'tableau': tableau,
+            })
+
+        if not tableau:
+            tableau = AProposTableau(section=section)
+
+        tableau.titre = titre
+        tableau.est_pour_graphique = request.POST.get('est_pour_graphique') == 'on'
+        tableau.ordre = int(request.POST.get('ordre', 0) or 0)
+        tableau.save()
+
+        messages.success(request, f'Tableau "{tableau.titre}" enregistré.')
+        return redirect('dashboard_apropos_tableau_editer', pk=tableau.pk)
+
+    return render(request, 'eden/dashboard/apropos/tableau_form.html', {
+        'section': section,
+        'tableau': tableau,
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_apropos_tableau_supprimer(request, pk):
+    from .models import AProposTableau
+    tableau = get_object_or_404(AProposTableau, pk=pk)
+    section_pk = tableau.section.pk
+
+    if request.method == 'POST':
+        tableau.delete()
+        messages.success(request, 'Tableau supprimé.')
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True})
+        return redirect('dashboard_apropos_tableaux', section_pk=section_pk)
+
+    return render(request, 'eden/dashboard/confirm_delete.html', {
+        'objet': tableau,
+        'retour': 'dashboard_apropos_tableaux',
+    })
+
+
+@login_required
+@user_passes_test(is_agent)
+def dashboard_apropos_tableau_editer(request, pk):
+    """Éditeur interactif de tableau."""
+    from .models import AProposTableau, AProposColonne, AProposLigne, AProposCellule
+
+    tableau = get_object_or_404(AProposTableau, pk=pk)
+    colonnes = list(tableau.colonnes.all().order_by('ordre'))
+    lignes = list(tableau.lignes.all().order_by('ordre'))
+
+    # ═══ CONSTRUIRE UNE MATRICE PRÊTE POUR LE TEMPLATE ═══
+    matrice = []
+    for ligne in lignes:
+        valeurs = []
+        for colonne in colonnes:
+            cellule = AProposCellule.objects.filter(
+                ligne=ligne, colonne=colonne
+            ).first()
+            valeurs.append({
+                'colonne_id': colonne.pk,
+                'ligne_id': ligne.pk,
+                'valeur': cellule.valeur if cellule else '',
+            })
+        matrice.append({
+            'ligne': ligne,
+            'valeurs': valeurs,
+        })
+
+    return render(request, 'eden/dashboard/apropos/tableau_editeur.html', {
+        'tableau': tableau,
+        'section': tableau.section,
+        'colonnes': colonnes,
+        'lignes': lignes,
+        'matrice': matrice,  # ⬅️ NOUVEAU
+    })
+
+# ══════════════════════════════════════════════
+# API AJAX — Colonnes / Lignes / Cellules
+# ══════════════════════════════════════════════
+
+@csrf_exempt
+@login_required
+@user_passes_test(is_agent)
+def api_apropos_colonne_ajouter(request):
+    from .models import AProposTableau, AProposColonne
+    if request.method != 'POST':
+        return JsonResponse({'success': False})
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'error': 'JSON invalide'})
+
+    tableau_id = data.get('tableau_id')
+    titre = data.get('titre', '').strip()
+
+    if not tableau_id or not titre:
+        return JsonResponse({'success': False, 'error': 'Titre requis'})
+
+    tableau = get_object_or_404(AProposTableau, pk=tableau_id)
+    ordre = tableau.colonnes.count()
+    colonne = AProposColonne.objects.create(
+        tableau=tableau, titre=titre, ordre=ordre
+    )
+
+    return JsonResponse({
+        'success': True,
+        'colonne': {
+            'id': colonne.pk,
+            'titre': colonne.titre,
+            'ordre': colonne.ordre,
+        }
+    })
+
+
+@csrf_exempt
+@login_required
+@user_passes_test(is_agent)
+def api_apropos_colonne_supprimer(request, pk):
+    from .models import AProposColonne
+    if request.method != 'POST':
+        return JsonResponse({'success': False})
+
+    colonne = get_object_or_404(AProposColonne, pk=pk)
+    colonne.delete()
+
+    return JsonResponse({'success': True})
+
+
+@csrf_exempt
+@login_required
+@user_passes_test(is_agent)
+def api_apropos_colonne_renommer(request, pk):
+    from .models import AProposColonne
+    if request.method != 'POST':
+        return JsonResponse({'success': False})
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False})
+
+    titre = data.get('titre', '').strip()
+    if not titre:
+        return JsonResponse({'success': False})
+
+    colonne = get_object_or_404(AProposColonne, pk=pk)
+    colonne.titre = titre
+    colonne.save()
+
+    return JsonResponse({'success': True})
+
+
+@csrf_exempt
+@login_required
+@user_passes_test(is_agent)
+def api_apropos_ligne_ajouter(request):
+    from .models import AProposTableau, AProposLigne
+    if request.method != 'POST':
+        return JsonResponse({'success': False})
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'error': 'JSON invalide'})
+
+    tableau_id = data.get('tableau_id')
+    label = data.get('label', '').strip()
+
+    if not tableau_id or not label:
+        return JsonResponse({'success': False, 'error': 'Label requis'})
+
+    tableau = get_object_or_404(AProposTableau, pk=tableau_id)
+    ordre = tableau.lignes.count()
+    ligne = AProposLigne.objects.create(
+        tableau=tableau, label=label, ordre=ordre
+    )
+
+    return JsonResponse({
+        'success': True,
+        'ligne': {
+            'id': ligne.pk,
+            'label': ligne.label,
+            'ordre': ligne.ordre,
+        }
+    })
+
+
+@csrf_exempt
+@login_required
+@user_passes_test(is_agent)
+def api_apropos_ligne_supprimer(request, pk):
+    from .models import AProposLigne
+    if request.method != 'POST':
+        return JsonResponse({'success': False})
+
+    ligne = get_object_or_404(AProposLigne, pk=pk)
+    ligne.delete()
+
+    return JsonResponse({'success': True})
+
+
+@csrf_exempt
+@login_required
+@user_passes_test(is_agent)
+def api_apropos_ligne_renommer(request, pk):
+    from .models import AProposLigne
+    if request.method != 'POST':
+        return JsonResponse({'success': False})
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False})
+
+    label = data.get('label', '').strip()
+    if not label:
+        return JsonResponse({'success': False})
+
+    ligne = get_object_or_404(AProposLigne, pk=pk)
+    ligne.label = label
+    ligne.save()
+
+    return JsonResponse({'success': True})
+
+
+@csrf_exempt
+@login_required
+@user_passes_test(is_agent)
+def api_apropos_cellule_sauvegarder(request):
+    from .models import AProposLigne, AProposColonne, AProposCellule
+    if request.method != 'POST':
+        return JsonResponse({'success': False})
+
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False})
+
+    ligne_id = data.get('ligne_id')
+    colonne_id = data.get('colonne_id')
+    valeur = str(data.get('valeur', '')).strip()
+
+    if not ligne_id or not colonne_id:
+        return JsonResponse({'success': False})
+
+    try:
+        ligne = AProposLigne.objects.get(pk=ligne_id)
+        colonne = AProposColonne.objects.get(pk=colonne_id)
+    except (AProposLigne.DoesNotExist, AProposColonne.DoesNotExist):
+        return JsonResponse({'success': False, 'error': 'Ligne ou colonne introuvable'})
+
+    cellule, created = AProposCellule.objects.update_or_create(
+        ligne=ligne, colonne=colonne,
+        defaults={'valeur': valeur}
+    )
+
+    return JsonResponse({'success': True, 'valeur': cellule.valeur})

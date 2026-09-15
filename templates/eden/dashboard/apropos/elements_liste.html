@@ -1,0 +1,123 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}À Propos — Configuration{% endblock %}
+
+{% block admin_content %}
+<div>
+
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+        <a href="{% url 'dashboard_apropos' %}" style="color: #6B7280; text-decoration: none; font-size: 1.3rem;">←</a>
+        <div>
+            <div style="font-size: 0.75rem; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: 1.5px;">
+                {{ section.get_type_section_display }}
+            </div>
+            <h1 style="font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: #1F2937;">
+                {{ section.titre }}
+                {% if section.titre_accent %}<em style="background: linear-gradient(135deg, #1B4FDB, #C8102E); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">{{ section.titre_accent }}</em>{% endif %}
+            </h1>
+        </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+        <p style="font-size: 0.9rem; color: #6B7280;">
+            {{ elements|length }} élément{{ elements|length|pluralize }} dans cette section
+        </p>
+        <a href="{% url 'dashboard_apropos_element_create' section.pk %}"
+           style="display: inline-flex; align-items: center; gap: 8px;
+                  background: linear-gradient(135deg, #1B4FDB, #7B20B4);
+                  color: #fff; text-decoration: none; padding: 12px 24px;
+                  border-radius: 12px; font-weight: 600; font-size: 0.9rem;
+                  box-shadow: 0 4px 14px rgba(27, 79, 219, 0.3);">
+            + Ajouter un élément
+        </a>
+    </div>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div style="background: #D1FAE5; border-left: 4px solid #10B981; padding: 14px 18px; border-radius: 10px; margin-bottom: 16px; color: #065F46; font-size: 0.9rem;">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px;">
+        {% for element in elements %}
+        <div style="background: #fff; border: 1.5px solid #E5E7EB; border-radius: 14px; padding: 20px; transition: all 0.25s;"
+             onmouseover="this.style.boxShadow='0 6px 24px rgba(0,0,0,0.06)'; this.style.transform='translateY(-2px)';"
+             onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)';">
+
+            <div style="display: flex; gap: 14px; align-items: flex-start;">
+
+                {% if is_equipe %}
+                <div style="width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, {{ element.couleur_debut }}, {{ element.couleur_fin }}); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1rem; font-weight: 700; flex-shrink: 0;">
+                    {{ element.initiales }}
+                </div>
+                {% else %}
+                <div style="width: 52px; height: 52px; border-radius: 14px; background: linear-gradient(135deg, #1B4FDB, #7B20B4); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0;">
+                    {{ element.icone }}
+                </div>
+                {% endif %}
+
+                <div style="flex: 1; min-width: 0;">
+                    <div style="font-size: 1rem; font-weight: 700; color: #1F2937; margin-bottom: 3px;">
+                        {{ element.titre }}
+                    </div>
+                    {% if element.sous_titre %}
+                    <div style="font-size: 0.8rem; color: #9CA3AF; margin-bottom: 8px;">
+                        {{ element.sous_titre }}
+                    </div>
+                    {% endif %}
+                    {% if element.description %}
+                    <p style="font-size: 0.83rem; color: #6B7280; line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                        {{ element.description }}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 8px; margin-top: 16px; padding-top: 14px; border-top: 1px solid #F3F4F6;">
+                <span style="font-size: 0.7rem; color: {% if element.is_active %}#10B981{% else %}#9CA3AF{% endif %}; font-weight: 600; padding: 4px 10px; background: {% if element.is_active %}#D1FAE5{% else %}#F3F4F6{% endif %}; border-radius: 50px;">
+                    {% if element.is_active %}● Actif{% else %}○ Inactif{% endif %}
+                </span>
+                <span style="font-size: 0.7rem; color: #9CA3AF; padding: 4px 10px;">
+                    Ordre {{ element.ordre }}
+                </span>
+                <div style="flex: 1;"></div>
+                <a href="{% url 'dashboard_apropos_element_form' element.pk %}"
+                   style="padding: 6px 12px; background: #F3F4F6; border-radius: 8px; text-decoration: none; color: #4B5563; font-size: 0.8rem; font-weight: 600;">
+                    ✏️ Modifier
+                </a>
+                <form method="POST" action="{% url 'dashboard_apropos_element_supprimer' element.pk %}"
+                      onsubmit="return confirm('Supprimer cet élément ?');"
+                      style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit"
+                            style="padding: 6px 12px; background: #FEE2E2; border: none; border-radius: 8px; color: #DC2626; font-size: 0.8rem; font-weight: 600; cursor: pointer; font-family: inherit;">
+                        🗑
+                    </button>
+                </form>
+            </div>
+
+        </div>
+        {% empty %}
+        <div style="grid-column: 1/-1; background: #fff; border: 2px dashed #E5E7EB; border-radius: 16px; padding: 60px 30px; text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 12px;">📭</div>
+            <div style="font-size: 1.1rem; font-weight: 700; color: #1F2937; margin-bottom: 6px;">
+                Aucun élément
+            </div>
+            <div style="font-size: 0.9rem; color: #6B7280; margin-bottom: 20px;">
+                Créez votre premier élément dans cette section.
+            </div>
+            <a href="{% url 'dashboard_apropos_element_create' section.pk %}"
+               style="display: inline-flex; align-items: center; gap: 8px;
+                      background: linear-gradient(135deg, #1B4FDB, #7B20B4);
+                      color: #fff; text-decoration: none; padding: 12px 24px;
+                      border-radius: 12px; font-weight: 600; font-size: 0.9rem;">
+                + Ajouter un élément
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

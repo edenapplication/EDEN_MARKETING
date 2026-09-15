@@ -1,0 +1,292 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Éditeur — {{ tableau.titre }}{% endblock %}
+
+{% block admin_content %}
+<div>
+
+    <a href="{% url 'dashboard_apropos_tableaux' section.pk %}" style="display: inline-flex; align-items: center; gap: 6px; color: #6B7280; text-decoration: none; font-size: 0.9rem; margin-bottom: 20px;">
+        ← Retour aux tableaux
+    </a>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+        <div>
+            <h1 style="font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: #1F2937;">
+                {{ tableau.titre }}
+            </h1>
+            {% if tableau.est_pour_graphique %}
+            <span style="display: inline-block; margin-top: 6px; font-size: 0.75rem; font-weight: 700; padding: 4px 12px; background: linear-gradient(135deg, #1B4FDB, #7B20B4); color: #fff; border-radius: 50px;">
+                📊 Alimente le graphique
+            </span>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div style="background: #D1FAE5; border-left: 4px solid #10B981; padding: 14px 18px; border-radius: 10px; margin-bottom: 16px; color: #065F46; font-size: 0.9rem;">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <!-- BARRE D'OUTILS -->
+    <div style="background: #fff; border: 1.5px solid #E5E7EB; border-radius: 14px; padding: 16px 20px; margin-bottom: 20px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+        <span style="font-size: 0.85rem; font-weight: 600; color: #6B7280; margin-right: 8px;">Actions :</span>
+
+        <button onclick="ajouterColonne()"
+                style="display: inline-flex; align-items: center; gap: 6px; background: #EEF3FF; color: #1B4FDB; border: 1.5px solid #1B4FDB; padding: 9px 16px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer; font-family: inherit;">
+            + Colonne
+        </button>
+
+        <button onclick="ajouterLigne()"
+                style="display: inline-flex; align-items: center; gap: 6px; background: #EEF3FF; color: #1B4FDB; border: 1.5px solid #1B4FDB; padding: 9px 16px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer; font-family: inherit;">
+            + Ligne
+        </button>
+
+        <div style="flex: 1;"></div>
+
+        <div style="font-size: 0.8rem; color: #9CA3AF;">
+            💡 Les valeurs sont sauvegardées automatiquement
+        </div>
+    </div>
+
+    <!-- TABLEAU INTERACTIF -->
+    <div style="background: #fff; border: 1.5px solid #E5E7EB; border-radius: 14px; overflow: hidden;">
+        <div style="overflow-x: auto;">
+            <table id="tableau-editeur" style="width: 100%; border-collapse: collapse; min-width: 600px;">
+
+                <thead>
+                    <tr>
+                        <th style="background: #F9FAFB; padding: 12px 16px; text-align: left; font-size: 0.8rem; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #E5E7EB; min-width: 200px;">
+                            Libellé
+                        </th>
+                        {% for colonne in colonnes %}
+                        <th style="background: #F9FAFB; padding: 8px 12px; border-bottom: 2px solid #E5E7EB; text-align: center; min-width: 120px;">
+                            <div style="display: flex; align-items: center; gap: 6px; justify-content: center;">
+                                <input type="text" value="{{ colonne.titre }}"
+                                       onchange="renommerColonne({{ colonne.pk }}, this.value)"
+                                       style="flex: 1; border: none; background: transparent; font-size: 0.8rem; font-weight: 700; color: #6B7280; text-align: center; text-transform: uppercase; letter-spacing: 0.5px; padding: 4px; outline: none; min-width: 0;"
+                                       onfocus="this.style.background='#fff'; this.style.borderRadius='6px';">
+                                <button onclick="supprimerColonne({{ colonne.pk }})"
+                                        title="Supprimer cette colonne"
+                                        style="width: 22px; height: 22px; border-radius: 50%; background: #FEE2E2; color: #DC2626; border: none; cursor: pointer; font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                    ✕
+                                </button>
+                            </div>
+                        </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for ligne_data in matrice %}
+                    <tr style="transition: all 0.15s;">
+                        <td style="padding: 8px 16px; border-bottom: 1px solid #F3F4F6; background: #FAFBFC;">
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <input type="text" value="{{ ligne_data.ligne.label }}"
+                                       onchange="renommerLigne({{ ligne_data.ligne.pk }}, this.value)"
+                                       style="flex: 1; border: none; background: transparent; font-size: 0.9rem; font-weight: 600; color: #1F2937; padding: 4px; outline: none; min-width: 0;"
+                                       onfocus="this.style.background='#fff'; this.style.borderRadius='6px'; this.style.border='1.5px solid #E5E7EB';"
+                                       onblur="this.style.background='transparent'; this.style.border='none';">
+                                <button onclick="supprimerLigne({{ ligne_data.ligne.pk }})"
+                                        title="Supprimer cette ligne"
+                                        style="width: 22px; height: 22px; border-radius: 50%; background: #FEE2E2; color: #DC2626; border: none; cursor: pointer; font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                    ✕
+                                </button>
+                            </div>
+                        </td>
+
+                        {% for cellule in ligne_data.valeurs %}
+                        <td style="padding: 4px 6px; border-bottom: 1px solid #F3F4F6; text-align: center;">
+                            <input type="text"
+                                   value="{{ cellule.valeur }}"
+                                   data-ligne="{{ cellule.ligne_id }}"
+                                   data-colonne="{{ cellule.colonne_id }}"
+                                   onchange="sauvegarderCellule(this)"
+                                   style="width: 100%; border: 1.5px solid transparent; background: #F9FAFB; padding: 8px 10px; border-radius: 6px; font-size: 0.9rem; text-align: center; color: #1F2937; font-family: inherit; transition: all 0.15s;"
+                                   onfocus="this.style.background='#fff'; this.style.borderColor='#1B4FDB';"
+                                   onblur="this.style.background='#F9FAFB'; this.style.borderColor='transparent';">
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="{{ colonnes|length|add:1 }}" style="padding: 60px 20px; text-align: center; color: #9CA3AF;">
+                            <div style="font-size: 2rem; margin-bottom: 8px;">📋</div>
+                            <div style="font-size: 0.95rem; font-weight: 600; margin-bottom: 4px;">Tableau vide</div>
+                            <div style="font-size: 0.85rem;">Ajoutez d'abord une colonne puis une ligne</div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION TOAST -->
+    <div id="toast" style="position: fixed; bottom: 30px; right: 30px; background: #10B981; color: #fff; padding: 14px 24px; border-radius: 12px; font-weight: 600; font-size: 0.9rem; box-shadow: 0 8px 30px rgba(16, 185, 129, 0.4); opacity: 0; transform: translateY(20px); transition: all 0.3s; pointer-events: none; z-index: 9999;">
+        ✓ Sauvegardé
+    </div>
+
+</div>
+
+<script>
+const TABLEAU_ID = {{ tableau.pk }};
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+const CSRF = getCookie('csrftoken');
+
+function showToast(message = '✓ Sauvegardé') {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.style.background = '#10B981';
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateY(0)';
+    clearTimeout(window._toastTimer);
+    window._toastTimer = setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(20px)';
+    }, 2000);
+}
+
+function showError(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.style.background = '#DC2626';
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateY(0)';
+    clearTimeout(window._toastTimer);
+    window._toastTimer = setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(20px)';
+    }, 3000);
+}
+
+async function api(url, data = {}) {
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': CSRF,
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: JSON.stringify(data),
+        });
+        return await response.json();
+    } catch (e) {
+        return { success: false, error: 'Erreur réseau' };
+    }
+}
+
+async function ajouterColonne() {
+    const titre = prompt('Nom de la nouvelle colonne :\n(ex: 2019, En cours, Dossiers réalisés)');
+    if (!titre || !titre.trim()) return;
+
+    const result = await api('{% url "api_apropos_colonne_ajouter" %}', {
+        tableau_id: TABLEAU_ID,
+        titre: titre.trim(),
+    });
+
+    if (result.success) {
+        window.location.reload();
+    } else {
+        showError('Erreur lors de l\'ajout');
+    }
+}
+
+async function supprimerColonne(colonneId) {
+    if (!confirm('Supprimer cette colonne et toutes ses valeurs ?')) return;
+
+    const result = await api(`/dashboard/apropos/api/colonne/${colonneId}/supprimer/`);
+
+    if (result.success) {
+        window.location.reload();
+    } else {
+        showError('Erreur lors de la suppression');
+    }
+}
+
+async function ajouterLigne() {
+    const label = prompt('Libellé de la nouvelle ligne :\n(ex: Immatriculation du domaine national)');
+    if (!label || !label.trim()) return;
+
+    const result = await api('{% url "api_apropos_ligne_ajouter" %}', {
+        tableau_id: TABLEAU_ID,
+        label: label.trim(),
+    });
+
+    if (result.success) {
+        window.location.reload();
+    } else {
+        showError('Erreur lors de l\'ajout');
+    }
+}
+
+async function supprimerLigne(ligneId) {
+    if (!confirm('Supprimer cette ligne et toutes ses valeurs ?')) return;
+
+    const result = await api(`/dashboard/apropos/api/ligne/${ligneId}/supprimer/`);
+
+    if (result.success) {
+        window.location.reload();
+    } else {
+        showError('Erreur lors de la suppression');
+    }
+}
+
+async function sauvegarderCellule(input) {
+    const ligneId = input.dataset.ligne;
+    const colonneId = input.dataset.colonne;
+    const valeur = input.value;
+
+    const result = await api('{% url "api_apropos_cellule_sauvegarder" %}', {
+        ligne_id: ligneId,
+        colonne_id: colonneId,
+        valeur: valeur,
+    });
+
+    if (result.success) {
+        showToast('✓ Valeur sauvegardée');
+        input.style.borderColor = '#10B981';
+        setTimeout(() => { input.style.borderColor = 'transparent'; }, 800);
+    } else {
+        showError('Erreur de sauvegarde');
+    }
+}
+
+async function renommerColonne(colonneId, nouveauTitre) {
+    const result = await api(`/dashboard/apropos/api/colonne/${colonneId}/renommer/`, {
+        titre: nouveauTitre,
+    });
+    if (result.success) {
+        showToast('✓ Colonne renommée');
+    }
+}
+
+async function renommerLigne(ligneId, nouveauLabel) {
+    const result = await api(`/dashboard/apropos/api/ligne/${ligneId}/renommer/`, {
+        label: nouveauLabel,
+    });
+    if (result.success) {
+        showToast('✓ Ligne renommée');
+    }
+}
+</script>
+
+{% endblock %}

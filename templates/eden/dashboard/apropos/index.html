@@ -1,0 +1,160 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}À Propos — Configuration{% endblock %}
+
+{% block admin_content %}
+<div style="padding: 0;">
+
+    <!-- EN-TÊTE -->
+    <div style="background: linear-gradient(135deg, #1B4FDB 0%, #7B20B4 50%, #C8102E 100%); border-radius: 20px; padding: 30px 28px; color: #fff; margin-bottom: 24px;">
+        <h1 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; margin-bottom: 8px;">
+            📋 Gestion de la page À Propos
+        </h1>
+        <p style="font-size: 0.95rem; opacity: 0.9; max-width: 700px; line-height: 1.6;">
+            Créez et gérez toutes les sections, cartes, valeurs, indicateurs et tableaux de votre page À Propos.
+            Ces contenus s'afficheront automatiquement sur le site public.
+        </p>
+        <div style="display: flex; gap: 20px; margin-top: 16px; flex-wrap: wrap;">
+            <div style="background: rgba(255,255,255,0.15); padding: 10px 18px; border-radius: 12px;">
+                <div style="font-size: 1.6rem; font-weight: 800;">{{ nb_sections }}</div>
+                <div style="font-size: 0.75rem; opacity: 0.85; text-transform: uppercase; letter-spacing: 1px;">Sections</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.15); padding: 10px 18px; border-radius: 12px;">
+                <div style="font-size: 1.6rem; font-weight: 800;">{{ nb_actives }}</div>
+                <div style="font-size: 0.75rem; opacity: 0.85; text-transform: uppercase; letter-spacing: 1px;">Actives</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MESSAGES -->
+    {% if messages %}
+    {% for message in messages %}
+    <div style="background: {% if message.tags == 'error' %}#FEE2E2{% else %}#D1FAE5{% endif %};
+                border-left: 4px solid {% if message.tags == 'error' %}#DC2626{% else %}#10B981{% endif %};
+                padding: 14px 18px; border-radius: 10px; margin-bottom: 16px;
+                color: {% if message.tags == 'error' %}#991B1B{% else %}#065F46{% endif %};
+                font-size: 0.9rem; font-weight: 500;">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <!-- BOUTON AJOUTER SECTION -->
+    <div style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
+        <a href="{% url 'dashboard_apropos_section_create' %}"
+           style="display: inline-flex; align-items: center; gap: 8px;
+                  background: linear-gradient(135deg, #1B4FDB, #7B20B4);
+                  color: #fff; text-decoration: none; padding: 12px 24px;
+                  border-radius: 12px; font-weight: 600; font-size: 0.9rem;
+                  box-shadow: 0 4px 14px rgba(27, 79, 219, 0.3); transition: all 0.25s;">
+            <span style="font-size: 1.2rem;">+</span> Créer une section
+        </a>
+    </div>
+
+    <!-- GRILLE DES SECTIONS -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px;">
+        {% for item in sections_data %}
+        <div style="background: #fff; border: 1.5px solid #E5E7EB; border-radius: 16px; overflow: hidden; transition: all 0.25s; position: relative;"
+             onmouseover="this.style.boxShadow='0 8px 30px rgba(0,0,0,0.08)'; this.style.transform='translateY(-3px)';"
+             onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)';">
+
+            <!-- Bandeau supérieur -->
+            <div style="padding: 20px 22px 16px; border-bottom: 1px solid #F3F4F6; position: relative;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+                    <div style="flex: 1;">
+                        <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #9CA3AF; margin-bottom: 6px;">
+                            {{ item.section.get_type_section_display }}
+                        </div>
+                        <div style="font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; color: #1F2937; line-height: 1.3;">
+                            {{ item.section.titre }}
+                            {% if item.section.titre_accent %}
+                                <em style="background: linear-gradient(135deg, #1B4FDB, #C8102E); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-style: italic;">
+                                    {{ item.section.titre_accent }}
+                                </em>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if item.section.is_active %}
+                    <span style="background: #D1FAE5; color: #065F46; font-size: 0.65rem; font-weight: 700; padding: 4px 10px; border-radius: 50px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;">
+                        ● Active
+                    </span>
+                    {% else %}
+                    <span style="background: #F3F4F6; color: #6B7280; font-size: 0.65rem; font-weight: 700; padding: 4px 10px; border-radius: 50px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;">
+                        ○ Inactive
+                    </span>
+                    {% endif %}
+                </div>
+                {% if item.section.description %}
+                <p style="font-size: 0.8rem; color: #6B7280; margin-top: 10px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                    {{ item.section.description }}
+                </p>
+                {% endif %}
+            </div>
+
+            <!-- Statistiques -->
+            <div style="padding: 14px 22px; background: #F9FAFB; display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #1B4FDB, #7B20B4); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.95rem; font-weight: 700;">
+                        {{ item.nb_elements }}
+                    </div>
+                    <div style="font-size: 0.8rem; color: #6B7280; font-weight: 500;">
+                        {% if item.section.type_section == 'histoire' %}étape{{ item.nb_elements|pluralize }}{% else %}élément{{ item.nb_elements|pluralize }}{% endif %}
+                    </div>
+                </div>
+                <span style="font-size: 0.7rem; color: #9CA3AF;">Ordre {{ item.section.ordre }}</span>
+            </div>
+
+            <!-- Actions -->
+            <div style="padding: 12px 22px 18px; display: flex; gap: 8px; flex-wrap: wrap;">
+
+                {# BOUTON PRINCIPAL selon le type #}
+                {% if item.section.type_section == 'histoire' %}
+                    <a href="{% url 'dashboard_apropos_etapes' item.section.pk %}"
+                       style="flex: 1; background: linear-gradient(135deg, #1B4FDB, #7B20B4); color: #fff; padding: 10px 16px; border-radius: 10px; text-decoration: none; font-size: 0.82rem; font-weight: 600; text-align: center; transition: all 0.2s;">
+                        ✏️ Gérer les étapes
+                    </a>
+                {% elif item.section.type_section == 'chiffres' %}
+                    <a href="{% url 'dashboard_apropos_indicateurs' item.section.pk %}"
+                       style="flex: 1; background: linear-gradient(135deg, #1B4FDB, #7B20B4); color: #fff; padding: 10px 16px; border-radius: 10px; text-decoration: none; font-size: 0.82rem; font-weight: 600; text-align: center; transition: all 0.2s;">
+                        📊 Indicateurs
+                    </a>
+                    <a href="{% url 'dashboard_apropos_tableaux' item.section.pk %}"
+                       style="flex: 1; background: #F3F4F6; color: #1F2937; padding: 10px 16px; border-radius: 10px; text-decoration: none; font-size: 0.82rem; font-weight: 600; text-align: center; transition: all 0.2s;">
+                        📋 Tableaux
+                    </a>
+                {% else %}
+                    <a href="{% url 'dashboard_apropos_elements' item.section.pk %}"
+                       style="flex: 1; background: linear-gradient(135deg, #1B4FDB, #7B20B4); color: #fff; padding: 10px 16px; border-radius: 10px; text-decoration: none; font-size: 0.82rem; font-weight: 600; text-align: center; transition: all 0.2s;">
+                        ✏️ Gérer les éléments
+                    </a>
+                {% endif %}
+
+                <a href="{% url 'dashboard_apropos_section_form' item.section.pk %}"
+                   title="Modifier la section"
+                   style="background: #F3F4F6; color: #4B5563; padding: 10px 14px; border-radius: 10px; text-decoration: none; font-size: 0.9rem; transition: all 0.2s;">
+                    ⚙️
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div style="grid-column: 1/-1; background: #fff; border: 2px dashed #E5E7EB; border-radius: 16px; padding: 60px 30px; text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 12px;">📭</div>
+            <div style="font-size: 1.1rem; font-weight: 700; color: #1F2937; margin-bottom: 6px;">
+                Aucune section À Propos
+            </div>
+            <div style="font-size: 0.9rem; color: #6B7280; margin-bottom: 20px;">
+                Commencez par créer les 6 sections principales : Présentation, Histoire, Activités, Chiffres, Valeurs, Équipe.
+            </div>
+            <a href="{% url 'dashboard_apropos_section_create' %}"
+               style="display: inline-flex; align-items: center; gap: 8px;
+                      background: linear-gradient(135deg, #1B4FDB, #7B20B4);
+                      color: #fff; text-decoration: none; padding: 12px 24px;
+                      border-radius: 12px; font-weight: 600; font-size: 0.9rem;">
+                + Créer la première section
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

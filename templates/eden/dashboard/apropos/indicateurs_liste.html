@@ -1,0 +1,107 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Indicateurs — {{ section.titre }}{% endblock %}
+
+{% block admin_content %}
+<div>
+
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+        <a href="{% url 'dashboard_apropos' %}" style="color: #6B7280; text-decoration: none; font-size: 1.3rem;">←</a>
+        <div>
+            <div style="font-size: 0.75rem; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: 1.5px;">
+                {{ section.get_type_section_display }}
+            </div>
+            <h1 style="font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: #1F2937;">
+                {{ section.titre }}
+            </h1>
+        </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+        <p style="font-size: 0.9rem; color: #6B7280;">
+            {{ indicateurs|length }} indicateur{{ indicateurs|length|pluralize }} clé{{ indicateurs|length|pluralize }}
+        </p>
+        <a href="{% url 'dashboard_apropos_indicateur_create' section.pk %}"
+           style="display: inline-flex; align-items: center; gap: 8px;
+                  background: linear-gradient(135deg, #1B4FDB, #7B20B4);
+                  color: #fff; text-decoration: none; padding: 12px 24px;
+                  border-radius: 12px; font-weight: 600; font-size: 0.9rem;
+                  box-shadow: 0 4px 14px rgba(27, 79, 219, 0.3);">
+            + Ajouter un indicateur
+        </a>
+    </div>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div style="background: #D1FAE5; border-left: 4px solid #10B981; padding: 14px 18px; border-radius: 10px; margin-bottom: 16px; color: #065F46; font-size: 0.9rem;">
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px;">
+        {% for indicateur in indicateurs %}
+        <div style="background: #fff; border: 1.5px solid #E5E7EB; border-radius: 14px; padding: 22px; text-align: center; transition: all 0.25s;"
+             onmouseover="this.style.boxShadow='0 6px 24px rgba(0,0,0,0.06)'; this.style.transform='translateY(-2px)';"
+             onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)';">
+
+            <div style="font-size: 2rem; color: #1B4FDB; margin-bottom: 10px;">
+                <i class="fa {{ indicateur.icone }}"></i>
+            </div>
+
+            <div style="font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: #1F2937; line-height: 1.1;">
+                {{ indicateur.nombre }}
+                {% if indicateur.suffixe %}
+                <span style="font-size: 0.9rem; font-weight: 600; color: #6B7280;">{{ indicateur.suffixe }}</span>
+                {% endif %}
+            </div>
+
+            <div style="font-size: 0.8rem; color: #6B7280; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.5px;">
+                {{ indicateur.label }}
+            </div>
+
+            <div style="display: flex; gap: 6px; justify-content: center; margin-top: 16px; padding-top: 14px; border-top: 1px solid #F3F4F6;">
+                <span style="font-size: 0.7rem; color: {% if indicateur.is_active %}#10B981{% else %}#9CA3AF{% endif %}; font-weight: 600; padding: 3px 10px; background: {% if indicateur.is_active %}#D1FAE5{% else %}#F3F4F6{% endif %}; border-radius: 50px;">
+                    {% if indicateur.is_active %}● Actif{% else %}○ Inactif{% endif %}
+                </span>
+            </div>
+
+            <div style="display: flex; gap: 6px; margin-top: 12px;">
+                <a href="{% url 'dashboard_apropos_indicateur_form' indicateur.pk %}"
+                   style="flex: 1; text-align: center; padding: 8px 12px; background: #F3F4F6; border-radius: 8px; text-decoration: none; color: #4B5563; font-size: 0.78rem; font-weight: 600;">
+                    ✏️ Modifier
+                </a>
+                <form method="POST" action="{% url 'dashboard_apropos_indicateur_supprimer' indicateur.pk %}"
+                      onsubmit="return confirm('Supprimer cet indicateur ?');"
+                      style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit"
+                            style="padding: 8px 12px; background: #FEE2E2; border: none; border-radius: 8px; color: #DC2626; font-size: 0.78rem; font-weight: 600; cursor: pointer; font-family: inherit;">
+                        🗑
+                    </button>
+                </form>
+            </div>
+
+        </div>
+        {% empty %}
+        <div style="grid-column: 1/-1; padding: 60px 30px; text-align: center; background: #fff; border: 2px dashed #E5E7EB; border-radius: 16px;">
+            <div style="font-size: 3rem; margin-bottom: 12px;">📭</div>
+            <div style="font-size: 1.1rem; font-weight: 700; color: #1F2937; margin-bottom: 6px;">
+                Aucun indicateur
+            </div>
+            <div style="font-size: 0.9rem; color: #6B7280; margin-bottom: 20px;">
+                Créez vos indicateurs clés (1956, 25 M€, 58 730...)
+            </div>
+            <a href="{% url 'dashboard_apropos_indicateur_create' section.pk %}"
+               style="display: inline-flex; align-items: center; gap: 8px;
+                      background: linear-gradient(135deg, #1B4FDB, #7B20B4);
+                      color: #fff; text-decoration: none; padding: 12px 24px;
+                      border-radius: 12px; font-weight: 600; font-size: 0.9rem;">
+                + Ajouter un indicateur
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

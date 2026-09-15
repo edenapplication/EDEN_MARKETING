@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>À Propos — EDEN GROUP</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 /* ===== STYLE INSPIRÉ D'ALIOS FINANCE ===== */
 * {
@@ -53,7 +54,7 @@ h1, h2, h3, h4, h5 {
     font-family: 'Playfair Display', serif;
 }
 
-/* ===== BANNIÈRE AVEC TITRE INTÉGRÉ ===== */
+/* ===== BANNIÈRE ===== */
 .banner-container {
     position: relative;
     overflow: hidden;
@@ -164,7 +165,7 @@ body.loaded .banner-container {
     transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* ===== NAVIGATION PAR SECTIONS ===== */
+/* ===== NAVIGATION ===== */
 .section-nav {
     display: flex;
     flex-wrap: wrap;
@@ -243,28 +244,12 @@ body.loaded .section-nav {
     background: rgba(255, 255, 255, 0.5);
 }
 
-.section-nav .nav-btn .badge {
-    background: var(--g200);
-    color: var(--g600);
-    font-size: 0.65rem;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 50px;
-    transition: all 0.3s ease;
-}
-
-.section-nav .nav-btn.active .badge {
-    background: rgba(255, 255, 255, 0.25);
-    color: #fff;
-}
-
 /* ===== CONTENEUR DES SECTIONS ===== */
 .sections-container {
     position: relative;
     min-height: 400px;
 }
 
-/* ===== SECTIONS AVEC MORPHING ===== */
 .section-wrapper {
     display: none;
     opacity: 0;
@@ -337,7 +322,7 @@ body.loaded .section-nav {
 }
 
 /* ================================================================
-   TIMELINE ALIOS FINANCE
+   TIMELINE ALIOS FINANCE - FLEXBOX (gauche/droite garanti)
    ================================================================ */
 .dima-timeline {
     position: relative;
@@ -355,46 +340,76 @@ body.loaded .section-nav {
     background: var(--grad-h);
     transform: translateX(-50%);
     border-radius: 100px;
+    z-index: 0;
 }
 
+/* Chaque événement */
 .timeline_element {
     position: relative;
-    width: 50%;
-    padding: 10px 0 50px;
+    width: 100%;
+    padding: 10px 0 40px;
+    display: flex;
+    align-items: flex-start;
     opacity: 0;
     transform: translateY(30px);
     animation: timelineFadeIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 @keyframes timelineFadeIn {
-    0% {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    0% { opacity: 0; transform: translateY(30px); }
+    100% { opacity: 1; transform: translateY(0); }
 }
 
+/* ══ ÉVÉNEMENT À GAUCHE : bloc poussé vers la gauche ══ */
 .timeline_element-left {
-    float: left;
-    clear: left;
-    padding-right: 40px;
+    justify-content: flex-end;
+}
+
+.timeline_element-left .timeline_element-content {
+    width: calc(50% - 50px);
     text-align: right;
+    position: relative;
 }
 
-.timeline_element-right {
-    float: right;
-    clear: right;
-    padding-left: 40px;
+.timeline_element-left .timeline_element-content .date {
+    text-align: right;
+    margin-bottom: 6px;
+}
+
+.timeline_element-left .timeline_element-content .post.box {
     text-align: left;
+    margin-top: 8px;
 }
 
+/* ══ ÉVÉNEMENT À DROITE : bloc poussé vers la droite ══ */
+.timeline_element-right {
+    justify-content: flex-start;
+}
+
+.timeline_element-right .timeline_element-content {
+    width: calc(50% - 50px);
+    margin-left: calc(50% + 50px);
+    text-align: left;
+    position: relative;
+}
+
+.timeline_element-right .timeline_element-content .date {
+    text-align: left;
+    margin-bottom: 6px;
+}
+
+.timeline_element-right .timeline_element-content .post.box {
+    text-align: left;
+    margin-top: 8px;
+}
+
+/* ══ POINT CENTRAL SUR LA LIGNE ══ */
 .timeline_element::before {
     content: '';
     position: absolute;
-    top: 5px;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
     width: 16px;
     height: 16px;
     border-radius: 50%;
@@ -404,22 +419,7 @@ body.loaded .section-nav {
     z-index: 2;
 }
 
-.timeline_element-left::before {
-    right: -8px;
-}
-
-.timeline_element-right::before {
-    left: -8px;
-}
-
-.timeline_element-content {
-    display: block;
-}
-
-.timeline_element-content .date {
-    display: block;
-}
-
+/* ══ STYLES INTERNES ══ */
 .timeline_element-content .date h5 {
     font-family: 'Playfair Display', serif;
     font-size: 1.2rem;
@@ -430,13 +430,15 @@ body.loaded .section-nav {
 }
 
 .timeline_element-content .post.box {
-    display: block;
+    display: inline-block;
     background: #fff;
     border: 1.5px solid var(--g200);
     border-radius: var(--rl);
     padding: 14px 20px;
     transition: all 0.3s ease;
     box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    max-width: 100%;
+    text-align: left;
 }
 
 .timeline_element-content .post.box:hover {
@@ -452,54 +454,8 @@ body.loaded .section-nav {
     margin: 0;
 }
 
-.timeline_element-content .post.box ul {
-    margin: 0;
-    padding-left: 20px;
-}
-
-.timeline_element-content .post.box ul li {
-    font-size: 0.9rem;
-    line-height: 1.7;
-    color: var(--g600);
-    margin-bottom: 4px;
-}
-
-.timeline_element-content .post.box ul.list-style.angle li {
-    list-style: none;
-    position: relative;
-    padding-left: 20px;
-}
-
-.timeline_element-content .post.box ul.list-style.angle li::before {
-    content: '▸';
-    position: absolute;
-    left: 0;
-    color: var(--blue);
-    font-weight: 700;
-}
-
-.timeline_element-left .timeline_element-content .date {
-    text-align: right;
-    margin-bottom: 0;
-}
-
-.timeline_element-left .timeline_element-content .post.box {
-    text-align: left;
-    margin-top: 8px;
-}
-
-.timeline_element-right .timeline_element-content .date {
-    text-align: left;
-    margin-bottom: 0;
-}
-
-.timeline_element-right .timeline_element-content .post.box {
-    text-align: left;
-    margin-top: 8px;
-}
-
 /* ================================================================
-   CHIFFRES CLÉS - STYLE ALIOS FINANCE
+   CHIFFRES CLÉS
    ================================================================ */
 .chiffres-grid {
     display: grid;
@@ -551,7 +507,7 @@ body.loaded .section-nav {
     letter-spacing: 0.5px;
 }
 
-/* ===== TABLEAUX CHIFFRES ===== */
+/* ===== TABLEAUX ===== */
 .chiffres-table-wrapper {
     margin-top: 30px;
 }
@@ -615,16 +571,6 @@ body.loaded .section-nav {
     background: var(--bpale);
 }
 
-.table_chiffre tbody tr.total {
-    background: var(--g50);
-    font-weight: 700;
-}
-
-.table_chiffre tbody tr.total td {
-    color: var(--g800);
-    border-bottom: 2px solid var(--blue);
-}
-
 /* ===== DIAGRAMME ===== */
 .chart-container {
     margin-top: 30px;
@@ -670,13 +616,7 @@ body.loaded .section-nav {
    ================================================================ */
 .grid-3 {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 20px;
-}
-
-.grid-2 {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
 }
 
@@ -722,13 +662,11 @@ body.loaded .section-nav {
     line-height: 1.6;
 }
 
-/* ================================================================
-   VALEURS / ACTIVITÉS
-   ================================================================ */
+/* ===== VALEURS / ACTIVITÉS ===== */
 .val-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
 }
 
 .val-item {
@@ -739,6 +677,7 @@ body.loaded .section-nav {
     border-radius: var(--r);
     padding: 20px 22px;
     transition: all 0.25s ease;
+    height: 100%;
 }
 
 .val-item:hover {
@@ -772,13 +711,11 @@ body.loaded .section-nav {
     line-height: 1.5;
 }
 
-/* ================================================================
-   ÉQUIPE
-   ================================================================ */
+/* ===== ÉQUIPE ===== */
 .team-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
 }
 
 .team-card {
@@ -821,9 +758,7 @@ body.loaded .section-nav {
     margin-top: 2px;
 }
 
-/* ================================================================
-   TÉMOIGNAGES
-   ================================================================ */
+/* ===== TÉMOIGNAGES ===== */
 .testi-scroll-wrapper {
     overflow: hidden;
     position: relative;
@@ -974,9 +909,7 @@ body.loaded .section-nav {
     border-radius: 100px;
 }
 
-/* ================================================================
-   CTA
-   ================================================================ */
+/* ===== CTA ===== */
 .btn-primary {
     display: inline-flex;
     align-items: center;
@@ -1075,9 +1008,43 @@ body.loaded .section-nav {
     background-clip: text;
 }
 
+/* ===== ÉTAT VIDE ===== */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--g400);
+    grid-column: 1 / -1;
+}
+
+.empty-state .empty-icon {
+    font-size: 3rem;
+    margin-bottom: 12px;
+    opacity: 0.4;
+}
+
+.empty-state .empty-text {
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.empty-state .empty-hint {
+    font-size: 0.8rem;
+    color: var(--g400);
+}
+
 /* ================================================================
    RESPONSIVE
    ================================================================ */
+@media (max-width: 992px) {
+    .chiffres-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .grid-3, .val-grid, .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media (max-width: 768px) {
     .banner-container {
         min-height: 280px;
@@ -1095,11 +1062,9 @@ body.loaded .section-nav {
     .section-wrapper {
         padding: 20px 16px 30px;
     }
-    .grid-3, .grid-2 {
-        grid-template-columns: 1fr;
-    }
-    .val-grid {
-        grid-template-columns: 1fr;
+    .grid-3, .val-grid, .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
     }
     .chiffres-grid {
         grid-template-columns: repeat(3, 1fr);
@@ -1107,9 +1072,6 @@ body.loaded .section-nav {
     }
     .chiffre-card .chiffre-number {
         font-size: 1.6rem;
-    }
-    .team-grid {
-        grid-template-columns: 1fr 1fr;
     }
     .testi-card {
         flex: 0 0 260px;
@@ -1132,49 +1094,40 @@ body.loaded .section-nav {
         white-space: nowrap;
         flex-shrink: 0;
     }
-    
-    .dima-timeline .line {
-        left: 20px;
-    }
-    
+
+    /* Timeline responsive */
+    .dima-timeline .line { left: 20px; }
+
     .timeline_element {
-        width: 100%;
-        float: none;
-        clear: both;
         padding: 10px 10px 40px 50px;
+    }
+
+    .timeline_element-left,
+    .timeline_element-right {
+        justify-content: flex-start;
+    }
+
+    .timeline_element-left .timeline_element-content,
+    .timeline_element-right .timeline_element-content {
+        width: 100%;
+        margin-left: 0;
         text-align: left;
     }
-    
-    .timeline_element::before {
-        left: 12px;
-        right: auto;
-    }
-    
+
     .timeline_element-left .timeline_element-content .date,
     .timeline_element-right .timeline_element-content .date {
         text-align: left;
     }
-    
-    .timeline_element-content .post.box {
-        padding: 12px 14px;
+
+    .timeline_element::before {
+        left: 20px;
+        top: 8px;
     }
-    
-    .timeline_element-content .post.box p,
-    .timeline_element-content .post.box ul li {
-        font-size: 0.8rem;
-    }
-    
-    .timeline_element-content .date h5 {
-        font-size: 1rem;
-    }
-    
-    .timeline_element {
-        padding-bottom: 40px;
-    }
-    
-    .chart-wrapper {
-        height: 250px;
-    }
+
+    .timeline_element-content .post.box { padding: 12px 14px; }
+    .timeline_element-content .post.box p { font-size: 0.8rem; }
+    .timeline_element-content .date h5 { font-size: 1rem; }
+    .chart-wrapper { height: 250px; }
 }
 
 @media (max-width: 480px) {
@@ -1185,40 +1138,22 @@ body.loaded .section-nav {
         font-size: 0.6rem;
         padding: 4px 12px;
     }
+    .grid-3, .val-grid, .team-grid {
+        grid-template-columns: 1fr;
+    }
     .chiffres-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 10px;
     }
-    .chiffre-card {
-        padding: 16px 12px;
-    }
-    .chiffre-card .chiffre-number {
-        font-size: 1.3rem;
-    }
-    .chiffre-card .chiffre-icon {
-        font-size: 20px;
-    }
-    .team-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-    }
-    .section-bg-light, .section-bg-dark {
-        padding: 20px 16px 30px;
-    }
-    .testi-card {
-        flex: 0 0 220px;
-        padding: 16px 18px;
-    }
-    .table_chiffre {
-        font-size: 0.6rem;
-    }
+    .chiffre-card { padding: 16px 12px; }
+    .chiffre-card .chiffre-number { font-size: 1.3rem; }
+    .chiffre-card .chiffre-icon { font-size: 20px; }
+    .section-bg-light, .section-bg-dark { padding: 20px 16px 30px; }
+    .testi-card { flex: 0 0 220px; padding: 16px 18px; }
+    .table_chiffre { font-size: 0.6rem; }
     .table_chiffre thead th,
-    .table_chiffre tbody td {
-        padding: 4px 6px;
-    }
-    .chart-wrapper {
-        height: 200px;
-    }
+    .table_chiffre tbody td { padding: 4px 6px; }
+    .chart-wrapper { height: 200px; }
 }
 </style>
 </head>
@@ -1240,26 +1175,38 @@ body.loaded .section-nav {
     </div>
 </div>
 
-<!-- ===== NAVIGATION ===== -->
+<!-- ===== NAVIGATION — NOMS FIXES ===== -->
 <nav class="section-nav" id="sectionNav">
+    {% if presentation.section %}
     <button class="nav-btn active" data-section="presentation" onclick="switchSection('presentation')">
         🏢 Présentation
     </button>
+    {% endif %}
+    {% if histoire.section %}
     <button class="nav-btn" data-section="histoire" onclick="switchSection('histoire')">
         📖 Notre Histoire
     </button>
+    {% endif %}
+    {% if activites.section %}
     <button class="nav-btn" data-section="activites" onclick="switchSection('activites')">
         ⚡ Nos Activités
     </button>
+    {% endif %}
+    {% if chiffres.section %}
     <button class="nav-btn" data-section="chiffres" onclick="switchSection('chiffres')">
         📊 Chiffres clés
     </button>
+    {% endif %}
+    {% if valeurs.section %}
     <button class="nav-btn" data-section="valeurs" onclick="switchSection('valeurs')">
         🌟 Nos valeurs
     </button>
+    {% endif %}
+    {% if equipe.section %}
     <button class="nav-btn" data-section="equipe" onclick="switchSection('equipe')">
         👥 Équipe
     </button>
+    {% endif %}
     {% if temoignages %}
     <button class="nav-btn" data-section="temoignages" onclick="switchSection('temoignages')">
         💬 Témoignages
@@ -1273,418 +1220,246 @@ body.loaded .section-nav {
 <!-- ===== CONTENEUR DES SECTIONS ===== -->
 <div class="sections-container" id="sectionsContainer">
 
-    <!-- SECTION 1 : PRÉSENTATION -->
+    <!-- ═══════════ SECTION 1 : PRÉSENTATION ═══════════ -->
+    {% if presentation.section %}
     <div class="section-wrapper active" id="section-presentation">
-        <h3 class="section-title">Un acteur de référence <em>au service de l'ingénierie foncière</em></h3>
-        <p class="section-desc">Depuis 2018, nous accompagnons les professionnels, les particuliers et surtout les familles autochtones dans la sécurisation de leur patrimoine foncier et la protection de leurs droits ancestraux.</p>
+        <h3 class="section-title">
+            {{ presentation.section.titre }}
+            {% if presentation.section.titre_accent %}
+                <em>{{ presentation.section.titre_accent }}</em>
+            {% endif %}
+        </h3>
+        {% if presentation.section.description %}
+        <p class="section-desc">{{ presentation.section.description }}</p>
+        {% endif %}
 
         <div class="grid-3">
+            {% for element in presentation.elements %}
             <div class="card">
-                <div class="icon">🏢</div>
-                <h4>Notre Groupe</h4>
-                <p>EDEN GROUP est un acteur de référence au Cameroun et en Afrique centrale, spécialisé dans la promotion immobilière et le conseil foncier.</p>
+                <div class="icon">{{ element.icone }}</div>
+                <h4>{{ element.titre }}</h4>
+                <p>{{ element.description }}</p>
             </div>
-            <div class="card">
-                <div class="icon">📜</div>
-                <h4>Notre Mission</h4>
-                <p>Nous facilitons l'accès à la propriété foncière en offrant des solutions transparentes, sécurisées et adaptées aux besoins de notre clientèle.</p>
+            {% empty %}
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <div class="empty-text">Aucun élément dans cette section</div>
+                <div class="empty-hint">Ajoutez-en depuis l'admin</div>
             </div>
-            <div class="card">
-                <div class="icon">🎯</div>
-                <h4>Nos Cibles</h4>
-                <p>Nous accompagnons les PME, grandes entreprises et particuliers dans l'acquisition de leur résidence principale ou secondaire.</p>
-            </div>
-            <div class="card">
-                <div class="icon">🛡️</div>
-                <h4>Protection des droits</h4>
-                <p>Nous œuvrons pour la protection des droits fonciers des familles autochtones et des communautés locales.</p>
-            </div>
-            <div class="card">
-                <div class="icon">🤝</div>
-                <h4>Partenariats publics</h4>
-                <p>Nous collaborons avec les institutions publiques pour faciliter la régularisation foncière et l'aménagement du territoire.</p>
-            </div>
-            <div class="card">
-                <div class="icon">🌍</div>
-                <h4>Développement durable</h4>
-                <p>Nos projets intègrent les objectifs de développement durable, conciliant croissance économique et protection de l'environnement.</p>
-            </div>
+            {% endfor %}
         </div>
     </div>
+    {% endif %}
 
-    <!-- SECTION 2 : NOTRE HISTOIRE -->
+    <!-- ═══════════ SECTION 2 : NOTRE HISTOIRE ═══════════ -->
+    {% if histoire.section %}
     <div class="section-wrapper" id="section-histoire">
-        <h3 class="section-title">Notre <em>histoire</em></h3>
-        <p class="section-desc">Un parcours de croissance et d'innovation depuis 1956.</p>
+        <h3 class="section-title">
+            {{ histoire.section.titre }}
+            {% if histoire.section.titre_accent %}
+                <em>{{ histoire.section.titre_accent }}</em>
+            {% endif %}
+        </h3>
+        {% if histoire.section.description %}
+        <p class="section-desc">{{ histoire.section.description }}</p>
+        {% endif %}
 
-        <div class="dima-timeline clearfix">
+        <div class="dima-timeline">
             <div class="line"></div>
 
-            <div class="timeline_element timeline_element-left">
+            {% for etape in histoire.etapes %}
+            <div class="timeline_element timeline_element-{{ etape.position }}">
                 <div class="timeline_element-content">
-                    <div class="date"><h5>1956</h5></div>
-                    <div class="post box"><p>Création de SAFCA (Société Africaine de Crédit Automobile) au Sénégal par Renault, UNILEVER, NIGER FRANCE, OPTORG, CFAO et SCOA.</p></div>
+                    <div class="date"><h5>{{ etape.annee }}</h5></div>
+                    <div class="post box"><p>{{ etape.description }}</p></div>
                 </div>
             </div>
-
-            <div class="timeline_element timeline_element-right">
-                <div class="timeline_element-content">
-                    <div class="post box"><p>Transfert de SAFCA du Sénégal vers la Côte d'Ivoire, devenant ainsi sa première institution financière.</p></div>
-                    <div class="date"><h5>1958</h5></div>
-                </div>
+            {% empty %}
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <div class="empty-text">Aucune étape dans l'histoire</div>
+                <div class="empty-hint">Ajoutez-en depuis l'admin</div>
             </div>
-
-            <div class="timeline_element timeline_element-left">
-                <div class="timeline_element-content">
-                    <div class="date"><h5>1959</h5></div>
-                    <div class="post box"><p>Création de SOCCA (Société Camerounaise de Crédit Automobile) au Cameroun.</p></div>
-                </div>
-            </div>
-
-            <div class="timeline_element timeline_element-right">
-                <div class="timeline_element-content">
-                    <div class="post box"><p>Création de SOGACA (Société Gabonaise de Crédit Automobile) au Gabon.</p></div>
-                    <div class="date"><h5>1966</h5></div>
-                </div>
-            </div>
-
-            <div class="timeline_element timeline_element-left">
-                <div class="timeline_element-content">
-                    <div class="date"><h5>1976</h5></div>
-                    <div class="post box"><p>Création du GIEFCA en France par SAFCA, SOCCA et SOGACA. Renault Crédit International (RCI) assure la gestion du GIEFCA.</p></div>
-                </div>
-            </div>
-
-            <div class="timeline_element timeline_element-right">
-                <div class="timeline_element-content">
-                    <div class="post box"><p>RCI (Renault Crédit International) se retire d'Afrique et confie la gestion du GIEFCA à CFAO.</p></div>
-                    <div class="date"><h5>1990</h5></div>
-                </div>
-            </div>
-
-            <div class="timeline_element timeline_element-left">
-                <div class="timeline_element-content">
-                    <div class="date"><h5>1997</h5></div>
-                    <div class="post box"><p>Création de SOMAFI au Mali et SOBFI au Burkina Faso.</p></div>
-                </div>
-            </div>
-
-            <div class="timeline_element timeline_element-right">
-                <div class="timeline_element-content">
-                    <div class="post box"><p>Création de HOLDEFI, holding consolidant les intérêts de CFAO et OPTORG. PROPARCO et Gras Savoye deviennent actionnaires.</p></div>
-                    <div class="date"><h5>1998</h5></div>
-                </div>
-            </div>
-
-            <div class="timeline_element timeline_element-left">
-                <div class="timeline_element-content">
-                    <div class="date"><h5>1999</h5></div>
-                    <div class="post box"><p>FMO et Africa Financial Holdings deviennent actionnaires de HOLDEFI.</p></div>
-                </div>
-            </div>
-
-            <div class="timeline_element timeline_element-right">
-                <div class="timeline_element-content">
-                    <div class="post box"><p>Ouverture de SOCOFIN au Congo Brazzaville.</p></div>
-                    <div class="date"><h5>2001</h5></div>
-                </div>
-            </div>
-
-            <div class="timeline_element timeline_element-left">
-                <div class="timeline_element-content">
-                    <div class="date"><h5>2006</h5></div>
-                    <div class="post box">
-                        <ul class="list-style angle">
-                            <li>Un consortium (Africinvest, FMO, Finfund, Tunisie Leasing, Bank Of Africa) acquiert la majorité de HOLDEFI.</li>
-                            <li>Création de GIEFCA Tunisie.</li>
-                            <li>Création d'une succursale de SAFCA au Sénégal.</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="timeline_element timeline_element-right">
-                <div class="timeline_element-content">
-                    <div class="post box">
-                        <ul class="list-style angle">
-                            <li>HOLDEFI devient Alios Finance.</li>
-                            <li>Changement de nom pour SAFCA, SOCCA, SOGACA, SOBFI, SOMAFI et SOCOFIN.</li>
-                            <li>Fusion d'Alios Finance Côte d'Ivoire, Mali et Burkina Faso.</li>
-                        </ul>
-                    </div>
-                    <div class="date"><h5>2007</h5></div>
-                </div>
-            </div>
-
-            <div class="timeline_element timeline_element-left">
-                <div class="timeline_element-content">
-                    <div class="date"><h5>2008</h5></div>
-                    <div class="post box"><p>Cession d'Alios Finance Congo Brazzaville et lancement d'Alios Finance Zambie.</p></div>
-                </div>
-            </div>
-
-            <div class="timeline_element timeline_element-right">
-                <div class="timeline_element-content">
-                    <div class="post box"><p>Lancement d'Alios Finance Tanzanie.</p></div>
-                    <div class="date"><h5>2010</h5></div>
-                </div>
-            </div>
-
-            <div class="timeline_element timeline_element-left">
-                <div class="timeline_element-content">
-                    <div class="date"><h5>2011</h5></div>
-                    <div class="post box"><p>Lancement d'Alios Finance Kenya.</p></div>
-                </div>
-            </div>
-
-            <div class="timeline_element timeline_element-right">
-                <div class="timeline_element-content">
-                    <div class="post box"><p>Un consortium (Tunisie Leasing, Amen Bank, Proparco, ResponsAbility) acquiert la majorité d'Alios Finance SA.</p></div>
-                    <div class="date"><h5>2015</h5></div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
+    {% endif %}
 
-    <!-- SECTION 3 : NOS ACTIVITÉS -->
+    <!-- ═══════════ SECTION 3 : NOS ACTIVITÉS ═══════════ -->
+    {% if activites.section %}
     <div class="section-wrapper" id="section-activites">
-        <h3 class="section-title">Nos <em>activités</em></h3>
-        <p class="section-desc">Des prestations variées au service de vos projets fonciers et immobiliers.</p>
+        <h3 class="section-title">
+            {{ activites.section.titre }}
+            {% if activites.section.titre_accent %}
+                <em>{{ activites.section.titre_accent }}</em>
+            {% endif %}
+        </h3>
+        {% if activites.section.description %}
+        <p class="section-desc">{{ activites.section.description }}</p>
+        {% endif %}
 
         <div class="val-grid">
+            {% for element in activites.elements %}
             <div class="val-item">
-                <div class="v-icon">📐</div>
+                <div class="v-icon">{{ element.icone }}</div>
                 <div class="v-content">
-                    <h4>Bornage et délimitation</h4>
-                    <p>Nous réalisons des opérations de bornage précises pour délimiter clairement les propriétés foncières, en conformité avec les normes cadastrales en vigueur.</p>
+                    <h4>{{ element.titre }}</h4>
+                    <p>{{ element.description }}</p>
                 </div>
             </div>
-            <div class="val-item">
-                <div class="v-icon">📋</div>
-                <div class="v-content">
-                    <h4>Études de sol et géotechniques</h4>
-                    <p>Nous effectuons des analyses approfondies du sol pour évaluer sa capacité portante, sa composition et son adaptabilité aux projets de construction.</p>
-                </div>
+            {% empty %}
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <div class="empty-text">Aucune activité enregistrée</div>
+                <div class="empty-hint">Ajoutez-en depuis l'admin</div>
             </div>
-            <div class="val-item">
-                <div class="v-icon">🏗️</div>
-                <div class="v-content">
-                    <h4>Études d'impact environnemental</h4>
-                    <p>Nous réalisons des études d'impact environnemental pour évaluer les conséquences des projets sur l'environnement et proposer des mesures d'atténuation.</p>
-                </div>
-            </div>
-            <div class="val-item">
-                <div class="v-icon">🗺️</div>
-                <div class="v-content">
-                    <h4>Aménagement et lotissement</h4>
-                    <p>Nous concevons et réalisons des projets d'aménagement et de lotissement, en intégrant les contraintes techniques, réglementaires et environnementales.</p>
-                </div>
-            </div>
-            <div class="val-item">
-                <div class="v-icon">🏛️</div>
-                <div class="v-content">
-                    <h4>Gestion de projets immobiliers</h4>
-                    <p>Nous accompagnons nos clients dans la gestion complète de leurs projets immobiliers, de la conception à la réalisation.</p>
-                </div>
-            </div>
-            <div class="val-item">
-                <div class="v-icon">💼</div>
-                <div class="v-content">
-                    <h4>Conseil et assistance foncière</h4>
-                    <p>Nous offrons des services de conseil et d'assistance pour toutes les démarches liées à la propriété foncière, à la régularisation et à la gestion des titres.</p>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
+    {% endif %}
 
-    <!-- SECTION 4 : CHIFFRES CLÉS -->
+    <!-- ═══════════ SECTION 4 : CHIFFRES CLÉS ═══════════ -->
+    {% if chiffres.section %}
     <div class="section-wrapper" id="section-chiffres">
-        <h3 class="section-title">Nos <em>chiffres clés</em></h3>
-        <p class="section-desc">Une équipe engagée et des résultats concrets pour nos clients.</p>
+        <h3 class="section-title">
+            {{ chiffres.section.titre }}
+            {% if chiffres.section.titre_accent %}
+                <em>{{ chiffres.section.titre_accent }}</em>
+            {% endif %}
+        </h3>
+        {% if chiffres.section.description %}
+        <p class="section-desc">{{ chiffres.section.description }}</p>
+        {% endif %}
 
-        <!-- ===== 5 INDICATEURS CLÉS ===== -->
+        <!-- Indicateurs -->
+        {% if chiffres.indicateurs %}
         <div class="chiffres-grid">
+            {% for indicateur in chiffres.indicateurs %}
             <div class="chiffre-card">
-                <div class="chiffre-icon"><i class="fa fa-calendar"></i></div>
-                <div class="chiffre-number">1956</div>
-                <div class="chiffre-label">Présence depuis</div>
+                <div class="chiffre-icon"><i class="fa {{ indicateur.icone }}"></i></div>
+                <div class="chiffre-number">
+                    {{ indicateur.nombre }}
+                    {% if indicateur.suffixe %}
+                        <span class="chiffre-suffix">{{ indicateur.suffixe }}</span>
+                    {% endif %}
+                </div>
+                <div class="chiffre-label">{{ indicateur.label }}</div>
             </div>
-            <div class="chiffre-card">
-                <div class="chiffre-icon"><i class="fa fa-pie-chart"></i></div>
-                <div class="chiffre-number">25 <span class="chiffre-suffix">M€</span></div>
-                <div class="chiffre-label">Chiffre d'affaires</div>
-            </div>
-            <div class="chiffre-card">
-                <div class="chiffre-icon"><i class="fa fa-bar-chart"></i></div>
-                <div class="chiffre-number">58 730</div>
-                <div class="chiffre-label">Nombre de clients</div>
-            </div>
-            <div class="chiffre-card">
-                <div class="chiffre-icon"><i class="fa fa-users"></i></div>
-                <div class="chiffre-number">213</div>
-                <div class="chiffre-label">Nombre de salariés</div>
-            </div>
-            <div class="chiffre-card">
-                <div class="chiffre-icon"><i class="fa fa-map-marker"></i></div>
-                <div class="chiffre-number">11</div>
-                <div class="chiffre-label">Implantations</div>
-            </div>
+            {% endfor %}
         </div>
+        {% endif %}
 
-        <!-- ===== TABLEAU PRODUCTION & ENCOURS ===== -->
-        <div class="chiffres-table-wrapper">
-            <h4>Production et Encours</h4>
-            <div class="hr-start"><i class="di-separator-s"></i></div>
+        <!-- Tableaux dynamiques -->
+        {% for tableau in chiffres.tableaux %}
+        <div class="chiffres-table-wrapper" {% if not forloop.first %}style="margin-top: 40px;"{% endif %}>
+            <h4>{{ tableau.titre }}</h4>
+            <div class="hr-start"><i class="di-separator-s">◆</i></div>
 
             <table class="table_chiffre">
                 <thead>
                     <tr>
-                        <th>(en M€)</th>
-                        <th>2019</th>
-                        <th>2020</th>
-                        <th>2021</th>
-                        <th>2022</th>
-                        <th>2023</th>
+                        <th></th>
+                        {% for colonne in tableau.colonnes %}
+                        <th>{{ colonne.titre }}</th>
+                        {% endfor %}
                     </tr>
                 </thead>
                 <tbody>
+                    {% for ligne in tableau.lignes %}
                     <tr>
-                        <td>Production</td>
-                        <td>86</td>
-                        <td>73</td>
-                        <td>80</td>
-                        <td>92</td>
-                        <td>99</td>
+                        <td>{{ ligne.label }}</td>
+                        {% for valeur in ligne.valeurs %}
+                        <td>{{ valeur }}</td>
+                        {% endfor %}
                     </tr>
-                    <tr>
-                        <td>Encours</td>
-                        <td>166</td>
-                        <td>144</td>
-                        <td>144</td>
-                        <td>157</td>
-                        <td>168</td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
+        {% endfor %}
 
-        <!-- ===== DIAGRAMME PRODUCTION & ENCOURS ===== -->
+        <!-- Graphique -->
+        {% if chiffres.chart_data %}
         <div class="chart-container">
-            <h4>Production &amp; Encours</h4>
-            <div class="hr-start"><i class="di-separator-s"></i></div>
+            <h4>Évolution</h4>
+            <div class="hr-start"><i class="di-separator-s">◆</i></div>
             <div class="chart-wrapper">
                 <canvas id="productionEncoursChart"></canvas>
             </div>
         </div>
+        {% endif %}
     </div>
+    {% endif %}
 
-    <!-- SECTION 5 : VALEURS -->
+    <!-- ═══════════ SECTION 5 : VALEURS ═══════════ -->
+    {% if valeurs.section %}
     <div class="section-wrapper" id="section-valeurs">
-        <h3 class="section-title">Ce en quoi <em>nous croyons</em></h3>
-        <p class="section-desc">Nos valeurs fondamentales guident chacune de nos actions.</p>
+        <h3 class="section-title">
+            {{ valeurs.section.titre }}
+            {% if valeurs.section.titre_accent %}
+                <em>{{ valeurs.section.titre_accent }}</em>
+            {% endif %}
+        </h3>
+        {% if valeurs.section.description %}
+        <p class="section-desc">{{ valeurs.section.description }}</p>
+        {% endif %}
 
         <div class="val-grid">
+            {% for element in valeurs.elements %}
             <div class="val-item">
-                <div class="v-icon">🔎</div>
+                <div class="v-icon">{{ element.icone }}</div>
                 <div class="v-content">
-                    <h4>Le Respect</h4>
-                    <p>Nous plaçons le respect au cœur de nos interactions avec nos clients, partenaires, collaborateurs et l'environnement.</p>
+                    <h4>{{ element.titre }}</h4>
+                    <p>{{ element.description }}</p>
                 </div>
             </div>
-            <div class="val-item">
-                <div class="v-icon">⚖️</div>
-                <div class="v-content">
-                    <h4>L'intégrité et l'Éthique</h4>
-                    <p>Nous agissons avec probité et transparence, en conformité stricte avec les normes légales et professionnelles.</p>
-                </div>
+            {% empty %}
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <div class="empty-text">Aucune valeur enregistrée</div>
+                <div class="empty-hint">Ajoutez-en depuis l'admin</div>
             </div>
-            <div class="val-item">
-                <div class="v-icon">🚀</div>
-                <div class="v-content">
-                    <h4>La Rigueur et l'Excellence</h4>
-                    <p>Nous appliquons des standards élevés de qualité et de discipline dans toutes nos missions.</p>
-                </div>
-            </div>
-            <div class="val-item">
-                <div class="v-icon">🌱</div>
-                <div class="v-content">
-                    <h4>La Responsabilité et l'Impact Durable</h4>
-                    <p>Nous contribuons au développement harmonieux des territoires par des pratiques responsables et durables.</p>
-                </div>
-            </div>
-            <div class="val-item">
-                <div class="v-icon">🤝</div>
-                <div class="v-content">
-                    <h4>L'Engagement Client</h4>
-                    <p>Nous adoptons une approche centrée sur le client, fondée sur l'écoute, la réactivité et la personnalisation des solutions.</p>
-                </div>
-            </div>
-            <div class="val-item">
-                <div class="v-icon">💎</div>
-                <div class="v-content">
-                    <h4>L'Innovation et l'Amélioration Continue</h4>
-                    <p>Nous intégrons des méthodes modernes et des outils performants pour optimiser nos services.</p>
-                </div>
-            </div>
-            <div class="val-item">
-                <div class="v-icon">👥</div>
-                <div class="v-content">
-                    <h4>L'Esprit d'Équipe et le Professionnalisme</h4>
-                    <p>Nous valorisons la collaboration, la compétence et le dévouement de nos équipes.</p>
-                </div>
-            </div>
-            <div class="val-item">
-                <div class="v-icon">🏆</div>
-                <div class="v-content">
-                    <h4>L'Excellence et la Performance</h4>
-                    <p>Nous visons l'excellence dans toutes nos réalisations, en recherchant constamment la performance et la satisfaction de nos clients.</p>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
+    {% endif %}
 
-    <!-- SECTION 6 : ÉQUIPE -->
+    <!-- ═══════════ SECTION 6 : ÉQUIPE ═══════════ -->
+    {% if equipe.section %}
     <div class="section-wrapper" id="section-equipe">
         <div class="section-bg-light">
-            <h3 class="section-title">Notre <em>équipe dirigeante</em></h3>
-            <p class="section-desc">Des experts passionnés au service de vos projets fonciers.</p>
+            <h3 class="section-title">
+                {{ equipe.section.titre }}
+                {% if equipe.section.titre_accent %}
+                    <em>{{ equipe.section.titre_accent }}</em>
+                {% endif %}
+            </h3>
+            {% if equipe.section.description %}
+            <p class="section-desc">{{ equipe.section.description }}</p>
+            {% endif %}
 
             <div class="team-grid">
+                {% for element in equipe.elements %}
                 <div class="team-card">
-                    <div class="avatar" style="background:var(--grad);">DG</div>
-                    <div class="name">Direction Générale</div>
-                    <div class="role">Stratégie &amp; Vision</div>
+                    <div class="avatar" style="background:linear-gradient(135deg,{{ element.couleur_debut }},{{ element.couleur_fin }});">
+                        {{ element.initiales }}
+                    </div>
+                    <div class="name">{{ element.titre }}</div>
+                    <div class="role">{{ element.sous_titre }}</div>
                 </div>
-                <div class="team-card">
-                    <div class="avatar" style="background:linear-gradient(135deg,#8B0A1E,#C8102E);">JU</div>
-                    <div class="name">Équipe Juridique</div>
-                    <div class="role">Titres &amp; Contrats</div>
+                {% empty %}
+                <div class="empty-state">
+                    <div class="empty-icon">📭</div>
+                    <div class="empty-text">Aucun membre dans l'équipe</div>
+                    <div class="empty-hint">Ajoutez-en depuis l'admin</div>
                 </div>
-                <div class="team-card">
-                    <div class="avatar" style="background:linear-gradient(135deg,#7B20B4,#4A7AFF);">CA</div>
-                    <div class="name">Cartographes</div>
-                    <div class="role">GPS &amp; Géométrie</div>
-                </div>
-                <div class="team-card">
-                    <div class="avatar" style="background:linear-gradient(135deg,#0F6E56,#1D9E75);">CO</div>
-                    <div class="name">Agents Commerciaux</div>
-                    <div class="role">Ventes &amp; Relations</div>
-                </div>
-                <div class="team-card">
-                    <div class="avatar" style="background:linear-gradient(135deg,#d97706,#f59e0b);">FI</div>
-                    <div class="name">Équipe Financière</div>
-                    <div class="role">Financement</div>
-                </div>
-                <div class="team-card">
-                    <div class="avatar" style="background:linear-gradient(135deg,var(--blue),#7B20B4);">TK</div>
-                    <div class="name">Équipe Technique</div>
-                    <div class="role">Plateforme &amp; Carte</div>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
+    {% endif %}
 
-    <!-- SECTION 7 : TÉMOIGNAGES -->
+    <!-- ═══════════ SECTION 7 : TÉMOIGNAGES ═══════════ -->
     {% if temoignages %}
     <div class="section-wrapper" id="section-temoignages">
         <h3 class="section-title">Ils nous <em>font confiance</em></h3>
@@ -1728,12 +1503,12 @@ body.loaded .section-nav {
     </div>
     {% endif %}
 
-    <!-- SECTION 8 : CONTACT -->
+    <!-- ═══════════ SECTION 8 : CONTACT ═══════════ -->
     <div class="section-wrapper" id="section-contact">
         <div class="section-bg-dark">
             <h3 class="section-title" style="color:#fff;">Prêt à investir dans <em>votre avenir foncier</em> ?</h3>
-            <p class="section-desc light">Rejoignez les 500+ clients qui nous font confiance. Notre équipe est disponible pour répondre à toutes vos questions.</p>
-            <div class="cta-btns">
+            <p class="section-desc light" style="color:#9CA3AF;">Rejoignez les 500+ clients qui nous font confiance. Notre équipe est disponible pour répondre à toutes vos questions.</p>
+            <div class="cta-btns" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:20px;">
                 <a href="{% url 'sites_list' %}" class="btn-primary">🏡 Voir nos terrains</a>
                 <a href="https://wa.me/237694284493" target="_blank" class="btn-whatsapp">💬 WhatsApp</a>
                 <a href="{% url 'contact' %}" class="btn-outline btn-outline-light">📞 Nous contacter</a>
@@ -1745,32 +1520,46 @@ body.loaded .section-nav {
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-// ===== DONNÉES DES SECTIONS =====
+// ═══════════════════════════════════════════════
+// DONNÉES DES SECTIONS POUR LA BANNIÈRE
+// ═══════════════════════════════════════════════
 const sectionData = {
+    {% if presentation.section %}
     presentation: {
-        title: 'Qui <span class="highlight">sommes-nous ?</span>',
-        subtitle: 'EDEN GROUP est un acteur de référence dans l\'ingénierie foncière au Cameroun et en Afrique centrale.'
+        title: '{{ presentation.section.titre|escapejs }}{% if presentation.section.titre_accent %} <span class="highlight">{{ presentation.section.titre_accent|escapejs }}</span>{% endif %}',
+        subtitle: '{{ presentation.section.description|escapejs|default:"" }}'
     },
+    {% endif %}
+    {% if histoire.section %}
     histoire: {
-        title: 'Notre <span class="highlight">histoire</span>',
-        subtitle: 'Un parcours de croissance et d\'innovation depuis 1956.'
+        title: '{{ histoire.section.titre|escapejs }}{% if histoire.section.titre_accent %} <span class="highlight">{{ histoire.section.titre_accent|escapejs }}</span>{% endif %}',
+        subtitle: '{{ histoire.section.description|escapejs|default:"" }}'
     },
+    {% endif %}
+    {% if activites.section %}
     activites: {
-        title: 'Nos <span class="highlight">activités</span>',
-        subtitle: 'Des prestations variées au service de vos projets fonciers et immobiliers.'
+        title: '{{ activites.section.titre|escapejs }}{% if activites.section.titre_accent %} <span class="highlight">{{ activites.section.titre_accent|escapejs }}</span>{% endif %}',
+        subtitle: '{{ activites.section.description|escapejs|default:"" }}'
     },
+    {% endif %}
+    {% if chiffres.section %}
     chiffres: {
-        title: 'Nos <span class="highlight">chiffres clés</span>',
-        subtitle: 'Une équipe engagée et des résultats concrets pour nos clients.'
+        title: '{{ chiffres.section.titre|escapejs }}{% if chiffres.section.titre_accent %} <span class="highlight">{{ chiffres.section.titre_accent|escapejs }}</span>{% endif %}',
+        subtitle: '{{ chiffres.section.description|escapejs|default:"" }}'
     },
+    {% endif %}
+    {% if valeurs.section %}
     valeurs: {
-        title: 'Ce en quoi <span class="highlight">nous croyons</span>',
-        subtitle: 'Nos valeurs fondamentales guident chacune de nos actions.'
+        title: '{{ valeurs.section.titre|escapejs }}{% if valeurs.section.titre_accent %} <span class="highlight">{{ valeurs.section.titre_accent|escapejs }}</span>{% endif %}',
+        subtitle: '{{ valeurs.section.description|escapejs|default:"" }}'
     },
+    {% endif %}
+    {% if equipe.section %}
     equipe: {
-        title: 'Notre <span class="highlight">équipe dirigeante</span>',
-        subtitle: 'Des experts passionnés au service de vos projets fonciers.'
+        title: '{{ equipe.section.titre|escapejs }}{% if equipe.section.titre_accent %} <span class="highlight">{{ equipe.section.titre_accent|escapejs }}</span>{% endif %}',
+        subtitle: '{{ equipe.section.description|escapejs|default:"" }}'
     },
+    {% endif %}
     temoignages: {
         title: 'Ils nous <span class="highlight">font confiance</span>',
         subtitle: 'Retours de nos clients satisfaits.'
@@ -1786,26 +1575,38 @@ const bannerSubtitle = document.getElementById('bannerSubtitle');
 
 let currentSection = 'presentation';
 let isTransitioning = false;
+let chartInstance = null;
 
-// ===== CHARGEMENT =====
+// ═══════════════════════════════════════════════
+// CHARGEMENT
+// ═══════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', function() {
     document.body.classList.add('loaded');
 
     const params = new URLSearchParams(window.location.search);
     const section = params.get('section');
 
+    // Masquer toutes les sections sauf la première active
     document.querySelectorAll('.section-wrapper').forEach(el => {
-        if (!el.id.endsWith('presentation')) {
+        if (!el.classList.contains('active')) {
             el.style.display = 'none';
-            el.classList.remove('active');
         }
     });
 
+    const firstSection = document.querySelector('.section-wrapper.active');
+    if (firstSection) {
+        firstSection.style.display = 'block';
+        currentSection = firstSection.id.replace('section-', '');
+    }
+
     if (section && sectionData[section]) {
         const target = document.getElementById('section-' + section);
-        if (target) {
-            document.getElementById('section-presentation').style.display = 'none';
-            document.getElementById('section-presentation').classList.remove('active');
+        if (target && section !== currentSection) {
+            const oldEl = document.getElementById('section-' + currentSection);
+            if (oldEl) {
+                oldEl.style.display = 'none';
+                oldEl.classList.remove('active');
+            }
             target.style.display = 'block';
             void target.offsetWidth;
             target.classList.add('active');
@@ -1821,54 +1622,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 btn.classList.toggle('active', btn.dataset.section === section);
             });
         }
-    } else {
-        const defaultEl = document.getElementById('section-presentation');
-        defaultEl.style.display = 'block';
-        void defaultEl.offsetWidth;
-        defaultEl.classList.add('active');
-        currentSection = 'presentation';
     }
 
     initTestimonials();
     initChart();
 });
 
-// ===== DIAGRAMME =====
+// ═══════════════════════════════════════════════
+// DIAGRAMME
+// ═══════════════════════════════════════════════
 function initChart() {
     const ctx = document.getElementById('productionEncoursChart');
     if (!ctx) return;
 
-    new Chart(ctx, {
+    if (chartInstance) {
+        chartInstance.destroy();
+        chartInstance = null;
+    }
+
+    const chartData = {% if chiffres.chart_data %}{{ chiffres.chart_data|safe }}{% else %}null{% endif %};
+
+    if (!chartData) return;
+
+    chartInstance = new Chart(ctx, {
         type: 'bar',
-        data: {
-            labels: ['2019', '2020', '2021', '2022', '2023'],
-            datasets: [
-                {
-                    label: 'Production',
-                    data: [86, 73, 80, 92, 99],
-                    backgroundColor: '#fec322',
-                    borderColor: '#fec322',
-                    borderWidth: 1,
-                    borderRadius: 4,
-                    order: 1
-                },
-                {
-                    label: 'Encours',
-                    type: 'line',
-                    data: [166, 144, 144, 157, 168],
-                    borderColor: '#0b4484',
-                    backgroundColor: 'rgba(11, 68, 132, 0.1)',
-                    borderWidth: 3,
-                    pointBackgroundColor: '#0b4484',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    pointRadius: 5,
-                    tension: 0.2,
-                    fill: true,
-                    order: 0
-                }
-            ]
-        },
+        data: chartData,
         options: {
             responsive: true,
             maintainAspectRatio: false,
@@ -1878,12 +1656,8 @@ function initChart() {
                     labels: {
                         usePointStyle: true,
                         pointStyle: 'circle',
-                        padding: 20,
-                        font: {
-                            family: 'Outfit',
-                            size: 13,
-                            weight: '600'
-                        }
+                        padding: 16,
+                        font: { family: 'Outfit', size: 12, weight: '600' }
                     }
                 },
                 tooltip: {
@@ -1893,49 +1667,27 @@ function initChart() {
                     borderColor: '#E5E7EB',
                     borderWidth: 1,
                     cornerRadius: 8,
-                    padding: 12,
-                    callbacks: {
-                        label: function(context) {
-                            return context.dataset.label + ': ' + context.parsed.y + ' M€';
-                        }
-                    }
+                    padding: 12
                 }
             },
             scales: {
                 y: {
                     beginAtZero: true,
-                    max: 250,
-                    ticks: {
-                        stepSize: 50,
-                        font: {
-                            family: 'Outfit',
-                            size: 11
-                        },
-                        color: '#6B7280'
-                    },
-                    grid: {
-                        color: 'rgba(0,0,0,0.06)'
-                    }
+                    ticks: { font: { family: 'Outfit', size: 11 }, color: '#6B7280' },
+                    grid: { color: 'rgba(0,0,0,0.06)' }
                 },
                 x: {
-                    grid: {
-                        display: false
-                    },
-                    ticks: {
-                        font: {
-                            family: 'Outfit',
-                            size: 12,
-                            weight: '600'
-                        },
-                        color: '#4B5563'
-                    }
+                    grid: { display: false },
+                    ticks: { font: { family: 'Outfit', size: 12, weight: '600' }, color: '#4B5563' }
                 }
             }
         }
     });
 }
 
-// ===== CHANGEMENT DE SECTION =====
+// ═══════════════════════════════════════════════
+// CHANGEMENT DE SECTION
+// ═══════════════════════════════════════════════
 function switchSection(sectionId) {
     if (isTransitioning || sectionId === currentSection) return;
     isTransitioning = true;
@@ -1965,12 +1717,16 @@ function switchSection(sectionId) {
         }, 350);
     }
 
-    oldSection.classList.remove('active');
-    oldSection.classList.add('exit');
+    if (oldSection) {
+        oldSection.classList.remove('active');
+        oldSection.classList.add('exit');
+    }
 
     setTimeout(() => {
-        oldSection.style.display = 'none';
-        oldSection.classList.remove('exit');
+        if (oldSection) {
+            oldSection.style.display = 'none';
+            oldSection.classList.remove('exit');
+        }
 
         newSection.style.display = 'block';
         void newSection.offsetWidth;
@@ -1991,7 +1747,6 @@ function switchSection(sectionId) {
             setTimeout(initTestimonials, 100);
         }
 
-        // Réinitialiser le diagramme si on revient sur la section chiffres
         if (sectionId === 'chiffres') {
             setTimeout(initChart, 200);
         }
@@ -1999,7 +1754,9 @@ function switchSection(sectionId) {
     }, 450);
 }
 
-// ===== SCROLL =====
+// ═══════════════════════════════════════════════
+// SCROLL
+// ═══════════════════════════════════════════════
 window.addEventListener('scroll', function() {
     const nav = document.getElementById('sectionNav');
     const bannerHeight = document.querySelector('.banner-container').offsetHeight;
@@ -2011,23 +1768,27 @@ window.addEventListener('scroll', function() {
     }
 });
 
-// ===== CLAVIER =====
+// ═══════════════════════════════════════════════
+// CLAVIER
+// ═══════════════════════════════════════════════
 document.addEventListener('keydown', function(e) {
-    const sections = ['presentation', 'histoire', 'activites', 'chiffres', 'valeurs', 'equipe', 'temoignages', 'contact'];
-    let availableSections = sections.filter(s => document.getElementById('section-' + s) !== null);
+    const sections = Array.from(document.querySelectorAll('.section-nav .nav-btn'))
+        .map(btn => btn.dataset.section);
 
-    let currentIndex = availableSections.indexOf(currentSection);
+    let currentIndex = sections.indexOf(currentSection);
 
-    if (e.key === 'ArrowRight' && currentIndex < availableSections.length - 1) {
+    if (e.key === 'ArrowRight' && currentIndex < sections.length - 1) {
         e.preventDefault();
-        switchSection(availableSections[currentIndex + 1]);
+        switchSection(sections[currentIndex + 1]);
     } else if (e.key === 'ArrowLeft' && currentIndex > 0) {
         e.preventDefault();
-        switchSection(availableSections[currentIndex - 1]);
+        switchSection(sections[currentIndex - 1]);
     }
 });
 
-// ===== TÉMOIGNAGES =====
+// ═══════════════════════════════════════════════
+// TÉMOIGNAGES
+// ═══════════════════════════════════════════════
 let testiIndex = 0;
 let testiCards = [];
 let testiDots = [];
@@ -2035,59 +1796,65 @@ let testiDots = [];
 function initTestimonials() {
     const track = document.getElementById('testiTrack');
     if (!track) return;
-    
+
     testiCards = track.querySelectorAll('.testi-card');
     testiDots = document.querySelectorAll('#testiDots span');
-    
+
     if (testiCards.length === 0) return;
-    
+
     updateTestiPosition();
-    
+
     testiDots.forEach((dot, i) => {
         dot.classList.toggle('active', i === testiIndex);
     });
-    
-    document.getElementById('testiPrev').disabled = testiIndex === 0;
-    document.getElementById('testiNext').disabled = testiIndex >= testiCards.length - 1;
+
+    const prev = document.getElementById('testiPrev');
+    const next = document.getElementById('testiNext');
+    if (prev) prev.disabled = testiIndex === 0;
+    if (next) next.disabled = testiIndex >= testiCards.length - 1;
 }
 
 function updateTestiPosition() {
     const track = document.getElementById('testiTrack');
     if (!track || testiCards.length === 0) return;
-    
+
     const cardWidth = testiCards[0].offsetWidth + 20;
     const visibleCards = Math.floor(track.parentElement.offsetWidth / cardWidth);
     const maxIndex = Math.max(0, testiCards.length - visibleCards);
-    
+
     if (testiIndex > maxIndex) testiIndex = maxIndex;
-    
+
     track.style.transform = `translateX(-${testiIndex * cardWidth}px)`;
-    
+
     testiDots.forEach((dot, i) => {
         dot.classList.toggle('active', i === testiIndex);
     });
-    
-    document.getElementById('testiPrev').disabled = testiIndex === 0;
-    document.getElementById('testiNext').disabled = testiIndex >= maxIndex;
+
+    const prev = document.getElementById('testiPrev');
+    const next = document.getElementById('testiNext');
+    if (prev) prev.disabled = testiIndex === 0;
+    if (next) next.disabled = testiIndex >= maxIndex;
 }
 
 function testiScroll(direction) {
     const track = document.getElementById('testiTrack');
     if (!track || testiCards.length === 0) return;
-    
+
     const cardWidth = testiCards[0].offsetWidth + 20;
     const visibleCards = Math.floor(track.parentElement.offsetWidth / cardWidth);
     const maxIndex = Math.max(0, testiCards.length - visibleCards);
-    
+
     testiIndex = Math.max(0, Math.min(testiIndex + direction, maxIndex));
     updateTestiPosition();
 }
 
 window.addEventListener('resize', function() {
-    if (document.getElementById('section-temoignages').classList.contains('active')) {
+    const temoignages = document.getElementById('section-temoignages');
+    const chiffres = document.getElementById('section-chiffres');
+    if (temoignages && temoignages.classList.contains('active')) {
         setTimeout(updateTestiPosition, 100);
     }
-    if (document.getElementById('section-chiffres').classList.contains('active')) {
+    if (chiffres && chiffres.classList.contains('active')) {
         setTimeout(initChart, 200);
     }
 });

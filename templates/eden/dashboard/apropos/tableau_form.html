@@ -1,0 +1,81 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}{% if tableau %}Modifier{% else %}Créer{% endif %} un tableau{% endblock %}
+
+{% block admin_content %}
+<div style="max-width: 700px; margin: 0 auto;">
+
+    <a href="{% url 'dashboard_apropos_tableaux' section.pk %}" style="display: inline-flex; align-items: center; gap: 6px; color: #6B7280; text-decoration: none; font-size: 0.9rem; margin-bottom: 20px;">
+        ← Retour aux tableaux
+    </a>
+
+    <div style="background: #fff; border: 1.5px solid #E5E7EB; border-radius: 16px; padding: 32px;">
+
+        <h2 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: #1F2937; margin-bottom: 24px;">
+            {% if tableau %}Modifier le tableau{% else %}Nouveau tableau{% endif %}
+        </h2>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #4B5563; margin-bottom: 8px;">
+                    Titre du tableau <span style="color: #DC2626;">*</span>
+                </label>
+                <input type="text" name="titre" required
+                       value="{{ tableau.titre|default:'' }}"
+                       placeholder="Ex: Activités de l'année en cours"
+                       style="width: 100%; padding: 12px 16px; border: 1.5px solid #E5E7EB; border-radius: 10px; font-size: 0.95rem; font-family: inherit;">
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label style="display: flex; align-items: center; gap: 12px; padding: 16px; border: 1.5px solid #E5E7EB; border-radius: 10px; cursor: pointer; transition: all 0.2s;"
+                       onmouseover="this.style.background='#F9FAFB';" onmouseout="this.style.background='';">
+                    <input type="checkbox" name="est_pour_graphique"
+                           {% if tableau and tableau.est_pour_graphique %}checked{% endif %}
+                           style="width: 20px; height: 20px; cursor: pointer;">
+                    <div>
+                        <div style="font-size: 0.9rem; font-weight: 700; color: #1F2937;">
+                            📊 Utiliser ce tableau pour alimenter le graphique
+                        </div>
+                        <div style="font-size: 0.78rem; color: #6B7280; margin-top: 4px;">
+                            Le graphique s'affichera sous les tableaux. Chaque ligne = une courbe/barre.
+                        </div>
+                    </div>
+                </label>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #4B5563; margin-bottom: 8px;">
+                    Ordre d'affichage
+                </label>
+                <input type="number" name="ordre" min="0"
+                       value="{{ tableau.ordre|default:0 }}"
+                       style="width: 100%; padding: 12px 16px; border: 1.5px solid #E5E7EB; border-radius: 10px; font-size: 0.95rem; font-family: inherit;">
+            </div>
+
+            <div style="background: #EEF3FF; border-left: 4px solid #1B4FDB; padding: 14px 18px; border-radius: 10px; margin-bottom: 24px;">
+                <div style="font-size: 0.85rem; color: #1B4FDB; font-weight: 700; margin-bottom: 4px;">
+                    💡 Prochaine étape
+                </div>
+                <div style="font-size: 0.82rem; color: #4B5563; line-height: 1.5;">
+                    Une fois le tableau créé, vous serez redirigé vers l'éditeur pour ajouter les colonnes, lignes et valeurs.
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 12px; justify-content: flex-end; padding-top: 24px; border-top: 1.5px solid #F3F4F6;">
+                <a href="{% url 'dashboard_apropos_tableaux' section.pk %}"
+                   style="padding: 12px 24px; border: 1.5px solid #E5E7EB; border-radius: 10px; text-decoration: none; color: #4B5563; font-weight: 600; font-size: 0.9rem;">
+                    Annuler
+                </a>
+                <button type="submit"
+                        style="background: linear-gradient(135deg, #1B4FDB, #7B20B4); color: #fff; border: none; padding: 12px 28px; border-radius: 10px; font-weight: 600; font-size: 0.9rem; cursor: pointer; font-family: inherit;">
+                    💾 Continuer vers l'éditeur
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+{% endblock %}

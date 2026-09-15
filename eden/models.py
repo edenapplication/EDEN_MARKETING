@@ -1522,3 +1522,238 @@ class VideoGlobale(models.Model):
 
     def __str__(self):
         return f"{self.titre} ({'Active' if self.is_active else 'Inactive'}) - {self.largeur}x{self.hauteur}"
+
+# ─────────────────────────────────────────────
+# MODULE À PROPOS — 100% DYNAMIQUE
+# ─────────────────────────────────────────────
+
+class AProposSection(models.Model):
+    """Section de la page À Propos (Présentation, Histoire, Activités, Chiffres, Valeurs, Équipe)."""
+    TYPE_CHOICES = [
+        ('presentation', '🏢 Présentation'),
+        ('histoire', '📖 Notre Histoire'),
+        ('activites', '⚡ Nos Activités'),
+        ('chiffres', '📊 Chiffres clés'),
+        ('valeurs', '🌟 Nos Valeurs'),
+        ('equipe', '👥 Équipe'),
+    ]
+
+    type_section = models.CharField(
+        max_length=20, choices=TYPE_CHOICES, unique=True,
+        verbose_name="Type de section"
+    )
+    titre = models.CharField(max_length=200, verbose_name="Titre principal")
+    titre_accent = models.CharField(
+        max_length=200, blank=True,
+        verbose_name="Partie accentuée du titre (italique colorée)"
+    )
+    description = models.TextField(blank=True, verbose_name="Description sous le titre")
+    ordre = models.PositiveSmallIntegerField(default=0, verbose_name="Ordre d'affichage")
+    is_active = models.BooleanField(default=True, verbose_name="Active")
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Section À Propos"
+        verbose_name_plural = "1. Sections À Propos"
+        ordering = ['ordre']
+
+    def __str__(self):
+        return self.get_type_section_display()
+
+
+class AProposElement(models.Model):
+    """Élément générique dans une section (carte, item, valeur, membre...)."""
+    section = models.ForeignKey(
+        AProposSection, on_delete=models.CASCADE,
+        related_name='elements', verbose_name="Section"
+    )
+    icone = models.CharField(
+        max_length=10, default="🏢", blank=True,
+        verbose_name="Icône (emoji)"
+    )
+    initiales = models.CharField(
+        max_length=5, blank=True,
+        verbose_name="Initiales (pour équipe)",
+        help_text="Ex: DG, JU, CA"
+    )
+    titre = models.CharField(max_length=200, verbose_name="Titre")
+    sous_titre = models.CharField(
+        max_length=200, blank=True,
+        verbose_name="Sous-titre / Rôle"
+    )
+    description = models.TextField(blank=True, verbose_name="Description")
+    couleur_debut = models.CharField(
+        max_length=20, default='#1B4FDB', blank=True,
+        verbose_name="Couleur dégradé (début)"
+    )
+    couleur_fin = models.CharField(
+        max_length=20, default='#7B20B4', blank=True,
+        verbose_name="Couleur dégradé (fin)"
+    )
+    ordre = models.PositiveSmallIntegerField(default=0, verbose_name="Ordre")
+    is_active = models.BooleanField(default=True, verbose_name="Actif")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Élément de section"
+        verbose_name_plural = "2. Éléments (cartes, valeurs, membres...)"
+        ordering = ['section', 'ordre']
+
+    def __str__(self):
+        return f"[{self.section.get_type_section_display()}] {self.titre}"
+
+
+class AProposIndicateur(models.Model):
+    """Indicateur clé (5 cartes chiffres : 1956, 25 M€, 58 730...)"""
+    ICON_CHOICES = [
+        ('fa-calendar', '📅 Calendrier'),
+        ('fa-pie-chart', '🥧 Camembert'),
+        ('fa-bar-chart', '📊 Barres'),
+        ('fa-users', '👥 Utilisateurs'),
+        ('fa-map-marker', '📍 Localisation'),
+        ('fa-trophy', '🏆 Trophée'),
+        ('fa-briefcase', '💼 Mallette'),
+        ('fa-building', '🏢 Bâtiment'),
+        ('fa-globe', '🌍 Globe'),
+        ('fa-star', '⭐ Étoile'),
+    ]
+    section = models.ForeignKey(
+        AProposSection, on_delete=models.CASCADE,
+        related_name='indicateurs',
+        limit_choices_to={'type_section': 'chiffres'}
+    )
+    icone = models.CharField(
+        max_length=50, choices=ICON_CHOICES, default='fa-calendar',
+        verbose_name="Icône FontAwesome"
+    )
+    nombre = models.CharField(
+        max_length=50,
+        verbose_name="Valeur affichée",
+        help_text="Ex: 1956, 25, 58 730"
+    )
+    suffixe = models.CharField(
+        max_length=20, blank=True,
+        verbose_name="Suffixe (affiché en petit)",
+        help_text="Ex: M€, %, +"
+    )
+    label = models.CharField(max_length=100, verbose_name="Label")
+    ordre = models.PositiveSmallIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = "Indicateur clé"
+        verbose_name_plural = "3. Indicateurs clés"
+        ordering = ['ordre']
+
+    def __str__(self):
+        return f"{self.nombre} {self.suffixe} — {self.label}"
+
+
+class AProposTableau(models.Model):
+    """Tableau des chiffres clés (admin crée autant de tableaux qu'il veut)."""
+    section = models.ForeignKey(
+        AProposSection, on_delete=models.CASCADE,
+        related_name='tableaux',
+        limit_choices_to={'type_section': 'chiffres'}
+    )
+    titre = models.CharField(
+        max_length=200,
+        verbose_name="Titre du tableau",
+        help_text="Ex: Activités de l'année en cours"
+    )
+    est_pour_graphique = models.BooleanField(
+        default=False,
+        verbose_name="Utiliser pour le graphique",
+        help_text="Cocher si ce tableau doit générer un graphique"
+    )
+    ordre = models.PositiveSmallIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Tableau"
+        verbose_name_plural = "4. Tableaux"
+        ordering = ['ordre']
+
+    def __str__(self):
+        return self.titre
+
+
+class AProposColonne(models.Model):
+    """Colonne d'un tableau (créée dynamiquement)."""
+    tableau = models.ForeignKey(
+        AProposTableau, on_delete=models.CASCADE,
+        related_name='colonnes'
+    )
+    titre = models.CharField(max_length=100, verbose_name="Titre de la colonne")
+    ordre = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        verbose_name = "Colonne"
+        verbose_name_plural = "Colonnes"
+        ordering = ['ordre']
+
+    def __str__(self):
+        return f"{self.tableau.titre} → {self.titre}"
+
+
+class AProposLigne(models.Model):
+    """Ligne d'un tableau (créée dynamiquement)."""
+    tableau = models.ForeignKey(
+        AProposTableau, on_delete=models.CASCADE,
+        related_name='lignes'
+    )
+    label = models.CharField(max_length=200, verbose_name="Libellé de la ligne")
+    ordre = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        verbose_name = "Ligne"
+        verbose_name_plural = "Lignes"
+        ordering = ['ordre']
+
+    def __str__(self):
+        return f"{self.tableau.titre} → {self.label}"
+
+
+class AProposCellule(models.Model):
+    """Cellule d'un tableau (valeur)."""
+    ligne = models.ForeignKey(
+        AProposLigne, on_delete=models.CASCADE,
+        related_name='cellules'
+    )
+    colonne = models.ForeignKey(AProposColonne, on_delete=models.CASCADE)
+    valeur = models.CharField(max_length=100, verbose_name="Valeur")
+
+    class Meta:
+        verbose_name = "Cellule"
+        verbose_name_plural = "Cellules"
+        unique_together = [['ligne', 'colonne']]
+
+    def __str__(self):
+        return f"{self.ligne.label} | {self.colonne.titre} = {self.valeur}"
+
+
+class AProposEtape(models.Model):
+    """Étape de la timeline Histoire."""
+    section = models.ForeignKey(
+        AProposSection, on_delete=models.CASCADE,
+        related_name='etapes',
+        limit_choices_to={'type_section': 'histoire'}
+    )
+    annee = models.CharField(max_length=20, verbose_name="Année")
+    description = models.TextField(verbose_name="Description")
+    position = models.CharField(
+        max_length=10,
+        choices=[('gauche', 'Gauche'), ('droite', 'Droite')],
+        default='gauche',
+        verbose_name="Position"
+    )
+    ordre = models.PositiveSmallIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = "Étape de l'histoire"
+        verbose_name_plural = "5. Étapes (timeline histoire)"
+        ordering = ['ordre']
+
+    def __str__(self):
+        return f"{self.annee} — {self.description[:50]}"

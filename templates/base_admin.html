@@ -222,7 +222,10 @@
             <span class="sb-ico">📍</span>Agences
         </a>
 
-        <div class="sb-sec">Configuration</div>
+                <div class="sb-sec">Configuration</div>
+        <a class="sb-lnk {% if 'dashboard_apropos' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_apropos' %}">
+            <span class="sb-ico">🏢</span>Page À Propos
+        </a>
         <a class="sb-lnk {% if 'dashboard_home_config' in request.resolver_match.url_name or 'dashboard_hero' in request.resolver_match.url_name or 'dashboard_service' in request.resolver_match.url_name or 'dashboard_etape' in request.resolver_match.url_name or 'dashboard_livret' in request.resolver_match.url_name or 'dashboard_actualite' in request.resolver_match.url_name or 'dashboard_commentaire' in request.resolver_match.url_name or 'dashboard_stats_home' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_home_config' %}">
             <span class="sb-ico">🏠</span>Config page d'accueil
         </a>

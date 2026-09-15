@@ -180,20 +180,23 @@ nav.scrolled .hamburger span{background:var(--g800);}
 }
 .btn-hero-o:hover{background:rgba(255,255,255,0.25);}
 .hero-stats-row{
-  display:flex;
-  gap:clamp(0.5rem, 1vw, 1rem);
-  flex-wrap:wrap;
-  margin-top:0.5rem;
+  display:grid;
+  grid-template-columns:repeat(2, 1fr);
+  gap:clamp(0.4rem, 1vw, 0.8rem);
+  margin-top:0.8rem;
+  width:100%;
+  max-width:380px;
 }
 .hero-stat-badge{
   display:flex;
   align-items:center;
-  gap:8px;
+  gap:6px;
   background:rgba(255,255,255,0.1);
-  padding:5px 14px 5px 5px;
+  padding:6px 10px 6px 6px;
   border-radius:100px;
   backdrop-filter:blur(8px);
   border:1px solid rgba(255,255,255,0.08);
+  min-width:0;
 }
 .hero-stat-ico{
   width:30px;
@@ -906,24 +909,30 @@ nav.scrolled .hamburger span{background:var(--g800);}
   flex-direction:column;
   align-items:center;
   text-align:center;
-  width:100px;
+  width:80px;
   flex:1;
-  min-width:clamp(70px, 10vw, 90px);
-  max-width:150px;
+  min-width:clamp(65px, 8vw, 80px);
+  max-width:130px;
 }
 .etape-num{
-  width:clamp(48px, 5vw, 60px);
-  height:clamp(48px, 5vw, 60px);
+  width:clamp(36px, 3.5vw, 44px);
+  height:clamp(36px, 3.5vw, 44px);
   border-radius:50%;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:clamp(12px, 1.5vw, 18px);
+  font-size:clamp(11px, 1.1vw, 14px);
   font-weight:800;
   color:#fff;
-  margin:0 auto 0.6rem;
+  margin:0 auto 0.5rem;
   flex-shrink:0;
+  transition:transform 0.25s;
 }
+
+.etape-item:hover .etape-num{
+  transform:scale(1.05);
+}
+
 .en-blue{background:var(--blue);}
 .en-red{background:var(--red);}
 .etape-lbl{
@@ -1736,21 +1745,59 @@ footer{
 
 .sc-popularite {
     position: absolute;
-    top: 135px;
+    bottom: 0;
+    left: 0;
     right: 0;
-    background: #dc2626;
+    background: linear-gradient(90deg, #dc2626 0%, #b91c1c 100%);
     color: white;
-    padding: 6px 18px 6px 14px;
-    font-size: 12px;
+    padding: 6px 14px;
+    font-size: 11px;
     font-weight: 800;
-    clip-path: polygon(0 50%, 8px 0, 100% 0, 100% 100%, 8px 100%);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    text-align: left;
+    letter-spacing: 0.3px;
+    box-shadow: 0 -3px 10px rgba(0,0,0,0.2);
     z-index: 5;
     white-space: nowrap;
-    max-width: 200px;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-align: left;
+    line-height: 1.2;
+    border-radius: 0;
+}
+
+.sc-badge-statut {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 5px 12px;
+    border-radius: 100px;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #fff;
+    z-index: 4;
+    max-width: calc(100% - 20px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.2;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    backdrop-filter: blur(4px);
+}
+
+/* Le badge statut passe en dessous si trop long */
+@media (max-width: 480px) {
+    .sc-badge-statut {
+        font-size: 7px;
+        padding: 3px 8px;
+        max-width: calc(100% - 50px);
+    }
+    
+    .sc-popularite {
+        font-size: 9px;
+        padding: 3px 10px 3px 8px;
+        max-width: 55%;
+    }
 }
 
 /* ══ RESPONSIVE MOBILE ══ */

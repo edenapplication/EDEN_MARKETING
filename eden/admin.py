@@ -4,7 +4,9 @@ from .models import (
     SiteFoncier, ImageSite, Parcelle, ImageParcelle,
     Temoignage, DemandeContact, Reservation, VisiteProgrammee, GroupyCategorie, GroupyQR, HeroConfig, ServiceItem, EtapeAcquisition,
     SectionLivret, AvantagesLivret, ActualiteHome,
-    CommentaireHome, StatistiqueHome
+    CommentaireHome, StatistiqueHome,AProposSection, AProposElement, AProposIndicateur,
+        AProposTableau, AProposColonne, AProposLigne, AProposCellule,
+        AProposEtape,
 )
 
 
@@ -272,3 +274,187 @@ class CommentaireHomeAdmin(admin.ModelAdmin):
 class StatistiqueHomeAdmin(admin.ModelAdmin):
     list_display = ['icone', 'valeur', 'label', 'ordre', 'is_active']
     list_editable = ['ordre', 'is_active']
+
+
+
+# ══════════════════════════════════════════════
+# INLINES
+# ══════════════════════════════════════════════
+
+class AProposElementInline(admin.TabularInline):
+    model = AProposElement
+    extra = 1
+    fields = ('ordre', 'icone', 'initiales', 'titre', 'sous_titre', 'description', 'is_active')
+    ordering = ['ordre']
+
+
+class AProposIndicateurInline(admin.TabularInline):
+    model = AProposIndicateur
+    extra = 1
+    fields = ('ordre', 'icone', 'nombre', 'suffixe', 'label', 'is_active')
+    ordering = ['ordre']
+
+
+class AProposEtapeInline(admin.TabularInline):
+    model = AProposEtape
+    extra = 1
+    fields = ('ordre', 'annee', 'description', 'position', 'is_active')
+    ordering = ['ordre']
+
+
+class AProposColonneInline(admin.TabularInline):
+    model = AProposColonne
+    extra = 1
+    fields = ('ordre', 'titre')
+    ordering = ['ordre']
+
+
+class AProposLigneInline(admin.TabularInline):
+    model = AProposLigne
+    extra = 1
+    fields = ('ordre', 'label')
+    ordering = ['ordre']
+
+
+# ══════════════════════════════════════════════
+# ADMIN SECTION (point d'entrée principal)
+# ══════════════════════════════════════════════
+
+@admin.register(AProposSection)
+class AProposSectionAdmin(admin.ModelAdmin):
+    list_display = ('type_section_display', 'titre', 'ordre', 'is_active', 'updated_at')
+    list_editable = ('ordre', 'is_active')
+    ordering = ['ordre']
+    readonly_fields = ('updated_at',)
+    fieldsets = (
+        ('Type de section', {
+            'fields': ('type_section', 'ordre', 'is_active')
+        }),
+        ('Contenu', {
+            'fields': ('titre', 'titre_accent', 'description')
+        }),
+    )
+
+    def type_section_display(self, obj):
+        return obj.get_type_section_display()
+    type_section_display.short_description = "Section"
+
+    def get_inlines(self, request, obj=None):
+        """Retourner les inlines adaptés au type de section."""
+        if not obj:
+            return []
+
+        if obj.type_section in ('presentation', 'activites', 'valeurs', 'equipe'):
+            return [AProposElementInline]
+        elif obj.type_section == 'histoire':
+            return [AProposEtapeInline]
+        elif obj.type_section == 'chiffres':
+            return [AProposIndicateurInline]
+
+        return []
+
+    class Media:
+        css = {'all': ('admin/css/apropos.css',)}
+
+
+# ══════════════════════════════════════════════
+# ADMIN TABLEAUX
+# ══════════════════════════════════════════════
+
+@admin.register(AProposTableau)
+class AProposTableauAdmin(admin.ModelAdmin):
+    list_display = ('titre', 'section', 'est_pour_graphique', 'ordre', 'nb_colonnes', 'nb_lignes')
+    list_filter = ('section', 'est_pour_graphique')
+    list_editable = ('ordre',)
+    inlines = [AProposColonneInline, AProposLigneInline]
+    ordering = ['section', 'ordre']
+
+    fieldsets = (
+        ('Informations', {
+            'fields': ('section', 'titre', 'est_pour_graphique', 'ordre')
+        }),
+        ('💡 Comment ça marche ?', {
+            'fields': (),
+            'description': (
+                '<strong>Ajoutez d\'abord les colonnes</strong> (ex: Année 1, Année 2, En cours...) '
+                'puis les <strong>lignes</strong> (ex: Production, Encours...).<br>'
+                'Ensuite <a href="/admin/eden/aproposcellule/add/" target="_blank">cliquez ici '
+                'pour remplir les cellules</a> avec les valeurs.'
+            )
+        }),
+    )
+
+    def nb_colonnes(self, obj):
+        return obj.colonnes.count()
+    nb_colonnes.short_description = "Colonnes"
+
+    def nb_lignes(self, obj):
+        return obj.lignes.count()
+    nb_lignes.short_description = "Lignes"
+
+
+@admin.register(AProposCellule)
+class AProposCelluleAdmin(admin.ModelAdmin):
+    list_display = ('ligne', 'colonne', 'valeur')
+    list_filter = ('ligne__tableau', 'colonne__tableau')
+    search_fields = ('ligne__label', 'colonne__titre', 'valeur')
+    ordering = ['ligne__tableau', 'ligne__ordre', 'colonne__ordre']
+
+    fieldsets = (
+        ('Cellule', {
+            'fields': ('ligne', 'colonne', 'valeur')
+        }),
+    )
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        # Filtrer les colonnes en fonction de la ligne
+        if db_field.name == 'colonne':
+            ligne_id = request.GET.get('ligne')
+            if ligne_id:
+                try:
+                    ligne = AProposLigne.objects.get(pk=ligne_id)
+                    kwargs['queryset'] = AProposColonne.objects.filter(tableau=ligne.tableau)
+                except AProposLigne.DoesNotExist:
+                    pass
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+
+# ══════════════════════════════════════════════
+# ADMIN INDIVIDUELS (accès direct)
+# ══════════════════════════════════════════════
+
+@admin.register(AProposElement)
+class AProposElementAdmin(admin.ModelAdmin):
+    list_display = ('section', 'ordre', 'icone', 'titre', 'is_active')
+    list_filter = ('section', 'is_active')
+    list_editable = ('ordre', 'is_active')
+    search_fields = ('titre', 'description')
+    ordering = ['section', 'ordre']
+
+
+@admin.register(AProposIndicateur)
+class AProposIndicateurAdmin(admin.ModelAdmin):
+    list_display = ('section', 'ordre', 'icone', 'nombre', 'suffixe', 'label', 'is_active')
+    list_filter = ('section', 'is_active')
+    list_editable = ('ordre', 'is_active')
+    ordering = ['ordre']
+
+
+@admin.register(AProposEtape)
+class AProposEtapeAdmin(admin.ModelAdmin):
+    list_display = ('section', 'ordre', 'annee', 'position', 'is_active')
+    list_filter = ('section', 'position', 'is_active')
+    list_editable = ('ordre', 'is_active')
+    ordering = ['ordre']
+
+
+# ══════════════════════════════════════════════
+# HEADER PERSONNALISÉ
+# ══════════════════════════════════════════════
+
+admin.site.site_header = "EDEN GROUP — Administration"
+admin.site.site_title = "EDEN GROUP Admin"
+admin.site.index_title = "Gestion du contenu"
+
+# Réorganiser le menu admin
+admin.site.index_template = 'admin/custom_index.html'
