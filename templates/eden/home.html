@@ -885,12 +885,16 @@ nav.scrolled .hamburger span{background:var(--g800);}
   padding:0 clamp(1rem, 2vw, 2rem);
 }
 .etapes-layout{
+  position:relative;
+  overflow:hidden;
+  width:100%;
+  min-height:clamp(180px, 25vw, 210px);
+  background:#fff;
+  border-radius:var(--rl);
+  padding:clamp(1rem, 1.5vw, 1.5rem) clamp(1rem, 2vw, 2rem);
   display:flex;
-  flex-direction:column;
-  gap:1rem;
-  padding:1rem;
+  align-items:center;
 }
-
 .etapes-steps{
   position:relative;
   z-index:3;
@@ -898,7 +902,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
   align-items:center;
   flex-wrap:wrap;
   gap:0;
-  width:100%;
+  width:calc(100% - 260px);
 }
 .etape-item{
   display:flex;
@@ -910,65 +914,63 @@ nav.scrolled .hamburger span{background:var(--g800);}
   min-width:clamp(65px, 8vw, 80px);
   max-width:130px;
 }
-/* ✅ CERCLES RÉDUITS */
 .etape-num{
-  width:clamp(28px, 2.5vw, 34px);
-  height:clamp(28px, 2.5vw, 34px);
+  width:clamp(36px, 3.5vw, 44px);
+  height:clamp(36px, 3.5vw, 44px);
   border-radius:50%;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:clamp(10px, 1vw, 12px);
+  font-size:clamp(11px, 1.1vw, 14px);
   font-weight:800;
   color:#fff;
   margin:0 auto 0.5rem;
   flex-shrink:0;
   transition:transform 0.25s;
 }
+
 .etape-item:hover .etape-num{
-  transform:scale(1.08);
+  transform:scale(1.05);
 }
+
 .en-blue{background:var(--blue);}
 .en-red{background:var(--red);}
 .etape-lbl{
-  font-size:clamp(10px, 1vw, 11px);
+  font-size:clamp(10px, 1vw, 10px);
   font-weight:700;
   color:var(--g700);
   line-height:1.3;
 }
 .etape-sub{
-  font-size:clamp(8px, 0.9vw, 10px);
+  font-size:clamp(8px, 1vw, 10px);
   color:rgba(0,0,0,0.726);
   margin-top:5px;
   line-height:1.3;
 }
 .etape-arrow{
-  font-size:clamp(1.2rem, 1.8vw, 1.8rem);
+  font-size:clamp(1.5rem, 2vw, 2.5rem);
   color:var(--g400);
   padding:0 2px;
-  margin-top:8px;
+  margin-top:14px;
   flex-shrink:0;
-  transform:translateY(-25px);
+  transform:translateY(-35px);
 }
-
-/* ⬇️ IMAGE ÉTAPES — FIXE, NE DÉFILE PAS */
 .etapes-img-zone{
-  position:relative;
-  width:100%;
-  height:180px;
-  order:-1;
-  border-radius:var(--rl);
+  position:absolute;
+  right:0;
+  top:0;
+  width:30%;
+  height:100%;
   overflow:hidden;
-  display:block;
-  flex-shrink:0;
+  z-index:1;
+  border-radius:0 var(--rl) var(--rl) 0;
 }
 .etapes-img-zone img{
-  width:100%;
-  height:100%;
+  width:120%;
+  height:120%;
   object-fit:cover;
-  object-position:center 30%;
-  transform:none;
-  display:block;
+  object-position:center;
+  transform:translateX(5%);
 }
 .etapes-img-zone::before{
   content:"";
@@ -976,34 +978,37 @@ nav.scrolled .hamburger span{background:var(--g800);}
   inset:0;
   z-index:2;
   background:linear-gradient(90deg,#fff 0%,rgba(255,255,255,.99) 15%,transparent 100%);
-  pointer-events:none;
 }
 
 /* ══════════════════════════════════════════════════ */
-/* ÉTAPES — IMAGE FIXE + DÉFILEMENT DES NUMÉROS SEULS */
+/* ÉTAPES — MOBILE : image FIXE en haut, numéros défilent */
 /* ══════════════════════════════════════════════════ */
 @media(max-width: 768px){
-  /* ✅ Le layout ne scrolle PLUS → l'image reste fixe */
+  /* ✅ Layout en colonne : image en haut, numéros en dessous */
   .etapes-layout{
-    display:flex;
-    flex-direction:column;
-    gap:1rem;
     padding:1rem;
     overflow:visible;
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    gap:1rem;
     min-height:auto;
   }
-
-  /* ✅ IMAGE FIXE EN HAUT */
+  
+  /* ✅ IMAGE EN HAUT — FIXE, ne défile pas */
   .etapes-img-zone{
     display:block;
     position:relative;
+    right:auto;
+    top:auto;
     width:100%;
     height:180px;
     border-radius:var(--rl);
-    margin-bottom:0;
-    order:-1;
     overflow:hidden;
+    order:-1;
     flex-shrink:0;
+    z-index:1;
+    transform:none;
   }
   
   .etapes-img-zone img{
@@ -1012,7 +1017,6 @@ nav.scrolled .hamburger span{background:var(--g800);}
     object-fit:cover;
     object-position:center 30%;
     transform:none;
-    display:block;
   }
   
   .etapes-img-zone::before{
@@ -1021,18 +1025,20 @@ nav.scrolled .hamburger span{background:var(--g800);}
   
   /* ✅ SEUL ce conteneur défile horizontalement */
   .etapes-steps{
-    display:flex;
     flex-wrap:nowrap;
-    align-items:flex-start;
     width:100%;
+    min-width:0;
+    max-width:none;
+    padding-right:0;
+    padding-bottom:14px;
+    display:flex;
+    align-items:flex-start;
     overflow-x:auto;
     overflow-y:hidden;
     -webkit-overflow-scrolling:touch;
     scroll-snap-type:x mandatory;
     scrollbar-width:none;
-    padding-bottom:14px;
     position:relative;
-    gap:0;
   }
   
   .etapes-steps::-webkit-scrollbar{display:none;}
@@ -1045,31 +1051,24 @@ nav.scrolled .hamburger span{background:var(--g800);}
     scroll-snap-align:start;
   }
   
-  /* ✅ CERCLES ENCORE PLUS RÉDUITS EN MOBILE */
   .etape-num{
     width:42px;
     height:42px;
     font-size:13px;
   }
   
-  .etape-lbl{
-    font-size:11px;
-  }
-  
-  .etape-sub{
-    font-size:9px;
-  }
+  .etape-lbl{font-size:11px;}
+  .etape-sub{font-size:9px;}
   
   .etape-arrow{
     font-size:1.5rem;
     transform:translateY(-25px);
     padding:0 4px;
-    flex-shrink:0;
     align-self:flex-start;
     margin-top:8px;
   }
-
-  /* Indicateur de scroll — positionné en bas de la zone étapes */
+  
+  /* Indicateur de défilement */
   .etapes-steps::after{
     content:'← glissez →';
     position:absolute;
@@ -1095,20 +1094,14 @@ nav.scrolled .hamburger span{background:var(--g800);}
     max-width:85px;
   }
   
-  /* ✅ CERCLES ENCORE PLUS RÉDUITS */
   .etape-num{
     width:38px;
     height:38px;
     font-size:12px;
   }
   
-  .etape-lbl{
-    font-size:10px;
-  }
-  
-  .etape-sub{
-    font-size:8.5px;
-  }
+  .etape-lbl{font-size:10px;}
+  .etape-sub{font-size:8.5px;}
   
   .etape-arrow{
     font-size:1.3rem;
@@ -1695,8 +1688,6 @@ footer{
 }
 @media(max-width:1024px){
   .promos-grid{grid-template-columns:1fr 1fr;}
-  /* ✅ Plus de display:none sur l'image */
-  .etapes-steps{width:100%;}
 }
 @media(max-width:768px){
   nav{padding:0 1rem;}
