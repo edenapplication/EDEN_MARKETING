@@ -68,15 +68,21 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .mob-menu .nav-lnk.active{color:var(--blue);}
 .mob-menu .nav-lnk.active::after{display:none;}
 
-/* ══ HERO CARROUSEL ══ */
-.hero{position:relative;height:min(80vh, 600px);min-height:320px;overflow:hidden;}
+/* ══ HERO CARROUSEL — MÊME DIMENSION QUE HOME ══ */
+.hero{
+  position:relative;
+  height:min(85vh, 750px);
+  min-height:320px;
+  overflow:hidden;
+  width:100%;
+}
 .hero-slides{position:absolute;inset:0;z-index:0;}
 .hero-slide{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease;}
 .hero-slide.active{opacity:1;}
 .hero-slide img{width:100%;height:100%;object-fit:cover;display:block;}
 .hero-slide-placeholder{width:100%;height:100%;background:linear-gradient(135deg,#0A2494 0%,#1B4FDB 45%,#7B20B4 75%,#C8102E 100%);}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(10,22,40,0.55) 0%,rgba(10,22,40,0.3) 60%,rgba(10,22,40,0.1) 100%);z-index:1;}
-.hero-inner{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;padding-top:70px;max-width:1280px;margin:0 auto;left:0;right:0;}
+.hero-inner{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;padding-top:70px;max-width:1280px;margin:0 auto;left:0;right:0;overflow:hidden;}
 .hero-left{max-width:560px;position:relative;z-index:20;}
 .hero-glow-white{position:relative;z-index:10;isolation:isolate;}
 .hero-glow-white::before{content:"";position:absolute;inset:-2px -20px;background:radial-gradient(ellipse at center,rgba(255,255,255,.20) 0%,rgba(255,255,255,.08) 40%,rgba(255,255,255,0) 75%);filter:blur(12px);border-radius:60px;z-index:-1;pointer-events:none;}
@@ -436,29 +442,44 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
     font-size:9px;
   }
 }
+
+/* ══ HAUTEUR HERO MOBILE — MÊME QUE HOME ══ */
+@media(max-width:768px){
+  .hero-overlay{background:linear-gradient(to bottom,rgba(10,22,40,0.7) 0%,rgba(10,22,40,0.5) 50%,rgba(10,22,40,0.3) 100%);}
+  .hero{height:min(60vh,420px);}
+  .hero-inner{padding-top:80px;padding-left:1rem;padding-right:1rem;align-items:flex-start;justify-content:flex-start;}
+  .hero-left{max-width:100%;margin-top:5px;}
+  .hero-title{font-size:1.5rem;line-height:1.1;text-shadow:0 2px 20px rgba(0,0,0,0.6);}
+  .hero-desc{font-size:0.8rem;text-shadow:0 2px 16px rgb(249, 247, 247);margin-bottom:1rem;}
+  .hero-btns{flex-direction:row;flex-wrap:wrap;gap:6px;}
+  .btn-hero-p,.btn-hero-o{font-size:10px;padding:6px 12px;width:auto;flex:1;min-width:120px;justify-content:center;}
+  .hero-right{display:none;}
+  .hero-nav{display:none;}
+  .hero-indicators{bottom:15px;}
+}
 </style>
 </head>
 <body>
 
-<!-- ══ HERO CARROUSEL — images des sites ══ -->
+<!-- ══ HERO CARROUSEL — images des sites (MÊME HAUTEUR QUE HOME) ══ -->
 <section class="hero">
   <div class="hero-slides">
     {% for site in sites %}
-    {% if site.image_principale %}
-    <div class="hero-slide {% if forloop.first %}active{% endif %}" id="slide-{{ forloop.counter0 }}">
-      <img src="{{ site.image_principale.url }}" alt="{{ site.nom }}">
-    </div>
-    {% endif %}
+      {% if site.image_principale %}
+      <div class="hero-slide {% if forloop.first %}active{% endif %}" id="slide-{{ forloop.counter0 }}">
+        <img src="{{ site.image_principale.url }}" alt="{{ site.nom }}">
+      </div>
+      {% endif %}
     {% empty %}
-    {% if hero_config and hero_config.image_fond %}
-    <div class="hero-slide active">
-      <img src="{{ hero_config.image_fond.url }}" alt="EDEN GROUP">
-    </div>
-    {% else %}
-    <div class="hero-slide active">
-      <div class="hero-slide-placeholder"></div>
-    </div>
-    {% endif %}
+      {% if hero_config and hero_config.image_fond %}
+      <div class="hero-slide active">
+        <img src="{{ hero_config.image_fond.url }}" alt="EDEN GROUP">
+      </div>
+      {% else %}
+      <div class="hero-slide active">
+        <div class="hero-slide-placeholder"></div>
+      </div>
+      {% endif %}
     {% endfor %}
     <div class="hero-overlay"></div>
   </div>
