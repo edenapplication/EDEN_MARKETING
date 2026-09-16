@@ -347,7 +347,28 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
   .hero-indicators{bottom:60px;}
   .hero-title{font-size:2rem;}
   .hero-desc{font-size:13px;}
-  .hero-trust-row{flex-direction:column;gap:0.6rem;}
+
+  /* ✅ TRUST ITEMS EN 2 PAR 2 SUR MOBILE */
+  .hero-trust-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0.6rem;
+    width:100%;
+    max-width:100%;
+  }
+  .hero-trust-item{
+    width:100%;
+    min-width:0;
+    padding:4px 8px 4px 4px;
+  }
+  .hero-trust-txt{
+    font-size:9px;
+    line-height:1.2;
+  }
+  .hero-trust-txt strong{
+    font-size:10px;
+  }
+
   .search-wrap{margin:0 1rem;margin-top:-50px;padding:1rem;}
   .search-fields{grid-template-columns:1fr;}
   .controls{flex-direction:column;align-items:stretch;padding:1.5rem 1rem;}
@@ -380,7 +401,27 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
   .hero-title{font-size:1.8rem;}
   .sites-grid{grid-template-columns:1fr;}
   .filter-pills{justify-content:center;}
-  
+
+  /* ✅ Garde le 2 par 2 même sur petits écrans */
+  .hero-trust-row{
+    grid-template-columns:1fr 1fr;
+    gap:0.5rem;
+  }
+  .hero-trust-item{
+    padding:3px 6px 3px 3px;
+  }
+  .hero-trust-ico{
+    width:26px;
+    height:26px;
+    font-size:11px;
+  }
+  .hero-trust-txt{
+    font-size:8px;
+  }
+  .hero-trust-txt strong{
+    font-size:9px;
+  }
+
   /* Badges sites - ajustements finaux */
   .sc-status{
     font-size:7px;
