@@ -2162,7 +2162,9 @@ footer{
           <div class="livret-check">Accessibilité contrôlée</div>
           <div class="livret-check">Protection durable</div>
         </div>
-        <a href="#" class="btn-livret">Découvrir le Livret ›</a>
+        <a href="{{ livret.btn_lien|default:'#' }}" class="btn-livret">
+  {{ livret.btn_texte|default:'Découvrir le Livret' }} ›
+</a>
       </div>
     </div>
   </div>
