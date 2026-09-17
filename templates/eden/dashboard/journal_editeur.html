@@ -84,7 +84,8 @@ html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;background
 .page-thumb{
   border-radius:6px;overflow:hidden;cursor:pointer;
   border:2px solid rgba(255,255,255,0.06);
-  transition:all 0.15s;position:relative;background:#FDFBF7;
+  transition:all 0.15s;background:#FDFBF7;
+  position:relative;
 }
 .page-thumb:hover{border-color:rgba(27,79,219,0.4);}
 .page-thumb.active{border-color:var(--blue);}
@@ -105,6 +106,19 @@ html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;background
   border-radius:6px;transition:all 0.15s;
 }
 .page-thumb-add:hover{border-color:rgba(27,79,219,0.4);color:var(--blue-pale);}
+
+.page-thumb-del{
+  position:absolute;top:2px;right:2px;
+  width:16px;height:16px;border-radius:3px;
+  background:var(--red);color:#fff;
+  font-size:9px;font-weight:700;
+  border:none;cursor:pointer;
+  display:none;align-items:center;justify-content:center;
+  z-index:5;
+}
+.page-thumb:hover .page-thumb-del{display:flex;}
+.page-thumb-del:hover{background:#a00d24;}
+
 /* Blocs palette */
 .bloc-palette{padding:6px;display:flex;flex-direction:column;gap:3px;}
 .palette-item{
@@ -156,7 +170,6 @@ html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;background
 .canvas-el{
   position:absolute;
   cursor:move;
-  /* Pas de user-select pour permettre la manipulation */
 }
 .canvas-el.selected .el-inner{
   outline:2px solid var(--blue);
@@ -416,6 +429,9 @@ html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;background
         <div style="font-size:8px;padding:4px;color:#8B7355;font-family:'Playfair Display',serif;text-align:center;">Page {{ p.numero }}</div>
       </div>
       <div class="page-thumb-num">{{ p.numero }}</div>
+      {% if p.numero != page.numero %}
+      <button class="page-thumb-del" onclick="event.stopPropagation();supprimerPage({{ p.numero }})" title="Supprimer cette page">✕</button>
+      {% endif %}
     </div>
     {% endfor %}
     <div class="page-thumb-add" onclick="ajouterPage()">+ Page</div>
@@ -531,8 +547,6 @@ const EDITION_NUM = "{{ edition.numero }}";
 const PAGE_NUM   = {{ page.numero }};
 const CSRF       = '{{ csrf_token }}';
 
-// Éléments : tableau d'objets
-// { id, type, x, y, w, h, z, style:{...}, contenu, url, legende }
 let elements = {{ page_json|safe }};
 let selectedIds = [];
 let currentTool = 'select';
@@ -541,10 +555,8 @@ let undoStack = [];
 let redoStack = [];
 let showGrid = false;
 
-// Drag depuis palette
 let draggingType = null;
 
-// Drag/resize sur canvas
 let isDragging = false;
 let isResizing = false;
 let resizeHandle = null;
@@ -553,7 +565,6 @@ let resizeStart = {};
 let isSelecting = false;
 let selectStart = {};
 
-// IDs incrémentaux
 let nextId = elements.length
   ? Math.max(...elements.map(e => typeof e.id === 'number' ? e.id : 0)) + 1
   : 1;
@@ -689,10 +700,8 @@ function creerElement(type, x, y, overrides={}){
 // ════════════════════════════════════════
 function renderAll(){
   const canvas = document.getElementById('page-canvas');
-  // Enlever anciens éléments (pas la selection-rect)
   canvas.querySelectorAll('.canvas-el').forEach(e => e.remove());
 
-  // Trier par z
   const sorted = [...elements].sort((a,b) => (a.z||0) - (b.z||0));
   sorted.forEach(el => {
     const div = creerDOMElement(el);
@@ -706,7 +715,6 @@ function creerDOMElement(el){
   div.dataset.id = el.id;
   div.style.cssText = `left:${px(el.x)};top:${px(el.y)};width:${px(el.w)};height:${px(el.h)};z-index:${(el.z||0)+10};position:absolute;`;
 
-  // Poignées redimensionnement
   div.innerHTML = `
     <div class="el-inner">${innerHTML(el)}</div>
     <div class="resize-handles">
@@ -722,7 +730,6 @@ function creerDOMElement(el){
     <button class="el-delete" onclick="event.stopPropagation();supprimerEl(${el.id})">✕</button>
   `;
 
-  // Events
   div.addEventListener('mousedown', (e) => elMouseDown(e, el.id));
   div.querySelectorAll('.rh').forEach(rh => {
     rh.addEventListener('mousedown', (e) => {
@@ -731,7 +738,6 @@ function creerDOMElement(el){
     });
   });
 
-  // Double-clic pour éditer texte
   const inner = div.querySelector('.el-inner');
   if(['texte','titre','chapeau','citation','encart','pub'].includes(el.type)){
     inner.addEventListener('dblclick', (e) => {
@@ -818,7 +824,6 @@ function activerEditionTexte(id, innerEl){
   textEl.style.cursor = 'text';
   textEl.style.userSelect = 'text';
   textEl.focus();
-  // Sélectionner tout
   const range = document.createRange();
   range.selectNodeContents(textEl);
   const sel = window.getSelection();
@@ -840,7 +845,6 @@ function activerEditionTexte(id, innerEl){
 
   textEl.addEventListener('keydown', function(e){
     if(e.key === 'Escape'){ textEl.blur(); }
-    // Empêcher suppression élément quand on tape
     e.stopPropagation();
   });
 }
@@ -888,7 +892,6 @@ function elMouseDown(e, id){
     selectionner([id]);
   }
 
-  // Démarrer drag
   const canvas = document.getElementById('page-canvas');
   const cr = canvas.getBoundingClientRect();
   isDragging = true;
@@ -949,7 +952,6 @@ function canvasMouseDown(e){
     return;
   }
 
-  // Sélection rectangle
   if(!isDragging && !isResizing){
     isSelecting = true;
     selectStart = pos;
@@ -979,7 +981,6 @@ function canvasMouseMove(e){
     if(resizeHandle.includes('w')){ el.x = Math.min(x + w - MIN, x + dx); el.w = Math.max(MIN, w - dx); }
     if(resizeHandle.includes('n')){ el.y = Math.min(y + h - MIN, y + dy); el.h = Math.max(MIN, h - dy); }
 
-    // MAJ DOM direct (performance)
     const domEl = document.querySelector(`.canvas-el[data-id="${id}"]`);
     if(domEl){
       domEl.style.left = px(el.x);
@@ -1036,7 +1037,6 @@ function canvasMouseUp(e){
     isSelecting = false;
     const rect = document.getElementById('selection-rect');
     rect.style.display = 'none';
-    // Sélectionner éléments dans le rect
     const rx1 = parseInt(rect.style.left);
     const ry1 = parseInt(rect.style.top);
     const rx2 = rx1 + parseInt(rect.style.width);
@@ -1057,7 +1057,6 @@ function canvasDblClick(e){
     if(currentTool === 'select'){
       const pos = canvasPos(e);
       const el = creerElement('texte', pos.x - 100, pos.y - 30);
-      // Activer édition immédiatement
       setTimeout(() => {
         const domEl = document.querySelector(`.canvas-el[data-id="${el.id}"]`);
         if(domEl){
@@ -1164,7 +1163,6 @@ function buildProps(el){
   const s = el.style || {};
   let html = '';
 
-  // Position & taille
   html += `<div class="prop-group">
     <div class="prop-group-tit">Position & Taille</div>
     <div class="prop-row">
@@ -1185,7 +1183,6 @@ function buildProps(el){
     </div>
   </div>`;
 
-  // Contenu texte
   if(['texte','titre','chapeau','citation','encart','pub'].includes(el.type)){
     html += `<div class="prop-group">
       <div class="prop-group-tit">Contenu</div>
@@ -1206,7 +1203,6 @@ function buildProps(el){
     html += `</div>`;
   }
 
-  // Typographie
   if(['texte','titre','chapeau','citation','encart','pub'].includes(el.type)){
     html += `<div class="prop-group">
       <div class="prop-group-tit">Typographie</div>
@@ -1251,7 +1247,6 @@ function buildProps(el){
     </div>`;
   }
 
-  // Arrière-plan & bordures
   html += `<div class="prop-group">
     <div class="prop-group-tit">Fond & Bordure</div>
     <div class="prop-row">
@@ -1281,7 +1276,6 @@ function buildProps(el){
     </div>
   </div>`;
 
-  // Opacité
   html += `<div class="prop-group">
     <div class="prop-group-tit">Opacité</div>
     <div class="prop-row">
@@ -1292,7 +1286,6 @@ function buildProps(el){
     </div>
   </div>`;
 
-  // Image / Vidéo
   if(el.type === 'image'){
     html += `<div class="prop-group">
       <div class="prop-group-tit">Image</div>
@@ -1345,7 +1338,6 @@ function buildProps(el){
     </div>`;
   }
 
-  // Supprimer
   html += `<button class="btn-del-el" onclick="supprimerEl(${el.id})">🗑 Supprimer cet élément</button>`;
   return html;
 }
@@ -1436,6 +1428,34 @@ async function sauvegarder(){
   }catch(e){ setSaveStatus('error'); showToast('❌','Erreur réseau'); }
 }
 
+async function supprimerPage(num){
+  if(!confirm(`Supprimer la page ${num} ? Cette action est irréversible.`)) return;
+  try{
+    // L'URL Django attend edition_pk + page_num dans le chemin
+    const url = `{% url "dashboard_journal_page_supprimer" edition_pk=edition.pk page_num=1 %}`.replace('/1/', `/${num}/`);
+    const fd = new FormData();
+    fd.append('csrfmiddlewaretoken', CSRF);
+    const resp = await fetch(url, {
+      method:'POST',
+      headers:{'X-CSRFToken':CSRF,'X-Requested-With':'XMLHttpRequest'},
+      body:fd
+    });
+    const data = await resp.json();
+    if(data.success){
+      showToast('🗑', `Page ${num} supprimée`);
+      if(num === PAGE_NUM){
+        allerPage(data.page_courante || 1);
+      } else {
+        setTimeout(()=>location.reload(), 500);
+      }
+    } else {
+      showToast('❌', data.error || 'Erreur suppression');
+    }
+  }catch(e){
+    showToast('❌','Erreur réseau');
+  }
+}
+
 // ════════════════════════════════════════
 // MÉDIATHÈQUE
 // ════════════════════════════════════════
@@ -1487,7 +1507,6 @@ function insererMediaDansSelection(url, type){
     renderProps();
     showToast('✅', type==='video' ? '🎬 Vidéo insérée' : '🖼 Image insérée');
   } else {
-    // Créer un nouveau bloc centré
     const pos = { x:100, y:100 };
     const el = creerElement(type, pos.x, pos.y);
     el.url = url;
@@ -1537,7 +1556,6 @@ document.addEventListener('keydown', e => {
   if(e.key === '+' || e.key === '='){ zoomIn(); return; }
   if(e.key === '-'){ zoomOut(); return; }
 
-  // Flèches pour déplacer (1px sans shift, 10px avec shift)
   const step = e.shiftKey ? 10 : 1;
   if(e.key === 'ArrowLeft'){ e.preventDefault(); getSelected().forEach(el=>{el.x-=step;}); renderAll(); setSaveStatus(''); }
   if(e.key === 'ArrowRight'){ e.preventDefault(); getSelected().forEach(el=>{el.x+=step;}); renderAll(); setSaveStatus(''); }
@@ -1545,7 +1563,6 @@ document.addEventListener('keydown', e => {
   if(e.key === 'ArrowDown'){ e.preventDefault(); getSelected().forEach(el=>{el.y+=step;}); renderAll(); setSaveStatus(''); }
 });
 
-// Empêcher le scroll de la page quand on est sur le canvas
 document.getElementById('canvas-wrap').addEventListener('wheel', e => {
   if(e.ctrlKey){ e.preventDefault(); e.deltaY < 0 ? zoomIn() : zoomOut(); }
 }, {passive:false});

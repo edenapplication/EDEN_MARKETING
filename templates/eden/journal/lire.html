@@ -5,12 +5,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>{{ edition.titre }} — Journal EDEN GROUP</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=IM+Fell+English:ital@0;1&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --blue:#1B4FDB;--red:#C8102E;--grad-h:linear-gradient(90deg,#1B4FDB,#7B20B4,#C8102E);
-  --encre:#1a1209;--papier:#FDFBF7;--papier2:#FFF8EE;
+  --blue:#1B4FDB;--red:#C8102E;
+  --grad-h:linear-gradient(90deg,#1B4FDB,#7B20B4,#C8102E);
+  --encre:#1a1209;--papier:#FDFBF7;
   --gris-journal:#8B7355;
 }
 html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;background:#0d0d1a;}
@@ -38,283 +39,37 @@ html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;background
   display:flex;
   align-items:center;
   justify-content:center;
+  padding:10px;
 }
 
-/* ================================================================
-   TRACK DE CARTES (DESKTOP & MOBILE)
-   ================================================================ */
-.cards-track{
-  display:flex;
-  height:100%;
-  width:100%;
-  transition:transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  will-change:transform;
-  align-items:center;
-}
-.card-slide{
-  flex:0 0 100%;
-  height:100%;
-  overflow:hidden;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.card-slide .card-inner{
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  background:var(--papier);
+/* ── PAGE A4 EXACTEMENT COMME L'ÉDITEUR ── */
+.page-canvas{
   position:relative;
-}
-
-/* ================================================================
-   DESKTOP : FORMAT LIVRE AVEC MARGES
-   ================================================================ */
-@media (min-width: 769px) {
-  .card-slide {
-    padding:20px 30px;
-  }
-  .card-slide .card-inner {
-    max-width: 780px;
-    max-height: 90vh;
-    border-radius: 14px;
-    box-shadow: 0 12px 60px rgba(0,0,0,0.6);
-    border: 1px solid rgba(255,255,255,0.05);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  .card-slide .card-inner:hover {
-    transform: scale(1.005);
-    box-shadow: 0 16px 80px rgba(0,0,0,0.7);
-  }
-}
-
-/* ================================================================
-   MOBILE : PLEIN ÉCRAN
-   ================================================================ */
-@media (max-width: 768px) {
-  .card-slide {
-    padding:0;
-  }
-  .card-slide .card-inner {
-    max-width: 100%;
-    max-height: 100%;
-    border-radius: 0;
-    box-shadow: none;
-  }
-  .viewer-wrap {
-    top: 52px;
-    bottom: 60px;
-  }
-}
-
-/* ── PAGE PAPIER ── */
-.page-paper{
-  width:100%;
-  height:100%;
-  position:relative;
-  overflow-y:auto;
+  width:595px;
+  height:842px;
   background:var(--papier);
-  font-family:'IM Fell English',serif;
-  color:var(--encre);
-  padding:24px 26px 40px;
-}
-.page-paper::-webkit-scrollbar{width:4px;}
-.page-paper::-webkit-scrollbar-thumb{background:var(--gris-journal);border-radius:100px;}
-.page-paper::-webkit-scrollbar-track{background:transparent;}
-.page-paper.fonce{background:#1a1a2e !important;}
-.page-paper.fonce .page-nom-journal{color:rgba(255,255,255,0.2);}
-
-.page-num{
-  position:absolute;bottom:12px;font-size:11px;color:var(--gris-journal);
-  font-family:'Playfair Display',serif;font-style:italic;
-}
-.page-num.left{left:20px;}
-.page-num.right{right:20px;}
-.page-nom-journal{
-  position:absolute;bottom:12px;left:50%;transform:translateX(-50%);
-  font-size:8px;color:rgba(139,115,85,0.3);letter-spacing:2px;text-transform:uppercase;
-}
-
-/* ── LAYOUT COLONNES ── */
-.blocs-zone{height:100%;overflow-y:auto;padding-bottom:30px;}
-.blocs-zone::-webkit-scrollbar{width:3px;}
-.blocs-zone::-webkit-scrollbar-thumb{background:var(--gris-journal);border-radius:100px;}
-
-.layout-col2 .blocs-zone{
-  display:grid;grid-template-columns:1fr 1fr;gap:14px;
-  align-content:start;
-}
-.layout-col3 .blocs-zone{
-  display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;
-  align-content:start;
-}
-.layout-col1 .blocs-zone,.layout-une .blocs-zone{
-  display:flex;flex-direction:column;gap:12px;
-}
-
-/* ── BLOCS ── */
-.bloc{overflow:hidden;}
-
-.bloc-titre h1{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(1.2rem,2.5vw,2.2rem);
-  font-weight:900;line-height:1.1;
-  color:var(--encre);
-  border-bottom:3px double var(--encre);
-  padding-bottom:8px;margin-bottom:8px;
-}
-.bloc-titre h2{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(1rem,1.8vw,1.6rem);
-  font-weight:700;line-height:1.2;color:var(--encre);
-  border-bottom:1px solid var(--gris-journal);
-  padding-bottom:6px;margin-bottom:6px;
-}
-.bloc-titre h3{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(0.85rem,1.4vw,1.1rem);
-  font-weight:700;color:var(--encre);
-  font-style:italic;margin-bottom:6px;
-}
-.surtitre{
-  font-size:10px;font-weight:700;letter-spacing:2px;
-  text-transform:uppercase;color:var(--red);margin-bottom:4px;
-}
-
-.bloc-texte p{
-  font-size:clamp(0.7rem,1vw,0.9rem);
-  line-height:1.7;color:var(--encre);
-  text-align:justify;hyphens:auto;
-  margin-bottom:6px;
-}
-.bloc-texte .chapeau{
-  font-size:clamp(0.75rem,1.1vw,0.95rem);
-  font-weight:600;color:var(--encre);
-  border-left:3px solid var(--red);
-  padding-left:10px;margin-bottom:8px;
-  font-style:italic;
-  line-height:1.5;
-}
-
-.bloc-image figure{text-align:center;}
-.bloc-image img{
-  max-width:100%;max-height:180px;
-  object-fit:cover;border-radius:4px;
-  cursor:zoom-in;
-  border:1px solid rgba(0,0,0,0.08);
-}
-.bloc-image figcaption{
-  font-size:10px;color:var(--gris-journal);
-  font-style:italic;margin-top:4px;
-}
-
-.bloc-video .video-wrap{
-  position:relative;width:100%;
-  background:#000;border-radius:4px;overflow:hidden;
-}
-.bloc-video video{
-  width:100%;max-height:180px;
-  object-fit:cover;display:block;cursor:pointer;
-}
-.bloc-video .video-overlay{
-  position:absolute;inset:0;
-  display:flex;align-items:center;justify-content:center;
-  background:rgba(0,0,0,0.3);cursor:pointer;transition:all 0.2s;
-}
-.bloc-video .video-overlay:hover{background:rgba(0,0,0,0.15);}
-.video-play-btn{
-  width:44px;height:44px;border-radius:50%;
-  background:rgba(255,255,255,0.9);
-  display:flex;align-items:center;justify-content:center;
-  font-size:18px;transition:transform 0.2s;
-}
-.bloc-video figcaption{
-  font-size:10px;color:var(--gris-journal);
-  font-style:italic;margin-top:4px;text-align:center;
-}
-
-.bloc-citation blockquote{
-  border-left:3px solid var(--red);
-  padding:8px 14px;margin:0;
-  background:rgba(200,16,46,0.04);
-  border-radius:0 4px 4px 0;
-}
-.bloc-citation blockquote p{
-  font-size:clamp(0.75rem,1.1vw,0.95rem);
-  font-style:italic;color:var(--encre);line-height:1.6;
-}
-.bloc-citation .auteur{
-  font-size:10px;font-weight:700;color:var(--red);
-  margin-top:4px;text-align:right;letter-spacing:0.5px;
-}
-
-.bloc-filet hr{
-  border:none;
-  border-top:1px solid rgba(0,0,0,0.15);margin:6px 0;
-}
-.bloc-filet.ornement{text-align:center;color:var(--gris-journal);font-size:14px;}
-
-.bloc-encart{
-  background:linear-gradient(135deg,#f5f0e8,#ede7d6);
-  border:1px solid #c4a97a;
-  border-radius:6px;padding:10px 14px;
-}
-.bloc-encart .encart-titre{
-  font-size:11px;font-weight:800;
-  text-transform:uppercase;letter-spacing:1px;
-  color:var(--red);margin-bottom:6px;
-  padding-bottom:4px;border-bottom:1px solid #c4a97a;
-}
-.bloc-encart p{font-size:clamp(0.65rem,0.9vw,0.8rem);line-height:1.6;color:var(--encre);}
-
-.bloc-pub{
-  background:linear-gradient(135deg,#1B4FDB,#0A2494);
-  border-radius:6px;padding:14px;text-align:center;color:#fff;
-}
-.bloc-pub .pub-titre{font-family:'Playfair Display',serif;font-size:clamp(0.8rem,1.2vw,1.1rem);font-weight:900;margin-bottom:4px;}
-.bloc-pub .pub-texte{font-size:clamp(0.6rem,0.85vw,0.75rem);opacity:0.85;line-height:1.5;}
-.bloc-pub .pub-tel{font-size:clamp(0.6rem,0.85vw,0.75rem);font-weight:700;margin-top:6px;background:rgba(255,255,255,0.2);padding:4px 12px;border-radius:100px;display:inline-block;}
-
-/* ── COUVERTURE ── */
-.couverture{
-  width:100%;height:100%;
-  background:linear-gradient(160deg,#1a1a2e 0%,#0d1b4b 60%,#1a0a0a 100%);
-  display:flex;flex-direction:column;
-  position:relative;overflow:hidden;
-  padding:24px 28px 30px;
-}
-.couv-bandeau-top{
-  background:var(--grad-h);
-  padding:12px 24px;
-  display:flex;justify-content:space-between;align-items:center;
+  box-shadow:0 20px 60px rgba(0,0,0,0.8),0 0 0 1px rgba(255,255,255,0.05);
   flex-shrink:0;
-  border-radius:8px;
+  overflow:hidden;
+  border-radius:2px;
+  transform-origin:center center;
+  transition:opacity 0.3s ease, transform 0.2s ease;
 }
-.couv-nom{font-family:'Playfair Display',serif;font-size:clamp(1.2rem,2vw,1.6rem);font-weight:900;color:#fff;letter-spacing:1px;}
-.couv-nom span{color:var(--red);}
-.couv-num{font-size:clamp(0.8rem,1.1vw,1rem);font-weight:700;color:rgba(255,255,255,0.85);}
-.couv-img-zone{flex:1;overflow:hidden;min-height:0;margin:16px 0;border-radius:8px;}
-.couv-img{width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in;}
-.couv-img-placeholder{
+.page-canvas.fade-out{opacity:0;}
+
+/* ── ÉLÉMENTS ABSOLUS ── */
+.canvas-el{position:absolute;}
+.el-inner{width:100%;height:100%;overflow:hidden;position:relative;}
+.el-text{
   width:100%;height:100%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:5rem;
-  background:linear-gradient(135deg,rgba(27,79,219,0.3),rgba(200,16,46,0.2));
-  border-radius:8px;
+  font-family:'Playfair Display',serif;
+  color:var(--encre);
+  word-break:break-word;
+  overflow:hidden;
 }
-.couv-titre-zone{
-  padding:12px 0 6px;flex-shrink:0;
-}
-.couv-surtitre{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:4px;}
-.couv-titre{font-family:'Playfair Display',serif;font-size:clamp(1.4rem,2.8vw,2.4rem);font-weight:900;color:#fff;line-height:1.2;}
-.couv-sous-titre{font-size:clamp(0.8rem,1.1vw,1rem);color:rgba(255,255,255,0.7);margin-top:4px;font-style:italic;}
-.couv-date-pied{
-  padding:8px 0 0;font-size:clamp(0.65rem,0.85vw,0.8rem);
-  color:rgba(255,255,255,0.4);letter-spacing:0.5px;
-  border-top:1px solid rgba(255,255,255,0.08);flex-shrink:0;
-  margin-top:8px;
-}
+.el-img{width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in;}
+.el-video-wrap{width:100%;height:100%;background:#000;position:relative;display:flex;align-items:center;justify-content:center;}
+.el-video{width:100%;height:100%;object-fit:cover;display:block;cursor:pointer;}
 
 /* ── NAV BAR ── */
 .nav-bar{
@@ -345,8 +100,7 @@ html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;background
   background:rgba(255,255,255,0.08);
 }
 .progress-bar-inner{
-  height:100%;
-  background:var(--grad-h);
+  height:100%;background:var(--grad-h);
   transition:width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   width:0%;
 }
@@ -380,36 +134,75 @@ html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;background
 }
 .btn-retour-academie:hover{background:rgba(10,36,148,1);}
 
-/* ── SWIPE HINT ── */
-.swipe-hint{
-  position:absolute;bottom:70px;left:50%;transform:translateX(-50%);
-  z-index:50;
-  display:flex;gap:8px;align-items:center;
-  background:rgba(0,0,0,0.3);backdrop-filter:blur(8px);
-  padding:6px 16px;border-radius:100px;
-  color:rgba(255,255,255,0.5);font-size:11px;
-  pointer-events:none;
-  opacity:0;
-  transition:opacity 0.8s ease 1.5s;
+/* ── BARRE D'OUTILS LECTURE ── */
+.tools-lecture{
+  position:fixed;
+  top:60px;right:12px;
+  z-index:250;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  background:rgba(10,10,20,0.85);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:12px;
+  padding:8px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.5);
 }
-.swipe-hint.show{opacity:1;}
-.swipe-hint span{animation:swipePulse 2s ease infinite;}
-@keyframes swipePulse{
-  0%,100%{transform:translateX(-4px);opacity:0.5;}
-  50%{transform:translateX(4px);opacity:1;}
+.tl-btn{
+  width:38px;height:38px;
+  border-radius:8px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);
+  color:rgba(255,255,255,0.75);
+  cursor:pointer;
+  font-size:15px;
+  font-family:'Outfit',sans-serif;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.15s;
+}
+.tl-btn:hover{background:rgba(255,255,255,0.15);color:#fff;}
+.tl-btn.active{background:rgba(27,79,219,0.4);border-color:var(--blue);color:#fff;}
+.tl-sep{width:100%;height:1px;background:rgba(255,255,255,0.08);margin:2px 0;}
+.tl-zoom-val{
+  font-size:10px;color:rgba(255,255,255,0.5);
+  text-align:center;padding:2px 0;
+  font-weight:600;
 }
 
-@media(max-width:600px){
+/* ── MODE PLEIN ÉCRAN ── */
+body.fs-mode .top-bar,
+body.fs-mode .nav-bar{display:none;}
+body.fs-mode .viewer-wrap{
+  top:0;bottom:0;
+}
+body.fs-mode .tools-lecture{
+  top:12px;
+}
+body.fs-mode .progress-bar{display:none;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .viewer-wrap{padding:15px 10px;}
+}
+@media (max-width: 700px){
+  .viewer-wrap{padding:10px 5px;}
   .nav-progress{display:none;}
   .nav-bar-btn{padding:6px 12px;font-size:12px;}
   .top-bar{padding:0 8px;}
   .tb-title{font-size:10px;}
-  .page-paper{padding:14px 16px 30px;}
-  .layout-col2 .blocs-zone,.layout-col3 .blocs-zone{grid-template-columns:1fr;}
-  .bloc-image img{max-height:120px;}
-  .bloc-video video{max-height:120px;}
   .nav-bar{gap:6px;padding:0 10px;}
-  .couverture{padding:16px 18px 20px;}
+  .tools-lecture{
+    flex-direction:row;
+    top:auto;
+    bottom:70px;
+    right:50%;
+    transform:translateX(50%);
+    padding:6px;
+  }
+  .tl-sep{width:1px;height:100%;margin:0 2px;}
+  .tl-btn{width:36px;height:36px;font-size:14px;}
+  .tl-zoom-val{min-width:38px;}
 }
 </style>
 </head>
@@ -448,8 +241,18 @@ html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;background
 
 <!-- VIEWER -->
 <div class="viewer-wrap" id="viewer">
-  <div class="cards-track" id="cards-track"></div>
-  <div class="swipe-hint" id="swipe-hint"><span>◄</span> Glisser pour tourner <span>►</span></div>
+  <div class="page-canvas" id="page-canvas"></div>
+</div>
+
+<!-- BARRE D'OUTILS LECTURE -->
+<div class="tools-lecture">
+  <button class="tl-btn" onclick="zoomLectureMoins()" title="Zoom arrière (−)">−</button>
+  <div class="tl-zoom-val" id="zoom-val">100%</div>
+  <button class="tl-btn" onclick="zoomLecturePlus()" title="Zoom avant (+)">+</button>
+  <div class="tl-sep"></div>
+  <button class="tl-btn" onclick="resetZoomLecture()" title="Ajuster à l'écran (0)">⊡</button>
+  <button class="tl-btn" id="btn-rotate" onclick="toggleRotation()" title="Rotation portrait/paysage (R)">⟳</button>
+  <button class="tl-btn" id="btn-fullscreen" onclick="togglePleinEcran()" title="Plein écran (F)">⛶</button>
 </div>
 
 <!-- NAV BAR -->
@@ -473,101 +276,122 @@ let pageCourante = 0;
 const totalCartes = PAGES_DATA.length + 1;
 let isTransitioning = false;
 
-// ── RENDU COUVERTURE ──
+// Zoom & rotation
+let zoomManuelLecture = 1;
+let zoomAuto = 1;
+let rotationActive = false;
+
+// ════════════════════════════════════════
+// RENDU COUVERTURE
+// ════════════════════════════════════════
 function renderCouverture() {
-  return `<div class="couverture">
-    <div class="couv-bandeau-top">
-      <span class="couv-nom">Le Journal <span>EDEN</span></span>
-      <span class="couv-num">N°${EDITION.numero}</span>
-    </div>
-    <div class="couv-img-zone">
-      ${EDITION.image_une
-        ? `<img class="couv-img" src="${EDITION.image_une}" alt="Une"
-            onclick="ouvrirMediaImage('${EDITION.image_une}','Couverture')">`
-        : `<div class="couv-img-placeholder">📰</div>`}
-    </div>
-    <div class="couv-titre-zone">
-      <div class="couv-surtitre">EDEN GROUP · Gazette Foncière</div>
-      <div class="couv-titre">${esc(EDITION.titre)}</div>
-      ${EDITION.sous_titre ? `<div class="couv-sous-titre">${esc(EDITION.sous_titre)}</div>` : ''}
-    </div>
-    <div class="couv-date-pied">${EDITION.date}${EDITION.date ? ' · ' : ''}Édition N°${EDITION.numero}</div>
-  </div>`;
+  const canvas = document.getElementById('page-canvas');
+  canvas.style.background = 'linear-gradient(160deg,#1a1a2e 0%,#0d1b4b 60%,#1a0a0a 100%)';
+  canvas.innerHTML = `
+    <div style="width:100%;height:100%;display:flex;flex-direction:column;padding:24px 28px 30px;">
+      <div style="background:linear-gradient(90deg,#1B4FDB,#7B20B4,#C8102E);padding:12px 24px;display:flex;justify-content:space-between;align-items:center;border-radius:8px;flex-shrink:0;">
+        <span style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:900;color:#fff;letter-spacing:1px;">Le Journal <span style="color:#C8102E;">EDEN</span></span>
+        <span style="font-size:1rem;font-weight:700;color:rgba(255,255,255,0.85);">N°${EDITION.numero}</span>
+      </div>
+      <div style="flex:1;overflow:hidden;min-height:0;margin:16px 0;border-radius:8px;">
+        ${EDITION.image_une
+          ? `<img src="${EDITION.image_une}" alt="Une" onclick="ouvrirMediaImage('${EDITION.image_une}','Couverture')" style="width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in;">`
+          : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:5rem;background:linear-gradient(135deg,rgba(27,79,219,0.3),rgba(200,16,46,0.2));border-radius:8px;">📰</div>`}
+      </div>
+      <div style="padding:12px 0 6px;flex-shrink:0;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:4px;">EDEN GROUP · Gazette Foncière</div>
+        <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:#fff;line-height:1.2;">${esc(EDITION.titre)}</div>
+        ${EDITION.sous_titre ? `<div style="font-size:1rem;color:rgba(255,255,255,0.7);margin-top:4px;font-style:italic;">${esc(EDITION.sous_titre)}</div>` : ''}
+      </div>
+      <div style="padding:8px 0 0;font-size:0.8rem;color:rgba(255,255,255,0.4);border-top:1px solid rgba(255,255,255,0.08);flex-shrink:0;margin-top:8px;">${EDITION.date}${EDITION.date ? ' · ' : ''}Édition N°${EDITION.numero}</div>
+    </div>`;
 }
 
-// ── RENDU BLOC ──
-function renderBloc(bloc) {
-  if (!bloc) return '';
-  const type = bloc.type || 'texte';
-  switch(type) {
+// ════════════════════════════════════════
+// RENDU ÉLÉMENT
+// ════════════════════════════════════════
+function innerHTMLStyle(el){
+  const s = el.style || {};
+  return `
+    font-family:${s.fontFamily||'Playfair Display, serif'};
+    font-size:${s.fontSize||12}px;
+    color:${s.color||'#1a1209'};
+    font-weight:${s.fontWeight||'normal'};
+    font-style:${s.fontStyle||'normal'};
+    text-decoration:${s.textDecoration||'none'};
+    text-align:${s.textAlign||'left'};
+    line-height:${s.lineHeight||1.5};
+    opacity:${s.opacity!==undefined?s.opacity:1};
+    background:${s.background||'transparent'};
+    border-radius:${s.borderRadius||0}px;
+    padding:${s.padding||0}px;
+    ${s.borderLeft ? 'border-left:'+s.borderLeft+';' : ''}
+    width:100%;height:100%;overflow:hidden;word-break:break-word;
+  `;
+}
+
+function renderElement(el){
+  const s = el.style || {};
+  switch(el.type){
     case 'titre':
-      return `<div class="bloc bloc-titre">
-        ${bloc.surtitre ? `<div class="surtitre">${esc(bloc.surtitre)}</div>` : ''}
-        ${bloc.niveau === 1 ? `<h1>${esc(bloc.contenu||'')}</h1>` :
-          bloc.niveau === 3 ? `<h3>${esc(bloc.contenu||'')}</h3>` :
-          `<h2>${esc(bloc.contenu||'')}</h2>`}
-      </div>`;
-
     case 'texte':
-      const lignes = (bloc.contenu||'').split('\n').filter(l=>l.trim());
-      return `<div class="bloc bloc-texte">
-        ${bloc.chapeau ? `<p class="chapeau">${esc(bloc.chapeau)}</p>` : ''}
-        ${lignes.map(l=>`<p>${esc(l)}</p>`).join('')||'<p></p>'}
-      </div>`;
-
-    case 'image':
-      if (!bloc.url) return '';
-      return `<div class="bloc bloc-image">
-        <figure>
-          <img src="${bloc.url}" alt="${esc(bloc.legende||'')}"
-            onclick="ouvrirMediaImage('${bloc.url}','${esc(bloc.legende||'')}')">
-          ${bloc.legende ? `<figcaption>${esc(bloc.legende)}</figcaption>` : ''}
-        </figure>
-      </div>`;
-
-    case 'video':
-      if (!bloc.url) return '';
-      return `<div class="bloc bloc-video">
-        <div class="video-wrap" onclick="ouvrirMediaVideo('${bloc.url}','${esc(bloc.legende||'')}')">
-          <video src="${bloc.url}" preload="metadata" muted>
-            Votre navigateur ne supporte pas la vidéo HTML5.
-          </video>
-          <div class="video-overlay">
-            <div class="video-play-btn">▶</div>
-          </div>
-        </div>
-        ${bloc.legende ? `<figcaption>${esc(bloc.legende)}</figcaption>` : ''}
-      </div>`;
-
+    case 'chapeau':
+      return `<div class="el-inner"><div class="el-text" style="${innerHTMLStyle(el)}">${(el.contenu||'').replace(/\n/g,'<br>')}</div></div>`;
     case 'citation':
-      return `<div class="bloc bloc-citation">
-        <blockquote>
-          <p>${esc(bloc.contenu||'')}</p>
-          ${bloc.auteur ? `<div class="auteur">— ${esc(bloc.auteur)}</div>` : ''}
-        </blockquote>
-      </div>`;
-
-    case 'filet':
-      return `<div class="bloc bloc-filet ${bloc.style === 'ornement' ? 'ornement' : ''}">
-        ${bloc.style === 'ornement' ? '<div>✦ ✦ ✦</div>' : '<hr>'}
-      </div>`;
-
+      return `<div class="el-inner"><div style="${innerHTMLStyle(el)}">
+        <em>${el.contenu||''}</em>
+        ${el.auteur ? `<div style="font-size:0.8em;font-weight:700;margin-top:6px;color:#C8102E;">— ${el.auteur}</div>` : ''}
+      </div></div>`;
     case 'encart':
-      return `<div class="bloc bloc-encart">
-        ${bloc.titre_encart ? `<div class="encart-titre">${esc(bloc.titre_encart)}</div>` : ''}
-        <p>${esc(bloc.contenu||'')}</p>
-      </div>`;
-
+      return `<div class="el-inner"><div style="${innerHTMLStyle(el)}">
+        ${el.titre_encart ? `<div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#C8102E;margin-bottom:4px;">${el.titre_encart}</div>` : ''}
+        <div style="font-size:${s.fontSize||11}px;">${el.contenu||''}</div>
+      </div></div>`;
     case 'pub':
-      return `<div class="bloc bloc-pub">
-        <div class="pub-titre">EDEN GROUP</div>
-        <div class="pub-texte">${esc(bloc.contenu||'')}</div>
-        ${bloc.telephone ? `<div class="pub-tel">📞 ${esc(bloc.telephone)}</div>` : ''}
-      </div>`;
-
+      return `<div class="el-inner"><div style="${innerHTMLStyle(el)}">
+        <div style="font-family:'Playfair Display',serif;font-size:${(s.fontSize||14)}px;font-weight:900;color:#fff;margin-bottom:4px;">EDEN GROUP</div>
+        <div style="font-size:${Math.max((s.fontSize||14)-3,9)}px;color:rgba(255,255,255,0.85);">${el.contenu||''}</div>
+        ${el.telephone ? `<div style="margin-top:6px;font-size:${Math.max((s.fontSize||14)-3,9)}px;font-weight:700;color:#fff;">📞 ${el.telephone}</div>` : ''}
+      </div></div>`;
+    case 'image':
+      return el.url
+        ? `<div class="el-inner"><img class="el-img" src="${el.url}" alt="${el.legende||''}" style="object-fit:${s.objectFit||'cover'};border-radius:${s.borderRadius||0}px;opacity:${s.opacity!==undefined?s.opacity:1};" onclick="ouvrirMediaImage('${el.url}','${esc(el.legende||'')}')"></div>`
+        : `<div class="el-inner"><div style="width:100%;height:100%;background:#e5e7eb;"></div></div>`;
+    case 'video':
+      return el.url
+        ? `<div class="el-inner"><div class="el-video-wrap" style="border-radius:${s.borderRadius||0}px;opacity:${s.opacity!==undefined?s.opacity:1};" onclick="ouvrirMediaVideo('${el.url}','${esc(el.legende||'')}')">
+            <video class="el-video" src="${el.url}" preload="metadata" muted></video>
+            <div style="position:absolute;width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;font-size:20px;pointer-events:none;">▶</div>
+          </div></div>`
+        : `<div class="el-inner"><div style="width:100%;height:100%;background:#111;"></div></div>`;
+    case 'ligne':
+      return `<div class="el-inner"><div style="width:100%;height:100%;position:relative;">
+        <div style="position:absolute;top:50%;left:0;right:0;height:${s.lineWidth||1}px;background:${s.color||'#1a1209'};transform:translateY(-50%);opacity:${s.opacity!==undefined?s.opacity:1};"></div>
+      </div></div>`;
+    case 'rect':
+      return `<div class="el-inner"><div style="width:100%;height:100%;background:${s.background||'#1B4FDB'};border-radius:${s.borderRadius||0}px;opacity:${s.opacity!==undefined?s.opacity:1};${s.border?'border:'+s.border+';':''}"></div></div>`;
     default:
-      return `<div class="bloc" style="padding:6px;font-size:10px;color:#bbb;font-style:italic;">Bloc: ${type}</div>`;
+      return '';
   }
+}
+
+// ════════════════════════════════════════
+// RENDU PAGE
+// ════════════════════════════════════════
+function renderPage(pageData){
+  const canvas = document.getElementById('page-canvas');
+  canvas.style.background = pageData.couleur_fond || '#FDFBF7';
+
+  const elements = pageData.contenu || [];
+  const sorted = [...elements].sort((a,b) => (a.z||0) - (b.z||0));
+
+  let html = '';
+  sorted.forEach(el => {
+    html += `<div class="canvas-el" style="left:${Math.round(el.x)}px;top:${Math.round(el.y)}px;width:${Math.round(el.w)}px;height:${Math.round(el.h)}px;z-index:${(el.z||0)+1};">
+      ${renderElement(el)}
+    </div>`;
+  });
+  canvas.innerHTML = html;
 }
 
 function esc(str) {
@@ -575,103 +399,162 @@ function esc(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function renderPage(pageData, numeroAffiche) {
-  const layout = pageData.layout || 'col2';
-  const fond = pageData.couleur_fond || '#FDFBF7';
-  const blocs = pageData.contenu || [];
-  return `<div class="page-paper layout-${layout}" style="background:${fond};">
-    <div class="blocs-zone">
-      ${blocs.map(b => renderBloc(b)).join('')}
-    </div>
-    <div class="page-num left">${numeroAffiche}</div>
-    <div class="page-nom-journal">Journal EDEN</div>
-  </div>`;
-}
+// ════════════════════════════════════════
+// ZOOM AUTO + MANUEL + ROTATION
+// ════════════════════════════════════════
+function appliquerZoomLecture(){
+  const canvas = document.getElementById('page-canvas');
+  const wrap = document.getElementById('viewer');
+  const wrapW = wrap.clientWidth  - 20;
+  const wrapH = wrap.clientHeight - 20;
 
-// ── CONSTRUCTION DES CARTES ──
-function buildCards() {
-  const track = document.getElementById('cards-track');
-  let html = '';
+  // Dimensions de référence
+  const baseW = rotationActive ? 842 : 595;
+  const baseH = rotationActive ? 595 : 842;
 
-  html += `<div class="card-slide" data-index="0">
-    <div class="card-inner">${renderCouverture()}</div>
-  </div>`;
+  // Facteur auto : fit dans les 2 sens
+  zoomAuto = Math.min(wrapW / baseW, wrapH / baseH);
+  const scale = zoomAuto * zoomManuelLecture;
 
-  PAGES_DATA.forEach((page, idx) => {
-    const num = idx + 1;
-    html += `<div class="card-slide" data-index="${idx + 1}">
-      <div class="card-inner">${renderPage(page, num)}</div>
-    </div>`;
-  });
-
-  track.innerHTML = html;
-  mettreAjourPosition(false);
-}
-
-// ── POSITIONNEMENT ──
-function mettreAjourPosition(animate = true) {
-  const track = document.getElementById('cards-track');
-  if (!animate) track.style.transition = 'none';
-  track.style.transform = `translateX(-${pageCourante * 100}%)`;
-  if (!animate) {
-    setTimeout(() => { track.style.transition = ''; }, 50);
-  }
-
-  const progress = (pageCourante / (totalCartes - 1)) * 100;
-  document.getElementById('progress-bar').style.width = progress + '%';
-
-  document.getElementById('btn-prev').disabled = pageCourante === 0;
-  document.getElementById('btn-next').disabled = pageCourante >= totalCartes - 1;
-
-  if (pageCourante === 0) {
-    document.getElementById('page-info').textContent = 'Couverture';
-    document.getElementById('nav-label').textContent = 'Couverture';
+  if (rotationActive) {
+    canvas.style.transform = `rotate(90deg) scale(${scale})`;
   } else {
-    const label = `Page ${pageCourante}`;
+    canvas.style.transform = `scale(${scale})`;
+  }
+  canvas.style.transformOrigin = 'center center';
+
+  // Marges pour centrer proprement
+  canvas.style.marginLeft  = ((595 * scale) - 595) / 2 + 'px';
+  canvas.style.marginRight = ((595 * scale) - 595) / 2 + 'px';
+  canvas.style.marginTop   = ((842 * scale) - 842) / 2 + 'px';
+  canvas.style.marginBottom= ((842 * scale) - 842) / 2 + 'px';
+
+  const pct = Math.round(zoomAuto * zoomManuelLecture * 100);
+  document.getElementById('zoom-val').textContent = pct + '%';
+}
+
+function zoomLecturePlus(){
+  zoomManuelLecture = Math.min(zoomManuelLecture + 0.15, 3);
+  appliquerZoomLecture();
+}
+
+function zoomLectureMoins(){
+  zoomManuelLecture = Math.max(zoomManuelLecture - 0.15, 0.3);
+  appliquerZoomLecture();
+}
+
+function resetZoomLecture(){
+  zoomManuelLecture = 1;
+  rotationActive = false;
+  document.getElementById('btn-rotate')?.classList.remove('active');
+  appliquerZoomLecture();
+}
+
+function toggleRotation(){
+  rotationActive = !rotationActive;
+  document.getElementById('btn-rotate')?.classList.toggle('active', rotationActive);
+  appliquerZoomLecture();
+}
+
+// ════════════════════════════════════════
+// PLEIN ÉCRAN
+// ════════════════════════════════════════
+function togglePleinEcran(){
+  const btn = document.getElementById('btn-fullscreen');
+
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen?.()
+      .then(() => {
+        document.body.classList.add('fs-mode');
+        btn?.classList.add('active');
+        setTimeout(appliquerZoomLecture, 150);
+      })
+      .catch(() => alert('Plein écran indisponible'));
+  } else {
+    document.exitFullscreen?.()
+      .then(() => {
+        document.body.classList.remove('fs-mode');
+        btn?.classList.remove('active');
+        setTimeout(appliquerZoomLecture, 150);
+      });
+  }
+}
+
+document.addEventListener('fullscreenchange', () => {
+  const btn = document.getElementById('btn-fullscreen');
+  if (!document.fullscreenElement) {
+    document.body.classList.remove('fs-mode');
+    btn?.classList.remove('active');
+    setTimeout(appliquerZoomLecture, 150);
+  }
+});
+
+// ════════════════════════════════════════
+// AFFICHER CARTE
+// ════════════════════════════════════════
+function afficherCarte(index){
+  const canvas = document.getElementById('page-canvas');
+  canvas.classList.add('fade-out');
+
+  setTimeout(() => {
+    if (index === 0) {
+      renderCouverture();
+    } else {
+      const pageData = PAGES_DATA[index - 1];
+      renderPage(pageData);
+    }
+    canvas.classList.remove('fade-out');
+
+    const progress = (index / (totalCartes - 1)) * 100;
+    document.getElementById('progress-bar').style.width = progress + '%';
+    document.getElementById('btn-prev').disabled = index === 0;
+    document.getElementById('btn-next').disabled = index >= totalCartes - 1;
+
+    const label = index === 0 ? 'Couverture' : `Page ${index}`;
     document.getElementById('page-info').textContent = label;
     document.getElementById('nav-label').textContent = label;
-  }
 
-  const dotsEl = document.getElementById('nav-dots');
-  dotsEl.innerHTML = Array.from({length: totalCartes}, (_, i) =>
-    `<div class="nav-dot ${i === pageCourante ? 'active' : ''}"
-      onclick="allerPage(${i})"
-      title="${i === 0 ? 'Couverture' : 'Page ' + i}"></div>`
-  ).join('');
+    const dotsEl = document.getElementById('nav-dots');
+    dotsEl.innerHTML = Array.from({length: totalCartes}, (_, i) =>
+      `<div class="nav-dot ${i === index ? 'active' : ''}"
+        onclick="allerPage(${i})"
+        title="${i === 0 ? 'Couverture' : 'Page ' + i}"></div>`
+    ).join('');
 
-  if (pageCourante === 0) {
-    document.getElementById('swipe-hint').classList.add('show');
-  } else {
-    document.getElementById('swipe-hint').classList.remove('show');
-  }
+    appliquerZoomLecture();
+  }, 200);
 }
 
-// ── NAVIGATION ──
+// ════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════
 function pageSuivante() {
   if (isTransitioning || pageCourante >= totalCartes - 1) return;
   isTransitioning = true;
   pageCourante++;
-  mettreAjourPosition(true);
-  setTimeout(() => { isTransitioning = false; }, 600);
+  afficherCarte(pageCourante);
+  setTimeout(() => { isTransitioning = false; }, 350);
 }
 
 function pagePrecedente() {
   if (isTransitioning || pageCourante <= 0) return;
   isTransitioning = true;
   pageCourante--;
-  mettreAjourPosition(true);
-  setTimeout(() => { isTransitioning = false; }, 600);
+  afficherCarte(pageCourante);
+  setTimeout(() => { isTransitioning = false; }, 350);
 }
 
 function allerPage(idx) {
   if (isTransitioning || idx === pageCourante || idx < 0 || idx >= totalCartes) return;
   isTransitioning = true;
   pageCourante = idx;
-  mettreAjourPosition(true);
-  setTimeout(() => { isTransitioning = false; }, 600);
+  afficherCarte(pageCourante);
+  setTimeout(() => { isTransitioning = false; }, 350);
 }
 
-// ── SWIPES ──
+// ════════════════════════════════════════
+// SWIPES
+// ════════════════════════════════════════
 let touchStartX = 0;
 let touchStartY = 0;
 let isSwiping = false;
@@ -716,7 +599,7 @@ document.addEventListener('mouseup', (e) => {
   if (!mouseDown) return;
   mouseDown = false;
   const dx = e.clientX - mouseStartX;
-  if (Math.abs(dx) > 50) {
+  if (Math.abs(dx) > 100) {
     if (dx > 0) pagePrecedente();
     else pageSuivante();
   }
@@ -724,21 +607,30 @@ document.addEventListener('mouseup', (e) => {
 
 // ── CLAVIER ──
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') pageSuivante();
-  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') pagePrecedente();
+  const tag = document.activeElement?.tagName;
+  if (['INPUT','TEXTAREA','SELECT'].includes(tag)) return;
+
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); pageSuivante(); }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); pagePrecedente(); }
   if (e.key === 'Escape') fermerMedia();
+
+  if (e.key === '+' || e.key === '=') { e.preventDefault(); zoomLecturePlus(); }
+  if (e.key === '-') { e.preventDefault(); zoomLectureMoins(); }
+  if (e.key === '0') { e.preventDefault(); resetZoomLecture(); }
+  if (e.key === 'r' || e.key === 'R') { e.preventDefault(); toggleRotation(); }
+  if (e.key === 'f' || e.key === 'F') { e.preventDefault(); togglePleinEcran(); }
 });
 
 // ── MEDIA ──
 function ouvrirMediaImage(url, legende) {
   document.getElementById('media-inner').innerHTML =
-    `<img src="${url}" alt="${legende}" style="max-width:90vw;max-height:88vh;object-fit:contain;border-radius:8px;">`;
+    `<img src="${url}" alt="${legende}">`;
   document.getElementById('media-overlay').classList.add('open');
 }
 
 function ouvrirMediaVideo(url, legende) {
   document.getElementById('media-inner').innerHTML =
-    `<video src="${url}" controls autoplay style="max-width:90vw;max-height:88vh;border-radius:8px;">
+    `<video src="${url}" controls autoplay>
       Votre navigateur ne supporte pas la vidéo.
     </video>`;
   document.getElementById('media-overlay').classList.add('open');
@@ -756,20 +648,17 @@ document.getElementById('media-overlay').addEventListener('click', function(e) {
   if (e.target === this) fermerMedia();
 });
 
-// ── INIT ──
-buildCards();
+// ════════════════════════════════════════
+// RESIZE
+// ════════════════════════════════════════
+window.addEventListener('resize', () => {
+  setTimeout(appliquerZoomLecture, 100);
+});
 
-setTimeout(() => {
-  document.getElementById('swipe-hint').classList.add('show');
-}, 1500);
-
-document.addEventListener('click', () => {
-  document.getElementById('swipe-hint').classList.remove('show');
-}, {once: true});
-
-document.addEventListener('touchstart', () => {
-  document.getElementById('swipe-hint').classList.remove('show');
-}, {once: true});
+// ════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════
+afficherCarte(0);
 </script>
 </body>
 </html>

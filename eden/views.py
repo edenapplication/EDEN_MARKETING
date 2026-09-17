@@ -4847,3 +4847,28 @@ def api_apropos_cellule_sauvegarder(request):
     )
 
     return JsonResponse({'success': True, 'valeur': cellule.valeur})
+
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.shortcuts import get_object_or_404
+
+@require_POST
+def supprimer_page_journal(request, edition_pk):
+    edition = get_object_or_404(EditionJournal, pk=edition_pk)
+    page_num = int(request.POST.get('page_num', 0))
+    page = get_object_or_404(PageJournal, edition=edition, numero=page_num)
+
+    if edition.pages.count() <= 1:
+        return JsonResponse({'success': False, 'error': 'Impossible de supprimer la seule page.'}, status=400)
+
+    page.delete()
+
+    # Renuméroter les pages suivantes
+    for p in edition.pages.filter(numero__gt=page_num).order_by('numero'):
+        p.numero -= 1
+        p.save(update_fields=['numero'])
+
+    return JsonResponse({
+        'success': True,
+        'page_courante': min(page_num, edition.pages.count())
+    })
