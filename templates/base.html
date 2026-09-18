@@ -210,6 +210,9 @@
     <a class="nav-lnk {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
     <a class="nav-lnk {% if request.resolver_match.url_name == 'sites_list' or request.resolver_match.url_name == 'site_detail' %}active{% endif %}" href="{% url 'sites_list' %}">Nos Terrains</a>
     <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_services' %}active{% endif %}" href="{% url 'nos_services' %}">Nos Services</a>
+    <a href="{% url 'academie_accueil' %}" class="btn-academie">
+    🎓 Découvrir l'Académie →
+</a>
     <a class="nav-lnk {% if request.resolver_match.url_name == 'nos_agences' %}active{% endif %}" href="{% url 'nos_agences' %}">Nos Agences</a>
     <a class="nav-lnk {% if request.resolver_match.url_name == 'une_evenements_accueil' or request.resolver_match.url_name == 'une_evenement_detail' %}active{% endif %}" href="{% url 'une_evenements_accueil' %}">Actualités</a>
     <a class="nav-lnk {% if request.resolver_match.url_name == 'a_propos' %}active{% endif %}" href="{% url 'a_propos' %}">À propos</a>
@@ -386,14 +389,15 @@
 <div id="video-globale"
      data-position="{{ video_globale.position }}"
      data-largeur="{{ video_globale.largeur }}"
-     data-hauteur="{{ video_globale.hauteur }}">
+     data-hauteur="{{ video_globale.hauteur }}"
+     data-src="{{ video_globale.video.url }}">
     <video 
         id="video-globale-player"
         autoplay 
         loop 
         playsinline
         disablePictureInPicture
-        controlsList="nodownload nofullscreen noremoteplayback"
+        controlsList="nodownload noremoteplayback"
     >
         <source src="{{ video_globale.video.url }}" type="video/mp4">
     </video>
@@ -407,12 +411,85 @@
     box-shadow: 0 8px 32px rgba(0,0,0,0.4);
     z-index: 2500;
     background: #000;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
+
 #video-globale video {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    pointer-events: none;
+}
+
+/* Overlay avec icône plein écran au survol */
+#video-globale::after {
+    content: '⛶';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 10;
+}
+
+#video-globale:hover::after {
+    opacity: 1;
+}
+
+#video-globale:hover {
+    transform: scale(1.02);
+    box-shadow: 0 12px 48px rgba(0,0,0,0.5);
+}
+
+/* ═══ MODE PLEIN ÉCRAN ═══ */
+#video-globale.fullscreen {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    border-radius: 0 !important;
+    z-index: 9999 !important;
+    cursor: pointer;
+}
+
+#video-globale.fullscreen video {
+    object-fit: contain !important;
+}
+
+#video-globale.fullscreen::after {
+    content: '✕';
+    opacity: 1;
+    top: 20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+    background: rgba(200,16,46,0.9);
+}
+
+#video-globale.fullscreen:hover {
+    transform: none !important;
+}
+
+/* Masquer le scroll du body en plein écran */
+body.video-fullscreen-active {
+    overflow: hidden !important;
 }
 </style>
 
@@ -434,10 +511,51 @@
         var position = container.getAttribute('data-position') || 'bottom-right';
         var largeurFixe = parseInt(container.getAttribute('data-largeur')) || 500;
         var hauteurFixe = parseInt(container.getAttribute('data-hauteur')) || 280;
+        var videoSrc = container.getAttribute('data-src') || '';
+        
+        // ═══════════════════════════════════════════════
+        // 💾 RESTAURATION DE LA POSITION DE LA VIDÉO
+        // Utilise sessionStorage pour mémoriser la position
+        // ═══════════════════════════════════════════════
+        var storageKey = 'eden_video_currentTime';
+        var savedTime = sessionStorage.getItem(storageKey);
+        
+        if (savedTime && !isNaN(parseFloat(savedTime))) {
+            video.currentTime = parseFloat(savedTime);
+            console.log('▶ Reprise à ' + savedTime + 's');
+        }
+        
+        // ═══ Sauvegarder la position régulièrement ═══
+        var saveInterval = setInterval(function() {
+            if (video && !video.paused && video.currentTime > 0) {
+                try {
+                    sessionStorage.setItem(storageKey, video.currentTime.toString());
+                } catch(e) {
+                    console.warn('sessionStorage indisponible');
+                }
+            }
+        }, 1000);
+        
+        // Sauvegarder avant de quitter la page
+        window.addEventListener('beforeunload', function() {
+            if (video && video.currentTime > 0) {
+                try {
+                    sessionStorage.setItem(storageKey, video.currentTime.toString());
+                } catch(e) {}
+            }
+        });
+        
+        // Nettoyer l'intervalle si nécessaire
+        window.addEventListener('pagehide', function() {
+            if (saveInterval) clearInterval(saveInterval);
+        });
         
         // ═══ Appliquer la position ═══
         function appliquerPosition() {
             var vw = window.innerWidth;
+            
+            // Ne pas repositionner si en plein écran
+            if (container.classList.contains('fullscreen')) return;
             
             container.style.top = '';
             container.style.bottom = '';
@@ -468,62 +586,56 @@
             }
         }
         
-       function appliquerTaille() {
-    var vw = window.innerWidth;
-    var vh = window.innerHeight;
-    
-    var largeurFinale = largeurFixe;
-    var hauteurFinale = hauteurFixe;
-    
-    // ═══════════════════════════════════════════════
-    // AJUSTEMENT RESPONSIVE PROPORTIONNEL
-    // La vidéo reste proportionnelle à l'écran
-    // ═══════════════════════════════════════════════
-    
-    if (vw <= 480) {
-        // 📱 Très petit mobile : 45% de la largeur
-        largeurFinale = vw * 0.45;
-        hauteurFinale = largeurFinale * (hauteurFixe / largeurFixe);
-    } else if (vw <= 768) {
-        // 📱 Mobile / petite tablette : 40% de la largeur
-        largeurFinale = vw * 0.40;
-        hauteurFinale = largeurFinale * (hauteurFixe / largeurFixe);
-    } else if (vw <= 1024) {
-        // 📱 Tablette : 30% de la largeur
-        largeurFinale = vw * 0.30;
-        hauteurFinale = largeurFinale * (hauteurFixe / largeurFixe);
-    } else {
-        // 💻 Desktop : taille configurée par l'admin
-        largeurFinale = largeurFixe;
-        hauteurFinale = hauteurFixe;
-        
-        // Ajuster si trop grand pour l'écran
-        if (largeurFinale > vw - 40) {
-            var ratio = largeurFinale / hauteurFinale;
-            largeurFinale = vw - 40;
-            hauteurFinale = largeurFinale / ratio;
+        // ═══ Appliquer la taille ═══
+        function appliquerTaille() {
+            // Ne pas redimensionner si en plein écran
+            if (container.classList.contains('fullscreen')) return;
+            
+            var vw = window.innerWidth;
+            var vh = window.innerHeight;
+            
+            var largeurFinale = largeurFixe;
+            var hauteurFinale = hauteurFixe;
+            
+            if (vw <= 480) {
+                largeurFinale = vw * 0.45;
+                hauteurFinale = largeurFinale * (hauteurFixe / largeurFixe);
+            } else if (vw <= 768) {
+                largeurFinale = vw * 0.40;
+                hauteurFinale = largeurFinale * (hauteurFixe / largeurFixe);
+            } else if (vw <= 1024) {
+                largeurFinale = vw * 0.30;
+                hauteurFinale = largeurFinale * (hauteurFixe / largeurFixe);
+            } else {
+                largeurFinale = largeurFixe;
+                hauteurFinale = hauteurFixe;
+                
+                if (largeurFinale > vw - 40) {
+                    var ratio = largeurFinale / hauteurFinale;
+                    largeurFinale = vw - 40;
+                    hauteurFinale = largeurFinale / ratio;
+                }
+                
+                var hauteurMax = vh * 0.60;
+                if (hauteurFinale > hauteurMax) {
+                    var ratio2 = largeurFinale / hauteurFinale;
+                    hauteurFinale = hauteurMax;
+                    largeurFinale = hauteurFinale * ratio2;
+                }
+            }
+            
+            largeurFinale = Math.round(largeurFinale);
+            hauteurFinale = Math.round(hauteurFinale);
+            
+            container.style.width = largeurFinale + 'px';
+            container.style.height = hauteurFinale + 'px';
+            
+            video.style.width = '100%';
+            video.style.height = '100%';
+            video.style.objectFit = 'cover';
+            video.style.display = 'block';
         }
         
-        var hauteurMax = vh * 0.60;
-        if (hauteurFinale > hauteurMax) {
-            var ratio2 = largeurFinale / hauteurFinale;
-            hauteurFinale = hauteurMax;
-            largeurFinale = hauteurFinale * ratio2;
-        }
-    }
-    
-    largeurFinale = Math.round(largeurFinale);
-    hauteurFinale = Math.round(hauteurFinale);
-    
-    container.style.width = largeurFinale + 'px';
-    container.style.height = hauteurFinale + 'px';
-    
-    video.style.width = '100%';
-    video.style.height = '100%';
-    video.style.objectFit = 'cover';
-    video.style.display = 'block';
-}
-
         function appliquerTout() {
             appliquerPosition();
             appliquerTaille();
@@ -536,13 +648,99 @@
             setTimeout(appliquerTout, 300);
         });
         
-        // ═══ LANCER LA VIDÉO AVEC SON ═══
+        // ═══════════════════════════════════════════════
+        // 🖥 GESTION DU PLEIN ÉCRAN
+        // ═══════════════════════════════════════════════
+        var isFullscreen = false;
+        
+        function toggleFullscreen() {
+            if (!isFullscreen) {
+                // ═══ PASSER EN PLEIN ÉCRAN ═══
+                container.classList.add('fullscreen');
+                document.body.classList.add('video-fullscreen-active');
+                isFullscreen = true;
+                
+                // Demander le vrai plein écran natif si supporté
+                if (container.requestFullscreen) {
+                    container.requestFullscreen().catch(function() {
+                        console.log('Plein écran natif non disponible, utilisation du mode CSS');
+                    });
+                } else if (container.webkitRequestFullscreen) {
+                    container.webkitRequestFullscreen();
+                } else if (container.msRequestFullscreen) {
+                    container.msRequestFullscreen();
+                }
+            } else {
+                // ═══ QUITTER LE PLEIN ÉCRAN ═══
+                container.classList.remove('fullscreen');
+                document.body.classList.remove('video-fullscreen-active');
+                isFullscreen = false;
+                
+                // Quitter le plein écran natif
+                if (document.fullscreenElement || document.webkitFullscreenElement) {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen().catch(function() {});
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    }
+                }
+                
+                // Réappliquer la taille et position normales
+                setTimeout(appliquerTout, 100);
+            }
+        }
+        
+        // ═══ CLIC SUR LE CONTENEUR → PLEIN ÉCRAN ═══
+        container.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleFullscreen();
+        });
+        
+        // ═══ DÉTECTER LA SORTIE DU PLEIN ÉCRAN NATIF (Échap) ═══
+        document.addEventListener('fullscreenchange', function() {
+            if (!document.fullscreenElement && isFullscreen) {
+                container.classList.remove('fullscreen');
+                document.body.classList.remove('video-fullscreen-active');
+                isFullscreen = false;
+                setTimeout(appliquerTout, 100);
+            }
+        });
+        
+        document.addEventListener('webkitfullscreenchange', function() {
+            if (!document.webkitFullscreenElement && isFullscreen) {
+                container.classList.remove('fullscreen');
+                document.body.classList.remove('video-fullscreen-active');
+                isFullscreen = false;
+                setTimeout(appliquerTout, 100);
+            }
+        });
+        
+        // ═══ TOUCHE ÉCHAP ═══
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && isFullscreen) {
+                toggleFullscreen();
+            }
+        });
+        
+        // ═══════════════════════════════════════════════
+        // ▶ LANCEMENT DE LA VIDÉO
+        // ═══════════════════════════════════════════════
         var videoLancee = false;
         
         function lancerVideo() {
             if (videoLancee) return;
             video.muted = false;
             video.volume = 1.0;
+            
+            // Restaurer la position sauvegardée
+            var timeToRestore = sessionStorage.getItem(storageKey);
+            if (timeToRestore && !isNaN(parseFloat(timeToRestore))) {
+                try {
+                    video.currentTime = parseFloat(timeToRestore);
+                } catch(e) {}
+            }
+            
             var promise = video.play();
             if (promise !== undefined) {
                 promise.then(function() {
@@ -568,17 +766,16 @@
         };
         
         window.addEventListener('scroll', surInteraction, { passive: true });
-        document.addEventListener('click', surInteraction);
         document.addEventListener('touchstart', surInteraction, { passive: true });
         document.addEventListener('keydown', surInteraction);
         document.addEventListener('mousemove', surInteraction, { passive: true });
         
-        // Empêcher la pause
+        // ═══ Empêcher la pause automatique ═══
         video.addEventListener('pause', function() {
             if (videoLancee) video.play().catch(function() {});
         });
         
-        // Empêcher la coupure du son
+        // ═══ Empêcher la coupure du son ═══
         video.addEventListener('volumechange', function() {
             if (videoLancee && (video.volume < 1.0 || video.muted)) {
                 video.muted = false;
@@ -586,20 +783,12 @@
             }
         });
         
-        // Empêcher les interactions
-        video.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        });
-        
-        video.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-        });
-        
+        // ═══ Empêcher le menu contextuel ═══
         container.addEventListener('contextmenu', function(e) {
             e.preventDefault();
         });
         
+        // ═══ Reprendre après buffering ═══
         video.addEventListener('stalled', function() {
             if (videoLancee) video.play().catch(function() {});
         });

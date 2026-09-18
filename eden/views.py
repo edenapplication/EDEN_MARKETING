@@ -3421,25 +3421,25 @@ def academie_accueil(request):
 
     contexte = {
         # Articles = éditions de type 'article'
-        'articles': editions_publiees.filter(type_academie='article').order_by('-date_parution')[:6],
+        'articles': editions_publiees.filter(type_academie='article').order_by('-date_parution'),
         # Revues = éditions de type 'revue'
-        'revues': editions_publiees.filter(type_academie='revue').order_by('-date_parution')[:4],
+        'revues': editions_publiees.filter(type_academie='revue').order_by('-date_parution'),
         # Guides = éditions de type 'guide'
-        'guides': editions_publiees.filter(type_academie='guide').order_by('-date_parution')[:4],
+        'guides': editions_publiees.filter(type_academie='guide').order_by('-date_parution'),
         # Textes de loi
-        'textes_loi': docs_publie.filter(categorie='texte_loi').order_by('ordre')[:3],
+        'textes_loi': docs_publie.filter(categorie='texte_loi').order_by('ordre'),
         # Lexique
         'lexique': docs_publie.filter(categorie='lexique').order_by('ordre'),
         # Galerie
-        'galerie': docs_publie.filter(categorie='galerie').order_by('ordre')[:8],
+        'galerie': docs_publie.filter(categorie='galerie').order_by('ordre'),
         # Ressources (tout le contenu)
-        'ressources': docs_publie.filter(categorie='ressource').order_by('ordre')[:6],
+        'ressources': docs_publie.filter(categorie='ressource').order_by('ordre'),
         # Vidéos
         'video_moment': AcademieVideo.objects.filter(statut='publie', est_video_moment=True).first(),
-        'videos': AcademieVideo.objects.filter(statut='publie').order_by('ordre')[:8],
+        'videos': AcademieVideo.objects.filter(statut='publie').order_by('ordre'),
         # FAQ
         'faq_featured': AcademieFAQ.objects.filter(statut='publie', est_featured=True).first(),
-        'faqs': AcademieFAQ.objects.filter(statut='publie').order_by('ordre')[:10],
+        'faqs': AcademieFAQ.objects.filter(statut='publie').order_by('ordre'),
         # Parcours
         'etapes_parcours': AcademieEtapeParcours.objects.filter(is_active=True).order_by('ordre'),
         # Stats
