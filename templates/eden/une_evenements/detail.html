@@ -20,7 +20,6 @@
   --sh:0 2px 12px rgba(0,0,0,0.08);
   --sh-lg:0 8px 40px rgba(27,79,219,0.15);
   --r:10px;--rl:16px;--rxl:24px;
-  /* ✅ Variables identiques à l'éditeur */
   --encre:#1a1008;
   --filet:#8B7355;
   --papier:#FFFEF7;
@@ -79,7 +78,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .anb-share-btn{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;transition:all 0.2s;}
 .anb-share-btn:hover{background:rgba(255,255,255,0.2);}
 
-/* ══ CONTENU ARTICLE ══ */
+/* ══ CONTENU ARTICLE — DAMIER GRIS COMME L'ÉDITEUR ══ */
 .article-outer{
   background:#3a3a3a;
   background-image:radial-gradient(circle,#4a4a4a 1px,transparent 1px);
@@ -101,17 +100,21 @@ nav.scrolled .hamburger span{background:var(--g800);}
 }
 
 /* ═══════════════════════════════════════════════════════════ */
-/* ══ CSS DES BLOCS — COPIE MOT POUR MOT DE L'ÉDITEUR ══ */
+/* ══ CSS DES BLOCS — RENDU IDENTIQUE À L'ÉDITEUR ══ */
 /* ═══════════════════════════════════════════════════════════ */
 
-/* ── ÉLÉMENTS ── */
-.el{position:absolute;min-width:20px;min-height:16px;}
-.el-inner{width:100%;height:100%;position:relative;}
+/* ── Structure des éléments (identique à l'éditeur) ── */
+.article-page .el{position:absolute;overflow:hidden;}
+.article-page .el-inner{width:100%;height:100%;position:relative;}
 
-/* ✅ Désactiver first-letter dans l'éditeur ET la lecture */
+/* ✅ Désactiver TOUTE lettrine (::first-letter) */
 .el-texte p::first-letter,
 .el-titre p::first-letter,
-.el-inner p::first-letter {
+.el-inner p::first-letter,
+.r-texte p::first-letter,
+.r-titre h1::first-letter,
+.r-titre h2::first-letter,
+.r-titre h3::first-letter {
   font-size:inherit !important;
   font-family:inherit !important;
   font-weight:inherit !important;
@@ -121,68 +124,167 @@ nav.scrolled .hamburger span{background:var(--g800);}
   color:inherit !important;
 }
 
-/* ✅ Styles de contenu — désactiver first-letter partout */
-.el-texte .el-inner,
-[contenteditable]{
-  overflow:hidden;
+/* ═══════════════════════════════════════════════════════════ */
+/* ══ TITRES — POLICE/TAILLE/COULEUR HÉRITÉES DU PARENT ══ */
+/* ═══════════════════════════════════════════════════════════ */
+/* Le <div class="r-titre"> reçoit font-family/font-size/couleur
+   via JS (même code que l'éditeur). Les h1/h2/h3 héritent → identique. */
+
+.r-titre h1,
+.r-titre h2,
+.r-titre h3 {
+  font-family: inherit;    /* ✅ hérite de el.font */
+  font-size: inherit;      /* ✅ hérite de el.taille */
+  font-weight: inherit;    /* ✅ hérite de el.gras */
+  font-style: inherit;     /* ✅ hérite de el.italique */
+  color: inherit;          /* ✅ hérite de el.couleur */
+  line-height: inherit;
+  text-align: inherit;
+  letter-spacing: inherit;
+  margin: 0 0 4px 0;
+  padding: 0;
+}
+.r-titre h1:last-child,
+.r-titre h2:last-child,
+.r-titre h3:last-child { margin-bottom: 0; }
+
+/* Décorations spécifiques par niveau (bordures uniquement) */
+.r-titre h1 {
+  border-bottom: 3px double currentColor;
+  padding-bottom: 5px;
+  line-height: 1.15;
+}
+.r-titre h2 {
+  border-bottom: 1px solid var(--filet);
+  padding-bottom: 3px;
+  line-height: 1.2;
+}
+.r-titre h3 {
+  font-style: italic;
+  line-height: 1.3;
+}
+
+.r-titre .surtitre {
+  font-size: 9px;
+  color: #C8102E;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+/* ═══════════════════════════════════════════════════════════ */
+/* ══ TEXTE — POLICE/TAILLE/COULEUR HÉRITÉES DU PARENT ══ */
+/* ═══════════════════════════════════════════════════════════ */
+/* Le <div class="r-texte"> reçoit font-family/font-size/couleur
+   via JS. Les <p> héritent. Les <b>, <i>, <span style="..."> 
+   générés par execCommand dans l'éditeur gardent leur priorité. */
+
+.r-texte p,
+.r-texte div {
+  font-family: inherit;     /* ✅ hérite de el.font */
+  font-size: inherit;       /* ✅ hérite de el.taille */
+  font-weight: inherit;     /* ✅ hérite de el.gras */
+  font-style: inherit;      /* ✅ hérite de el.italique */
+  color: inherit;           /* ✅ hérite de el.couleur */
+  line-height: inherit;
+  text-align: inherit;
+  letter-spacing: inherit;
+  margin: 0 0 6px 0;
+  padding: 0;
+}
+.r-texte p:last-child,
+.r-texte div:last-child { margin-bottom: 0; }
+
+.r-texte .chapeau {
+  font-style: italic;
+  border-left: 3px solid #C8102E;
+  padding-left: 6px;
+  margin-bottom: 6px;
+}
+
+/* ═══════════════════════════════════════════════════════════ */
+/* ══ IMAGE ══ */
+/* ═══════════════════════════════════════════════════════════ */
+.r-image img{width:100%;height:100%;object-fit:cover;display:block;}
+.r-image figcaption{font-size:9px;color:var(--filet);text-align:center;font-style:italic;padding:3px 4px;}
+
+/* ═══════════════════════════════════════════════════════════ */
+/* ══ CITATION ══ */
+/* ═══════════════════════════════════════════════════════════ */
+.r-citation{width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
+.r-citation blockquote{
+  border:2px solid var(--encre);
+  padding:8px 10px;
+  background:#FFF3D6;
+  text-align:center;
   width:100%;
-  height:100%;
-  outline:none;
+  margin:0;
+}
+.r-citation blockquote p{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-size:12px;
+  color:var(--encre);
+  margin:0;
+  line-height:1.4;
+}
+.r-citation .auteur{
+  font-size:9px;
+  color:#C8102E;
+  text-align:right;
+  font-family:'Outfit',sans-serif;
+  margin-top:5px;
+  font-style:normal;
 }
 
-.el-image .el-inner{overflow:hidden;}
-.el-image img{width:100%;height:100%;object-fit:cover;display:block;}
-.el-image .img-placeholder{
-  width:100%;height:100%;background:var(--g200);
-  display:flex;align-items:center;justify-content:center;
-  flex-direction:column;gap:8px;color:var(--g400);font-size:13px;
-}
-.el-filet .el-inner{display:flex;align-items:center;justify-content:center;}
-.el-video .el-inner{overflow:hidden;}
-
-/* ── Vidéo ── */
-.video-preview-wrap{
-  width:100%;height:100%;
-  position:relative;background:#111;
-  display:flex;align-items:center;justify-content:center;
-}
-.video-preview-wrap video{
-  width:100%;height:100%;
-  object-fit:cover;display:block;
-}
-.video-legende-edit{
-  position:absolute;bottom:0;left:0;right:0;
-  background:rgba(0,0,0,0.6);color:#fff;
-  font-size:10px;text-align:center;padding:3px;
-}
-
-/* ── Rendu blocs — COPIE EXACTE de l'éditeur ── */
-.r-titre h1{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:var(--encre);border-bottom:3px double var(--encre);padding-bottom:5px;margin-bottom:5px;line-height:1.1;}
-.r-titre h2{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--encre);border-bottom:1px solid var(--filet);padding-bottom:3px;margin-bottom:3px;}
-.r-titre h3{font-family:'Playfair Display',serif;font-size:13px;font-style:italic;font-weight:600;color:var(--encre);}
-.r-titre .surtitre{font-size:9px;color:#C8102E;text-transform:uppercase;letter-spacing:2px;font-family:'Outfit',sans-serif;}
-
-.r-texte p{font-family:'Lora',serif;font-size:10px;color:#2d1f0e;line-height:1.65;text-align:justify;}
-.r-texte .chapeau{font-style:italic;border-left:3px solid #C8102E;padding-left:6px;margin-bottom:4px;font-family:'Lora',serif;font-size:10px;}
-
-.r-image img{width:100%;display:block;}
-.r-image figcaption{font-size:8px;color:var(--filet);text-align:center;font-style:italic;padding:2px 4px;}
-
-.r-citation blockquote{border:2px solid var(--encre);padding:8px 10px;background:#FFF3D6;text-align:center;}
-.r-citation blockquote p{font-family:'Playfair Display',serif;font-style:italic;font-size:10px;color:var(--encre);}
-.r-citation .auteur{font-size:8px;color:#C8102E;text-align:right;font-family:'Outfit',sans-serif;}
-
-.r-filet hr{border:none;height:2px;background:var(--encre);}
+/* ═══════════════════════════════════════════════════════════ */
+/* ══ FILET ══ */
+/* ═══════════════════════════════════════════════════════════ */
+.r-filet{width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
+.r-filet hr{border:none;height:2px;background:var(--encre);width:100%;margin:0;}
 .r-filet.ornement{text-align:center;color:var(--filet);font-size:14px;padding:3px;}
 
-.r-encart{background:#FFF3D6;border:2px solid var(--encre);padding:8px;}
-.r-encart .et{font-family:'Playfair Display',serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--filet);padding-bottom:3px;margin-bottom:4px;}
-.r-encart p{font-family:'Lora',serif;font-size:9px;line-height:1.6;}
+/* ═══════════════════════════════════════════════════════════ */
+/* ══ ENCART ══ */
+/* ═══════════════════════════════════════════════════════════ */
+.r-encart{background:#FFF3D6;border:2px solid var(--encre);padding:10px;width:100%;height:100%;box-sizing:border-box;}
+.r-encart .et{font-family:'Playfair Display',serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--filet);padding-bottom:4px;margin-bottom:6px;color:var(--encre);}
+.r-encart p{font-family:'Lora',serif;font-size:10px;line-height:1.65;margin:0 0 4px 0;color:var(--encre);}
+.r-encart p:last-child{margin-bottom:0;}
 
-.r-pub{background:var(--encre);color:#FFFEF7;padding:10px;text-align:center;}
-.r-pub .pt{font-size:14px;color:#FFD700;}
-.r-pub .px{font-size:9px;line-height:1.4;}
-.r-pub .tel{font-size:10px;color:#FFD700;font-weight:700;}
+/* ═══════════════════════════════════════════════════════════ */
+/* ══ PUB ══ */
+/* ═══════════════════════════════════════════════════════════ */
+.r-pub{
+  background:var(--encre);
+  color:#FFFEF7;
+  padding:12px;
+  text-align:center;
+  width:100%;
+  height:100%;
+  box-sizing:border-box;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+.r-pub .pt{font-size:16px;color:#FFD700;font-weight:900;letter-spacing:2px;font-family:'Playfair Display',serif;}
+.r-pub .px{font-size:10px;line-height:1.4;margin-top:4px;font-family:'Outfit',sans-serif;}
+.r-pub .tel{font-size:11px;color:#FFD700;font-weight:700;margin-top:6px;font-family:'Outfit',sans-serif;}
+
+/* ═══════════════════════════════════════════════════════════ */
+/* ══ FORME ══ */
+/* ═══════════════════════════════════════════════════════════ */
+.r-forme-inner{width:100%;height:100%;}
+
+/* ═══════════════════════════════════════════════════════════ */
+/* ══ VIDÉO ══ */
+/* ═══════════════════════════════════════════════════════════ */
+.video-reader{width:100%;height:100%;background:#111;position:relative;overflow:hidden;}
+.video-reader video{width:100%;height:100%;object-fit:cover;display:block;}
+.video-reader iframe{width:100%;height:100%;border:none;display:block;}
+.video-reader .video-legende{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.6);color:#fff;font-size:10px;text-align:center;padding:3px;}
 
 /* ── AUCUN CONTENU ── */
 .no-content{padding:4rem;text-align:center;color:var(--g400);}
@@ -314,12 +416,10 @@ function rendreArticle() {
   const page = document.getElementById('article-page');
   if (!page || !CONTENU.length) return;
 
-  // ✅ Largeur identique à l'éditeur
   const PAGE_W = Math.min(window.innerWidth - 40, 1200);
   page.style.width = PAGE_W + 'px';
   page.innerHTML = '';
 
-  // Hauteur totale
   let maxH = 0;
   CONTENU.forEach(el => {
     const bottom = (el.y || 0) + (el.h || 100) + 60;
@@ -328,7 +428,6 @@ function rendreArticle() {
   if (maxH < 400) maxH = 400;
   page.style.height = maxH + 'px';
 
-  // Rendu de chaque élément — MÊME CODE QUE creerDomElement()
   CONTENU.forEach(el => page.appendChild(creerDomElement(el)));
 }
 
@@ -393,7 +492,7 @@ function creerDomElement(el) {
     case 'video': {
       if (el.url) {
         const wrap = document.createElement('div');
-        wrap.className = 'video-preview-wrap';
+        wrap.className = 'video-reader';
         if (/\.(mp4|webm|mov|ogg|m4v)(\?|$)/i.test(el.url)) {
           const video = document.createElement('video');
           video.src = el.url;
@@ -411,7 +510,7 @@ function creerDomElement(el) {
         }
         if (el.legende) {
           const leg = document.createElement('div');
-          leg.className = 'video-legende-edit';
+          leg.className = 'video-legende';
           leg.textContent = el.legende;
           wrap.appendChild(leg);
         }
