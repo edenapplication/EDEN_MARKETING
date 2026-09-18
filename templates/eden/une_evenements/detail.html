@@ -30,7 +30,7 @@ body{font-family:'Outfit',sans-serif;background:#fff;color:var(--g800);overflow-
 ::-webkit-scrollbar{width:5px;}
 ::-webkit-scrollbar-thumb{background:var(--grad-h);border-radius:100px;}
 
-/* ══ NAVBAR ══ */
+/* ══ NAVBAR TRANSPARENTE ══ */
 nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;background:transparent;transition:background 0.3s ease, box-shadow 0.3s ease;}
 nav.scrolled{background:rgba(255,255,255,.92);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);box-shadow:0 2px 20px rgba(0,0,0,0.08);}
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
@@ -64,6 +64,13 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .cover-infos{display:flex;gap:1.5rem;margin-top:1rem;flex-wrap:wrap;}
 .cover-info-item{display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,0.8);}
 
+/* ══ CATEGORY BADGE ══ */
+.nav-cat-badge{padding:5px 14px;border-radius:100px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
+.cat-une{background:rgba(200,16,46,0.9);color:#fff;}
+.cat-avenir{background:rgba(22,163,74,0.9);color:#fff;}
+.cat-passe{background:rgba(100,116,139,0.9);color:#fff;}
+.cat-actu{background:rgba(27,79,219,0.9);color:#fff;}
+
 /* ══ BARRE NAV ARTICLE ══ */
 .article-nav-bar{background:var(--g800);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.8rem;}
 .anb-back{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#94A3B8;text-decoration:none;transition:color 0.2s;}
@@ -72,7 +79,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .anb-share-btn{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;transition:all 0.2s;}
 .anb-share-btn:hover{background:rgba(255,255,255,0.2);}
 
-/* ══ CONTENU ARTICLE — DAMIER GRIS COMME L'ÉDITEUR ══ */
+/* ══ CONTENU ARTICLE — FORMAT IDENTIQUE À L'ÉDITEUR ══ */
 .article-outer{
   background:#3a3a3a;
   background-image:radial-gradient(circle,#4a4a4a 1px,transparent 1px);
@@ -87,18 +94,14 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .article-page{
   background:var(--papier);
   position:relative;
-  box-shadow:0 8px 48px rgba(0,0,0,0.5);
+  box-shadow:0 8px 48px rgba(0,0,0,0.4);
   flex-shrink:0;
   overflow:hidden;
   user-select:text;
 }
 
-/* ══ STRUCTURE DES ÉLÉMENTS (identique à l'éditeur) ══ */
-.article-page .el{position:absolute;overflow:hidden;}
-.article-page .el-inner{width:100%;height:100%;position:relative;}
-
-/* ══ STYLES DES BLOCS — COPIE EXACTE DE L'ÉDITEUR ══ */
-/* ✅ AUCUNE lettrine (pas de ::first-letter) */
+/* ══ STYLES DES BLOCS — IDENTIQUES À L'ÉDITEUR ══ */
+/* ✅ AUCUN ::first-letter — pas de lettrine */
 
 .r-titre h1{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:var(--encre);border-bottom:3px double var(--encre);padding-bottom:5px;margin-bottom:5px;line-height:1.1;}
 .r-titre h2{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--encre);border-bottom:1px solid var(--filet);padding-bottom:3px;margin-bottom:3px;}
@@ -126,6 +129,13 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .r-pub .pt{font-size:14px;color:#FFD700;}
 .r-pub .px{font-size:9px;line-height:1.4;}
 .r-pub .tel{font-size:10px;color:#FFD700;font-weight:700;}
+
+.r-forme-inner{width:100%;height:100%;}
+
+.video-reader{width:100%;height:100%;background:#111;position:relative;overflow:hidden;}
+.video-reader video{width:100%;height:100%;object-fit:cover;display:block;}
+.video-reader iframe{width:100%;height:100%;border:none;display:block;}
+.video-reader .video-legende{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.6);color:#fff;font-size:10px;text-align:center;padding:3px;}
 
 .no-content{padding:4rem;text-align:center;color:var(--g400);}
 .no-content .ico{font-size:3rem;margin-bottom:1rem;}
@@ -214,7 +224,7 @@ footer{background:var(--g800);color:#fff;padding:3rem 2rem 1.5rem;}
 {% if article.contenu %}
 <div class="article-outer">
   <div class="article-page" id="article-page">
-    <!-- Rendu JS : mêmes styles que l'éditeur -->
+    <!-- Rendu JS avec coordonnées absolues identiques à l'éditeur -->
   </div>
 </div>
 {% else %}
@@ -252,7 +262,88 @@ function getEmbedUrl(url) {
 }
 
 // ══════════════════════════════════════════════
-// RENDU DE L'ARTICLE — COPIE EXACTE DE L'ÉDITEUR
+// RENDU D'UN BLOC — IDENTIQUE À L'ÉDITEUR
+// ══════════════════════════════════════════════
+function rendreBloc(bloc) {
+  switch(bloc.type) {
+
+    case 'texte': {
+      // ✅ Contenu HTML rendu TEL QUEL (comme dans l'éditeur)
+      return `<div class="r-texte">${bloc.contenu || '<p></p>'}</div>`;
+    }
+
+    case 'titre': {
+      // ✅ Contenu HTML rendu TEL QUEL
+      return `<div class="r-titre">${bloc.contenu || '<h2></h2>'}</div>`;
+    }
+
+    case 'image': {
+      if (!bloc.url) return '';
+      return `<div class="r-image">
+        <figure>
+          <img src="${bloc.url}" alt="${bloc.legende||''}" loading="lazy">
+          ${bloc.legende ? `<figcaption>${bloc.legende}</figcaption>` : ''}
+        </figure>
+      </div>`;
+    }
+
+    case 'citation': {
+      return `<div class="r-citation">
+        <blockquote>
+          <p>${bloc.contenu||''}</p>
+          ${bloc.auteur ? `<div class="auteur">— ${bloc.auteur}</div>` : ''}
+        </blockquote>
+      </div>`;
+    }
+
+    case 'filet': {
+      if (bloc.style_filet === 'ornement') {
+        return `<div class="r-filet ornement">✦ ✦ ✦</div>`;
+      }
+      return `<div class="r-filet"><hr style="border-top:${bloc.epaisseur||2}px ${bloc.style_filet||'solid'} ${bloc.couleur||'#1a1008'};"></div>`;
+    }
+
+    case 'encart': {
+      return `<div class="r-encart">
+        ${bloc.titre_encart ? `<div class="et">${bloc.titre_encart}</div>` : ''}
+        ${(bloc.contenu||'').split('\n').map(p => `<p>${p||'&nbsp;'}</p>`).join('')}
+      </div>`;
+    }
+
+    case 'pub': {
+      return `<div class="r-pub">
+        <div class="pt">EDEN GROUP</div>
+        <div class="px">${bloc.contenu||''}</div>
+        ${bloc.telephone ? `<div class="tel">📞 ${bloc.telephone}</div>` : ''}
+      </div>`;
+    }
+
+    case 'video': {
+      if (!bloc.url) return `<div class="video-reader"><div style="display:flex;align-items:center;justify-content:center;height:100%;color:#fff;">🎬 ${bloc.legende||'Vidéo'}</div></div>`;
+      if (/\.(mp4|webm|mov|ogg|m4v)(\?|$)/i.test(bloc.url)) {
+        return `<div class="video-reader">
+          <video src="${bloc.url}" controls preload="metadata"></video>
+          ${bloc.legende ? `<div class="video-legende">${bloc.legende}</div>` : ''}
+        </div>`;
+      }
+      const vUrl = getEmbedUrl(bloc.url);
+      return `<div class="video-reader">
+        <iframe src="${vUrl}" allowfullscreen></iframe>
+        ${bloc.legende ? `<div class="video-legende">${bloc.legende}</div>` : ''}
+      </div>`;
+    }
+
+    case 'forme': {
+      return `<div class="r-forme-inner" style="background:${bloc.couleur_fond||'#1B4FDB'};border-radius:${bloc.radius||0}px;border:${bloc.bordure_ep||0}px solid ${bloc.bordure_col||'#000'};"></div>`;
+    }
+
+    default:
+      return `<div style="padding:8px;color:#888;font-size:12px;">Bloc: ${bloc.type}</div>`;
+  }
+}
+
+// ══════════════════════════════════════════════
+// RENDU DE L'ARTICLE — FORMAT IDENTIQUE À L'ÉDITEUR
 // ══════════════════════════════════════════════
 function rendreArticle() {
   const page = document.getElementById('article-page');
@@ -275,7 +366,6 @@ function rendreArticle() {
   // Rendu de chaque élément
   CONTENU.forEach(el => {
     const div = document.createElement('div');
-    div.className = `el el-${el.type}`;
     div.style.cssText = `
       position:absolute;
       left:${el.x || 0}px;
@@ -287,118 +377,25 @@ function rendreArticle() {
       overflow:hidden;
     `;
 
-    const inner = document.createElement('div');
-    inner.className = 'el-inner';
-    inner.style.background = el.fond || 'transparent';
-
-    switch(el.type) {
-
-      // ✅ TEXTE — styles IDENTIQUES à l'éditeur (appliqués sur le div)
-      case 'texte':
-      case 'titre': {
-        const ed = document.createElement('div');
-        // Contenu HTML rendu TEL QUEL (avec ses <span> inline de execCommand)
-        ed.innerHTML = el.contenu || (el.type==='titre' ? '<h2>Titre</h2>' : '<p>Votre texte ici...</p>');
-        // ✅ MÊMES styles que dans creerDomElement() de l'éditeur
-        ed.style.cssText = [
-          `font-family:${el.font||"'Lora',serif"}`,
-          `font-size:${el.taille||14}px`,
-          `color:${el.couleur||'#1a1008'}`,
-          `font-weight:${el.gras?'bold':'normal'}`,
-          `font-style:${el.italique?'italic':'normal'}`,
-          `text-align:${el.alignement||'left'}`,
-          `line-height:${el.interligne||1.6}`,
-          `letter-spacing:${el.espacement||0}px`,
-          `padding:${el.padding||4}px`,
-          'width:100%',
-          'height:100%',
-        ].join(';');
-        ed.className = el.type==='titre' ? 'r-titre' : 'r-texte';
-        inner.appendChild(ed);
-        break;
-      }
-
-      case 'image': {
-        if (el.url) {
-          const img = document.createElement('img');
-          img.src = el.url;
-          img.alt = el.legende || '';
-          img.style.objectFit = el.objectFit || 'cover';
-          img.style.width = '100%';
-          img.style.height = '100%';
-          inner.appendChild(img);
-        }
-        if (el.legende) {
-          const cap = document.createElement('div');
-          cap.style.cssText = 'font-size:9px;color:#8B7355;text-align:center;padding:2px;font-style:italic;';
-          cap.textContent = el.legende;
-          inner.appendChild(cap);
-        }
-        break;
-      }
-
-      case 'video': {
-        if (el.url) {
-          const wrap = document.createElement('div');
-          wrap.style.cssText = 'width:100%;height:100%;background:#111;position:relative;';
-          if (/\.(mp4|webm|mov|ogg|m4v)(\?|$)/i.test(el.url)) {
-            const video = document.createElement('video');
-            video.src = el.url;
-            video.controls = true;
-            video.preload = 'metadata';
-            video.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
-            wrap.appendChild(video);
-          } else {
-            const vUrl = getEmbedUrl(el.url);
-            const iframe = document.createElement('iframe');
-            iframe.src = vUrl;
-            iframe.allowFullscreen = true;
-            iframe.style.cssText = 'width:100%;height:100%;border:none;';
-            wrap.appendChild(iframe);
-          }
-          if (el.legende) {
-            const leg = document.createElement('div');
-            leg.style.cssText = 'position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.6);color:#fff;font-size:10px;text-align:center;padding:3px;';
-            leg.textContent = el.legende;
-            wrap.appendChild(leg);
-          }
-          inner.appendChild(wrap);
-        }
-        break;
-      }
-
-      case 'citation': {
-        inner.innerHTML = `<div class="r-citation"><blockquote><p>${el.contenu||'Votre citation...'}</p>${el.auteur?`<div class="auteur">— ${el.auteur}</div>`:''}</blockquote></div>`;
-        break;
-      }
-
-      case 'encart': {
-        inner.innerHTML = `<div class="r-encart">${el.titre_encart?`<div class="et">${el.titre_encart}</div>`:''}<p>${el.contenu||''}</p></div>`;
-        break;
-      }
-
-      case 'filet': {
-        if (el.style_filet==='ornement') inner.innerHTML='<div class="r-filet ornement">✦ ✦ ✦</div>';
-        else {
-          const hr = document.createElement('hr');
-          hr.style.cssText=`border:none;border-top:${el.epaisseur||2}px ${el.style_filet||'solid'} ${el.couleur||'#1a1008'};width:100%;`;
-          inner.appendChild(hr);
-        }
-        break;
-      }
-
-      case 'forme': {
-        inner.style.cssText += `background:${el.couleur_fond||'#1B4FDB'};border-radius:${el.radius||0}px;border:${el.bordure_ep||0}px solid ${el.bordure_col||'#000'};`;
-        break;
-      }
-
-      case 'pub': {
-        inner.innerHTML = `<div class="r-pub"><div class="pt">EDEN GROUP</div><div class="px">${el.contenu||''}</div>${el.telephone?`<div class="tel">📞 ${el.telephone}</div>`:''}</div>`;
-        break;
-      }
+    // Fond du bloc
+    if (el.fond && el.fond !== 'transparent') {
+      div.style.background = el.fond;
     }
 
-    div.appendChild(inner);
+    // ✅ Styles pour texte et titre — identiques à l'éditeur
+    if (el.type === 'texte' || el.type === 'titre') {
+      div.style.fontFamily = el.font || (el.type === 'titre' ? "'Playfair Display',serif" : "'Lora',serif");
+      div.style.fontSize = (el.taille || 13) + 'px';
+      div.style.color = el.couleur || '#1a1008';
+      div.style.lineHeight = el.interligne || '1.65';
+      div.style.textAlign = el.alignement || 'left';
+      if (el.padding) div.style.padding = el.padding + 'px';
+      if (el.gras) div.style.fontWeight = 'bold';
+      if (el.italique) div.style.fontStyle = 'italic';
+      if (el.espacement) div.style.letterSpacing = el.espacement + 'px';
+    }
+
+    div.innerHTML = rendreBloc(el);
     page.appendChild(div);
   });
 }
