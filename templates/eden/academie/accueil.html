@@ -82,7 +82,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
   overflow:hidden;
 }
 .hero-bg{position:absolute;inset:0;}
-.hero-bg img{width:100%;height:100%;object-fit:fill;display:block;opacity:1;}
+.hero-bg img{width:100%;height:100%;object-fit:cover;display:block;opacity:1;}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,15,50,.98) 0%,rgba(8,25,70,.92) 15%,rgba(10,30,80,.80) 30%,rgba(10,35,85,.65) 45%,rgba(10,35,85,.45) 55%,rgba(10,35,85,.25) 70%,rgba(10,35,85,.10) 85%,rgba(0,0,0,0) 100%);z-index:1;}
 .hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr 320px;align-items:center;gap:2rem;padding:6rem 2rem 2.5rem;max-width:1280px;margin:0 auto;}
 .hero-tit{font-size:clamp(2rem,3.5vw,2.8rem);font-weight:900;color:#fff;margin-bottom:0.5rem;}
@@ -411,7 +411,11 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
 <!-- ══ HERO ══ -->
 <div class="hero-academie">
   <div class="hero-bg">
-    <img src="{% static 'images/academie-hero.jpg' %}" alt="Académie EDEN GROUP" onerror="this.style.display='none'">
+    {% if section_academie.image %}
+          <img src="{{ section_academie.image.url }}" alt="Académie EDEN GROUP">
+        {% else %}
+          <img src="{% static 'images/terrain.jpeg' %}" alt="Académie EDEN GROUP">
+        {% endif %}
   </div>
   <div class="hero-overlay"></div>
   <div class="hero-inner">

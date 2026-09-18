@@ -1297,7 +1297,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .academy-left h2{
   margin:0;
   color:var(--blue);
-  font-size:clamp(1.2rem, 2vw, 1.8rem);
+  font-size:clamp(0.95rem, 1.3vw, 1.2rem);
   font-weight:900;
   line-height:1.15;
 }
@@ -1372,11 +1372,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
   object-fit:cover;
 }
 .academy-image::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(to right,rgba(255,255,255,.9) 8%,rgba(255,255,255,.3) 30%,transparent 45%);
-  z-index:1;
+ display: none;
 }
 .academy-modules{
   background:#0b2f8b;
@@ -1406,7 +1402,17 @@ nav.scrolled .hamburger span{background:var(--g800);}
   gap:10px;
   font-size:12px;
   line-height:1.4;
+  white-space:nowrap;
+  text-overflow:ellipsis;
 }
+
+.academy-modules li > *:not(::before) {
+  flex:1;
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
 .academy-modules li::before{
   content:"➜";
   width:20px;
@@ -2321,8 +2327,8 @@ footer{
   <div class="sec-inner">
     <div class="sec-hd">
       <div>
-        <div class="sec-eyebrow">{{ section_academie.eyebrow }}</div>
-        <div class="sec-title">{{ section_academie.titre_ligne1 }} <span>{{ section_academie.titre_ligne2 }}</span></div>
+        
+        <div class="sec-title">{{ section_academie.titre_ligne1 }} <span><br>{{ section_academie.titre_ligne2 }}</span></div>
       </div>
       <a class="view-all-link" href="{% url 'academie_accueil' %}">Voir toute l'académie →</a>
     </div>
@@ -2330,12 +2336,13 @@ footer{
     <div class="academy-card">
       
       <!-- BLOC GAUCHE -->
-      <div class="academy-left">
-        <div class="academy-badge">{{ section_academie.eyebrow }}</div>
-        <h2>{{ section_academie.titre_ligne1 }}<br>{{ section_academie.titre_ligne2 }}</h2>
-        <p>{{ section_academie.description }}</p>
-        <a href="{% url 'academie_accueil' %}" class="academy-btn">{{ section_academie.btn_texte }}</a>
-      </div>
+      <!-- BLOC GAUCHE -->
+<div class="academy-left">
+    <div class="academy-badge">{{ section_academie.eyebrow }}</div>
+    <h2>S'informer, comprendre et mieux sécuriser son patrimoine foncier</h2>
+    <p>{{ section_academie.description }}</p>
+    <a href="{% url 'academie_accueil' %}" class="academy-btn">{{ section_academie.btn_texte }}</a>
+</div>
       
       <div class="academy-features">
     <div class="feature">
@@ -2444,16 +2451,23 @@ footer{
       <div style="font-size:14px;color:rgba(255,255,255,0.85);margin-bottom:1rem;">Notre équipe est à votre disposition.</div>
       <div style="background:rgba(255,255,255,0.1);border-radius:var(--r);padding:1rem;">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;color:#fff;font-size:13px;font-weight:600;">
-          <span style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:12px;">📞</span> +237 6XX XXX XXX
+          <span style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:12px;">📞</span> +237 653 350 503
         </div>
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;color:#fff;font-size:13px;font-weight:600;">
           <span style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:12px;">✉</span> contact@edengroup.cm
         </div>
         <div style="display:flex;align-items:center;gap:10px;color:#fff;font-size:13px;font-weight:600;">
-          <span style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:12px;">📍</span> Yaoundé, Cameroun
+          <span style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:12px;">📍</span> Yaoundé, Texaco Omnisport
         </div>
       </div>
-      <a href="#" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:1rem;background:#25D366;color:#fff;padding:10px;border-radius:var(--r);text-decoration:none;font-weight:700;font-size:13px;">💬 Discuter sur WhatsApp</a>
+      <a href="https://wa.me/237653350503?text=Bonjour%20EDEN%20GROUP%2C%20je%20souhaite%20avoir%20des%20informations%20sur%20vos%20terrains." 
+   target="_blank" 
+   rel="noopener noreferrer"
+   style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:1rem;background:#25D366;color:#fff;padding:10px;border-radius:var(--r);text-decoration:none;font-weight:700;font-size:13px;transition:all 0.2s;"
+   onmouseover="this.style.background='#128C7E';this.style.transform='translateY(-2px)'"
+   onmouseout="this.style.background='#25D366';this.style.transform='translateY(0)'">
+    💬 Discuter sur WhatsApp
+</a>
     </div>
   </div>
 </div>

@@ -3429,6 +3429,7 @@ def academie_accueil(request):
     """Page principale de l'Académie."""
     docs_publie = AcademieDocument.objects.filter(statut='publie')
     editions_publiees = JournalEdition.objects.filter(statut='publie')
+    section_academie = SectionAcademie.objects.filter(is_active=True).first()
 
     contexte = {
         # Articles = éditions de type 'article'
@@ -3472,6 +3473,7 @@ def academie_accueil(request):
         'nb_galerie': docs_publie.filter(categorie='galerie').count(),
         'nb_faqs': AcademieFAQ.objects.filter(statut='publie').count(),
         'nb_lexique': docs_publie.filter(categorie='lexique').count(),
+        'section_academie': section_academie,
     }
     return render(request, 'eden/academie/accueil.html', contexte)
 
