@@ -1757,3 +1757,79 @@ class AProposEtape(models.Model):
 
     def __str__(self):
         return f"{self.annee} — {self.description[:50]}"
+
+class SectionAcademie(models.Model):
+    """Section Académie affichée sur la page d'accueil EDEN GROUP"""
+    
+    # ═══ BLOC GAUCHE ═══
+    eyebrow = models.CharField(
+        max_length=100, 
+        default="🎓 EDEN GROUP ACADÉMIE",
+        verbose_name="Eyebrow (texte au-dessus)"
+    )
+    titre_ligne1 = models.CharField(
+        max_length=200, 
+        default="Se former aujourd'hui",
+        verbose_name="Titre ligne 1"
+    )
+    titre_ligne2 = models.CharField(
+        max_length=200, 
+        default="pour bâtir le foncier de demain",
+        verbose_name="Titre ligne 2 (en couleur)"
+    )
+    description = models.TextField(
+        default="L'Académie EDEN GROUP forme les professionnels, investisseurs et particuliers grâce à des modules pratiques dispensés par des experts.",
+        verbose_name="Description"
+    )
+    btn_texte = models.CharField(
+        max_length=50, 
+        default="Découvrir →",
+        verbose_name="Texte du bouton principal"
+    )
+    
+    # ═══ 4 FEATURES ═══
+    feature1_icone = models.CharField(max_length=50, default="fa-solid fa-book", verbose_name="Feature 1 - Icône")
+    feature1_titre = models.CharField(max_length=100, default="Programmes certifiants", verbose_name="Feature 1 - Titre")
+    feature1_desc = models.CharField(max_length=200, default="Cours complets et pratiques", verbose_name="Feature 1 - Description")
+    
+    feature2_icone = models.CharField(max_length=50, default="fa-solid fa-user-graduate", verbose_name="Feature 2 - Icône")
+    feature2_titre = models.CharField(max_length=100, default="Experts du domaine", verbose_name="Feature 2 - Titre")
+    feature2_desc = models.CharField(max_length=200, default="Formateurs expérimentés", verbose_name="Feature 2 - Description")
+    
+    feature3_icone = models.CharField(max_length=50, default="fa-solid fa-compass", verbose_name="Feature 3 - Icône")
+    feature3_titre = models.CharField(max_length=100, default="Approche pratique", verbose_name="Feature 3 - Titre")
+    feature3_desc = models.CharField(max_length=200, default="Cas réels EDEN GROUP", verbose_name="Feature 3 - Description")
+    
+    feature4_icone = models.CharField(max_length=50, default="fa-solid fa-certificate", verbose_name="Feature 4 - Icône")
+    feature4_titre = models.CharField(max_length=100, default="Certification", verbose_name="Feature 4 - Titre")
+    feature4_desc = models.CharField(max_length=200, default="Attestation officielle", verbose_name="Feature 4 - Description")
+    
+    # ═══ IMAGE ═══
+    image = models.ImageField(
+        upload_to='academie/', 
+        blank=True, null=True,
+        verbose_name="Image centrale"
+    )
+    
+    # ═══ MODULES (colonne droite) ═══
+    modules_titre = models.CharField(
+        max_length=200, 
+        default="Document et texte réglementaire",
+        verbose_name="Titre du bloc modules"
+    )
+    modules_lien_texte = models.CharField(
+        max_length=100, 
+        default="Voir tous les documents →",
+        verbose_name="Texte du lien"
+    )
+    
+    # ═══ MÉTA ═══
+    is_active = models.BooleanField(default=True, verbose_name="Afficher sur la page d'accueil")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Dernière modification")
+    
+    class Meta:
+        verbose_name = "Section Académie (Accueil)"
+        verbose_name_plural = "Section Académie (Accueil)"
+    
+    def __str__(self):
+        return "Section Académie - Page d'accueil"

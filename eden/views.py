@@ -11,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
 from django.db import models
 from .models import HeroConfig
+from django.contrib.admin.views.decorators import staff_member_required
 
 
 from .models import (
@@ -19,7 +20,7 @@ from .models import (
     SectionLivret, ActualiteHome, CommentaireHome, StatistiqueHome,UneEvenement, UneEvenementCategorie, 
 Projet, ProjetImage, ProjetInfrastructure, EtapeProjet, SousEtapeProjet, Agence, AgenceService, StatAgence,ServiceCategorie, Service,
     EtapeProcessus, EngagementService, AcademieDocument, AcademieVideo, AcademieEtapeParcours,
-    AcademieFAQ, AcademieStatistique, AcademieCategorie,VideoGlobale
+    AcademieFAQ, AcademieStatistique, AcademieCategorie,VideoGlobale,SectionAcademie
 
 )
 from .forms import (
@@ -43,7 +44,8 @@ def home(request):
     from .models import (
         HeroConfig, HeroSlide, ServiceItem, EtapeAcquisition,
         SectionLivret, ActualiteHome, CommentaireHome,
-        StatistiqueHome, JournalEdition, UneEvenement
+        StatistiqueHome, JournalEdition, UneEvenement,
+        SectionAcademie, AcademieDocument
     )
 
     sites = SiteFoncier.objects.filter(is_active=True).prefetch_related('images', 'parcelles')
@@ -70,6 +72,13 @@ def home(request):
     stats_home = StatistiqueHome.objects.filter(is_active=True).order_by('ordre')
     journaux = JournalEdition.objects.filter(statut='publie').order_by('-numero')
     villes = SiteFoncier.objects.filter(is_active=True).values_list('ville', flat=True).distinct()
+    section_academie = SectionAcademie.objects.filter(pk=1).first()
+
+    # ═══ 5 TEXTES DE LOI LES PLUS RÉCENTS ═══
+    textes_loi_recents = AcademieDocument.objects.filter(
+        categorie='texte_loi',
+        statut='publie'
+    ).order_by('-date_publication', '-created_at')[:5]
 
     # ═══ Récupérer les actualités du module Une & Événements ═══
     articles_une = UneEvenement.objects.filter(
@@ -140,9 +149,10 @@ def home(request):
         'stats_home': stats_home,
         'journaux': journaux,
         'villes': villes,
-        'sites_json': sites_json,  # ⬅️ AJOUTÉ POUR LE FILTRAGE AJAX
-    })
-    
+        'section_academie': section_academie,
+        'textes_loi_recents': textes_loi_recents,
+        'sites_json': sites_json,
+    })   
 
 def sites_list(request):
     from .models import HeroConfig, HeroSlide
@@ -666,6 +676,7 @@ def dashboard_home(request):
         'temoignages': Temoignage.objects.count(),
         'utilisateurs': User.objects.count(),
         'visites_a_venir': VisiteProgrammee.objects.filter(date_visite__gte=timezone.now(), statut__in=['demandee', 'confirmee']).count(),
+        'section_academie': SectionAcademie.objects.filter(pk=1).first(),
     }
     sites_perf = SiteFoncier.objects.filter(is_active=True).prefetch_related('parcelles')
     derniers_contacts = DemandeContact.objects.order_by('-created_at')[:6]
@@ -4872,3 +4883,41 @@ def supprimer_page_journal(request, edition_pk):
         'success': True,
         'page_courante': min(page_num, edition.pages.count())
     })
+
+
+@staff_member_required
+def admin_section_academie(request):
+    """Éditer la section Académie de la page d'accueil"""
+    
+    section, created = SectionAcademie.objects.get_or_create(pk=1)
+    
+    if request.method == 'POST':
+        # ═══ BLOC GAUCHE ═══
+        section.eyebrow = request.POST.get('eyebrow', section.eyebrow)
+        section.titre_ligne1 = request.POST.get('titre_ligne1', section.titre_ligne1)
+        section.titre_ligne2 = request.POST.get('titre_ligne2', section.titre_ligne2)
+        section.description = request.POST.get('description', section.description)
+        section.btn_texte = request.POST.get('btn_texte', section.btn_texte)
+        
+        # ═══ FEATURES ═══
+        for i in range(1, 5):
+            setattr(section, f'feature{i}_icone', request.POST.get(f'feature{i}_icone', ''))
+            setattr(section, f'feature{i}_titre', request.POST.get(f'feature{i}_titre', ''))
+            setattr(section, f'feature{i}_desc', request.POST.get(f'feature{i}_desc', ''))
+        
+        # ═══ IMAGE ═══
+        if request.FILES.get('image'):
+            section.image = request.FILES['image']
+        
+        # ═══ MODULES ═══
+        section.modules_titre = request.POST.get('modules_titre', section.modules_titre)
+        section.modules_lien_texte = request.POST.get('modules_lien_texte', section.modules_lien_texte)
+        
+        # ═══ STATUT ═══
+        section.is_active = request.POST.get('is_active') == 'on'
+        
+        section.save()
+        messages.success(request, '✅ Section Académie mise à jour avec succès !')
+        return redirect('admin_section_academie')
+    
+    return render(request, 'eden/dashboard/section_academie.html', {'section': section})

@@ -55,11 +55,11 @@ body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
     </a>
 
     <a href="{% url 'dashboard_hero_slides' %}" class="module-card">
-  <div class="mc-ico">🎞</div>
-  <div class="mc-tit">Slides Hero (carrousel)</div>
-  <div class="mc-desc">Gérez les images qui défilent dans le carrousel de la section hero. Chaque slide peut être activée ou désactivée.</div>
-  <span class="mc-badge">Gérer les slides →</span>
-</a>
+      <div class="mc-ico">🎞</div>
+      <div class="mc-tit">Slides Hero (carrousel)</div>
+      <div class="mc-desc">Gérez les images qui défilent dans le carrousel de la section hero. Chaque slide peut être activée ou désactivée.</div>
+      <span class="mc-badge">Gérer les slides →</span>
+    </a>
 
     <a href="{% url 'dashboard_services' %}" class="module-card">
       <div class="mc-ico">⚙</div>
@@ -115,6 +115,20 @@ body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
       <div class="mc-tit">Témoignages (carrousel)</div>
       <div class="mc-desc">Témoignages longs avec photos et notes en étoiles.</div>
       <span class="mc-badge">Gérer les témoignages →</span>
+    </a>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- 🎓 SECTION ACADÉMIE — NOUVEAU BOUTON                        -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <a href="{% url 'admin_section_academie' %}" class="module-card">
+      <div class="mc-ico">🎓</div>
+      <div class="mc-tit">Section Académie</div>
+      <div class="mc-desc">Titre, description, 4 features, image et bloc Réglementation avec les 5 textes de loi les plus récents.</div>
+      {% if section_academie and section_academie.is_active %}
+        <span class="mc-badge">✅ Section active</span>
+      {% else %}
+        <span class="mc-badge" style="background:#fef9c3;color:#b45309;">⚠ Section inactive</span>
+      {% endif %}
     </a>
   </div>
 </div>

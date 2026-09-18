@@ -277,5 +277,6 @@ path('sw.js', serve, {
     path('dashboard/apropos/api/ligne/<int:pk>/supprimer/', views.api_apropos_ligne_supprimer, name='api_apropos_ligne_supprimer'),
     path('dashboard/apropos/api/ligne/<int:pk>/renommer/', views.api_apropos_ligne_renommer, name='api_apropos_ligne_renommer'),
     path('dashboard/apropos/api/cellule/sauvegarder/', views.api_apropos_cellule_sauvegarder, name='api_apropos_cellule_sauvegarder'),
+    path('dashboard/section-academie/', views.admin_section_academie, name='admin_section_academie'),
 
 ]

@@ -1112,6 +1112,36 @@ document.querySelectorAll('.mob-menu .nav-lnk').forEach(link => {
         document.getElementById('mob-menu').classList.remove('open');
     });
 });
+
+// ═══════════════════════════════════════════════════════════════
+// OUVERTURE AUTOMATIQUE D'UNE SECTION VIA URL
+// ═══════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const section = urlParams.get('section');
+    
+    if (section) {
+        setTimeout(function() {
+            const labels = {
+                'texte_loi': '📜 Textes de loi',
+                'article': '📄 Articles',
+                'revue': '📕 Revues',
+                'guide': '📚 Guides pratiques',
+                'lexique': '🔤 Lexique',
+                'video': '🎬 Vidéothèque',
+                'galerie': '🖼 Galerie',
+                'faq': '❓ FAQ',
+            };
+            
+            const label = labels[section] || '📂 Section';
+            afficherSection(section, label, null);
+            
+            // Nettoyer l'URL
+            history.replaceState(null, '', window.location.pathname);
+        }, 300);
+    }
+});
+
 </script>
 </body>
 </html>

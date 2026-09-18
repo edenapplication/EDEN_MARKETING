@@ -1,0 +1,578 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}À Propos — Configuration{% endblock %}
+
+{% block admin_content %}
+
+<style>
+/* ═══ SECTIONS ═══ */
+.sa-section{background:#fff;border-radius:12px;padding:24px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.05);}
+.sa-section h5{font-weight:800;color:#1e3a5f;margin-bottom:18px;padding-bottom:12px;border-bottom:2px solid #eef3ff;display:flex;align-items:center;gap:8px;}
+.sa-label{font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:block;}
+.sa-input{width:100%;border:1.5px solid #e2e8f0;border-radius:8px;padding:10px 14px;font-size:14px;font-family:'Outfit',sans-serif;outline:none;transition:border-color 0.2s;}
+.sa-input:focus{border-color:#1B4FDB;}
+.sa-help{font-size:11px;color:#94a3b8;margin-top:4px;}
+.sa-preview{max-width:200px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,0.1);margin-bottom:10px;}
+.sa-feature-box{background:#f8faff;border-radius:10px;padding:14px;margin-bottom:12px;border-left:3px solid #1B4FDB;}
+.sa-feature-num{font-size:11px;font-weight:800;color:#1B4FDB;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.sa-info-box{background:#dbeafe;border-left:4px solid #1B4FDB;border-radius:8px;padding:12px;font-size:12px;color:#1e3a5f;margin-top:10px;}
+
+/* ═══ SÉLECTEUR D'ICÔNES ═══ */
+.icon-picker{position:relative;}
+.icon-picker-selected{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;background:#fff;cursor:pointer;transition:all 0.2s;user-select:none;}
+.icon-picker-selected:hover{border-color:#1B4FDB;background:#f8faff;}
+.icon-picker-selected i{font-size:20px;color:#1B4FDB;min-width:24px;text-align:center;}
+.icon-picker-label{flex:1;font-size:13px;color:#64748b;}
+.icon-picker-arrow{font-size:10px;color:#94a3b8;transition:transform 0.2s;}
+.icon-picker.open .icon-picker-arrow{transform:rotate(180deg);}
+
+.icon-picker-dropdown{display:none;position:absolute;top:calc(100% + 8px);left:0;right:0;background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.15);z-index:100;max-height:420px;overflow:hidden;flex-direction:column;min-width:380px;}
+.icon-picker.open .icon-picker-dropdown{display:flex;}
+
+.icon-picker-search{width:100%;border:none;border-bottom:1.5px solid #e2e8f0;padding:12px 14px;font-size:13px;font-family:'Outfit',sans-serif;outline:none;background:#f8faff;}
+.icon-picker-search::placeholder{color:#94a3b8;}
+
+.icon-picker-info{padding:8px 14px;font-size:11px;color:#94a3b8;background:#f8faff;border-bottom:1px solid #e2e8f0;}
+
+.icon-picker-grid{display:grid;grid-template-columns:repeat(8, 1fr);gap:4px;padding:10px;overflow-y:auto;max-height:300px;}
+.icon-picker-grid::-webkit-scrollbar{width:6px;}
+.icon-picker-grid::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:100px;}
+
+.icon-picker-item{aspect-ratio:1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#475569;cursor:pointer;transition:all 0.15s;border:1.5px solid transparent;background:#f8fafc;}
+.icon-picker-item:hover{background:#eef3ff;color:#1B4FDB;transform:scale(1.08);}
+.icon-picker-item.selected{background:#1B4FDB;color:#fff;border-color:#1B4FDB;}
+
+.icon-picker-custom{padding:12px 14px;border-top:1.5px solid #e2e8f0;background:#fff;}
+.icon-picker-custom label{font-size:11px;font-weight:700;color:#475569;display:block;margin-bottom:6px;}
+.icon-picker-custom-input{width:100%;border:1.5px solid #e2e8f0;border-radius:6px;padding:8px 12px;font-size:12px;font-family:monospace;outline:none;transition:border-color 0.2s;}
+.icon-picker-custom-input:focus{border-color:#1B4FDB;}
+.icon-picker-apply-btn{margin-top:6px;background:#1B4FDB;color:#fff;border:none;padding:8px 16px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;transition:background 0.2s;}
+.icon-picker-apply-btn:hover{background:#0A2494;}
+
+.icon-picker-noresult{text-align:center;padding:20px;color:#94a3b8;font-size:12px;grid-column:1/-1;}
+</style>
+
+<!-- ═══ HEADER ═══ -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 style="color:#1e3a5f;font-weight:800;margin:0;">🎓 Section Académie (Accueil)</h2>
+        <div style="font-size:13px;color:#64748b;">Modifier le bloc affiché sur la page d'accueil</div>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="/dashboard/home-config/" class="btn btn-outline-secondary">← Retour au dashboard</a>
+        <a href="{% url 'home' %}" target="_blank" class="btn btn-outline-primary">👁 Voir la page d'accueil</a>
+    </div>
+</div>
+
+{% if messages %}
+    {% for msg in messages %}
+    <div class="alert alert-success alert-dismissible fade show">
+        {{ msg }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+{% endif %}
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <!-- ═══ BLOC GAUCHE ═══ -->
+    <div class="sa-section">
+        <h5>📝 Bloc gauche — Titre et description</h5>
+        
+        <div class="mb-3">
+            <label class="sa-label">Eyebrow</label>
+            <input type="text" name="eyebrow" class="sa-input" value="{{ section.eyebrow }}">
+        </div>
+        
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <label class="sa-label">Titre — Ligne 1</label>
+                <input type="text" name="titre_ligne1" class="sa-input" value="{{ section.titre_ligne1 }}">
+            </div>
+            <div class="col-md-6">
+                <label class="sa-label">Titre — Ligne 2 (en couleur)</label>
+                <input type="text" name="titre_ligne2" class="sa-input" value="{{ section.titre_ligne2 }}">
+            </div>
+        </div>
+        
+        <div class="mb-3">
+            <label class="sa-label">Description</label>
+            <textarea name="description" class="sa-input" rows="3">{{ section.description }}</textarea>
+        </div>
+        
+        <div class="mb-3">
+            <label class="sa-label">Texte du bouton principal</label>
+            <input type="text" name="btn_texte" class="sa-input" value="{{ section.btn_texte }}">
+        </div>
+    </div>
+    
+    <!-- ═══ 4 FEATURES AVEC SÉLECTEUR D'ICÔNES ═══ -->
+    <div class="sa-section">
+        <h5>⭐ Les 4 features</h5>
+        
+        {% for i in "1234" %}
+        <div class="sa-feature-box">
+            <div class="sa-feature-num">Feature {{ i }}</div>
+            <div class="row g-3">
+                
+                <!-- SÉLECTEUR D'ICÔNE -->
+                <div class="col-md-4">
+                    <label class="sa-label">Icône</label>
+                    <div class="icon-picker" id="icon-picker-{{ i }}">
+                        <div class="icon-picker-selected" 
+                             id="icon-picker-{{ i }}-display"
+                             onclick="toggleIconPicker('{{ i }}', event)">
+                            <i class="{% if i == '1' %}{{ section.feature1_icone }}{% elif i == '2' %}{{ section.feature2_icone }}{% elif i == '3' %}{{ section.feature3_icone }}{% else %}{{ section.feature4_icone }}{% endif %}" 
+                               id="icon-picker-{{ i }}-preview"></i>
+                            <span class="icon-picker-label">Choisir une icône</span>
+                            <span class="icon-picker-arrow">▼</span>
+                        </div>
+                        
+                        <div class="icon-picker-dropdown" id="icon-picker-{{ i }}-dropdown">
+                            <input type="text" 
+                                   class="icon-picker-search" 
+                                   placeholder="🔍 Rechercher (ex: book, house, shield...)"
+                                   oninput="filterIcons('{{ i }}', this.value)">
+                            
+                            <div class="icon-picker-info" id="icon-picker-{{ i }}-info">
+                                Chargement des icônes...
+                            </div>
+                            
+                            <div class="icon-picker-grid" id="icon-picker-{{ i }}-grid">
+                                <!-- Les icônes seront injectées par JS -->
+                            </div>
+                            
+                            <div class="icon-picker-custom">
+                                <label>Ou tapez une classe personnalisée :</label>
+                                <input type="text" 
+                                       class="icon-picker-custom-input" 
+                                       id="icon-picker-{{ i }}-custom"
+                                       placeholder="fa-solid fa-star"
+                                       onkeydown="if(event.key==='Enter'){event.preventDefault();applyCustomIcon('{{ i }}');}">
+                                <button type="button" 
+                                        class="icon-picker-apply-btn"
+                                        onclick="applyCustomIcon('{{ i }}')">
+                                    ✓ Appliquer
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <input type="hidden" 
+                               name="feature{{ i }}_icone" 
+                               id="icon-picker-{{ i }}-value"
+                               value="{% if i == '1' %}{{ section.feature1_icone }}{% elif i == '2' %}{{ section.feature2_icone }}{% elif i == '3' %}{{ section.feature3_icone }}{% else %}{{ section.feature4_icone }}{% endif %}">
+                    </div>
+                </div>
+                
+                <!-- TITRE -->
+                <div class="col-md-3">
+                    <label class="sa-label">Titre</label>
+                    <input type="text" name="feature{{ i }}_titre" class="sa-input"
+                           value="{% if i == '1' %}{{ section.feature1_titre }}{% elif i == '2' %}{{ section.feature2_titre }}{% elif i == '3' %}{{ section.feature3_titre }}{% else %}{{ section.feature4_titre }}{% endif %}">
+                </div>
+                
+                <!-- DESCRIPTION -->
+                <div class="col-md-5">
+                    <label class="sa-label">Description</label>
+                    <input type="text" name="feature{{ i }}_desc" class="sa-input"
+                           value="{% if i == '1' %}{{ section.feature1_desc }}{% elif i == '2' %}{{ section.feature2_desc }}{% elif i == '3' %}{{ section.feature3_desc }}{% else %}{{ section.feature4_desc }}{% endif %}">
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        
+        <div class="sa-info-box">
+            💡 <strong>Astuce :</strong> Vous pouvez choisir parmi <strong>2000+ icônes</strong> ou taper n'importe quelle classe personnalisée (ex: <code>fa-solid fa-rocket</code>).
+        </div>
+    </div>
+    
+    <!-- ═══ IMAGE ═══ -->
+    <div class="sa-section">
+        <h5>🖼 Image centrale</h5>
+        
+        {% if section.image %}
+        <div class="mb-3">
+            <img src="{{ section.image.url }}" class="sa-preview" alt="Image actuelle">
+            <div class="sa-help">Image actuelle</div>
+        </div>
+        {% endif %}
+        
+        <div class="mb-3">
+            <label class="sa-label">Changer l'image</label>
+            <input type="file" name="image" class="sa-input" accept="image/*">
+            <div class="sa-help">Format paysage recommandé (ex: 800x600px)</div>
+        </div>
+    </div>
+    
+    <!-- ═══ MODULES ═══ -->
+    <div class="sa-section">
+        <h5>📚 Bloc droite — Réglementation</h5>
+        
+        <div class="sa-info-box" style="margin-bottom:16px;">
+            ℹ️ Les 5 textes de loi les plus récents sont affichés automatiquement.
+        </div>
+        
+        <div class="mb-3">
+            <label class="sa-label">Titre du bloc</label>
+            <input type="text" name="modules_titre" class="sa-input" value="{{ section.modules_titre }}">
+        </div>
+        
+        <div class="mb-3">
+            <label class="sa-label">Texte du lien "Voir tout"</label>
+            <input type="text" name="modules_lien_texte" class="sa-input" value="{{ section.modules_lien_texte }}">
+        </div>
+    </div>
+    
+    <!-- ═══ STATUT ═══ -->
+    <div class="sa-section">
+        <div class="form-check mb-3">
+            <input type="checkbox" name="is_active" class="form-check-input" 
+                   id="is_active" {% if section.is_active %}checked{% endif %}>
+            <label class="form-check-label" for="is_active" style="font-weight:600;">
+                ✅ Afficher cette section sur la page d'accueil
+            </label>
+        </div>
+        
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary btn-lg">💾 Enregistrer</button>
+            <a href="/dashboard/home-config/" class="btn btn-outline-secondary btn-lg">← Annuler</a>
+        </div>
+    </div>
+</form>
+
+<!-- ═══ SCRIPT : SÉLECTEUR D'ICÔNES COMPLET ═══ -->
+<script>
+// ═══════════════════════════════════════════════════════════════
+// CHARGEMENT DE TOUTES LES ICÔNES FONTAWESOME
+// Utilise l'API publique de FontAwesome pour récupérer les 2000+ icônes
+// ═══════════════════════════════════════════════════════════════
+
+const ICONS_CATEGORIES = {
+    // ═══ ÉDUCATION / FORMATION ═══
+    'education': [
+        'book', 'book-open', 'book-reader', 'book-bookmark', 'book-atlas',
+        'graduation-cap', 'user-graduate', 'chalkboard', 'chalkboard-user',
+        'school', 'university', 'school-flag', 'certificate', 'award',
+        'medal', 'trophy', 'crown', 'star', 'lightbulb', 'brain',
+        'pen-fancy', 'pen-nib', 'pencil', 'pencil-alt', 'highlighter',
+        'file-pen', 'file-signature', 'signature', 'stamp', 'scroll'
+    ],
+    
+    // ═══ SÉCURITÉ / PROTECTION ═══
+    'securite': [
+        'shield', 'shield-halved', 'shield-check', 'shield-heart', 'shield-cat',
+        'lock', 'lock-open', 'unlock', 'key', 'key-skeleton',
+        'user-shield', 'fingerprint', 'eye', 'eye-slash', 'check-double',
+        'check-circle', 'circle-check', 'certificate', 'passport', 'id-card',
+        'user-lock', 'vault', 'safety-glasses', 'helmet-safety', 'house-lock'
+    ],
+    
+    // ═══ MAISON / TERRAIN / IMMOBILIER ═══
+    'immobilier': [
+        'house', 'house-user', 'house-chimney', 'house-lock', 'house-flag',
+        'building', 'building-user', 'building-columns', 'building-flag',
+        'city', 'tree', 'trees', 'mountain', 'mountain-sun', 'leaf',
+        'landmark', 'landmark-flag', 'map-pin', 'map-location', 'map-location-dot',
+        'map', 'dungeon', 'warehouse', 'industry', 'factory'
+    ],
+    
+    // ═══ DOCUMENTS / PAPIER ═══
+    'documents': [
+        'file', 'file-lines', 'file-text', 'file-contract', 'file-signature',
+        'file-invoice', 'file-invoice-dollar', 'file-shield', 'file-shield',
+        'file-pdf', 'file-word', 'file-excel', 'file-powerpoint', 'file-image',
+        'folder', 'folder-open', 'folder-closed', 'folder-tree',
+        'clipboard', 'clipboard-check', 'clipboard-list', 'clipboard-question',
+        'scroll', 'stamp', 'signature', 'passport', 'id-card',
+        'newspaper', 'bookmark', 'note-sticky', 'pen-to-square'
+    ],
+    
+    // ═══ PERSONNES / COMMUNAUTÉ ═══
+    'personnes': [
+        'user', 'users', 'user-tie', 'user-check', 'user-plus', 'user-minus',
+        'user-group', 'user-friends', 'user-nurse', 'user-graduate',
+        'handshake', 'handshake-angle', 'handshake-simple', 'people-group',
+        'people-arrows', 'people-line', 'people-pulling', 'people-robbery',
+        'person', 'person-chalkboard', 'person-circle-check', 'person-digging',
+        'child', 'baby', 'user-shield', 'id-badge', 'address-book'
+    ],
+    
+    // ═══ COMMERCE / FINANCE ═══
+    'commerce': [
+        'coins', 'money-bill', 'money-bill-wave', 'money-bill-trend-up',
+        'money-check', 'money-check-dollar', 'wallet', 'credit-card',
+        'chart-line', 'chart-pie', 'chart-bar', 'chart-column', 'chart-area',
+        'briefcase', 'hand-holding-dollar', 'piggy-bank', 'sack-dollar',
+        'dollar-sign', 'euro-sign', 'money-bill-transfer', 'receipt',
+        'calculator', 'percent', 'tag', 'tags', 'cart-shopping', 'bag-shopping'
+    ],
+    
+    // ═══ NATURE / ENVIRONNEMENT ═══
+    'nature': [
+        'leaf', 'seedling', 'tree', 'trees', 'sprout', 'plant-wilt',
+        'mountain', 'mountain-sun', 'water', 'droplet', 'sun', 'moon',
+        'cloud', 'cloud-sun', 'cloud-rain', 'snowflake', 'fire',
+        'earth-africa', 'earth-americas', 'earth-asia', 'globe',
+        'recycle', 'leaf', 'wheat', 'wheat-awn', 'carrot', 'apple-whole'
+    ],
+    
+    // ═══ LOCALISATION / CARTES ═══
+    'localisation': [
+        'map', 'map-pin', 'map-location', 'map-location-dot', 'location-dot',
+        'location-arrow', 'location-crosshairs', 'compass', 'compass-drafting',
+        'route', 'signs-post', 'sign-hanging', 'road', 'flag', 'flag-checkered',
+        'crosshairs', 'street-view', 'globe', 'earth-africa', 'binoculars'
+    ],
+    
+    // ═══ COMMUNICATION ═══
+    'communication': [
+        'comments', 'comment', 'comment-dots', 'comment-alt', 'comment-medical',
+        'envelope', 'envelope-open', 'envelope-circle-check', 'phone', 'phone-volume',
+        'mobile-screen', 'mobile-screen-button', 'bullhorn', 'megaphone',
+        'tower-broadcast', 'tower-cell', 'satellite-dish', 'paper-plane',
+        'share', 'share-nodes', 'reply', 'reply-all', 'at', 'hashtag'
+    ],
+    
+    // ═══ TECHNOLOGIE ═══
+    'technologie': [
+        'laptop', 'laptop-code', 'desktop', 'mobile', 'tablet', 'tablet-button',
+        'server', 'database', 'cloud', 'cloud-arrow-up', 'cloud-arrow-down',
+        'microchip', 'memory', 'hard-drive', 'usb', 'plug', 'battery-full',
+        'wifi', 'signal', 'satellite', 'robot', 'code', 'code-branch',
+        'terminal', 'bug', 'gears', 'gear', 'gear-complex', 'sliders'
+    ],
+    
+    // ═══ OUTILS / CONSTRUCTION ═══
+    'outils': [
+        'hammer', 'screwdriver', 'screwdriver-wrench', 'wrench', 'trowel',
+        'trowel-bricks', 'ruler', 'ruler-combined', 'ruler-horizontal',
+        'ruler-vertical', 'drafting-compass', 'compass-drafting', 'helmet-safety',
+        'hard-hat', 'truck', 'truck-pickup', 'truck-moving', 'tractor',
+        'digging', 'person-digging', 'trowel-bricks', 'brush', 'paint-roller',
+        'paintbrush', 'palette', 'fill-drip', 'spray-can', 'trowel'
+    ],
+    
+    // ═══ TEMPS / CALENDRIER ═══
+    'temps': [
+        'calendar', 'calendar-days', 'calendar-check', 'calendar-plus',
+        'calendar-minus', 'calendar-xmark', 'clock', 'clock-rotate-left',
+        'hourglass', 'hourglass-start', 'hourglass-half', 'hourglass-end',
+        'stopwatch', 'stopwatch-20', 'bell', 'bell-slash', 'alarm-clock',
+        'business-time', 'timeline', 'history', 'rotate', 'arrows-rotate'
+    ],
+    
+    // ═══ TRANSPORT ═══
+    'transport': [
+        'car', 'car-side', 'car-rear', 'taxi', 'bus', 'bus-simple',
+        'truck', 'truck-fast', 'truck-moving', 'trailer', 'tractor',
+        'motorcycle', 'bicycle', 'plane', 'plane-departure', 'plane-arrival',
+        'helicopter', 'ship', 'boat', 'train', 'train-subway', 'rocket',
+        'gas-pump', 'charging-station', 'road', 'route', 'traffic-light'
+    ],
+    
+    // ═══ SANTÉ ═══
+    'sante': [
+        'heart', 'heart-pulse', 'heart-crack', 'heart-circle-check',
+        'stethoscope', 'syringe', 'pills', 'capsules', 'tablets',
+        'user-doctor', 'user-nurse', 'hospital', 'hospital-user',
+        'kit-medical', 'briefcase-medical', 'bandage', 'band-aid',
+        'thermometer', 'virus', 'bacteria', 'mask-face', 'hand-holding-medical'
+    ],
+    
+    // ═══ ÉTOILES / BADGES / DIVERS ═══
+    'divers': [
+        'star', 'star-half', 'star-half-stroke', 'crown', 'trophy',
+        'gem', 'thumbs-up', 'thumbs-down', 'fire', 'bolt', 'bolt-lightning',
+        'gift', 'rocket', 'cube', 'cubes', 'box', 'boxes-stacked',
+        'circle-info', 'circle-question', 'circle-exclamation', 'triangle-exclamation',
+        'info', 'question', 'check', 'xmark', 'plus', 'minus',
+        'arrow-right', 'arrow-left', 'arrow-up', 'arrow-down', 'arrow-trend-up'
+    ]
+};
+
+// Aplatir toutes les icônes en une seule liste
+const ALL_ICONS = [];
+Object.values(ICONS_CATEGORIES).forEach(cat => {
+    cat.forEach(icon => {
+        const fullClass = `fa-solid fa-${icon}`;
+        if (!ALL_ICONS.includes(fullClass)) {
+            ALL_ICONS.push(fullClass);
+        }
+    });
+});
+
+// ═══════════════════════════════════════════════════════════════
+// INITIALISATION
+// ═══════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function() {
+    ['1', '2', '3', '4'].forEach(i => {
+        renderIconGrid(i, ALL_ICONS);
+        updateIconInfo(i, ALL_ICONS.length);
+    });
+});
+
+// ═══════════════════════════════════════════════════════════════
+// AFFICHER LA GRILLE D'ICÔNES
+// ═══════════════════════════════════════════════════════════════
+function renderIconGrid(i, icons) {
+    const grid = document.getElementById(`icon-picker-${i}-grid`);
+    const currentValue = document.getElementById(`icon-picker-${i}-value`).value;
+    
+    if (!grid) return;
+    
+    if (icons.length === 0) {
+        grid.innerHTML = '<div class="icon-picker-noresult">😕 Aucune icône trouvée<br><small>Essayez un autre mot ou tapez la classe personnalisée ci-dessous</small></div>';
+        return;
+    }
+    
+    grid.innerHTML = icons.map(icon => `
+        <div class="icon-picker-item ${icon === currentValue ? 'selected' : ''}"
+             onclick="selectIcon('${i}', '${icon}')"
+             title="${icon.replace('fa-solid fa-', '')}">
+            <i class="${icon}"></i>
+        </div>
+    `).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// METTRE À JOUR LE COMPTEUR
+// ═══════════════════════════════════════════════════════════════
+function updateIconInfo(i, count) {
+    const info = document.getElementById(`icon-picker-${i}-info`);
+    if (info) {
+        info.textContent = `${count} icône${count > 1 ? 's' : ''} disponible${count > 1 ? 's' : ''}`;
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FILTRER LES ICÔNES
+// ═══════════════════════════════════════════════════════════════
+function filterIcons(i, search) {
+    const term = search.toLowerCase().trim();
+    
+    if (!term) {
+        renderIconGrid(i, ALL_ICONS);
+        updateIconInfo(i, ALL_ICONS.length);
+        return;
+    }
+    
+    const filtered = ALL_ICONS.filter(icon => 
+        icon.toLowerCase().includes(term)
+    );
+    
+    renderIconGrid(i, filtered);
+    updateIconInfo(i, filtered.length);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// OUVRIR / FERMER LE SÉLECTEUR
+// ═══════════════════════════════════════════════════════════════
+function toggleIconPicker(i, event) {
+    if (event) event.stopPropagation();
+    
+    // Fermer les autres
+    ['1', '2', '3', '4'].forEach(j => {
+        if (j !== i) {
+            document.getElementById(`icon-picker-${j}`)?.classList.remove('open');
+        }
+    });
+    
+    const picker = document.getElementById(`icon-picker-${i}`);
+    picker.classList.toggle('open');
+    
+    // Focus sur la recherche si ouverture
+    if (picker.classList.contains('open')) {
+        setTimeout(() => {
+            document.querySelector(`#icon-picker-${i} .icon-picker-search`)?.focus();
+        }, 100);
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SÉLECTIONNER UNE ICÔNE
+// ═══════════════════════════════════════════════════════════════
+function selectIcon(i, iconClass) {
+    // Mettre à jour la valeur cachée
+    document.getElementById(`icon-picker-${i}-value`).value = iconClass;
+    
+    // Mettre à jour l'aperçu
+    const preview = document.getElementById(`icon-picker-${i}-preview`);
+    preview.className = iconClass;
+    
+    // Marquer comme sélectionnée
+    document.querySelectorAll(`#icon-picker-${i}-grid .icon-picker-item`).forEach(item => {
+        item.classList.remove('selected');
+        if (item.getAttribute('title') === iconClass.replace('fa-solid fa-', '')) {
+            item.classList.add('selected');
+        }
+    });
+    
+    // Fermer le dropdown
+    document.getElementById(`icon-picker-${i}`).classList.remove('open');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// APPLIQUER UNE ICÔNE PERSONNALISÉE
+// ═══════════════════════════════════════════════════════════════
+function applyCustomIcon(i) {
+    const customInput = document.getElementById(`icon-picker-${i}-custom`);
+    const iconClass = customInput.value.trim();
+    
+    if (!iconClass) {
+        alert('Veuillez entrer une classe d\'icône (ex: fa-solid fa-rocket)');
+        return;
+    }
+    
+    // Mettre à jour la valeur cachée
+    document.getElementById(`icon-picker-${i}-value`).value = iconClass;
+    
+    // Mettre à jour l'aperçu
+    const preview = document.getElementById(`icon-picker-${i}-preview`);
+    preview.className = iconClass;
+    
+    // Retirer la sélection des autres
+    document.querySelectorAll(`#icon-picker-${i}-grid .icon-picker-item`).forEach(item => {
+        item.classList.remove('selected');
+    });
+    
+    // Vider l'input
+    customInput.value = '';
+    
+    // Fermer le dropdown
+    document.getElementById(`icon-picker-${i}`).classList.remove('open');
+    
+    // Feedback
+    const preview_label = document.querySelector(`#icon-picker-${i}-display .icon-picker-label`);
+    if (preview_label) {
+        preview_label.textContent = 'Icône personnalisée appliquée ✓';
+        setTimeout(() => {
+            preview_label.textContent = 'Choisir une icône';
+        }, 2000);
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FERMER EN CLiquant AILLEURS
+// ═══════════════════════════════════════════════════════════════
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.icon-picker')) {
+        ['1', '2', '3', '4'].forEach(i => {
+            document.getElementById(`icon-picker-${i}`)?.classList.remove('open');
+        });
+    }
+});
+
+// ═══════════════════════════════════════════════════════════════
+// FERMER AVEC ÉCHAP
+// ═══════════════════════════════════════════════════════════════
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        ['1', '2', '3', '4'].forEach(i => {
+            document.getElementById(`icon-picker-${i}`)?.classList.remove('open');
+        });
+    }
+});
+</script>
+
+{% endblock %}

@@ -2316,57 +2316,86 @@ footer{
 </section>
 
 <!-- ══ ACADEMIE ══ -->
+{% if section_academie and section_academie.is_active %}
 <section class="academy-section">
   <div class="sec-inner">
     <div class="sec-hd">
       <div>
-        <div class="sec-eyebrow">🎓 EDEN GROUP ACADÉMIE</div>
-        <div class="sec-title">Se former aujourd'hui <span>pour bâtir le foncier de demain</span></div>
+        <div class="sec-eyebrow">{{ section_academie.eyebrow }}</div>
+        <div class="sec-title">{{ section_academie.titre_ligne1 }} <span>{{ section_academie.titre_ligne2 }}</span></div>
       </div>
       <a class="view-all-link" href="{% url 'academie_accueil' %}">Voir toute l'académie →</a>
     </div>
+    
     <div class="academy-card">
+      
+      <!-- BLOC GAUCHE -->
       <div class="academy-left">
-        <div class="academy-badge">🎓 EDEN GROUP ACADÉMIE</div>
-        <h2>Se former aujourd'hui<br>pour bâtir le foncier de demain</h2>
-        <p>L'Académie EDEN GROUP forme les professionnels, investisseurs et particuliers grâce à des modules pratiques dispensés par des experts.</p>
-        <a href="{% url 'academie_accueil' %}" class="academy-btn">Découvrir →</a>
+        <div class="academy-badge">{{ section_academie.eyebrow }}</div>
+        <h2>{{ section_academie.titre_ligne1 }}<br>{{ section_academie.titre_ligne2 }}</h2>
+        <p>{{ section_academie.description }}</p>
+        <a href="{% url 'academie_accueil' %}" class="academy-btn">{{ section_academie.btn_texte }}</a>
       </div>
+      
       <div class="academy-features">
-        <div class="feature">
-          <i class="fa-solid fa-book"></i>
-          <div><strong>Programmes certifiants</strong><span>Cours complets et pratiques</span></div>
+    <div class="feature">
+        <i class="{{ section_academie.feature1_icone }}"></i>
+        <div>
+            <strong>{{ section_academie.feature1_titre }}</strong>
+            <span>{{ section_academie.feature1_desc }}</span>
         </div>
-        <div class="feature">
-          <i class="fa-solid fa-user-graduate"></i>
-          <div><strong>Experts du domaine</strong><span>Formateurs expérimentés</span></div>
+    </div>
+    <div class="feature">
+        <i class="{{ section_academie.feature2_icone }}"></i>
+        <div>
+            <strong>{{ section_academie.feature2_titre }}</strong>
+            <span>{{ section_academie.feature2_desc }}</span>
         </div>
-        <div class="feature">
-          <i class="fa-solid fa-compass"></i>
-          <div><strong>Approche pratique</strong><span>Cas réels EDEN GROUP</span></div>
+    </div>
+    <div class="feature">
+        <i class="{{ section_academie.feature3_icone }}"></i>
+        <div>
+            <strong>{{ section_academie.feature3_titre }}</strong>
+            <span>{{ section_academie.feature3_desc }}</span>
         </div>
-        <div class="feature">
-          <i class="fa-solid fa-certificate"></i>
-          <div><strong>Certification</strong><span>Attestation officielle</span></div>
+    </div>
+    <div class="feature">
+        <i class="{{ section_academie.feature4_icone }}"></i>
+        <div>
+            <strong>{{ section_academie.feature4_titre }}</strong>
+            <span>{{ section_academie.feature4_desc }}</span>
         </div>
-      </div>
+    </div>
+</div>
+      
+      <!-- IMAGE CENTRALE -->
       <div class="academy-image">
-        <img src="{% static 'images/terrain.jpeg' %}" alt="Académie EDEN GROUP">
+        {% if section_academie.image %}
+          <img src="{{ section_academie.image.url }}" alt="Académie EDEN GROUP">
+        {% else %}
+          <img src="{% static 'images/terrain.jpeg' %}" alt="Académie EDEN GROUP">
+        {% endif %}
       </div>
+      
+      <!-- ═══ MODULES : 5 TEXTES DE LOI LES PLUS RÉCENTS ═══ -->
       <div class="academy-modules">
-        <h3>Document et texte réglementaire</h3>
+        <h3>{{ section_academie.modules_titre }}</h3>
         <ul>
-          <li>✔ Gestion foncière</li>
-          <li>✔ Morcellement</li>
-          <li>✔ Lecture de plans</li>
-          <li>✔ Lotissement</li>
-          <li>✔ Sécurisation foncière</li>
+          {% for doc in textes_loi_recents %}
+          <li>
+            ✔ {% if doc.reference_officielle %}{{ doc.reference_officielle }}{% else %}{{ doc.titre|truncatechars:40 }}{% endif %}
+          </li>
+          {% empty %}
+          <li style="color:#94a3b8;">Aucun texte de loi publié</li>
+          {% endfor %}
         </ul>
-        <a href="{% url 'academie_accueil' %}">Voir tous les documents →</a>
+        <a href="{% url 'academie_accueil' %}?section=texte_loi">{{ section_academie.modules_lien_texte }}</a>
       </div>
+      
     </div>
   </div>
 </section>
+{% endif %}
 
 <!-- ══ BOTTOM SECTION ══ -->
 <div class="bottom-section">
