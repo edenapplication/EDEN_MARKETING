@@ -20,6 +20,7 @@
   --sh:0 2px 12px rgba(0,0,0,0.08);
   --sh-lg:0 8px 40px rgba(27,79,219,0.15);
   --r:10px;--rl:16px;--rxl:24px;
+  /* ✅ Variables identiques à l'éditeur */
   --encre:#1a1008;
   --filet:#8B7355;
   --papier:#FFFEF7;
@@ -93,164 +94,95 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .article-page{
   background:var(--papier);
   position:relative;
-  box-shadow:0 8px 48px rgba(0,0,0,0.4);
+  box-shadow:0 8px 48px rgba(0,0,0,0.5);
   flex-shrink:0;
   overflow:hidden;
   user-select:text;
 }
 
 /* ═══════════════════════════════════════════════════════════ */
-/* ══ STYLES DES BLOCS — RENDU IDENTIQUE À L'ÉDITEUR ══ */
-/* ═══════════════════════════════════════════════════════════ */
-/* ✅ PRINCIPE : tout hérite du parent (inherit), pour que les styles  */
-/* appliqués sur le div par JS (font, taille, couleur, gras...)       */
-/* soient transmis aux enfants, SANS être écrasés par du CSS.         */
-/* ✅ AUCUN ::first-letter → pas de lettrine majuscule.              */
+/* ══ CSS DES BLOCS — COPIE MOT POUR MOT DE L'ÉDITEUR ══ */
 /* ═══════════════════════════════════════════════════════════ */
 
-/* ── TITRES ── */
-.r-titre h1,
-.r-titre h2,
-.r-titre h3 {
-  font-family: inherit;
-  font-size: inherit;
-  color: inherit;
-  font-weight: inherit;
-  font-style: inherit;
-  line-height: inherit;
-  text-align: inherit;
-  letter-spacing: inherit;
-  margin: 0 0 4px 0;
-  padding: 0;
-}
-.r-titre h1:last-child,
-.r-titre h2:last-child,
-.r-titre h3:last-child { margin-bottom: 0; }
+/* ── ÉLÉMENTS ── */
+.el{position:absolute;min-width:20px;min-height:16px;}
+.el-inner{width:100%;height:100%;position:relative;}
 
-/* Décorations spécifiques par niveau (bordures uniquement) */
-.r-titre h1 {
-  border-bottom: 3px double currentColor;
-  padding-bottom: 5px;
-  line-height: 1.15;
-}
-.r-titre h2 {
-  border-bottom: 1px solid var(--filet);
-  padding-bottom: 3px;
-  line-height: 1.2;
-}
-.r-titre h3 {
-  font-style: italic;
-  line-height: 1.3;
+/* ✅ Désactiver first-letter dans l'éditeur ET la lecture */
+.el-texte p::first-letter,
+.el-titre p::first-letter,
+.el-inner p::first-letter {
+  font-size:inherit !important;
+  font-family:inherit !important;
+  font-weight:inherit !important;
+  float:none !important;
+  line-height:inherit !important;
+  margin:0 !important;
+  color:inherit !important;
 }
 
-.r-titre .surtitre {
-  font-size: 9px;
-  color: #C8102E;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-family: 'Outfit', sans-serif;
-  font-weight: 600;
-  margin-bottom: 3px;
-}
-
-/* ── TEXTE ── */
-/* ✅ Le <div class="r-texte"> reçoit font/taille/couleur/gras via style inline JS.
-   Les <p> héritent → rendu identique à l'éditeur.
-   Les <span> inline de execCommand (gras, italique, taille, couleur) gardent
-   leur priorité car ils ont un style inline. */
-.r-texte p,
-.r-texte div {
-  font-family: inherit;
-  font-size: inherit;
-  color: inherit;
-  font-weight: inherit;
-  font-style: inherit;
-  line-height: inherit;
-  text-align: inherit;
-  letter-spacing: inherit;
-  margin: 0 0 6px 0;
-  padding: 0;
-}
-.r-texte p:last-child,
-.r-texte div:last-child { margin-bottom: 0; }
-
-/* Sous-titres / chapeaux */
-.r-texte .chapeau {
-  font-style: italic;
-  border-left: 3px solid #C8102E;
-  padding-left: 6px;
-  margin-bottom: 6px;
-}
-
-/* ✅ SUPPRIMÉ : aucune règle ::first-letter → plus de lettrine */
-
-/* ── IMAGE ── */
-.r-image img{width:100%;height:100%;object-fit:cover;display:block;}
-.r-image figcaption{font-size:9px;color:var(--filet);text-align:center;font-style:italic;padding:3px 4px;}
-
-/* ── CITATION ── */
-.r-citation{width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
-.r-citation blockquote{
-  border:2px solid var(--encre);
-  padding:8px 10px;
-  background:#FFF3D6;
-  text-align:center;
-  width:100%;
-  margin:0;
-}
-.r-citation blockquote p{
-  font-family:'Playfair Display',serif;
-  font-style:italic;
-  font-size:12px;
-  color:var(--encre);
-  margin:0;
-  line-height:1.4;
-}
-.r-citation .auteur{
-  font-size:9px;
-  color:#C8102E;
-  text-align:right;
-  font-family:'Outfit',sans-serif;
-  margin-top:5px;
-  font-style:normal;
-}
-
-/* ── FILET ── */
-.r-filet{width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
-.r-filet hr{border:none;height:2px;background:var(--encre);width:100%;margin:0;}
-.r-filet.ornement{text-align:center;color:var(--filet);font-size:14px;padding:3px;}
-
-/* ── ENCART ── */
-.r-encart{background:#FFF3D6;border:2px solid var(--encre);padding:10px;width:100%;height:100%;box-sizing:border-box;}
-.r-encart .et{font-family:'Playfair Display',serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--filet);padding-bottom:4px;margin-bottom:6px;color:var(--encre);}
-.r-encart p{font-family:'Lora',serif;font-size:10px;line-height:1.65;margin:0 0 4px 0;color:var(--encre);}
-.r-encart p:last-child{margin-bottom:0;}
-
-/* ── PUB ── */
-.r-pub{
-  background:var(--encre);
-  color:#FFFEF7;
-  padding:12px;
-  text-align:center;
+/* ✅ Styles de contenu — désactiver first-letter partout */
+.el-texte .el-inner,
+[contenteditable]{
+  overflow:hidden;
   width:100%;
   height:100%;
-  box-sizing:border-box;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
+  outline:none;
 }
-.r-pub .pt{font-size:16px;color:#FFD700;font-weight:900;letter-spacing:2px;font-family:'Playfair Display',serif;}
-.r-pub .px{font-size:10px;line-height:1.4;margin-top:4px;font-family:'Outfit',sans-serif;}
-.r-pub .tel{font-size:11px;color:#FFD700;font-weight:700;margin-top:6px;font-family:'Outfit',sans-serif;}
 
-/* ── FORME ── */
-.r-forme-inner{width:100%;height:100%;}
+.el-image .el-inner{overflow:hidden;}
+.el-image img{width:100%;height:100%;object-fit:cover;display:block;}
+.el-image .img-placeholder{
+  width:100%;height:100%;background:var(--g200);
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:8px;color:var(--g400);font-size:13px;
+}
+.el-filet .el-inner{display:flex;align-items:center;justify-content:center;}
+.el-video .el-inner{overflow:hidden;}
 
-/* ── VIDÉO ── */
-.video-reader{width:100%;height:100%;background:#111;position:relative;overflow:hidden;}
-.video-reader video{width:100%;height:100%;object-fit:cover;display:block;}
-.video-reader iframe{width:100%;height:100%;border:none;display:block;}
-.video-reader .video-legende{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.6);color:#fff;font-size:10px;text-align:center;padding:3px;}
+/* ── Vidéo ── */
+.video-preview-wrap{
+  width:100%;height:100%;
+  position:relative;background:#111;
+  display:flex;align-items:center;justify-content:center;
+}
+.video-preview-wrap video{
+  width:100%;height:100%;
+  object-fit:cover;display:block;
+}
+.video-legende-edit{
+  position:absolute;bottom:0;left:0;right:0;
+  background:rgba(0,0,0,0.6);color:#fff;
+  font-size:10px;text-align:center;padding:3px;
+}
+
+/* ── Rendu blocs — COPIE EXACTE de l'éditeur ── */
+.r-titre h1{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:var(--encre);border-bottom:3px double var(--encre);padding-bottom:5px;margin-bottom:5px;line-height:1.1;}
+.r-titre h2{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--encre);border-bottom:1px solid var(--filet);padding-bottom:3px;margin-bottom:3px;}
+.r-titre h3{font-family:'Playfair Display',serif;font-size:13px;font-style:italic;font-weight:600;color:var(--encre);}
+.r-titre .surtitre{font-size:9px;color:#C8102E;text-transform:uppercase;letter-spacing:2px;font-family:'Outfit',sans-serif;}
+
+.r-texte p{font-family:'Lora',serif;font-size:10px;color:#2d1f0e;line-height:1.65;text-align:justify;}
+.r-texte .chapeau{font-style:italic;border-left:3px solid #C8102E;padding-left:6px;margin-bottom:4px;font-family:'Lora',serif;font-size:10px;}
+
+.r-image img{width:100%;display:block;}
+.r-image figcaption{font-size:8px;color:var(--filet);text-align:center;font-style:italic;padding:2px 4px;}
+
+.r-citation blockquote{border:2px solid var(--encre);padding:8px 10px;background:#FFF3D6;text-align:center;}
+.r-citation blockquote p{font-family:'Playfair Display',serif;font-style:italic;font-size:10px;color:var(--encre);}
+.r-citation .auteur{font-size:8px;color:#C8102E;text-align:right;font-family:'Outfit',sans-serif;}
+
+.r-filet hr{border:none;height:2px;background:var(--encre);}
+.r-filet.ornement{text-align:center;color:var(--filet);font-size:14px;padding:3px;}
+
+.r-encart{background:#FFF3D6;border:2px solid var(--encre);padding:8px;}
+.r-encart .et{font-family:'Playfair Display',serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--filet);padding-bottom:3px;margin-bottom:4px;}
+.r-encart p{font-family:'Lora',serif;font-size:9px;line-height:1.6;}
+
+.r-pub{background:var(--encre);color:#FFFEF7;padding:10px;text-align:center;}
+.r-pub .pt{font-size:14px;color:#FFD700;}
+.r-pub .px{font-size:9px;line-height:1.4;}
+.r-pub .tel{font-size:10px;color:#FFD700;font-weight:700;}
 
 /* ── AUCUN CONTENU ── */
 .no-content{padding:4rem;text-align:center;color:var(--g400);}
@@ -339,9 +271,7 @@ footer{background:var(--g800);color:#fff;padding:3rem 2rem 1.5rem;}
 <!-- ══ CONTENU DE L'ARTICLE ══ -->
 {% if article.contenu %}
 <div class="article-outer">
-  <div class="article-page" id="article-page">
-    <!-- Rendu JS avec coordonnées absolues identiques à l'éditeur -->
-  </div>
+  <div class="article-page" id="article-page"></div>
 </div>
 {% else %}
 <div class="no-content">
@@ -378,88 +308,7 @@ function getEmbedUrl(url) {
 }
 
 // ══════════════════════════════════════════════
-// RENDU D'UN BLOC — IDENTIQUE À L'ÉDITEUR
-// ══════════════════════════════════════════════
-function rendreBloc(bloc) {
-  switch(bloc.type) {
-
-    case 'texte': {
-      // ✅ Contenu HTML rendu TEL QUEL (comme dans l'éditeur)
-      return `<div class="r-texte">${bloc.contenu || '<p></p>'}</div>`;
-    }
-
-    case 'titre': {
-      // ✅ Contenu HTML rendu TEL QUEL
-      return `<div class="r-titre">${bloc.contenu || '<h2></h2>'}</div>`;
-    }
-
-    case 'image': {
-      if (!bloc.url) return '';
-      return `<div class="r-image">
-        <figure>
-          <img src="${bloc.url}" alt="${bloc.legende||''}" loading="lazy">
-          ${bloc.legende ? `<figcaption>${bloc.legende}</figcaption>` : ''}
-        </figure>
-      </div>`;
-    }
-
-    case 'citation': {
-      return `<div class="r-citation">
-        <blockquote>
-          <p>${bloc.contenu||''}</p>
-          ${bloc.auteur ? `<div class="auteur">— ${bloc.auteur}</div>` : ''}
-        </blockquote>
-      </div>`;
-    }
-
-    case 'filet': {
-      if (bloc.style_filet === 'ornement') {
-        return `<div class="r-filet ornement">✦ ✦ ✦</div>`;
-      }
-      return `<div class="r-filet"><hr style="border-top:${bloc.epaisseur||2}px ${bloc.style_filet||'solid'} ${bloc.couleur||'#1a1008'};"></div>`;
-    }
-
-    case 'encart': {
-      return `<div class="r-encart">
-        ${bloc.titre_encart ? `<div class="et">${bloc.titre_encart}</div>` : ''}
-        ${(bloc.contenu||'').split('\n').map(p => `<p>${p||'&nbsp;'}</p>`).join('')}
-      </div>`;
-    }
-
-    case 'pub': {
-      return `<div class="r-pub">
-        <div class="pt">EDEN GROUP</div>
-        <div class="px">${bloc.contenu||''}</div>
-        ${bloc.telephone ? `<div class="tel">📞 ${bloc.telephone}</div>` : ''}
-      </div>`;
-    }
-
-    case 'video': {
-      if (!bloc.url) return `<div class="video-reader"><div style="display:flex;align-items:center;justify-content:center;height:100%;color:#fff;">🎬 ${bloc.legende||'Vidéo'}</div></div>`;
-      if (/\.(mp4|webm|mov|ogg|m4v)(\?|$)/i.test(bloc.url)) {
-        return `<div class="video-reader">
-          <video src="${bloc.url}" controls preload="metadata"></video>
-          ${bloc.legende ? `<div class="video-legende">${bloc.legende}</div>` : ''}
-        </div>`;
-      }
-      const vUrl = getEmbedUrl(bloc.url);
-      return `<div class="video-reader">
-        <iframe src="${vUrl}" allowfullscreen></iframe>
-        ${bloc.legende ? `<div class="video-legende">${bloc.legende}</div>` : ''}
-      </div>`;
-    }
-
-    case 'forme': {
-      return `<div class="r-forme-inner" style="background:${bloc.couleur_fond||'#1B4FDB'};border-radius:${bloc.radius||0}px;border:${bloc.bordure_ep||0}px solid ${bloc.bordure_col||'#000'};"></div>`;
-    }
-
-    default:
-      return `<div style="padding:8px;color:#888;font-size:12px;">Bloc: ${bloc.type}</div>`;
-  }
-}
-
-// ══════════════════════════════════════════════
-// RENDU DE L'ARTICLE — FORMAT IDENTIQUE À L'ÉDITEUR
+// RENDU DE L'ARTICLE — COPIE EXACTE DE creerDomElement() DE L'ÉDITEUR
 // ══════════════════════════════════════════════
 function rendreArticle() {
   const page = document.getElementById('article-page');
@@ -479,41 +328,126 @@ function rendreArticle() {
   if (maxH < 400) maxH = 400;
   page.style.height = maxH + 'px';
 
-  // Rendu de chaque élément
-  CONTENU.forEach(el => {
-    const div = document.createElement('div');
-    div.style.cssText = `
-      position:absolute;
-      left:${el.x || 0}px;
-      top:${el.y || 0}px;
-      width:${el.w || 200}px;
-      height:${el.h ? el.h + 'px' : 'auto'};
-      z-index:${el.z || 1};
-      ${el.rotation ? `transform:rotate(${el.rotation}deg);` : ''}
-      overflow:hidden;
-    `;
+  // Rendu de chaque élément — MÊME CODE QUE creerDomElement()
+  CONTENU.forEach(el => page.appendChild(creerDomElement(el)));
+}
 
-    // Fond du bloc
-    if (el.fond && el.fond !== 'transparent') {
-      div.style.background = el.fond;
+// ══════════════════════════════════════════════
+// ✅ COPIE EXACTE DE creerDomElement() DE L'ÉDITEUR
+// (sans les événements d'édition : mousedown, focus, blur, input)
+// ══════════════════════════════════════════════
+function creerDomElement(el) {
+  const div = document.createElement('div');
+  div.className = `el el-${el.type}`;
+  div.id = el.id;
+  div.style.cssText = `left:${el.x}px;top:${el.y}px;width:${el.w}px;height:${el.h||'auto'};z-index:${el.z||1};${el.rotation?`transform:rotate(${el.rotation}deg);`:''}`;
+
+  const inner = document.createElement('div');
+  inner.className = 'el-inner';
+  inner.style.background = el.fond || 'transparent';
+
+  switch(el.type) {
+    case 'texte':
+    case 'titre': {
+      const ed = document.createElement('div');
+      ed.innerHTML = el.contenu || (el.type==='titre' ? '<h2>Titre</h2>' : '<p>Votre texte ici...</p>');
+      // ✅ EXACTEMENT les mêmes styles que dans creerDomElement() de l'éditeur
+      ed.style.cssText = [
+        `font-family:${el.font||"'Lora',serif"}`,
+        `font-size:${el.taille||14}px`,
+        `color:${el.couleur||'#1a1008'}`,
+        `font-weight:${el.gras?'bold':'normal'}`,
+        `font-style:${el.italique?'italic':'normal'}`,
+        `text-align:${el.alignement||'left'}`,
+        `line-height:${el.interligne||1.6}`,
+        `letter-spacing:${el.espacement||0}px`,
+        `padding:${el.padding||4}px`,
+        'width:100%',
+        'height:100%',
+        'overflow:hidden',
+        'text-transform:none',
+      ].join(';');
+      ed.className = el.type==='titre' ? 'r-titre' : 'r-texte';
+      inner.appendChild(ed);
+      break;
     }
-
-    // ✅ Styles pour texte et titre — identiques à l'éditeur
-    if (el.type === 'texte' || el.type === 'titre') {
-      div.style.fontFamily = el.font || (el.type === 'titre' ? "'Playfair Display',serif" : "'Lora',serif");
-      div.style.fontSize = (el.taille || 13) + 'px';
-      div.style.color = el.couleur || '#1a1008';
-      div.style.lineHeight = el.interligne || '1.65';
-      div.style.textAlign = el.alignement || 'left';
-      if (el.padding) div.style.padding = el.padding + 'px';
-      if (el.gras) div.style.fontWeight = 'bold';
-      if (el.italique) div.style.fontStyle = 'italic';
-      if (el.espacement) div.style.letterSpacing = el.espacement + 'px';
+    case 'image': {
+      if (el.url) {
+        const img = document.createElement('img');
+        img.src = el.url;
+        img.alt = el.legende || '';
+        img.style.objectFit = el.objectFit || 'cover';
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.pointerEvents = 'none';
+        inner.appendChild(img);
+      }
+      if (el.legende) {
+        const cap = document.createElement('div');
+        cap.style.cssText = 'font-size:9px;color:#8B7355;text-align:center;padding:2px;font-style:italic;';
+        cap.textContent = el.legende;
+        inner.appendChild(cap);
+      }
+      break;
     }
+    case 'video': {
+      if (el.url) {
+        const wrap = document.createElement('div');
+        wrap.className = 'video-preview-wrap';
+        if (/\.(mp4|webm|mov|ogg|m4v)(\?|$)/i.test(el.url)) {
+          const video = document.createElement('video');
+          video.src = el.url;
+          video.controls = true;
+          video.preload = 'metadata';
+          video.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+          wrap.appendChild(video);
+        } else {
+          const vUrl = getEmbedUrl(el.url);
+          const iframe = document.createElement('iframe');
+          iframe.src = vUrl;
+          iframe.allowFullscreen = true;
+          iframe.style.cssText = 'width:100%;height:100%;border:none;display:block;';
+          wrap.appendChild(iframe);
+        }
+        if (el.legende) {
+          const leg = document.createElement('div');
+          leg.className = 'video-legende-edit';
+          leg.textContent = el.legende;
+          wrap.appendChild(leg);
+        }
+        inner.appendChild(wrap);
+      }
+      break;
+    }
+    case 'citation': {
+      inner.innerHTML = `<div class="r-citation"><blockquote><p>${el.contenu||'Votre citation...'}</p>${el.auteur?`<div class="auteur">— ${el.auteur}</div>`:''}</blockquote></div>`;
+      break;
+    }
+    case 'encart': {
+      inner.innerHTML = `<div class="r-encart">${el.titre_encart?`<div class="et">${el.titre_encart}</div>`:''}<p>${el.contenu||''}</p></div>`;
+      break;
+    }
+    case 'filet': {
+      if (el.style_filet==='ornement') inner.innerHTML='<div class="r-filet ornement">✦ ✦ ✦</div>';
+      else {
+        const hr = document.createElement('hr');
+        hr.style.cssText=`border:none;border-top:${el.epaisseur||2}px ${el.style_filet||'solid'} ${el.couleur||'#1a1008'};width:100%;`;
+        inner.appendChild(hr);
+      }
+      break;
+    }
+    case 'forme': {
+      inner.style.cssText += `background:${el.couleur_fond||'#1B4FDB'};border-radius:${el.radius||0}px;border:${el.bordure_ep||0}px solid ${el.bordure_col||'#000'};`;
+      break;
+    }
+    case 'pub': {
+      inner.innerHTML = `<div class="r-pub"><div class="pt">EDEN GROUP</div><div class="px">${el.contenu||''}</div>${el.telephone?`<div class="tel">📞 ${el.telephone}</div>`:''}</div>`;
+      break;
+    }
+  }
 
-    div.innerHTML = rendreBloc(el);
-    page.appendChild(div);
-  });
+  div.appendChild(inner);
+  return div;
 }
 
 // ══════════════════════════════════════════════
