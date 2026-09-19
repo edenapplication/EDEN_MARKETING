@@ -10,7 +10,7 @@
 :root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g800:#1F2937;--r:12px;--rl:20px;}
 body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
 .topnav{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;border-bottom:1.5px solid var(--g200);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
-.tn-em{width:36px;height:36px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:middle;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:#fff;align-items:center;justify-content:center;}
+.tn-em{width:36px;height:36px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:#fff;}
 .tn-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .tn-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1.5px solid var(--g200);background:#fff;color:var(--g500);font-family:'Outfit',sans-serif;transition:all 0.2s;}
 .tn-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--bpale);}
@@ -28,32 +28,43 @@ input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 
 input::placeholder,textarea::placeholder{color:var(--g400);}
 select{appearance:none;}
 .preview-img{width:100%;height:160px;object-fit:cover;border-radius:var(--r);margin-top:8px;display:none;border:1.5px solid var(--g200);}
+.pdf-preview{margin-top:10px;padding:12px 16px;background:var(--bpale);border:1.5px solid rgba(27,79,219,0.2);border-radius:var(--r);font-size:13px;color:var(--blue);display:flex;align-items:center;gap:10px;}
 .btn-save{background:var(--grad);color:#fff;padding:13px 28px;border-radius:var(--r);font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;}
-.btn-editeur{background:#16a34a;color:#fff;padding:13px 24px;border-radius:var(--r);font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;display:inline-flex;align-items:center;gap:7px;}
-.btn-cancel{background:#fff;color:var(--g500);padding:13px 24px;border-radius:var(--r);font-size:14px;font-weight:500;border:1.5px solid var(--g200);cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;}
+.btn-save:hover{opacity:0.88;}
+.btn-cancel{background:#fff;color:var(--g500);padding:13px 24px;border-radius:var(--r);font-size:14px;font-weight:500;border:1.5px solid var(--g200);cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;display:inline-flex;align-items:center;}
+.btn-cancel:hover{border-color:var(--blue);color:var(--blue);}
 .err{background:#fee2e2;border:1.5px solid #fca5a5;border-radius:var(--r);padding:12px 16px;font-size:13px;color:#dc2626;margin-bottom:1.5rem;}
+.alert{background:#dcfce7;border:1.5px solid #86efac;border-radius:var(--r);padding:12px 16px;font-size:13px;color:#16a34a;margin-bottom:1.5rem;}
 @media(max-width:768px){.form-grid{grid-template-columns:1fr;}.wrap{padding:80px 1rem 2rem;}}
 </style>
 </head>
 <body>
 <nav class="topnav">
-  <div style="display:flex;align-items:center;gap:8px;"><div class="tn-em">E</div><div class="tn-name">EDEN GROUP</div></div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="tn-em">E</div>
+    <div class="tn-name">EDEN GROUP</div>
+  </div>
   <div style="display:flex;gap:8px;">
     <a class="tn-btn" href="{% url 'dashboard_journal' %}">← Journal</a>
     {% if edition %}
-    <a class="tn-btn" href="{% url 'dashboard_journal_page_editer' edition_pk=edition.pk page_num=1 %}"
-       style="background:#f0fdf4;border-color:#86efac;color:#16a34a;">✏ Ouvrir éditeur</a>
+    <a class="tn-btn" href="{% url 'journal_lire' edition.numero %}" target="_blank">👁 Voir</a>
     {% endif %}
   </div>
 </nav>
 
 <div class="wrap">
-  <div class="page-tit">{% if edition %}✏ Modifier l'édition{% else %}+ Nouvelle édition du journal{% endif %}</div>
+  <div class="page-tit">
+    {% if edition %}✏ Modifier l'édition{% else %}+ Nouvelle édition du journal{% endif %}
+  </div>
 
-  {% if messages %}{% for msg in messages %}<div class="err">{{ msg }}</div>{% endfor %}{% endif %}
+  {% if messages %}
+    {% for msg in messages %}
+      <div class="{% if 'error' in msg.tags %}err{% else %}alert{% endif %}">{{ msg }}</div>
+    {% endfor %}
+  {% endif %}
 
   <div class="info-box">
-    📰 Remplissez les informations de base ici (titre, image de couverture...). Ensuite cliquez sur <strong>"Créer & ouvrir l'éditeur"</strong> pour rédiger le contenu de chaque page avec les blocs texte, image, <strong>vidéo locale</strong>, etc.
+    📄 Remplissez les informations de base ici (titre, image de couverture, PDF). Le PDF sera affiché tel quel sur la page de lecture, page par page, sans espace entre elles.
   </div>
 
   <form method="post" enctype="multipart/form-data">
@@ -118,23 +129,46 @@ select{appearance:none;}
       {% if edition and edition.image_une %}
         <img src="{{ edition.image_une.url }}" class="preview-img" id="preview" style="display:block;" alt="">
         <div style="margin-top:0.5rem;font-size:12px;color:var(--g500);">Remplacer l'image actuelle :</div>
-        <div style="margin-top:0.4rem;"></div>
       {% else %}
         <img class="preview-img" id="preview" alt="">
       {% endif %}
-      <div class="fg">
+      <div class="fg" style="margin-top:{% if edition and edition.image_une %}0.8rem{% else %}0{% endif %};">
         <label>Image de couverture</label>
         <input type="file" name="image_une" accept="image/*" onchange="previewImg(this)">
-        <div class="hint">Recommandé : format portrait (A4), 600×850px. Sera affichée sur la couverture.</div>
+        <div class="hint">Recommandé : format portrait (A4), 600×850px.</div>
+      </div>
+    </div>
+
+    <!-- ✅ NOUVEAU : PDF -->
+    <div class="card">
+      <div class="card-tit">📄 Document PDF *</div>
+
+      {% if edition and edition.fichier_pdf %}
+        <div class="pdf-preview">
+          <span style="font-size:1.5rem;">📄</span>
+          <div style="flex:1;">
+            <div style="font-weight:700;margin-bottom:2px;">PDF actuel</div>
+            <div style="font-size:11px;color:var(--g500);word-break:break-all;">{{ edition.fichier_pdf.name }}</div>
+          </div>
+          <a href="{{ edition.fichier_pdf.url }}" target="_blank"
+             style="color:var(--blue);font-weight:700;text-decoration:none;white-space:nowrap;">
+            Voir →
+          </a>
+        </div>
+        <div style="margin-top:0.8rem;font-size:12px;color:var(--g500);">Remplacer le PDF actuel :</div>
+      {% endif %}
+
+      <div class="fg" style="margin-top:{% if edition and edition.fichier_pdf %}0.6rem{% else %}0{% endif %};">
+        <label>Fichier PDF</label>
+        <input type="file" name="fichier_pdf" accept="application/pdf"
+               {% if not edition or not edition.fichier_pdf %}required{% endif %}>
+        <div class="hint">Le PDF sera affiché tel quel sur la page de lecture.</div>
       </div>
     </div>
 
     <div style="display:flex;gap:12px;flex-wrap:wrap;">
-      <button type="submit" name="action" value="sauvegarder" class="btn-save">
+      <button type="submit" class="btn-save">
         💾 {% if edition %}Enregistrer{% else %}Créer l'édition{% endif %}
-      </button>
-      <button type="submit" name="action" value="editeur" class="btn-editeur">
-        ✏ {% if edition %}Enregistrer & éditeur{% else %}Créer & ouvrir l'éditeur{% endif %} →
       </button>
       <a href="{% url 'dashboard_journal' %}" class="btn-cancel">Annuler</a>
     </div>

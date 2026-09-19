@@ -63,7 +63,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 
-
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 # =========================
 # TEMPLATES
 # =========================

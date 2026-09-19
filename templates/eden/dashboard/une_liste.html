@@ -55,12 +55,18 @@ body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
 .s-pub{background:#dcfce7;color:#16a34a;}
 .s-brou{background:#fef9c3;color:#b45309;}
 .s-arch{background:var(--g100);color:var(--g500);}
+/* ✅ Badge PDF */
+.art-pdf-badge{position:absolute;bottom:8px;right:8px;padding:4px 9px;border-radius:100px;font-size:9px;font-weight:700;display:flex;align-items:center;gap:4px;backdrop-filter:blur(6px);}
+.pdf-ok{background:rgba(34,197,94,0.95);color:#fff;}
+.pdf-missing{background:rgba(239,68,68,0.95);color:#fff;}
 .art-body{padding:1rem;}
 .art-tit{font-size:14px;font-weight:700;color:var(--g800);margin-bottom:4px;line-height:1.35;}
 .art-date{font-size:11px;color:var(--g400);margin-bottom:8px;}
 .art-actions{display:flex;gap:6px;flex-wrap:wrap;}
-.btn-ed{background:var(--bpale);border:1px solid rgba(27,79,219,0.2);color:var(--blue);padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:3px;}
-.btn-edit{background:var(--g50);border:1px solid var(--g200);color:var(--g600);padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:3px;}
+.btn-pdf{background:#fee2e2;border:1px solid #fca5a5;color:#dc2626;padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:3px;}
+.btn-pdf:hover{background:#fca5a5;color:#fff;}
+.btn-edit{background:var(--bpale);border:1px solid rgba(27,79,219,0.2);color:var(--blue);padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:3px;}
+.btn-edit:hover{background:var(--blue);color:#fff;}
 .btn-pub{background:#dcfce7;border:1px solid #86efac;color:#16a34a;padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border-style:solid;font-family:'Outfit',sans-serif;}
 .btn-depub{background:#fef9c3;border:1px solid #fde68a;color:#b45309;padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;}
 .btn-del{background:#fee2e2;border:1px solid #fca5a5;color:#dc2626;padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;}
@@ -93,8 +99,6 @@ body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
 </nav>
 
 <div class="wrap">
-  <!-- SIDEBAR -->
-
   <div class="main">
     <div class="page-hd">
       <div>
@@ -154,6 +158,13 @@ body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
           {% endif %}
           <span class="art-badge-cat cat-{{ art.categorie|cut:'evenement_' }}">{{ art.get_categorie_display }}</span>
           <span class="art-statut {% if art.statut == 'publie' %}s-pub{% elif art.statut == 'brouillon' %}s-brou{% else %}s-arch{% endif %}">{{ art.get_statut_display }}</span>
+
+          <!-- ✅ Badge PDF -->
+          {% if art.fichier_pdf %}
+            <span class="art-pdf-badge pdf-ok">📄 PDF</span>
+          {% else %}
+            <span class="art-pdf-badge pdf-missing">⚠ Sans PDF</span>
+          {% endif %}
         </div>
         <div class="art-body">
           <div class="art-tit">{{ art.titre }}</div>
@@ -162,16 +173,24 @@ body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
             {% if art.lieu %} · 📍 {{ art.lieu }}{% endif %}
           </div>
           <div class="art-actions">
-            <a class="btn-ed" href="{% url 'dashboard_une_editeur' art.pk %}">✏ Éditeur</a>
-            <a class="btn-edit" href="{% url 'dashboard_une_modifier' art.pk %}">⚙</a>
+            <!-- ✅ Bouton principal : Modifier (infos + PDF) -->
+            <a class="btn-edit" href="{% url 'dashboard_une_modifier' art.pk %}">⚙ Modifier</a>
+
+            <!-- ✅ Voir le PDF (si présent) -->
+            {% if art.fichier_pdf %}
+              <a class="btn-pdf" href="{{ art.fichier_pdf.url }}" target="_blank" title="Voir le PDF">📄 PDF</a>
+            {% endif %}
+
             <button class="{% if art.statut == 'publie' %}btn-depub{% else %}btn-pub{% endif %}"
               onclick="togglePub({{ art.pk }}, this)">
               {% if art.statut == 'publie' %}⏸{% else %}▶ Publier{% endif %}
             </button>
+
             {% if art.statut == 'publie' %}
-            <a class="btn-voir" href="{% url 'une_evenement_detail' art.pk %}" target="_blank">👁</a>
+            <a class="btn-voir" href="{% url 'une_evenement_detail' art.pk %}" target="_blank" title="Voir la page">👁</a>
             {% endif %}
-            <button class="btn-del" onclick="supprimerArticle({{ art.pk }}, '{{ art.titre|escapejs }}')">🗑</button>
+
+            <button class="btn-del" onclick="supprimerArticle({{ art.pk }}, '{{ art.titre|escapejs }}')" title="Supprimer">🗑</button>
           </div>
         </div>
       </div>

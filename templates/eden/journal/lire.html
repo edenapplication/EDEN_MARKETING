@@ -6,6 +6,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>{{ edition.titre }} — Journal EDEN GROUP</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=IM+Fell+English:ital@0;1&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<!-- ✅ PDF.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+</script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
@@ -42,7 +47,7 @@ html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;background
   padding:10px;
 }
 
-/* ── PAGE A4 EXACTEMENT COMME L'ÉDITEUR ── */
+/* ── PAGE A4 ── */
 .page-canvas{
   position:relative;
   width:595px;
@@ -57,19 +62,36 @@ html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;background
 }
 .page-canvas.fade-out{opacity:0;}
 
-/* ── ÉLÉMENTS ABSOLUS ── */
-.canvas-el{position:absolute;}
-.el-inner{width:100%;height:100%;overflow:hidden;position:relative;}
-.el-text{
-  width:100%;height:100%;
-  font-family:'Playfair Display',serif;
-  color:var(--encre);
-  word-break:break-word;
-  overflow:hidden;
+/* ✅ Canvas PDF */
+.page-canvas canvas{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:contain;
 }
-.el-img{width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in;}
-.el-video-wrap{width:100%;height:100%;background:#000;position:relative;display:flex;align-items:center;justify-content:center;}
-.el-video{width:100%;height:100%;object-fit:cover;display:block;cursor:pointer;}
+
+/* ── LOADER ── */
+.pdf-loading{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:100%;color:#fff;gap:16px;font-family:'Outfit',sans-serif;font-size:13px;
+}
+.spinner{
+  width:44px;height:44px;
+  border:3px solid rgba(255,255,255,0.15);
+  border-top-color:#1B4FDB;
+  border-radius:50%;
+  animation:spin 0.8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.pdf-progress{
+  width:180px;height:4px;background:rgba(255,255,255,0.15);
+  border-radius:100px;overflow:hidden;margin-top:8px;
+}
+.pdf-progress-bar{
+  height:100%;
+  background:linear-gradient(90deg,#1B4FDB,#7B20B4,#C8102E);
+  width:0%;transition:width 0.3s ease;border-radius:100px;
+}
 
 /* ── NAV BAR ── */
 .nav-bar{
@@ -104,24 +126,6 @@ html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;background
   transition:width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   width:0%;
 }
-
-/* ── MEDIA OVERLAY ── */
-.media-overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:3000;
-  display:none;align-items:center;justify-content:center;
-  backdrop-filter:blur(6px);
-}
-.media-overlay.open{display:flex;}
-.media-close{
-  position:absolute;top:1rem;right:1rem;
-  background:rgba(255,255,255,0.1);border:none;color:#fff;
-  width:40px;height:40px;border-radius:50%;cursor:pointer;
-  font-size:20px;display:flex;align-items:center;justify-content:center;
-  transition:background 0.2s;
-}
-.media-close:hover{background:rgba(255,255,255,0.2);}
-.media-inner img{max-width:90vw;max-height:88vh;object-fit:contain;border-radius:8px;}
-.media-inner video{max-width:90vw;max-height:88vh;border-radius:8px;}
 
 /* ── Retour Académie ── */
 .btn-retour-academie{
@@ -171,10 +175,12 @@ html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;background
 }
 
 /* ── MODE PLEIN ÉCRAN ── */
-body.fs-mode .top-bar,
-body.fs-mode .nav-bar{display:none;}
+/* ✅ On cache UNIQUEMENT la top-bar, PAS la nav-bar */
+body.fs-mode .top-bar{display:none;}
 body.fs-mode .viewer-wrap{
-  top:0;bottom:0;
+  top:0;
+  /* ✅ On laisse 60px en bas pour la nav-bar */
+  bottom:60px;
 }
 body.fs-mode .tools-lecture{
   top:12px;
@@ -212,12 +218,6 @@ body.fs-mode .progress-bar{display:none;}
 <a class="btn-retour-academie" href="{% url 'academie_accueil' %}">← Académie</a>
 {% endif %}
 
-<!-- MEDIA OVERLAY -->
-<div class="media-overlay" id="media-overlay">
-  <button class="media-close" onclick="fermerMedia()">✕</button>
-  <div class="media-inner" id="media-inner"></div>
-</div>
-
 <!-- TOP BAR -->
 <div class="top-bar">
   <div class="tb-title">
@@ -228,9 +228,8 @@ body.fs-mode .progress-bar{display:none;}
   <div class="tb-actions">
     <span class="page-info-top" id="page-info">Couverture</span>
     {% if user.is_staff %}
-    <a class="tb-btn" href="{% url 'dashboard_journal_page_editer' edition_pk=edition.pk page_num=1 %}">✏ Éditer</a>
+    <a class="tb-btn" href="{% url 'dashboard_journal_edition_modifier' edition.pk %}">✏ Modifier</a>
     {% endif %}
-    <!--<a class="tb-btn" href="{% url 'journal_kiosque' %}">← Kiosque</a> -->
   </div>
 </div>
 
@@ -264,16 +263,23 @@ body.fs-mode .progress-bar{display:none;}
 </div>
 
 <script>
-const PAGES_DATA = {{ pages_json|safe }};
+// ════════════════════════════════════════
+// DONNÉES
+// ════════════════════════════════════════
 const EDITION = {
   numero: "{{ edition.numero|escapejs }}",
   titre: "{{ edition.titre|escapejs }}",
   sous_titre: "{{ edition.sous_titre|escapejs }}",
   date: "{% if edition.date_parution %}{{ edition.date_parution|date:'d F Y' }}{% endif %}",
   image_une: "{% if edition.image_une %}{{ edition.image_une.url }}{% endif %}",
+  pdf_url: '{% url "journal_pdf" edition.numero %}?v={{ edition.updated_at|date:"U" }}',
 };
+
+let pdfDoc = null;
+let totalPagesPdf = 0;
+// ✅ Index 0 = couverture, ensuite 1..N = pages du PDF
 let pageCourante = 0;
-const totalCartes = PAGES_DATA.length + 1;
+let totalCartes = 1;  // Sera mis à jour après chargement du PDF
 let isTransitioning = false;
 
 // Zoom & rotation
@@ -295,7 +301,7 @@ function renderCouverture() {
       </div>
       <div style="flex:1;overflow:hidden;min-height:0;margin:16px 0;border-radius:8px;">
         ${EDITION.image_une
-          ? `<img src="${EDITION.image_une}" alt="Une" onclick="ouvrirMediaImage('${EDITION.image_une}','Couverture')" style="width:100%;height:100%;object-fit:cover;display:block;cursor:zoom-in;">`
+          ? `<img src="${EDITION.image_une}" alt="Une" style="width:100%;height:100%;object-fit:cover;display:block;">`
           : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:5rem;background:linear-gradient(135deg,rgba(27,79,219,0.3),rgba(200,16,46,0.2));border-radius:8px;">📰</div>`}
       </div>
       <div style="padding:12px 0 6px;flex-shrink:0;">
@@ -307,112 +313,138 @@ function renderCouverture() {
     </div>`;
 }
 
-// ════════════════════════════════════════
-// RENDU ÉLÉMENT
-// ════════════════════════════════════════
-function innerHTMLStyle(el){
-  const s = el.style || {};
-  return `
-    font-family:${s.fontFamily||'Playfair Display, serif'};
-    font-size:${s.fontSize||12}px;
-    color:${s.color||'#1a1209'};
-    font-weight:${s.fontWeight||'normal'};
-    font-style:${s.fontStyle||'normal'};
-    text-decoration:${s.textDecoration||'none'};
-    text-align:${s.textAlign||'left'};
-    line-height:${s.lineHeight||1.5};
-    opacity:${s.opacity!==undefined?s.opacity:1};
-    background:${s.background||'transparent'};
-    border-radius:${s.borderRadius||0}px;
-    padding:${s.padding||0}px;
-    ${s.borderLeft ? 'border-left:'+s.borderLeft+';' : ''}
-    width:100%;height:100%;overflow:hidden;word-break:break-word;
-  `;
+function esc(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-function renderElement(el){
-  const s = el.style || {};
-  switch(el.type){
-    case 'titre':
-    case 'texte':
-    case 'chapeau':
-      return `<div class="el-inner"><div class="el-text" style="${innerHTMLStyle(el)}">${(el.contenu||'').replace(/\n/g,'<br>')}</div></div>`;
-    case 'citation':
-      return `<div class="el-inner"><div style="${innerHTMLStyle(el)}">
-        <em>${el.contenu||''}</em>
-        ${el.auteur ? `<div style="font-size:0.8em;font-weight:700;margin-top:6px;color:#C8102E;">— ${el.auteur}</div>` : ''}
-      </div></div>`;
-    case 'encart':
-      return `<div class="el-inner"><div style="${innerHTMLStyle(el)}">
-        ${el.titre_encart ? `<div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#C8102E;margin-bottom:4px;">${el.titre_encart}</div>` : ''}
-        <div style="font-size:${s.fontSize||11}px;">${el.contenu||''}</div>
-      </div></div>`;
-    case 'pub':
-      return `<div class="el-inner"><div style="${innerHTMLStyle(el)}">
-        <div style="font-family:'Playfair Display',serif;font-size:${(s.fontSize||14)}px;font-weight:900;color:#fff;margin-bottom:4px;">EDEN GROUP</div>
-        <div style="font-size:${Math.max((s.fontSize||14)-3,9)}px;color:rgba(255,255,255,0.85);">${el.contenu||''}</div>
-        ${el.telephone ? `<div style="margin-top:6px;font-size:${Math.max((s.fontSize||14)-3,9)}px;font-weight:700;color:#fff;">📞 ${el.telephone}</div>` : ''}
-      </div></div>`;
-    case 'image':
-      return el.url
-        ? `<div class="el-inner"><img class="el-img" src="${el.url}" alt="${el.legende||''}" style="object-fit:${s.objectFit||'cover'};border-radius:${s.borderRadius||0}px;opacity:${s.opacity!==undefined?s.opacity:1};" onclick="ouvrirMediaImage('${el.url}','${esc(el.legende||'')}')"></div>`
-        : `<div class="el-inner"><div style="width:100%;height:100%;background:#e5e7eb;"></div></div>`;
-    case 'video':
-      return el.url
-        ? `<div class="el-inner"><div class="el-video-wrap" style="border-radius:${s.borderRadius||0}px;opacity:${s.opacity!==undefined?s.opacity:1};" onclick="ouvrirMediaVideo('${el.url}','${esc(el.legende||'')}')">
-            <video class="el-video" src="${el.url}" preload="metadata" muted></video>
-            <div style="position:absolute;width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;font-size:20px;pointer-events:none;">▶</div>
-          </div></div>`
-        : `<div class="el-inner"><div style="width:100%;height:100%;background:#111;"></div></div>`;
-    case 'ligne':
-      return `<div class="el-inner"><div style="width:100%;height:100%;position:relative;">
-        <div style="position:absolute;top:50%;left:0;right:0;height:${s.lineWidth||1}px;background:${s.color||'#1a1209'};transform:translateY(-50%);opacity:${s.opacity!==undefined?s.opacity:1};"></div>
-      </div></div>`;
-    case 'rect':
-      return `<div class="el-inner"><div style="width:100%;height:100%;background:${s.background||'#1B4FDB'};border-radius:${s.borderRadius||0}px;opacity:${s.opacity!==undefined?s.opacity:1};${s.border?'border:'+s.border+';':''}"></div></div>`;
-    default:
-      return '';
+// ════════════════════════════════════════
+// CHARGER LE PDF
+// ════════════════════════════════════════
+async function chargerPdf() {
+  // Afficher d'abord la couverture immédiatement
+  renderCouverture();
+  document.getElementById('page-info').textContent = 'Couverture';
+  document.getElementById('nav-label').textContent = 'Couverture';
+
+  try {
+    pdfDoc = await pdfjsLib.getDocument(EDITION.pdf_url).promise;
+    totalPagesPdf = pdfDoc.numPages;
+    totalCartes = totalPagesPdf + 1;  // ✅ +1 pour la couverture
+
+    // Construire les dots
+    construireDots();
+
+    // Boutons
+    document.getElementById('btn-prev').disabled = true;
+    document.getElementById('btn-next').disabled = totalCartes <= 1;
+
+    // Appliquer zoom
+    appliquerZoomLecture();
+  } catch (e) {
+    console.error('Erreur PDF:', e);
+    // On garde la couverture, mais on affiche un message
+    const dotsEl = document.getElementById('nav-dots');
+    if (dotsEl) dotsEl.innerHTML = '<span style="color:#f87171;font-size:10px;">PDF indisponible</span>';
+    document.getElementById('btn-next').disabled = true;
   }
 }
 
 // ════════════════════════════════════════
-// RENDU PAGE
+// AFFICHER UNE PAGE (couverture ou PDF)
 // ════════════════════════════════════════
-function renderPage(pageData){
+async function afficherCarte(index) {
   const canvas = document.getElementById('page-canvas');
-  canvas.style.background = pageData.couleur_fond || '#FDFBF7';
 
-  const elements = pageData.contenu || [];
-  const sorted = [...elements].sort((a,b) => (a.z||0) - (b.z||0));
+  // Fade out
+  canvas.classList.add('fade-out');
+  await new Promise(r => setTimeout(r, 200));
 
-  let html = '';
-  sorted.forEach(el => {
-    html += `<div class="canvas-el" style="left:${Math.round(el.x)}px;top:${Math.round(el.y)}px;width:${Math.round(el.w)}px;height:${Math.round(el.h)}px;z-index:${(el.z||0)+1};">
-      ${renderElement(el)}
-    </div>`;
+  if (index === 0) {
+    // ✅ COUVERTURE
+    renderCouverture();
+  } else {
+    // ✅ PAGE DU PDF
+    const pdfPageNum = index;  // index 1 → page PDF 1
+    if (!pdfDoc || pdfPageNum < 1 || pdfPageNum > totalPagesPdf) return;
+
+    canvas.style.background = '#FDFBF7';
+    canvas.querySelectorAll('canvas').forEach(c => c.remove());
+    canvas.innerHTML = '<div class="pdf-loading"><div class="spinner"></div></div>';
+
+    try {
+      const page = await pdfDoc.getPage(pdfPageNum);
+
+      const viewportBase = page.getViewport({ scale: 1 });
+      const scaleX = 595 / viewportBase.width;
+      const scaleY = 842 / viewportBase.height;
+      const fitScale = Math.min(scaleX, scaleY);
+      const viewport = page.getViewport({
+        scale: fitScale * (window.devicePixelRatio || 1)
+      });
+
+      const pdfCanvas = document.createElement('canvas');
+      pdfCanvas.width = viewport.width;
+      pdfCanvas.height = viewport.height;
+      pdfCanvas.style.width = '100%';
+      pdfCanvas.style.height = '100%';
+      pdfCanvas.style.objectFit = 'contain';
+
+      const ctx = pdfCanvas.getContext('2d');
+      await page.render({ canvasContext: ctx, viewport }).promise;
+
+      canvas.innerHTML = '';
+      canvas.appendChild(pdfCanvas);
+    } catch (e) {
+      console.error('Erreur rendu page:', e);
+      canvas.innerHTML = '<div style="color:#fff;padding:2rem;text-align:center;">Erreur de chargement</div>';
+    }
+  }
+
+  // Fade in
+  canvas.classList.remove('fade-out');
+
+  // UI
+  const progress = totalCartes > 1 ? (index / (totalCartes - 1)) * 100 : 100;
+  document.getElementById('progress-bar').style.width = progress + '%';
+  document.getElementById('btn-prev').disabled = index === 0;
+  document.getElementById('btn-next').disabled = index >= totalCartes - 1;
+
+  const label = index === 0 ? 'Couverture' : `Page ${index} / ${totalPagesPdf}`;
+  document.getElementById('page-info').textContent = label;
+  document.getElementById('nav-label').textContent = label;
+
+  document.querySelectorAll('.nav-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === index);
   });
-  canvas.innerHTML = html;
-}
 
-function esc(str) {
-  if (!str) return '';
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  appliquerZoomLecture();
 }
 
 // ════════════════════════════════════════
-// ZOOM AUTO + MANUEL + ROTATION
+// CONSTRUIRE LES DOTS
 // ════════════════════════════════════════
-function appliquerZoomLecture(){
+function construireDots() {
+  const dotsEl = document.getElementById('nav-dots');
+  dotsEl.innerHTML = Array.from({ length: totalCartes }, (_, i) =>
+    `<div class="nav-dot ${i === 0 ? 'active' : ''}"
+      onclick="allerPage(${i})"
+      title="${i === 0 ? 'Couverture' : 'Page ' + i}"></div>`
+  ).join('');
+}
+
+// ════════════════════════════════════════
+// ZOOM
+// ════════════════════════════════════════
+function appliquerZoomLecture() {
   const canvas = document.getElementById('page-canvas');
   const wrap = document.getElementById('viewer');
-  const wrapW = wrap.clientWidth  - 20;
+  const wrapW = wrap.clientWidth - 20;
   const wrapH = wrap.clientHeight - 20;
 
-  // Dimensions de référence
   const baseW = rotationActive ? 842 : 595;
   const baseH = rotationActive ? 595 : 842;
 
-  // Facteur auto : fit dans les 2 sens
   zoomAuto = Math.min(wrapW / baseW, wrapH / baseH);
   const scale = zoomAuto * zoomManuelLecture;
 
@@ -423,43 +455,37 @@ function appliquerZoomLecture(){
   }
   canvas.style.transformOrigin = 'center center';
 
-  // Marges pour centrer proprement
-  canvas.style.marginLeft  = ((595 * scale) - 595) / 2 + 'px';
-  canvas.style.marginRight = ((595 * scale) - 595) / 2 + 'px';
-  canvas.style.marginTop   = ((842 * scale) - 842) / 2 + 'px';
-  canvas.style.marginBottom= ((842 * scale) - 842) / 2 + 'px';
-
   const pct = Math.round(zoomAuto * zoomManuelLecture * 100);
   document.getElementById('zoom-val').textContent = pct + '%';
 }
 
-function zoomLecturePlus(){
+function zoomLecturePlus() {
   zoomManuelLecture = Math.min(zoomManuelLecture + 0.15, 3);
   appliquerZoomLecture();
 }
 
-function zoomLectureMoins(){
+function zoomLectureMoins() {
   zoomManuelLecture = Math.max(zoomManuelLecture - 0.15, 0.3);
   appliquerZoomLecture();
 }
 
-function resetZoomLecture(){
+function resetZoomLecture() {
   zoomManuelLecture = 1;
   rotationActive = false;
   document.getElementById('btn-rotate')?.classList.remove('active');
   appliquerZoomLecture();
 }
 
-function toggleRotation(){
+function toggleRotation() {
   rotationActive = !rotationActive;
   document.getElementById('btn-rotate')?.classList.toggle('active', rotationActive);
   appliquerZoomLecture();
 }
 
 // ════════════════════════════════════════
-// PLEIN ÉCRAN
+// PLEIN ÉCRAN — ✅ nav-bar reste visible
 // ════════════════════════════════════════
-function togglePleinEcran(){
+function togglePleinEcran() {
   const btn = document.getElementById('btn-fullscreen');
 
   if (!document.fullscreenElement) {
@@ -490,65 +516,29 @@ document.addEventListener('fullscreenchange', () => {
 });
 
 // ════════════════════════════════════════
-// AFFICHER CARTE
-// ════════════════════════════════════════
-function afficherCarte(index){
-  const canvas = document.getElementById('page-canvas');
-  canvas.classList.add('fade-out');
-
-  setTimeout(() => {
-    if (index === 0) {
-      renderCouverture();
-    } else {
-      const pageData = PAGES_DATA[index - 1];
-      renderPage(pageData);
-    }
-    canvas.classList.remove('fade-out');
-
-    const progress = (index / (totalCartes - 1)) * 100;
-    document.getElementById('progress-bar').style.width = progress + '%';
-    document.getElementById('btn-prev').disabled = index === 0;
-    document.getElementById('btn-next').disabled = index >= totalCartes - 1;
-
-    const label = index === 0 ? 'Couverture' : `Page ${index}`;
-    document.getElementById('page-info').textContent = label;
-    document.getElementById('nav-label').textContent = label;
-
-    const dotsEl = document.getElementById('nav-dots');
-    dotsEl.innerHTML = Array.from({length: totalCartes}, (_, i) =>
-      `<div class="nav-dot ${i === index ? 'active' : ''}"
-        onclick="allerPage(${i})"
-        title="${i === 0 ? 'Couverture' : 'Page ' + i}"></div>`
-    ).join('');
-
-    appliquerZoomLecture();
-  }, 200);
-}
-
-// ════════════════════════════════════════
 // NAVIGATION
 // ════════════════════════════════════════
-function pageSuivante() {
+async function pageSuivante() {
   if (isTransitioning || pageCourante >= totalCartes - 1) return;
   isTransitioning = true;
   pageCourante++;
-  afficherCarte(pageCourante);
+  await afficherCarte(pageCourante);
   setTimeout(() => { isTransitioning = false; }, 350);
 }
 
-function pagePrecedente() {
+async function pagePrecedente() {
   if (isTransitioning || pageCourante <= 0) return;
   isTransitioning = true;
   pageCourante--;
-  afficherCarte(pageCourante);
+  await afficherCarte(pageCourante);
   setTimeout(() => { isTransitioning = false; }, 350);
 }
 
-function allerPage(idx) {
+async function allerPage(idx) {
   if (isTransitioning || idx === pageCourante || idx < 0 || idx >= totalCartes) return;
   isTransitioning = true;
   pageCourante = idx;
-  afficherCarte(pageCourante);
+  await afficherCarte(pageCourante);
   setTimeout(() => { isTransitioning = false; }, 350);
 }
 
@@ -563,7 +553,7 @@ document.addEventListener('touchstart', (e) => {
   touchStartX = e.touches[0].clientX;
   touchStartY = e.touches[0].clientY;
   isSwiping = true;
-}, {passive: true});
+}, { passive: true });
 
 document.addEventListener('touchmove', (e) => {
   if (!isSwiping) return;
@@ -572,7 +562,7 @@ document.addEventListener('touchmove', (e) => {
   if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 20) {
     e.preventDefault();
   }
-}, {passive: false});
+}, { passive: false });
 
 document.addEventListener('touchend', (e) => {
   if (!isSwiping) return;
@@ -582,14 +572,14 @@ document.addEventListener('touchend', (e) => {
     if (dx > 0) pagePrecedente();
     else pageSuivante();
   }
-}, {passive: true});
+}, { passive: true });
 
 // ── MOUSE DRAG ──
 let mouseDown = false;
 let mouseStartX = 0;
 
 document.addEventListener('mousedown', (e) => {
-  if (e.button === 0) {
+  if (e.button === 0 && e.target.closest('.viewer-wrap')) {
     mouseDown = true;
     mouseStartX = e.clientX;
   }
@@ -608,44 +598,16 @@ document.addEventListener('mouseup', (e) => {
 // ── CLAVIER ──
 document.addEventListener('keydown', (e) => {
   const tag = document.activeElement?.tagName;
-  if (['INPUT','TEXTAREA','SELECT'].includes(tag)) return;
+  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(tag)) return;
 
   if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); pageSuivante(); }
   if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); pagePrecedente(); }
-  if (e.key === 'Escape') fermerMedia();
 
   if (e.key === '+' || e.key === '=') { e.preventDefault(); zoomLecturePlus(); }
   if (e.key === '-') { e.preventDefault(); zoomLectureMoins(); }
   if (e.key === '0') { e.preventDefault(); resetZoomLecture(); }
   if (e.key === 'r' || e.key === 'R') { e.preventDefault(); toggleRotation(); }
   if (e.key === 'f' || e.key === 'F') { e.preventDefault(); togglePleinEcran(); }
-});
-
-// ── MEDIA ──
-function ouvrirMediaImage(url, legende) {
-  document.getElementById('media-inner').innerHTML =
-    `<img src="${url}" alt="${legende}">`;
-  document.getElementById('media-overlay').classList.add('open');
-}
-
-function ouvrirMediaVideo(url, legende) {
-  document.getElementById('media-inner').innerHTML =
-    `<video src="${url}" controls autoplay>
-      Votre navigateur ne supporte pas la vidéo.
-    </video>`;
-  document.getElementById('media-overlay').classList.add('open');
-}
-
-function fermerMedia() {
-  const overlay = document.getElementById('media-overlay');
-  overlay.classList.remove('open');
-  const video = overlay.querySelector('video');
-  if (video) { video.pause(); video.src = ''; }
-  document.getElementById('media-inner').innerHTML = '';
-}
-
-document.getElementById('media-overlay').addEventListener('click', function(e) {
-  if (e.target === this) fermerMedia();
 });
 
 // ════════════════════════════════════════
@@ -658,7 +620,7 @@ window.addEventListener('resize', () => {
 // ════════════════════════════════════════
 // INIT
 // ════════════════════════════════════════
-afficherCarte(0);
+window.addEventListener('load', chargerPdf);
 </script>
 </body>
 </html>

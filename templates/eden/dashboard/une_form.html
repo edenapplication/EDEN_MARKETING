@@ -27,10 +27,9 @@ input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 
 input::placeholder,textarea::placeholder{color:var(--g400);}
 select{appearance:none;}
 .preview-img{width:100%;height:200px;object-fit:cover;border-radius:var(--r);margin-top:8px;display:none;border:1.5px solid var(--g200);}
+.pdf-preview{margin-top:10px;padding:10px 14px;background:var(--bpale);border:1.5px solid rgba(27,79,219,0.2);border-radius:var(--r);font-size:13px;color:var(--blue);display:flex;align-items:center;gap:10px;}
 .btn-save{background:var(--grad);color:#fff;padding:13px 28px;border-radius:var(--r);font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;}
 .btn-save:hover{opacity:0.88;}
-.btn-editeur{background:linear-gradient(135deg,#0A2494,#1B4FDB);color:#fff;padding:13px 24px;border-radius:var(--r);font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;display:inline-flex;align-items:center;gap:8px;}
-.btn-editeur:hover{opacity:0.88;}
 .btn-cancel{background:#fff;color:var(--g500);padding:13px 24px;border-radius:var(--r);font-size:14px;font-weight:500;border:1.5px solid var(--g200);cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;}
 .err{background:#fee2e2;border:1.5px solid #fca5a5;border-radius:var(--r);padding:12px 16px;font-size:13px;color:#dc2626;margin-bottom:1.5rem;}
 .alert{background:#dcfce7;border:1.5px solid #86efac;border-radius:var(--r);padding:12px 16px;font-size:13px;color:#16a34a;margin-bottom:1.5rem;}
@@ -43,9 +42,6 @@ select{appearance:none;}
   <div style="display:flex;align-items:center;gap:8px;"><div class="tn-em">E</div><div class="tn-name">EDEN GROUP</div></div>
   <div style="display:flex;gap:8px;">
     <a class="tn-btn" href="{% url 'dashboard_une_liste' %}">← Articles</a>
-    {% if article %}
-    <a class="tn-btn" href="{% url 'dashboard_une_editeur' article.pk %}" style="background:linear-gradient(135deg,#0A2494,#1B4FDB);color:#fff;border:none;">✏ Éditeur de contenu</a>
-    {% endif %}
   </div>
 </nav>
 
@@ -55,7 +51,7 @@ select{appearance:none;}
   {% if messages %}{% for msg in messages %}<div class="{% if 'error' in msg.tags %}err{% else %}alert{% endif %}">{{ msg }}</div>{% endfor %}{% endif %}
 
   <div class="info-box">
-    💡 Remplissez les informations de base ici, puis cliquez sur <strong>"Ouvrir l'éditeur de contenu"</strong> pour créer la mise en page visuelle de l'article.
+    💡 Uploadez un fichier PDF qui sera affiché directement sur la page de lecture de l'article.
   </div>
 
   <form method="post" enctype="multipart/form-data">
@@ -65,11 +61,11 @@ select{appearance:none;}
       <div class="card-tit">📋 Informations générales</div>
       <div class="fg">
         <label>Titre *</label>
-        <input type="text" name="titre" value="{{ article.titre|default:'' }}" placeholder="Ex: Conférence de lancement du Livret de Sécurité EDEN GROUP" required>
+        <input type="text" name="titre" value="{{ article.titre|default:'' }}" placeholder="Ex: Conférence de lancement" required>
       </div>
       <div class="fg">
         <label>Sous-titre / Accroche</label>
-        <textarea name="sous_titre" rows="2" placeholder="Une brève description de l'article...">{{ article.sous_titre|default:'' }}</textarea>
+        <textarea name="sous_titre" rows="2" placeholder="Une brève description...">{{ article.sous_titre|default:'' }}</textarea>
       </div>
       <div class="form-grid">
         <div class="fg">
@@ -103,12 +99,11 @@ select{appearance:none;}
       <div class="form-grid">
         <div class="fg">
           <label>Lieu</label>
-          <input type="text" name="lieu" value="{{ article.lieu|default:'' }}" placeholder="Ex: Yaoundé, Salle des conférences EDEN">
+          <input type="text" name="lieu" value="{{ article.lieu|default:'' }}" placeholder="Ex: Yaoundé">
         </div>
         <div class="fg">
           <label>Ordre d'affichage</label>
           <input type="number" name="ordre" value="{{ article.ordre|default:'0' }}" min="0">
-          <div class="hint">Les articles avec un ordre plus bas apparaissent en premier.</div>
         </div>
       </div>
     </div>
@@ -123,23 +118,31 @@ select{appearance:none;}
       <div class="fg" style="margin-top:{% if article and article.image_couverture %}0.8rem{% else %}0{% endif %};">
         <label>Choisir une image</label>
         <input type="file" name="image_couverture" accept="image/*" onchange="previewImg(this)">
-        <div class="hint">Recommandé : 1200×800px. Apparaît en grand sur la page d'accueil et dans les listes.</div>
+        <div class="hint">Recommandé : 1200×800px.</div>
       </div>
     </div>
 
-    <div style="display:flex;gap:12px;flex-wrap:wrap;">
-      <button type="submit" name="action" value="sauvegarder" class="btn-save">
-        💾 {% if article %}Enregistrer les modifications{% else %}Créer l'article{% endif %}
-      </button>
-      {% if article %}
-      <button type="submit" name="action" value="editeur" class="btn-editeur">
-        ✏ Enregistrer &amp; ouvrir l'éditeur →
-      </button>
-      {% else %}
-      <button type="submit" name="action" value="editeur" class="btn-editeur">
-        ✏ Créer &amp; ouvrir l'éditeur →
-      </button>
+    <!-- ✅ NOUVEAU : PDF -->
+    <div class="card">
+      <div class="card-tit">📄 Document PDF</div>
+      <div class="fg">
+        <label>Fichier PDF *</label>
+        <input type="file" name="fichier_pdf" accept="application/pdf" {% if not article or not article.fichier_pdf %}required{% endif %}>
+        <div class="hint">Le PDF sera affiché tel quel sur la page de lecture.</div>
+      </div>
+      {% if article and article.fichier_pdf %}
+      <div class="pdf-preview">
+        <span>📄</span>
+        <span>PDF actuel : <strong>{{ article.fichier_pdf.name }}</strong></span>
+        <a href="{{ article.fichier_pdf.url }}" target="_blank" style="margin-left:auto;color:var(--blue);font-weight:600;">Voir →</a>
+      </div>
       {% endif %}
+    </div>
+
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <button type="submit" class="btn-save">
+        💾 {% if article %}Enregistrer{% else %}Créer l'article{% endif %}
+      </button>
       <a href="{% url 'dashboard_une_liste' %}" class="btn-cancel">Annuler</a>
     </div>
   </form>

@@ -481,7 +481,6 @@ class JournalEdition(models.Model):
     ]
 
     titre = models.CharField(max_length=300)
-    # ✅ CORRIGÉ : CharField unique, pas IntegerField
     numero = models.CharField(max_length=30, unique=True)
     sous_titre = models.CharField(max_length=400, blank=True)
     image_une = models.ImageField(upload_to='journal/unes/', null=True, blank=True)
@@ -497,6 +496,14 @@ class JournalEdition(models.Model):
         default='journal',
         verbose_name="Type de publication"
     )
+
+    # ✅ NOUVEAU : le PDF principal
+    fichier_pdf = models.FileField(
+        upload_to='journal/pdfs/',
+        null=True, blank=True,
+        verbose_name="Fichier PDF"
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -511,8 +518,6 @@ class JournalEdition(models.Model):
     @property
     def nb_pages(self):
         return self.pages.count()
-
-
 class JournalPage(models.Model):
     edition = models.ForeignKey(
         JournalEdition, on_delete=models.CASCADE, related_name='pages'
@@ -926,6 +931,11 @@ class UneEvenement(models.Model):
         upload_to='une_evenements/couvertures/',
         null=True, blank=True,
         verbose_name="Image de couverture"
+    )
+    fichier_pdf = models.FileField(
+        upload_to='une_evenements/pdfs/',
+        null=True, blank=True,
+        verbose_name="Fichier PDF"
     )
     date_evenement = models.DateField(
         null=True, blank=True,

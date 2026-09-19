@@ -84,157 +84,169 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
 
     # GROUPY Dashboard
-path('dashboard/groupy/', views.dashboard_groupy, name='dashboard_groupy'),
-path('dashboard/groupy/categories/', views.dashboard_groupy_categories, name='dashboard_groupy_categories'),
-path('dashboard/groupy/qr/ajouter/', views.dashboard_groupy_qr_form, name='dashboard_groupy_qr_ajouter'),
-path('dashboard/groupy/qr/<int:pk>/modifier/', views.dashboard_groupy_qr_form, name='dashboard_groupy_qr_modifier'),
-path('dashboard/groupy/qr/<int:pk>/supprimer/', views.dashboard_groupy_qr_supprimer, name='dashboard_groupy_qr_supprimer'),
-path('dashboard/groupy/categorie/ajouter/', views.dashboard_groupy_cat_form, name='dashboard_groupy_cat_ajouter'),
-path('dashboard/groupy/categorie/<int:pk>/supprimer/', views.dashboard_groupy_cat_supprimer, name='dashboard_groupy_cat_supprimer'),
+    path('dashboard/groupy/', views.dashboard_groupy, name='dashboard_groupy'),
+    path('dashboard/groupy/categories/', views.dashboard_groupy_categories, name='dashboard_groupy_categories'),
+    path('dashboard/groupy/qr/ajouter/', views.dashboard_groupy_qr_form, name='dashboard_groupy_qr_ajouter'),
+    path('dashboard/groupy/qr/<int:pk>/modifier/', views.dashboard_groupy_qr_form, name='dashboard_groupy_qr_modifier'),
+    path('dashboard/groupy/qr/<int:pk>/supprimer/', views.dashboard_groupy_qr_supprimer, name='dashboard_groupy_qr_supprimer'),
+    path('dashboard/groupy/categorie/ajouter/', views.dashboard_groupy_cat_form, name='dashboard_groupy_cat_ajouter'),
+    path('dashboard/groupy/categorie/<int:pk>/supprimer/', views.dashboard_groupy_cat_supprimer, name='dashboard_groupy_cat_supprimer'),
 
-# ── Journal public ──
-path('journal/', views.journal_kiosque, name='journal_kiosque'),
-path('journal/<path:numero>/', views.journal_lire, name='journal_lire'),
-# ── Dashboard Journal ──
-path('dashboard/journal/', views.dashboard_journal, name='dashboard_journal'),
-path('dashboard/journal/ajouter/', views.dashboard_journal_edition_form, name='dashboard_journal_edition_ajouter'),
-path('dashboard/journal/<int:pk>/modifier/', views.dashboard_journal_edition_form, name='dashboard_journal_edition_modifier'),
-path('dashboard/journal/<int:pk>/supprimer/', views.dashboard_journal_edition_supprimer, name='dashboard_journal_edition_supprimer'),
-path('dashboard/journal/<int:pk>/publier/', views.dashboard_journal_publier, name='dashboard_journal_publier'),
-path('dashboard/journal/<int:edition_pk>/page/<int:page_num>/editer/', views.dashboard_journal_page_editer, name='dashboard_journal_page_editer'),
-path('dashboard/journal/<int:edition_pk>/page/ajouter/', views.dashboard_journal_page_ajouter, name='dashboard_journal_page_ajouter'),
-path('dashboard/journal/<int:edition_pk>/page/<int:page_num>/supprimer/', views.dashboard_journal_page_supprimer, name='dashboard_journal_page_supprimer'),
-path('dashboard/journal/media/upload/', views.dashboard_journal_media_upload, name='dashboard_journal_media_upload'),
-path('dashboard/journal/media/liste/', views.dashboard_journal_media_liste, name='dashboard_journal_media_liste'),
-path('dashboard/journal/media/<int:pk>/supprimer/', views.dashboard_journal_media_supprimer, name='dashboard_journal_media_supprimer'),
-path('api/journal/sauvegarder-page/', views.api_journal_sauvegarder_page, name='api_journal_sauvegarder_page'),
-path('dashboard/sites/<uuid:pk>/stats-manuelles/', views.dashboard_site_stats_manuelles, name='dashboard_site_stats_manuelles'),
-# Dashboard home config
-path('dashboard/home-config/', views.dashboard_home_config, name='dashboard_home_config'),
-path('dashboard/home-config/hero/', views.dashboard_hero_form, name='dashboard_hero_form'),
-path('dashboard/home-config/services/', views.dashboard_services, name='dashboard_services'),
-path('dashboard/home-config/etapes/', views.dashboard_etapes, name='dashboard_etapes'),
-path('dashboard/home-config/livret/', views.dashboard_livret_form, name='dashboard_livret_form'),
-path('dashboard/home-config/actualites/', views.dashboard_actualites, name='dashboard_actualites'),
-path('dashboard/home-config/actualites/ajouter/', views.dashboard_actualite_form, name='dashboard_actualite_ajouter'),
-path('dashboard/home-config/actualites/<int:pk>/modifier/', views.dashboard_actualite_form, name='dashboard_actualite_modifier'),
-path('dashboard/home-config/actualites/<int:pk>/supprimer/', views.dashboard_actualite_supprimer, name='dashboard_actualite_supprimer'),
-path('dashboard/home-config/commentaires/', views.dashboard_commentaires, name='dashboard_commentaires'),
-path('dashboard/home-config/commentaires/ajouter/', views.dashboard_commentaire_form, name='dashboard_commentaire_ajouter'),
-path('dashboard/home-config/commentaires/<int:pk>/modifier/', views.dashboard_commentaire_form, name='dashboard_commentaire_modifier'),
-path('dashboard/home-config/commentaires/<int:pk>/supprimer/', views.dashboard_commentaire_supprimer, name='dashboard_commentaire_supprimer'),
-path('dashboard/home-config/stats/', views.dashboard_stats_home, name='dashboard_stats_home'),
-path('dashboard/home-config/hero-slides/', views.dashboard_hero_slides, name='dashboard_hero_slides'),
-path('dashboard/home-config/hero-slides/<int:pk>/supprimer/', views.dashboard_hero_slide_supprimer, name='dashboard_hero_slide_supprimer'),
-path('dashboard/home-config/hero-slides/<int:pk>/toggle/', views.dashboard_hero_slide_toggle, name='dashboard_hero_slide_toggle'),
-path('dashboard/journal/<int:edition_pk>/page/<int:page_num>/supprimer/', views.dashboard_journal_page_supprimer, name='dashboard_journal_page_supprimer'),
+    # ══════════════════════════════════════════════
+    # ── JOURNAL PUBLIC ──
+    # ✅ ROUTES SPÉCIFIQUES EN PREMIER (ordre important !)
+    # ══════════════════════════════════════════════
+    path('journal/', views.journal_kiosque, name='journal_kiosque'),
+    path('journal/<str:numero>/pdf/', views.servir_pdf_journal, name='journal_pdf'),
+    path('journal/<str:numero>/', views.journal_lire, name='journal_lire'),
 
-# Module Une & Événements — public
-path('une-evenements/', views.une_evenements_accueil, name='une_evenements_accueil'),
-path('une-evenements/<int:pk>/', views.une_evenement_detail, name='une_evenement_detail'),
-path('une-evenements/categorie/<str:cat>/', views.une_evenements_liste, name='une_evenements_liste'),
+    # ── Dashboard Journal ──
+    path('dashboard/journal/', views.dashboard_journal, name='dashboard_journal'),
+    path('dashboard/journal/ajouter/', views.dashboard_journal_edition_form, name='dashboard_journal_edition_ajouter'),
+    path('dashboard/journal/<int:pk>/modifier/', views.dashboard_journal_edition_form, name='dashboard_journal_edition_modifier'),
+    path('dashboard/journal/<int:pk>/supprimer/', views.dashboard_journal_edition_supprimer, name='dashboard_journal_edition_supprimer'),
+    path('dashboard/journal/<int:pk>/publier/', views.dashboard_journal_publier, name='dashboard_journal_publier'),
 
-# Dashboard
-path('dashboard/une-evenements/', views.dashboard_une_liste, name='dashboard_une_liste'),
-path('dashboard/une-evenements/ajouter/', views.dashboard_une_form, name='dashboard_une_ajouter'),
-path('dashboard/une-evenements/<int:pk>/modifier/', views.dashboard_une_form, name='dashboard_une_modifier'),
-path('dashboard/une-evenements/<int:pk>/supprimer/', views.dashboard_une_supprimer, name='dashboard_une_supprimer'),
-path('dashboard/une-evenements/<int:pk>/publier/', views.dashboard_une_publier, name='dashboard_une_publier'),
-path('dashboard/une-evenements/<int:pk>/editeur/', views.dashboard_une_editeur, name='dashboard_une_editeur'),
-path('api/une-evenements/sauvegarder/', views.api_une_sauvegarder, name='api_une_sauvegarder'),
-path('dashboard/une-evenements/media/upload/', views.dashboard_une_media_upload, name='dashboard_une_media_upload'),
+    # ✅ Routes de l'ancien éditeur — à supprimer si plus utilisées
+    path('dashboard/journal/<int:edition_pk>/page/<int:page_num>/editer/', views.dashboard_journal_page_editer, name='dashboard_journal_page_editer'),
+    path('dashboard/journal/<int:edition_pk>/page/ajouter/', views.dashboard_journal_page_ajouter, name='dashboard_journal_page_ajouter'),
+    path('dashboard/journal/<int:edition_pk>/page/<int:page_num>/supprimer/', views.dashboard_journal_page_supprimer, name='dashboard_journal_page_supprimer'),
+    path('dashboard/journal/media/upload/', views.dashboard_journal_media_upload, name='dashboard_journal_media_upload'),
+    path('dashboard/journal/media/liste/', views.dashboard_journal_media_liste, name='dashboard_journal_media_liste'),
+    path('dashboard/journal/media/<int:pk>/supprimer/', views.dashboard_journal_media_supprimer, name='dashboard_journal_media_supprimer'),
+    path('api/journal/sauvegarder-page/', views.api_journal_sauvegarder_page, name='api_journal_sauvegarder_page'),
 
-# Module Nos Projets — public
-path('projets/', views.nos_projets, name='nos_projets'),
-path('projets/<slug:slug>/', views.projet_detail, name='projet_detail'),
-path('api/projet/<slug:slug>/etapes/', views.api_projet_etapes, name='api_projet_etapes'),
+    path('dashboard/sites/<uuid:pk>/stats-manuelles/', views.dashboard_site_stats_manuelles, name='dashboard_site_stats_manuelles'),
 
-# Dashboard Nos Projets
-path('dashboard/projets/', views.dashboard_projets_liste, name='dashboard_projets_liste'),
-path('dashboard/projets/ajouter/', views.dashboard_projet_form, name='dashboard_projet_ajouter'),
-path('dashboard/projets/<uuid:pk>/modifier/', views.dashboard_projet_form, name='dashboard_projet_modifier'),
-path('dashboard/projets/<uuid:pk>/supprimer/', views.dashboard_projet_supprimer, name='dashboard_projet_supprimer'),
-path('dashboard/projets/<uuid:pk>/etapes/', views.dashboard_projet_etapes, name='dashboard_projet_etapes'),
-path('dashboard/projets/<uuid:pk>/galerie/', views.dashboard_projet_galerie, name='dashboard_projet_galerie'),
-path('dashboard/projets/<uuid:pk>/galerie/supprimer/<int:img_pk>/', views.dashboard_projet_image_supprimer, name='dashboard_projet_image_supprimer'),
-path('dashboard/projets/<uuid:pk>/infrastructures/', views.dashboard_projet_infrastructures, name='dashboard_projet_infrastructures'),
+    # Dashboard home config
+    path('dashboard/home-config/', views.dashboard_home_config, name='dashboard_home_config'),
+    path('dashboard/home-config/hero/', views.dashboard_hero_form, name='dashboard_hero_form'),
+    path('dashboard/home-config/services/', views.dashboard_services, name='dashboard_services'),
+    path('dashboard/home-config/etapes/', views.dashboard_etapes, name='dashboard_etapes'),
+    path('dashboard/home-config/livret/', views.dashboard_livret_form, name='dashboard_livret_form'),
+    path('dashboard/home-config/actualites/', views.dashboard_actualites, name='dashboard_actualites'),
+    path('dashboard/home-config/actualites/ajouter/', views.dashboard_actualite_form, name='dashboard_actualite_ajouter'),
+    path('dashboard/home-config/actualites/<int:pk>/modifier/', views.dashboard_actualite_form, name='dashboard_actualite_modifier'),
+    path('dashboard/home-config/actualites/<int:pk>/supprimer/', views.dashboard_actualite_supprimer, name='dashboard_actualite_supprimer'),
+    path('dashboard/home-config/commentaires/', views.dashboard_commentaires, name='dashboard_commentaires'),
+    path('dashboard/home-config/commentaires/ajouter/', views.dashboard_commentaire_form, name='dashboard_commentaire_ajouter'),
+    path('dashboard/home-config/commentaires/<int:pk>/modifier/', views.dashboard_commentaire_form, name='dashboard_commentaire_modifier'),
+    path('dashboard/home-config/commentaires/<int:pk>/supprimer/', views.dashboard_commentaire_supprimer, name='dashboard_commentaire_supprimer'),
+    path('dashboard/home-config/stats/', views.dashboard_stats_home, name='dashboard_stats_home'),
+    path('dashboard/home-config/hero-slides/', views.dashboard_hero_slides, name='dashboard_hero_slides'),
+    path('dashboard/home-config/hero-slides/<int:pk>/supprimer/', views.dashboard_hero_slide_supprimer, name='dashboard_hero_slide_supprimer'),
+    path('dashboard/home-config/hero-slides/<int:pk>/toggle/', views.dashboard_hero_slide_toggle, name='dashboard_hero_slide_toggle'),
 
-# Module Nos Agences — public
-path('agences/', views.nos_agences, name='nos_agences'),
+    # ══════════════════════════════════════════════
+    # Module Une & Événements — public
+    # ══════════════════════════════════════════════
+    path('une-evenements/', views.une_evenements_accueil, name='une_evenements_accueil'),
+    path('une-evenements/categorie/<str:cat>/', views.une_evenements_liste, name='une_evenements_liste'),
+    # ✅ PDF AVANT <int:pk>
+    path('une-evenements/<int:pk>/pdf/', views.servir_pdf, name='une_evenement_pdf'),
+    path('une-evenements/<int:pk>/', views.une_evenement_detail, name='une_evenement_detail'),
 
-# Dashboard Agences
-path('dashboard/agences/', views.dashboard_agences_liste, name='dashboard_agences_liste'),
-path('dashboard/agences/ajouter/', views.dashboard_agence_form, name='dashboard_agence_ajouter'),
-path('dashboard/agences/<int:pk>/modifier/', views.dashboard_agence_form, name='dashboard_agence_modifier'),
-path('dashboard/agences/<int:pk>/supprimer/', views.dashboard_agence_supprimer, name='dashboard_agence_supprimer'),
-path('dashboard/agences/stats/', views.dashboard_agences_stats, name='dashboard_agences_stats'),
+    # Dashboard Une & Événements
+    path('dashboard/une-evenements/', views.dashboard_une_liste, name='dashboard_une_liste'),
+    path('dashboard/une-evenements/ajouter/', views.dashboard_une_form, name='dashboard_une_ajouter'),
+    path('dashboard/une-evenements/<int:pk>/modifier/', views.dashboard_une_form, name='dashboard_une_modifier'),
+    path('dashboard/une-evenements/<int:pk>/supprimer/', views.dashboard_une_supprimer, name='dashboard_une_supprimer'),
+    path('dashboard/une-evenements/<int:pk>/publier/', views.dashboard_une_publier, name='dashboard_une_publier'),
+    path('dashboard/une-evenements/<int:pk>/editeur/', views.dashboard_une_editeur, name='dashboard_une_editeur'),
+    path('api/une-evenements/sauvegarder/', views.api_une_sauvegarder, name='api_une_sauvegarder'),
+    path('dashboard/une-evenements/media/upload/', views.dashboard_une_media_upload, name='dashboard_une_media_upload'),
 
-# Module Nos Services — public
-path('services/', views.nos_services, name='nos_services'),
-path('services/<slug:slug>/', views.service_detail, name='service_detail'),
+    # Module Nos Projets — public
+    path('projets/', views.nos_projets, name='nos_projets'),
+    path('projets/<slug:slug>/', views.projet_detail, name='projet_detail'),
+    path('api/projet/<slug:slug>/etapes/', views.api_projet_etapes, name='api_projet_etapes'),
 
-# Dashboard Services
-path('dashboard/services-module/', views.dashboard_services_liste, name='dashboard_services_liste'),
-path('dashboard/services-module/ajouter/', views.dashboard_service_form, name='dashboard_service_ajouter'),
-path('dashboard/services-module/<int:pk>/modifier/', views.dashboard_service_form, name='dashboard_service_modifier'),
-path('dashboard/services-module/<int:pk>/supprimer/', views.dashboard_service_supprimer, name='dashboard_service_supprimer'),
-path('dashboard/services-module/categories/', views.dashboard_services_categories, name='dashboard_services_categories'),
-path('dashboard/services-module/processus/', views.dashboard_services_processus, name='dashboard_services_processus'),
-path('dashboard/services-module/engagements/', views.dashboard_services_engagements, name='dashboard_services_engagements'),
+    # Dashboard Nos Projets
+    path('dashboard/projets/', views.dashboard_projets_liste, name='dashboard_projets_liste'),
+    path('dashboard/projets/ajouter/', views.dashboard_projet_form, name='dashboard_projet_ajouter'),
+    path('dashboard/projets/<uuid:pk>/modifier/', views.dashboard_projet_form, name='dashboard_projet_modifier'),
+    path('dashboard/projets/<uuid:pk>/supprimer/', views.dashboard_projet_supprimer, name='dashboard_projet_supprimer'),
+    path('dashboard/projets/<uuid:pk>/etapes/', views.dashboard_projet_etapes, name='dashboard_projet_etapes'),
+    path('dashboard/projets/<uuid:pk>/galerie/', views.dashboard_projet_galerie, name='dashboard_projet_galerie'),
+    path('dashboard/projets/<uuid:pk>/galerie/supprimer/<int:img_pk>/', views.dashboard_projet_image_supprimer, name='dashboard_projet_image_supprimer'),
+    path('dashboard/projets/<uuid:pk>/infrastructures/', views.dashboard_projet_infrastructures, name='dashboard_projet_infrastructures'),
 
-path('api/calcul-parcelles/', views.api_calcul_parcelles, name='api_calcul_parcelles'),
+    # Module Nos Agences — public
+    path('agences/', views.nos_agences, name='nos_agences'),
 
-# Académie — public
-# Académie — public
-path('academie/', views.academie_accueil, name='academie_accueil'),
-path('academie/recherche/', views.academie_recherche, name='academie_recherche'),
-path('academie/categorie/<str:cat>/', views.academie_categorie, name='academie_categorie'),
-path('academie/document/<int:pk>/telecharger/', views.academie_telecharger, name='academie_telecharger'),
-path('academie/video/<int:pk>/voir/', views.academie_voir_video, name='academie_voir_video'),
+    # Dashboard Agences
+    path('dashboard/agences/', views.dashboard_agences_liste, name='dashboard_agences_liste'),
+    path('dashboard/agences/ajouter/', views.dashboard_agence_form, name='dashboard_agence_ajouter'),
+    path('dashboard/agences/<int:pk>/modifier/', views.dashboard_agence_form, name='dashboard_agence_modifier'),
+    path('dashboard/agences/<int:pk>/supprimer/', views.dashboard_agence_supprimer, name='dashboard_agence_supprimer'),
+    path('dashboard/agences/stats/', views.dashboard_agences_stats, name='dashboard_agences_stats'),
 
-# Dashboard Académie
-path('dashboard/academie/', views.dashboard_academie_liste, name='dashboard_academie_liste'),
-path('dashboard/academie/ajouter/', views.dashboard_academie_form, name='dashboard_academie_ajouter'),
-path('dashboard/academie/<int:pk>/modifier/', views.dashboard_academie_form, name='dashboard_academie_modifier'),
-path('dashboard/academie/<int:pk>/supprimer/', views.dashboard_academie_supprimer, name='dashboard_academie_supprimer'),
-path('dashboard/academie/videos/', views.dashboard_academie_videos, name='dashboard_academie_videos'),
-path('dashboard/academie/videos/ajouter/', views.dashboard_academie_video_form, name='dashboard_academie_video_ajouter'),
-path('dashboard/academie/videos/<int:pk>/modifier/', views.dashboard_academie_video_form, name='dashboard_academie_video_modifier'),
-path('dashboard/academie/videos/<int:pk>/supprimer/', views.dashboard_academie_video_supprimer, name='dashboard_academie_video_supprimer'),
-path('dashboard/academie/faq/', views.dashboard_academie_faq, name='dashboard_academie_faq'),
-path('dashboard/academie/parcours/', views.dashboard_academie_parcours, name='dashboard_academie_parcours'),
-path('dashboard/academie/stats/', views.dashboard_academie_stats, name='dashboard_academie_stats'),
+    # Module Nos Services — public
+    path('services/', views.nos_services, name='nos_services'),
+    path('services/<slug:slug>/', views.service_detail, name='service_detail'),
 
-# Dashboard Journal — types académie
-path('dashboard/journal/article/ajouter/', views.dashboard_journal_article_form, name='dashboard_journal_article_ajouter'),
-path('dashboard/journal/article/<int:pk>/modifier/', views.dashboard_journal_article_form, name='dashboard_journal_article_modifier'),
-path('dashboard/journal/revue/ajouter/', views.dashboard_journal_article_form, name='dashboard_journal_revue_ajouter'),
-path('dashboard/journal/guide/ajouter/', views.dashboard_journal_article_form, name='dashboard_journal_guide_ajouter'),
+    # Dashboard Services
+    path('dashboard/services-module/', views.dashboard_services_liste, name='dashboard_services_liste'),
+    path('dashboard/services-module/ajouter/', views.dashboard_service_form, name='dashboard_service_ajouter'),
+    path('dashboard/services-module/<int:pk>/modifier/', views.dashboard_service_form, name='dashboard_service_modifier'),
+    path('dashboard/services-module/<int:pk>/supprimer/', views.dashboard_service_supprimer, name='dashboard_service_supprimer'),
+    path('dashboard/services-module/categories/', views.dashboard_services_categories, name='dashboard_services_categories'),
+    path('dashboard/services-module/processus/', views.dashboard_services_processus, name='dashboard_services_processus'),
+    path('dashboard/services-module/engagements/', views.dashboard_services_engagements, name='dashboard_services_engagements'),
 
-# Dashboard Académie — Galerie
-path('dashboard/academie/galerie/', views.dashboard_academie_galerie, name='dashboard_academie_galerie'),
-path('dashboard/academie/galerie/ajouter/', views.dashboard_academie_galerie_form, name='dashboard_academie_galerie_ajouter'),
-path('dashboard/academie/galerie/<int:pk>/modifier/', views.dashboard_academie_galerie_form, name='dashboard_academie_galerie_modifier'),
-path('dashboard/academie/galerie/<int:pk>/supprimer/', views.dashboard_academie_galerie_supprimer, name='dashboard_academie_galerie_supprimer'),
+    path('api/calcul-parcelles/', views.api_calcul_parcelles, name='api_calcul_parcelles'),
 
-path('dashboard/academie/publications/', views.dashboard_academie_publications, name='dashboard_academie_publications'),
+    # ══════════════════════════════════════════════
+    # Académie — public
+    # ══════════════════════════════════════════════
+    path('academie/', views.academie_accueil, name='academie_accueil'),
+    path('academie/recherche/', views.academie_recherche, name='academie_recherche'),
+    path('academie/categorie/<str:cat>/', views.academie_categorie, name='academie_categorie'),
+    path('academie/document/<int:pk>/telecharger/', views.academie_telecharger, name='academie_telecharger'),
+    path('academie/video/<int:pk>/voir/', views.academie_voir_video, name='academie_voir_video'),
+    path('academie/lexique/', views.academie_lexique, name='academie_lexique'),
 
-# Lexique foncier — public
-path('academie/lexique/', views.academie_lexique, name='academie_lexique'),
+    # Dashboard Académie
+    path('dashboard/academie/', views.dashboard_academie_liste, name='dashboard_academie_liste'),
+    path('dashboard/academie/ajouter/', views.dashboard_academie_form, name='dashboard_academie_ajouter'),
+    path('dashboard/academie/<int:pk>/modifier/', views.dashboard_academie_form, name='dashboard_academie_modifier'),
+    path('dashboard/academie/<int:pk>/supprimer/', views.dashboard_academie_supprimer, name='dashboard_academie_supprimer'),
+    path('dashboard/academie/videos/', views.dashboard_academie_videos, name='dashboard_academie_videos'),
+    path('dashboard/academie/videos/ajouter/', views.dashboard_academie_video_form, name='dashboard_academie_video_ajouter'),
+    path('dashboard/academie/videos/<int:pk>/modifier/', views.dashboard_academie_video_form, name='dashboard_academie_video_modifier'),
+    path('dashboard/academie/videos/<int:pk>/supprimer/', views.dashboard_academie_video_supprimer, name='dashboard_academie_video_supprimer'),
+    path('dashboard/academie/faq/', views.dashboard_academie_faq, name='dashboard_academie_faq'),
+    path('dashboard/academie/parcours/', views.dashboard_academie_parcours, name='dashboard_academie_parcours'),
+    path('dashboard/academie/stats/', views.dashboard_academie_stats, name='dashboard_academie_stats'),
 
-# Dashboard — Lexique
-path('dashboard/academie/lexique/', views.dashboard_lexique, name='dashboard_lexique'),
-path('dashboard/academie/lexique/ajouter/', views.dashboard_lexique_form, name='dashboard_lexique_ajouter'),
-path('dashboard/academie/lexique/<int:pk>/modifier/', views.dashboard_lexique_form, name='dashboard_lexique_modifier'),
-path('dashboard/academie/lexique/<int:pk>/supprimer/', views.dashboard_lexique_supprimer, name='dashboard_lexique_supprimer'),
-path('dashboard/video-globale/', views.dashboard_video_globale, name='dashboard_video_globale'),
+    # Dashboard Journal — types académie
+    path('dashboard/journal/article/ajouter/', views.dashboard_journal_article_form, name='dashboard_journal_article_ajouter'),
+    path('dashboard/journal/article/<int:pk>/modifier/', views.dashboard_journal_article_form, name='dashboard_journal_article_modifier'),
+    path('dashboard/journal/revue/ajouter/', views.dashboard_journal_article_form, name='dashboard_journal_revue_ajouter'),
+    path('dashboard/journal/guide/ajouter/', views.dashboard_journal_article_form, name='dashboard_journal_guide_ajouter'),
 
-path('sw.js', serve, {
+    # Dashboard Académie — Galerie
+    path('dashboard/academie/galerie/', views.dashboard_academie_galerie, name='dashboard_academie_galerie'),
+    path('dashboard/academie/galerie/ajouter/', views.dashboard_academie_galerie_form, name='dashboard_academie_galerie_ajouter'),
+    path('dashboard/academie/galerie/<int:pk>/modifier/', views.dashboard_academie_galerie_form, name='dashboard_academie_galerie_modifier'),
+    path('dashboard/academie/galerie/<int:pk>/supprimer/', views.dashboard_academie_galerie_supprimer, name='dashboard_academie_galerie_supprimer'),
+
+    path('dashboard/academie/publications/', views.dashboard_academie_publications, name='dashboard_academie_publications'),
+
+    # Dashboard — Lexique
+    path('dashboard/academie/lexique/', views.dashboard_lexique, name='dashboard_lexique'),
+    path('dashboard/academie/lexique/ajouter/', views.dashboard_lexique_form, name='dashboard_lexique_ajouter'),
+    path('dashboard/academie/lexique/<int:pk>/modifier/', views.dashboard_lexique_form, name='dashboard_lexique_modifier'),
+    path('dashboard/academie/lexique/<int:pk>/supprimer/', views.dashboard_lexique_supprimer, name='dashboard_lexique_supprimer'),
+    path('dashboard/video-globale/', views.dashboard_video_globale, name='dashboard_video_globale'),
+
+    # ── Service Worker ──
+    path('sw.js', serve, {
         'document_root': os.path.join(settings.BASE_DIR, 'static'),
         'path': 'sw.js'
     }),
 
-        # ══════════════════════════════════════════════
+    # ══════════════════════════════════════════════
     # MODULE À PROPOS — DASHBOARD
     # ══════════════════════════════════════════════
     path('dashboard/apropos/', views.dashboard_apropos, name='dashboard_apropos'),
@@ -277,6 +289,6 @@ path('sw.js', serve, {
     path('dashboard/apropos/api/ligne/<int:pk>/supprimer/', views.api_apropos_ligne_supprimer, name='api_apropos_ligne_supprimer'),
     path('dashboard/apropos/api/ligne/<int:pk>/renommer/', views.api_apropos_ligne_renommer, name='api_apropos_ligne_renommer'),
     path('dashboard/apropos/api/cellule/sauvegarder/', views.api_apropos_cellule_sauvegarder, name='api_apropos_cellule_sauvegarder'),
-    path('dashboard/section-academie/', views.admin_section_academie, name='admin_section_academie'),
 
+    path('dashboard/section-academie/', views.admin_section_academie, name='admin_section_academie'),
 ]

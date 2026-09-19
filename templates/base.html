@@ -161,14 +161,209 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.4);
             z-index: 2500;
             background: #000;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
+
         #video-globale video {
             display: block;
             width: 100%;
-            height: auto;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
         }
 
-        /* ══ RESPONSIVE ══ */
+        #video-globale:hover {
+            transform: scale(1.02);
+            box-shadow: 0 12px 48px rgba(0,0,0,0.5);
+        }
+
+        /* ═══════════════════════════════════════════════ */
+        /* ✅ BOUTON MICRO (vidéo normale) — TOUJOURS VISIBLE */
+        /* ═══════════════════════════════════════════════ */
+        #video-globale .btn-micro {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 44px;
+            height: 44px;
+            background: rgba(27,79,219,0.9);
+            color: #fff;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.6);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            z-index: 10;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            opacity: 1;
+            transform: scale(1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            font-family: 'Outfit', sans-serif;
+            padding: 0;
+            line-height: 1;
+        }
+
+        #video-globale .btn-micro:hover {
+            background: rgba(200,16,46,0.95);
+            transform: scale(1.15);
+            border-color: #fff;
+            box-shadow: 0 6px 20px rgba(200,16,46,0.5);
+        }
+
+        #video-globale .btn-micro:active {
+            transform: scale(0.9);
+        }
+
+        /* ✅ Cacher le bouton micro en plein écran et en mode bulle */
+        #video-globale.fullscreen .btn-micro,
+        #video-globale.reduite .btn-micro {
+            display: none !important;
+        }
+
+        /* ═══════════════════════════════════════════════ */
+        /* ✅ BOUTON RÉDUIRE (plein écran) — TOUJOURS VISIBLE */
+        /* ═══════════════════════════════════════════════ */
+        #video-globale .btn-reduire-fs {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 52px;
+            height: 52px;
+            background: rgba(27,79,219,0.95);
+            color: #fff;
+            font-size: 26px;
+            font-weight: 700;
+            display: none;  /* caché par défaut */
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.7);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+            font-family: 'Outfit', sans-serif;
+            padding: 0;
+            line-height: 1;
+        }
+
+        /* ✅ Afficher SEULEMENT en plein écran */
+        #video-globale.fullscreen .btn-reduire-fs {
+            display: flex;
+        }
+
+        #video-globale .btn-reduire-fs:hover {
+            background: rgba(200,16,46,0.95);
+            transform: scale(1.1);
+            border-color: #fff;
+            box-shadow: 0 6px 24px rgba(200,16,46,0.5);
+        }
+
+        #video-globale .btn-reduire-fs:active {
+            transform: scale(0.92);
+        }
+
+        /* ✅ Mobile : bouton plus gros pour le tactile */
+        @media (max-width: 768px) {
+            #video-globale .btn-reduire-fs {
+                width: 48px;
+                height: 48px;
+                font-size: 22px;
+                top: 15px;
+                right: 15px;
+            }
+            #video-globale .btn-micro {
+                width: 42px;
+                height: 42px;
+                font-size: 20px;
+                top: 8px;
+                right: 8px;
+            }
+        }
+
+        /* ═══ MODE PLEIN ÉCRAN ═══ */
+        #video-globale.fullscreen {
+            position: fixed !important;
+            inset: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            border-radius: 0 !important;
+            z-index: 9999 !important;
+            cursor: default;
+        }
+
+        #video-globale.fullscreen video {
+            object-fit: contain !important;
+        }
+
+        #video-globale.fullscreen:hover {
+            transform: none !important;
+        }
+
+        body.video-fullscreen-active {
+            overflow: hidden !important;
+        }
+
+        /* ═══ MODE RÉDUIT (PETITE BULLE) ═══ */
+        #video-globale.reduite {
+            width: 70px !important;
+            height: 70px !important;
+            border-radius: 50% !important;
+            bottom: 20px !important;
+            right: 20px !important;
+            top: auto !important;
+            left: auto !important;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.5) !important;
+            border: 2px solid rgba(255,255,255,0.8);
+            animation: pulse-bulle 2.5s ease-in-out infinite;
+            z-index: 3000 !important;
+        }
+
+        #video-globale.reduite video {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            border-radius: 50% !important;
+        }
+
+        #video-globale.reduite:hover {
+            transform: scale(1.08) !important;
+        }
+
+        /* ✅ Cacher TOUS les boutons en mode bulle */
+        #video-globale.reduite .btn-micro,
+        #video-globale.reduite .btn-reduire-fs {
+            display: none !important;
+        }
+
+        @keyframes pulse-bulle {
+            0%, 100% { transform: scale(1); box-shadow: 0 6px 24px rgba(0,0,0,0.5); }
+            50% { transform: scale(1.06); box-shadow: 0 8px 32px rgba(27,79,219,0.6); }
+        }
+
+        @media (max-width: 768px) {
+            #video-globale.reduite {
+                width: 60px !important;
+                height: 60px !important;
+                bottom: 15px !important;
+                right: 15px !important;
+            }
+        }
+
+        /* ══ RESPONSIVE PAGE ══ */
         @media(max-width:1024px){
           .footer-grid{grid-template-columns:1fr 1fr 1fr;}
         }
@@ -402,97 +597,11 @@
     >
         <source src="{{ video_globale.video.url }}" type="video/mp4">
     </video>
+    <!-- ✅ Bouton micro (vidéo normale) — TOUJOURS VISIBLE -->
+    <button class="btn-micro" id="btn-micro" title="Réduire et couper le son">🔊</button>
+    <!-- ✅ Bouton réduire (plein écran) — TOUJOURS VISIBLE -->
+    <button class="btn-reduire-fs" id="btn-reduire-fs" title="Réduire en bulle et couper le son">⤓</button>
 </div>
-
-<style>
-#video-globale {
-    position: fixed;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-    z-index: 2500;
-    background: #000;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-#video-globale video {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    pointer-events: none;
-}
-
-/* Overlay avec icône plein écran au survol */
-#video-globale::after {
-    content: '⛶';
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 32px;
-    height: 32px;
-    background: rgba(0,0,0,0.6);
-    color: #fff;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-    z-index: 10;
-}
-
-#video-globale:hover::after {
-    opacity: 1;
-}
-
-#video-globale:hover {
-    transform: scale(1.02);
-    box-shadow: 0 12px 48px rgba(0,0,0,0.5);
-}
-
-/* ═══ MODE PLEIN ÉCRAN ═══ */
-#video-globale.fullscreen {
-    position: fixed !important;
-    inset: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    border-radius: 0 !important;
-    z-index: 9999 !important;
-    cursor: pointer;
-}
-
-#video-globale.fullscreen video {
-    object-fit: contain !important;
-}
-
-#video-globale.fullscreen::after {
-    content: '✕';
-    opacity: 1;
-    top: 20px;
-    right: 20px;
-    width: 44px;
-    height: 44px;
-    font-size: 22px;
-    background: rgba(200,16,46,0.9);
-}
-
-#video-globale.fullscreen:hover {
-    transform: none !important;
-}
-
-/* Masquer le scroll du body en plein écran */
-body.video-fullscreen-active {
-    overflow: hidden !important;
-}
-</style>
 
 <script>
 (function() {
@@ -501,6 +610,8 @@ body.video-fullscreen-active {
     function initVideoGlobale() {
         var container = document.getElementById('video-globale');
         var video = document.getElementById('video-globale-player');
+        var btnMicro = document.getElementById('btn-micro');
+        var btnReduireFs = document.getElementById('btn-reduire-fs');
         
         if (!container || !video) return;
         if (container.getAttribute('data-init') === 'true') return;
@@ -512,51 +623,77 @@ body.video-fullscreen-active {
         var position = container.getAttribute('data-position') || 'bottom-right';
         var largeurFixe = parseInt(container.getAttribute('data-largeur')) || 500;
         var hauteurFixe = parseInt(container.getAttribute('data-hauteur')) || 280;
-        var videoSrc = container.getAttribute('data-src') || '';
         
         // ═══════════════════════════════════════════════
-        // 💾 RESTAURATION DE LA POSITION DE LA VIDÉO
-        // Utilise sessionStorage pour mémoriser la position
+        // 💾 CLÉS DE STOCKAGE
         // ═══════════════════════════════════════════════
         var storageKey = 'eden_video_currentTime';
+        var storageMode = 'eden_video_mode';
+        var storageMuted = 'eden_video_muted';
+        var storageVolume = 'eden_video_volume';
+        
+        // ═══ ÉTAT : normale / fullscreen / reduite ═══
+        var modeVideo = 'normale';
+        var isFullscreen = false;
+        var videoLancee = false;
+        
+        // ═══════════════════════════════════════════════
+        // 💾 SAUVEGARDER L'ÉTAT COMPLET DE LA VIDÉO
+        // ═══════════════════════════════════════════════
+        function sauvegarderEtat() {
+            try {
+                if (video && video.currentTime > 0) {
+                    sessionStorage.setItem(storageKey, video.currentTime.toString());
+                }
+                sessionStorage.setItem(storageMode, modeVideo);
+                sessionStorage.setItem(storageMuted, video.muted ? '1' : '0');
+                sessionStorage.setItem(storageVolume, video.volume.toString());
+            } catch(e) {}
+        }
+        
+        window.addEventListener('beforeunload', sauvegarderEtat);
+        window.addEventListener('pagehide', sauvegarderEtat);
+        setInterval(sauvegarderEtat, 1000);
+        
+        // ═══════════════════════════════════════════════
+        // 🔄 RESTAURER L'ÉTAT PRÉCÉDENT
+        // ═══════════════════════════════════════════════
+        var savedMode = sessionStorage.getItem(storageMode);
+        var savedMuted = sessionStorage.getItem(storageMuted);
+        var savedVolume = sessionStorage.getItem(storageVolume);
         var savedTime = sessionStorage.getItem(storageKey);
         
         if (savedTime && !isNaN(parseFloat(savedTime))) {
-            video.currentTime = parseFloat(savedTime);
-            console.log('▶ Reprise à ' + savedTime + 's');
+            try {
+                video.currentTime = parseFloat(savedTime);
+                console.log('▶ Reprise à ' + savedTime + 's');
+            } catch(e) {}
         }
         
-        // ═══ Sauvegarder la position régulièrement ═══
-        var saveInterval = setInterval(function() {
-            if (video && !video.paused && video.currentTime > 0) {
-                try {
-                    sessionStorage.setItem(storageKey, video.currentTime.toString());
-                } catch(e) {
-                    console.warn('sessionStorage indisponible');
-                }
+        if (savedMode === 'reduite') {
+            modeVideo = 'reduite';
+            container.classList.add('reduite');
+            video.muted = true;
+            video.volume = 0;
+            if (btnMicro) btnMicro.textContent = '🔇';
+            console.log('📦 État restauré : bulle (son coupé)');
+        } else {
+            modeVideo = 'normale';
+            if (savedVolume && !isNaN(parseFloat(savedVolume))) {
+                video.volume = parseFloat(savedVolume);
+            } else {
+                video.volume = 1.0;
             }
-        }, 1000);
-        
-        // Sauvegarder avant de quitter la page
-        window.addEventListener('beforeunload', function() {
-            if (video && video.currentTime > 0) {
-                try {
-                    sessionStorage.setItem(storageKey, video.currentTime.toString());
-                } catch(e) {}
-            }
-        });
-        
-        // Nettoyer l'intervalle si nécessaire
-        window.addEventListener('pagehide', function() {
-            if (saveInterval) clearInterval(saveInterval);
-        });
+            video.muted = (savedMuted === '1');
+            console.log('▶ État restauré : normale');
+        }
         
         // ═══ Appliquer la position ═══
         function appliquerPosition() {
-            var vw = window.innerWidth;
-            
-            // Ne pas repositionner si en plein écran
+            if (container.classList.contains('reduite')) return;
             if (container.classList.contains('fullscreen')) return;
+            
+            var vw = window.innerWidth;
             
             container.style.top = '';
             container.style.bottom = '';
@@ -589,7 +726,7 @@ body.video-fullscreen-active {
         
         // ═══ Appliquer la taille ═══
         function appliquerTaille() {
-            // Ne pas redimensionner si en plein écran
+            if (container.classList.contains('reduite')) return;
             if (container.classList.contains('fullscreen')) return;
             
             var vw = window.innerWidth;
@@ -650,53 +787,113 @@ body.video-fullscreen-active {
         });
         
         // ═══════════════════════════════════════════════
-        // 🖥 GESTION DU PLEIN ÉCRAN
+        // 🎯 GESTION DES INTERACTIONS
         // ═══════════════════════════════════════════════
-        var isFullscreen = false;
         
-        function toggleFullscreen() {
-            if (!isFullscreen) {
-                // ═══ PASSER EN PLEIN ÉCRAN ═══
-                container.classList.add('fullscreen');
-                document.body.classList.add('video-fullscreen-active');
-                isFullscreen = true;
-                
-                // Demander le vrai plein écran natif si supporté
-                if (container.requestFullscreen) {
-                    container.requestFullscreen().catch(function() {
-                        console.log('Plein écran natif non disponible, utilisation du mode CSS');
-                    });
-                } else if (container.webkitRequestFullscreen) {
-                    container.webkitRequestFullscreen();
-                } else if (container.msRequestFullscreen) {
-                    container.msRequestFullscreen();
-                }
-            } else {
-                // ═══ QUITTER LE PLEIN ÉCRAN ═══
-                container.classList.remove('fullscreen');
-                document.body.classList.remove('video-fullscreen-active');
-                isFullscreen = false;
-                
-                // Quitter le plein écran natif
-                if (document.fullscreenElement || document.webkitFullscreenElement) {
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen().catch(function() {});
-                    } else if (document.webkitExitFullscreen) {
-                        document.webkitExitFullscreen();
-                    }
-                }
-                
-                // Réappliquer la taille et position normales
-                setTimeout(appliquerTout, 100);
-            }
-        }
-        
-        // ═══ CLIC SUR LE CONTENEUR → PLEIN ÉCRAN ═══
+        // ═══ CLIC SUR LE CONTENEUR ═══
         container.addEventListener('click', function(e) {
+            // Ignorer les clics sur les boutons
+            if (e.target.closest('.btn-micro')) return;
+            if (e.target.closest('.btn-reduire-fs')) return;
+            
             e.preventDefault();
             e.stopPropagation();
-            toggleFullscreen();
+            
+            if (modeVideo === 'reduite') {
+                restaurerVideo();
+            } else if (modeVideo === 'normale') {
+                passerPleinEcran();
+            }
+            // En plein écran : clic ne fait rien (utiliser le bouton ⤓)
         });
+        
+        // ═══════════════════════════════════════════════
+        // ⛶ PASSER EN PLEIN ÉCRAN
+        // ═══════════════════════════════════════════════
+        function passerPleinEcran() {
+            if (modeVideo === 'reduite') restaurerVideo();
+            
+            container.classList.add('fullscreen');
+            document.body.classList.add('video-fullscreen-active');
+            isFullscreen = true;
+            modeVideo = 'fullscreen';
+            
+            if (container.requestFullscreen) {
+                container.requestFullscreen().catch(function() {});
+            } else if (container.webkitRequestFullscreen) {
+                container.webkitRequestFullscreen();
+            } else if (container.msRequestFullscreen) {
+                container.msRequestFullscreen();
+            }
+            
+            sauvegarderEtat();
+            console.log('⛶ Mode plein écran');
+        }
+        
+        // ═══════════════════════════════════════════════
+        // 🎤 BOUTON MICRO → RÉDUIRE EN BULLE
+        // ═══════════════════════════════════════════════
+        if (btnMicro) {
+            btnMicro.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                reduireVideo();
+            });
+        }
+        
+        // ═══════════════════════════════════════════════
+        // ⤓ BOUTON RÉDUIRE PLEIN ÉCRAN → RÉDUIRE EN BULLE
+        // ═══════════════════════════════════════════════
+        if (btnReduireFs) {
+            btnReduireFs.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                reduireVideo();
+            });
+        }
+        
+        function reduireVideo() {
+            if (document.fullscreenElement || document.webkitFullscreenElement) {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().catch(function() {});
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                }
+            }
+            
+            container.classList.remove('fullscreen');
+            document.body.classList.remove('video-fullscreen-active');
+            isFullscreen = false;
+            
+            container.classList.add('reduite');
+            modeVideo = 'reduite';
+            
+            video.muted = true;
+            video.volume = 0;
+            
+            if (btnMicro) btnMicro.textContent = '🔇';
+            
+            sauvegarderEtat();
+            console.log('📦 Vidéo réduite en bulle (son coupé)');
+        }
+        
+        // ═══════════════════════════════════════════════
+        // 🔄 RESTAURER LA VIDÉO
+        // ═══════════════════════════════════════════════
+        function restaurerVideo() {
+            container.classList.remove('reduite');
+            modeVideo = 'normale';
+            
+            video.muted = false;
+            video.volume = 1.0;
+            
+            if (btnMicro) btnMicro.textContent = '🔊';
+            
+            setTimeout(appliquerTout, 50);
+            
+            sauvegarderEtat();
+            console.log('🔄 Vidéo restaurée (son remis)');
+        }
         
         // ═══ DÉTECTER LA SORTIE DU PLEIN ÉCRAN NATIF (Échap) ═══
         document.addEventListener('fullscreenchange', function() {
@@ -704,7 +901,9 @@ body.video-fullscreen-active {
                 container.classList.remove('fullscreen');
                 document.body.classList.remove('video-fullscreen-active');
                 isFullscreen = false;
+                modeVideo = 'normale';
                 setTimeout(appliquerTout, 100);
+                sauvegarderEtat();
             }
         });
         
@@ -713,28 +912,45 @@ body.video-fullscreen-active {
                 container.classList.remove('fullscreen');
                 document.body.classList.remove('video-fullscreen-active');
                 isFullscreen = false;
+                modeVideo = 'normale';
                 setTimeout(appliquerTout, 100);
+                sauvegarderEtat();
             }
         });
         
         // ═══ TOUCHE ÉCHAP ═══
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && isFullscreen) {
-                toggleFullscreen();
+                container.classList.remove('fullscreen');
+                document.body.classList.remove('video-fullscreen-active');
+                isFullscreen = false;
+                modeVideo = 'normale';
+                setTimeout(appliquerTout, 100);
+                sauvegarderEtat();
             }
         });
         
         // ═══════════════════════════════════════════════
         // ▶ LANCEMENT DE LA VIDÉO
         // ═══════════════════════════════════════════════
-        var videoLancee = false;
-        
         function lancerVideo() {
             if (videoLancee) return;
-            video.muted = false;
-            video.volume = 1.0;
             
-            // Restaurer la position sauvegardée
+            if (modeVideo !== 'reduite') {
+                var savedVol = sessionStorage.getItem(storageVolume);
+                var savedMut = sessionStorage.getItem(storageMuted);
+                
+                if (savedVol && !isNaN(parseFloat(savedVol))) {
+                    video.volume = parseFloat(savedVol);
+                } else {
+                    video.volume = 1.0;
+                }
+                video.muted = (savedMut === '1');
+            } else {
+                video.muted = true;
+                video.volume = 0;
+            }
+            
             var timeToRestore = sessionStorage.getItem(storageKey);
             if (timeToRestore && !isNaN(parseFloat(timeToRestore))) {
                 try {
@@ -746,7 +962,7 @@ body.video-fullscreen-active {
             if (promise !== undefined) {
                 promise.then(function() {
                     videoLancee = true;
-                    console.log('✅ Vidéo lancée avec son');
+                    console.log('✅ Vidéo lancée');
                 }).catch(function() {
                     console.log('⏸ En attente interaction pour lancer la vidéo');
                 });
@@ -773,12 +989,14 @@ body.video-fullscreen-active {
         
         // ═══ Empêcher la pause automatique ═══
         video.addEventListener('pause', function() {
-            if (videoLancee) video.play().catch(function() {});
+            if (videoLancee) {
+                video.play().catch(function() {});
+            }
         });
         
-        // ═══ Empêcher la coupure du son ═══
+        // ═══ Empêcher la coupure du son (sauf en mode réduit) ═══
         video.addEventListener('volumechange', function() {
-            if (videoLancee && (video.volume < 1.0 || video.muted)) {
+            if (videoLancee && modeVideo !== 'reduite' && (video.volume < 1.0 || video.muted)) {
                 video.muted = false;
                 video.volume = 1.0;
             }
@@ -791,7 +1009,9 @@ body.video-fullscreen-active {
         
         // ═══ Reprendre après buffering ═══
         video.addEventListener('stalled', function() {
-            if (videoLancee) video.play().catch(function() {});
+            if (videoLancee) {
+                video.play().catch(function() {});
+            }
         });
         
         video.addEventListener('loadedmetadata', function() {
@@ -876,7 +1096,6 @@ body.video-fullscreen-active {
         }
     }
 
-    // ═══ MODAL CONTACT — Sécurisé ═══
     var modalEl = document.getElementById('modal');
     if (modalEl) {
         modalEl.addEventListener('click', function(e) {
@@ -1036,7 +1255,6 @@ body.video-fullscreen-active {
         }
     }
 
-    // ═══ MODAL SERVICE — Sécurisé ═══
     var modalSrvEl = document.getElementById('modal-service');
     if (modalSrvEl) {
         modalSrvEl.addEventListener('click', function(e) {

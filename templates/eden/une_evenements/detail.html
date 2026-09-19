@@ -7,27 +7,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{ article.titre }} — EDEN GROUP</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+<!-- ✅ PDF.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+</script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --blue:#1B4FDB;--blue-d:#0A2494;--blue-pale:#EEF3FF;
-  --red:#C8102E;--red-d:#A00C24;
+  --blue:#1B4FDB;--blue-d:#0A2494;--red:#C8102E;--red-d:#A00C24;
   --grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
   --grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
   --g50:#F8FAFF;--g100:#F0F4FF;--g200:#E2E8F0;
   --g400:#94A3B8;--g500:#64748B;--g600:#475569;--g800:#1E293B;
-  --sh:0 2px 12px rgba(0,0,0,0.08);
-  --sh-lg:0 8px 40px rgba(27,79,219,0.15);
-  --r:10px;--rl:16px;--rxl:24px;
-  --encre:#1a1008;
-  --filet:#8B7355;
-  --papier:#FFFEF7;
 }
 html{scroll-behavior:smooth;}
 body{font-family:'Outfit',sans-serif;background:#fff;color:var(--g800);overflow-x:hidden;}
-::-webkit-scrollbar{width:5px;}
-::-webkit-scrollbar-thumb{background:var(--grad-h);border-radius:100px;}
 
 /* ══ NAVBAR ══ */
 nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;background:transparent;transition:background 0.3s ease, box-shadow 0.3s ease;}
@@ -36,7 +32,6 @@ nav.scrolled{background:rgba(255,255,255,.92);backdrop-filter:blur(22px);-webkit
 .nav-logo-img{height:48px;width:auto;object-fit:contain;}
 .logo-box{width:42px;height:42px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#fff;}
 .logo-name{font-size:18px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.logo-tagline{font-size:9px;color:var(--g500);letter-spacing:1.5px;text-transform:uppercase;}
 .nav-links{display:flex;align-items:center;gap:0;}
 .nav-lnk{padding:6px 13px;font-size:16px;font-weight:500;color:#ffffff;text-decoration:none;border-radius:7px;transition:all 0.18s;position:relative;}
 nav.scrolled .nav-lnk{color:#000000;}
@@ -71,101 +66,188 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .anb-share-btn{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;transition:all 0.2s;}
 .anb-share-btn:hover{background:rgba(255,255,255,0.2);}
 
-/* ══ CONTENU ARTICLE — DAMIER GRIS IDENTIQUE À L'ÉDITEUR ══ */
-.article-outer{
+/* ══ ZONE PDF ══ */
+.pdf-zone{
   background:#3a3a3a;
   background-image:radial-gradient(circle,#4a4a4a 1px,transparent 1px);
   background-size:20px 20px;
   padding:30px 20px;
   display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:20px;
+  min-height:75vh;
+}
+.pdf-toolbar{
+  background:#fff;
+  border-radius:12px;
+  padding:12px 20px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  box-shadow:0 4px 24px rgba(0,0,0,0.15);
+  flex-wrap:wrap;
   justify-content:center;
-  align-items:flex-start;
+  max-width:1100px;
   width:100%;
-  overflow-x:auto;
 }
-.article-page{
-  background:var(--papier);
-  position:relative;
+.pdf-toolbar a, .pdf-toolbar button{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:9px 16px;
+  border-radius:8px;
+  font-size:13px;
+  font-weight:600;
+  text-decoration:none;
+  font-family:'Outfit',sans-serif;
+  border:none;
+  cursor:pointer;
+  transition:all 0.2s;
+  white-space:nowrap;
+}
+.pdf-btn-primary{background:var(--blue);color:#fff;}
+.pdf-btn-primary:hover{background:var(--blue-d);transform:translateY(-1px);box-shadow:0 4px 12px rgba(27,79,219,0.3);}
+.pdf-btn-outline{background:#fff;color:var(--blue);border:1.5px solid var(--blue);}
+.pdf-btn-outline:hover{background:var(--blue);color:#fff;}
+.pdf-toolbar .sep{width:1px;height:24px;background:#e2e8f0;}
+
+/* ✅ CADRE PDF — contient le container PDF.js */
+.pdf-frame{
+  background:#3a3a3a;
+  border-radius:12px;
   box-shadow:0 8px 48px rgba(0,0,0,0.5);
-  flex-shrink:0;
+  width:100%;
+  max-width:1100px;
+  height:85vh;
+  min-height:600px;
   overflow:hidden;
-  user-select:text;
+  position:relative;
 }
 
-/* ═══════════════════════════════════════════════════════════ */
-/* ══ CSS DES BLOCS — COPIE EXACTE DE L'ÉDITEUR ══ */
-/* ═══════════════════════════════════════════════════════════ */
+/* ✅ Container PDF.js — toutes les pages à la suite, sans espace */
+.pdf-container{
+  width:100%;
+  height:100%;
+  overflow-y:auto;
+  background:#3a3a3a;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:0;
+  gap:0;
+}
+.pdf-container::-webkit-scrollbar{width:8px;}
+.pdf-container::-webkit-scrollbar-thumb{background:#555;border-radius:100px;}
+.pdf-container::-webkit-scrollbar-track{background:#2a2a2a;}
 
-/* ── ÉLÉMENTS ── */
-.article-page .el{position:absolute;min-width:20px;min-height:16px;}
-.article-page .el-inner{width:100%;height:100%;position:relative;}
-
-/* ✅ FIX : PAS de ::first-letter du tout */
-.article-page .el-texte p::first-letter,
-.article-page .el-titre p::first-letter,
-.article-page .el-inner p::first-letter,
-.article-page .r-texte-edit p::first-letter,
-.article-page .r-titre h1::first-letter,
-.article-page .r-titre h2::first-letter,
-.article-page .r-titre h3::first-letter {
-  font-size:inherit !important;
-  font-family:inherit !important;
-  font-weight:inherit !important;
-  float:none !important;
-  line-height:inherit !important;
-  margin:0 !important;
-  color:inherit !important;
+/* ✅ Chaque page du PDF */
+.pdf-container canvas{
+  display:block;
+  width:100%;
+  max-width:1100px;
+  height:auto;
+  background:#fff;
+  margin:0;
+  padding:0;
+}
+/* ✅ Séparateur très fin entre les pages pour distinguer */
+.pdf-container canvas + canvas{
+  border-top:1px solid rgba(0,0,0,0.15);
 }
 
-/* ── TEXTES ── */
-/* ✅ La classe est `r-texte-edit` (comme dans l'éditeur) → aucune règle CSS
-   spécifique ne s'applique, donc les <p> héritent du parent exactement
-   comme dans l'éditeur. */
+/* ✅ Loader */
+.pdf-loading{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  height:100%;
+  color:#fff;
+  gap:16px;
+  font-family:'Outfit',sans-serif;
+  font-size:14px;
+}
+.spinner{
+  width:48px;height:48px;
+  border:3px solid rgba(255,255,255,0.15);
+  border-top-color:#1B4FDB;
+  border-radius:50%;
+  animation:spin 0.8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
 
-/* ── Rendu blocs — COPIE EXACTE de l'éditeur ── */
+/* ✅ Barre de progression */
+.pdf-progress{
+  width:200px;
+  height:4px;
+  background:rgba(255,255,255,0.15);
+  border-radius:100px;
+  overflow:hidden;
+  margin-top:8px;
+}
+.pdf-progress-bar{
+  height:100%;
+  background:linear-gradient(90deg,#1B4FDB,#7B20B4,#C8102E);
+  width:0%;
+  transition:width 0.3s ease;
+  border-radius:100px;
+}
 
-/* TITRES — uniquement pour les éléments dont le type est 'titre' */
-.r-titre h1{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:var(--encre);border-bottom:3px double var(--encre);padding-bottom:5px;margin-bottom:5px;line-height:1.1;}
-.r-titre h2{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--encre);border-bottom:1px solid var(--filet);padding-bottom:3px;margin-bottom:3px;}
-.r-titre h3{font-family:'Playfair Display',serif;font-size:13px;font-style:italic;font-weight:600;color:var(--encre);}
-.r-titre .surtitre{font-size:9px;color:#C8102E;text-transform:uppercase;letter-spacing:2px;font-family:'Outfit',sans-serif;}
+/* ✅ Bouton croix pour fermer le plein écran */
+.pdf-frame .pdf-close-btn{
+  display:none;
+  position:absolute;
+  top:12px;
+  right:12px;
+  z-index:100;
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:rgba(200,16,46,0.95);
+  color:#fff;
+  border:none;
+  font-size:20px;
+  font-weight:700;
+  cursor:pointer;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 4px 20px rgba(0,0,0,0.5);
+  transition:all 0.2s;
+  font-family:'Outfit',sans-serif;
+}
+.pdf-frame .pdf-close-btn:hover{background:var(--red-d);transform:scale(1.1);}
+.pdf-frame:fullscreen .pdf-close-btn,
+.pdf-frame:-webkit-full-screen .pdf-close-btn{
+  display:flex;
+}
+.pdf-frame:fullscreen,
+.pdf-frame:-webkit-full-screen{
+  width:100vw;
+  height:100vh;
+  max-width:none;
+  border-radius:0;
+  background:#000;
+}
 
-/* IMAGE */
-.r-image img{width:100%;display:block;}
-.r-image figcaption{font-size:8px;color:var(--filet);text-align:center;font-style:italic;padding:2px 4px;}
+.pdf-info{
+  background:rgba(255,255,255,0.95);
+  border-radius:12px;
+  padding:14px 20px;
+  max-width:1100px;
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-size:13px;
+  color:var(--g600);
+  box-shadow:0 4px 24px rgba(0,0,0,0.15);
+}
+.pdf-info .ico{font-size:1.5rem;}
 
-/* CITATION */
-.r-citation blockquote{border:2px solid var(--encre);padding:8px 10px;background:#FFF3D6;text-align:center;}
-.r-citation blockquote p{font-family:'Playfair Display',serif;font-style:italic;font-size:10px;color:var(--encre);}
-.r-citation .auteur{font-size:8px;color:#C8102E;text-align:right;font-family:'Outfit',sans-serif;}
-
-/* FILET */
-.r-filet hr{border:none;height:2px;background:var(--encre);}
-.r-filet.ornement{text-align:center;color:var(--filet);font-size:14px;padding:3px;}
-
-/* ENCART */
-.r-encart{background:#FFF3D6;border:2px solid var(--encre);padding:8px;}
-.r-encart .et{font-family:'Playfair Display',serif;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--filet);padding-bottom:3px;margin-bottom:4px;}
-.r-encart p{font-family:'Lora',serif;font-size:9px;line-height:1.6;}
-
-/* PUB */
-.r-pub{background:var(--encre);color:#FFFEF7;padding:10px;text-align:center;}
-.r-pub .pt{font-size:14px;color:#FFD700;}
-.r-pub .px{font-size:9px;line-height:1.4;}
-.r-pub .tel{font-size:10px;color:#FFD700;font-weight:700;}
-
-/* FORME */
-.r-forme-inner{width:100%;height:100%;}
-
-/* VIDÉO */
-.video-reader{width:100%;height:100%;background:#111;position:relative;overflow:hidden;}
-.video-reader video{width:100%;height:100%;object-fit:cover;display:block;}
-.video-reader iframe{width:100%;height:100%;border:none;display:block;}
-.video-reader .video-legende{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.6);color:#fff;font-size:10px;text-align:center;padding:3px;}
-
-/* AUCUN CONTENU */
-.no-content{padding:4rem;text-align:center;color:var(--g400);}
-.no-content .ico{font-size:3rem;margin-bottom:1rem;}
+.no-content{padding:5rem 2rem;text-align:center;color:var(--g500);}
+.no-content .ico{font-size:4rem;margin-bottom:1rem;}
+.no-content .tit{font-size:18px;font-weight:600;color:var(--g800);margin-bottom:0.4rem;}
 
 /* ══ FOOTER ══ */
 .footer-bar{height:3px;background:var(--grad-h);}
@@ -204,9 +286,16 @@ footer{background:var(--g800);color:#fff;padding:3rem 2rem 1.5rem;}
   .cover-meta{left:1rem;right:1rem;bottom:1rem;}
   .article-nav-bar{padding:0.8rem 1rem;flex-direction:column;align-items:stretch;}
   .anb-share{justify-content:center;}
+  .pdf-zone{padding:15px 8px;}
+  .pdf-frame{height:75vh;min-height:500px;}
+  .pdf-toolbar{padding:10px;gap:6px;}
+  .pdf-toolbar a, .pdf-toolbar button{font-size:11px;padding:7px 10px;}
   .footer-grid{grid-template-columns:1fr 1fr;}
   .footer-grid>div:first-child{grid-column:1/-1;}
-  .article-outer{padding:15px 8px;}
+}
+@media(max-width:480px){
+  .pdf-toolbar .sep{display:none;}
+  .pdf-toolbar a, .pdf-toolbar button{width:100%;justify-content:center;}
 }
 </style>
 </head>
@@ -217,9 +306,7 @@ footer{background:var(--g800);color:#fff;padding:3rem 2rem 1.5rem;}
   {% if article.image_couverture %}
     <img src="{{ article.image_couverture.url }}" alt="{{ article.titre }}">
   {% else %}
-    <div class="cover-ph">
-      {% if article.categorie == 'une' %}📰{% elif article.categorie == 'evenement_avenir' %}📅{% elif article.categorie == 'evenement_passe' %}📁{% else %}📢{% endif %}
-    </div>
+    <div class="cover-ph">📄</div>
   {% endif %}
   {% if article.image_couverture %}<div class="cover-overlay"></div>{% endif %}
   <div class="cover-meta">
@@ -247,18 +334,105 @@ footer{background:var(--g800);color:#fff;padding:3rem 2rem 1.5rem;}
   </div>
 </div>
 
-<!-- ══ CONTENU DE L'ARTICLE ══ -->
-{% if article.contenu %}
-<div class="article-outer">
-  <div class="article-page" id="article-page"></div>
+<!-- ══ LECTEUR PDF ══ -->
+{% if article.fichier_pdf %}
+<div class="pdf-zone">
+
+  <!-- Barre d'outils personnalisée -->
+  <div class="pdf-toolbar">
+    <a href="{% url 'une_evenement_pdf' article.pk %}?v={{ article.updated_at|date:'U' }}" download class="pdf-btn-primary">
+  📥 Télécharger
+</a>
+<a href="{% url 'une_evenement_pdf' article.pk %}?v={{ article.updated_at|date:'U' }}" target="_blank" class="pdf-btn-outline">
+  🔗 Nouvel onglet
+</a>
+    <div class="sep"></div>
+    <button onclick="pleinEcranPdf()" class="pdf-btn-outline">
+      ⛶ Plein écran
+    </button>
+  </div>
+
+  <!-- ✅ Lecteur PDF fusionné via PDF.js -->
+  <div class="pdf-frame" id="pdf-frame">
+    <button class="pdf-close-btn" onclick="fermerPleinEcran()" title="Fermer">✕</button>
+    <div class="pdf-container" id="pdf-container">
+      <div class="pdf-loading" id="pdf-loading">
+        <div class="spinner"></div>
+        <div>Chargement du document...</div>
+        <div class="pdf-progress">
+          <div class="pdf-progress-bar" id="pdf-progress-bar"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 {% else %}
 <div class="no-content">
   <div class="ico">📄</div>
-  <div style="font-size:16px;font-weight:600;color:var(--g800);margin-bottom:0.4rem;">Contenu à venir</div>
-  <div style="font-size:13px;">L'article est en cours de rédaction.</div>
+  <div class="tit">Aucun document</div>
+  <div>Le PDF n'a pas encore été ajouté à cet article.</div>
 </div>
 {% endif %}
+
+<!-- ══ FOOTER ══ -->
+<div class="footer-bar"></div>
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:42px;height:42px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#fff;">E</div>
+        <div>
+          <div class="logo-name">EDEN GROUP</div>
+          <div style="font-size:9px;color:var(--g400);letter-spacing:1.5px;text-transform:uppercase;">Le savoir foncier à votre portée</div>
+        </div>
+      </div>
+      <p class="footer-desc">EDEN GROUP — Sécurisation foncière et construction patrimoniale au Cameroun.</p>
+      <div class="footer-tagline">« Plus qu'une entreprise foncière. Une vision. »</div>
+      <div class="footer-socials">
+        <a class="footer-social-btn fs-fb" href="#" title="Facebook">f</a>
+        <a class="footer-social-btn fs-tt" href="#" title="TikTok">♪</a>
+        <a class="footer-social-btn fs-yt" href="#" title="YouTube">▶</a>
+        <a class="footer-social-btn fs-li" href="#" title="LinkedIn">in</a>
+        <a class="footer-social-btn fs-ig" href="#" title="Instagram">◉</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Entreprise</h4>
+      <a class="footer-lnk" href="#">À propos</a>
+      <a class="footer-lnk" href="#">Notre vision</a>
+      <a class="footer-lnk" href="#">Équipe</a>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <a class="footer-lnk" href="#">Sécurisation</a>
+      <a class="footer-lnk" href="#">Titres fonciers</a>
+      <a class="footer-lnk" href="#">Accompagnement</a>
+    </div>
+    <div class="footer-col">
+      <h4>Ressources</h4>
+      <a class="footer-lnk" href="{% url 'une_evenements_accueil' %}">Une &amp; Événements</a>
+      <a class="footer-lnk" href="#">Blog</a>
+      <a class="footer-lnk" href="#">Contact</a>
+    </div>
+    <div class="footer-col">
+      <h4>Newsletter</h4>
+      <p style="font-size:11px;color:#94A3B8;margin-bottom:8px;">Recevez nos actualités foncières.</p>
+      <div style="position:relative;">
+        <input type="email" placeholder="Votre email" style="width:100%;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);border-radius:8px;padding:9px 48px 9px 12px;font-size:12px;color:#fff;font-family:'Outfit',sans-serif;outline:none;">
+        <button style="position:absolute;right:0;top:0;bottom:0;background:var(--red);border:none;width:40px;border-radius:0 8px 8px 0;cursor:pointer;color:#fff;font-size:16px;">→</button>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bot">
+    <div class="footer-copy">© 2026 EDEN GROUP. Tous droits réservés.</div>
+    <div class="footer-links-bot">
+      <a href="#">Mentions légales</a>
+      <a href="#">Confidentialité</a>
+      <a href="#">CGU</a>
+    </div>
+  </div>
+</footer>
 
 <script>
 // ── NAV ──
@@ -272,179 +446,142 @@ window.addEventListener('scroll', function() {
   }
 });
 
-const CONTENU = {{ contenu_json|safe }};
-
-// ══════════════════════════════════════════════
-// URL EMBED (YouTube / Vimeo)
-// ══════════════════════════════════════════════
-function getEmbedUrl(url) {
-  if (!url) return '';
-  const yt = url.match(/youtube\.com\/watch\?v=([^&]+)|youtu\.be\/([^?]+)/);
-  if (yt) return `https://www.youtube.com/embed/${yt[1]||yt[2]}`;
-  const vimeo = url.match(/vimeo\.com\/(\d+)/);
-  if (vimeo) return `https://player.vimeo.com/video/${vimeo[1]}`;
-  return url;
-}
-
-// ══════════════════════════════════════════════
-// RENDU DE L'ARTICLE — COPIE EXACTE DE creerDomElement() DE L'ÉDITEUR
-// ══════════════════════════════════════════════
-function rendreArticle() {
-  const page = document.getElementById('article-page');
-  if (!page || !CONTENU.length) return;
-
-  const PAGE_W = Math.min(window.innerWidth - 40, 1200);
-  page.style.width = PAGE_W + 'px';
-  page.innerHTML = '';
-
-  let maxH = 0;
-  CONTENU.forEach(el => {
-    const bottom = (el.y || 0) + (el.h || 100) + 60;
-    if (bottom > maxH) maxH = bottom;
-  });
-  if (maxH < 400) maxH = 400;
-  page.style.height = maxH + 'px';
-
-  CONTENU.forEach(el => page.appendChild(creerDomElement(el)));
-}
-
-// ══════════════════════════════════════════════
-// ✅ COPIE EXACTE DE creerDomElement() DE L'ÉDITEUR
-// (sans les événements d'édition : mousedown, focus, blur, input)
-// ══════════════════════════════════════════════
-function creerDomElement(el) {
-  const div = document.createElement('div');
-  div.className = `el el-${el.type}`;
-  div.id = el.id;
-  div.style.cssText = `left:${el.x}px;top:${el.y}px;width:${el.w}px;height:${el.h||'auto'};z-index:${el.z||1};${el.rotation?`transform:rotate(${el.rotation}deg);`:''}`;
-
-  const inner = document.createElement('div');
-  inner.className = 'el-inner';
-  inner.style.background = el.fond || 'transparent';
-
-  switch(el.type) {
-    case 'texte':
-    case 'titre': {
-      const ed = document.createElement('div');
-      ed.innerHTML = el.contenu || (el.type==='titre' ? '<h2>Titre</h2>' : '<p>Votre texte ici...</p>');
-      // ✅ EXACTEMENT les mêmes styles que dans creerDomElement() de l'éditeur
-      ed.style.cssText = [
-        `font-family:${el.font||"'Lora',serif"}`,
-        `font-size:${el.taille||14}px`,
-        `color:${el.couleur||'#1a1008'}`,
-        `font-weight:${el.gras?'bold':'normal'}`,
-        `font-style:${el.italique?'italic':'normal'}`,
-        `text-align:${el.alignement||'left'}`,
-        `line-height:${el.interligne||1.6}`,
-        `letter-spacing:${el.espacement||0}px`,
-        `padding:${el.padding||4}px`,
-        'width:100%',
-        'height:100%',
-        'overflow:hidden',
-        'text-transform:none',
-      ].join(';');
-      // ✅ CLÉ DU FIX : même classe que dans l'éditeur
-      ed.className = el.type==='titre' ? 'r-titre' : 'r-texte-edit';
-      inner.appendChild(ed);
-      break;
-    }
-    case 'image': {
-      if (el.url) {
-        const img = document.createElement('img');
-        img.src = el.url;
-        img.alt = el.legende || '';
-        img.style.objectFit = el.objectFit || 'cover';
-        img.style.width = '100%';
-        img.style.height = '100%';
-        img.style.pointerEvents = 'none';
-        inner.appendChild(img);
-      }
-      if (el.legende) {
-        const cap = document.createElement('div');
-        cap.style.cssText = 'font-size:9px;color:#8B7355;text-align:center;padding:2px;font-style:italic;';
-        cap.textContent = el.legende;
-        inner.appendChild(cap);
-      }
-      break;
-    }
-    case 'video': {
-      if (el.url) {
-        const wrap = document.createElement('div');
-        wrap.className = 'video-reader';
-        if (/\.(mp4|webm|mov|ogg|m4v)(\?|$)/i.test(el.url)) {
-          const video = document.createElement('video');
-          video.src = el.url;
-          video.controls = true;
-          video.preload = 'metadata';
-          video.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
-          wrap.appendChild(video);
-        } else {
-          const vUrl = getEmbedUrl(el.url);
-          const iframe = document.createElement('iframe');
-          iframe.src = vUrl;
-          iframe.allowFullscreen = true;
-          iframe.style.cssText = 'width:100%;height:100%;border:none;display:block;';
-          wrap.appendChild(iframe);
-        }
-        if (el.legende) {
-          const leg = document.createElement('div');
-          leg.className = 'video-legende';
-          leg.textContent = el.legende;
-          wrap.appendChild(leg);
-        }
-        inner.appendChild(wrap);
-      }
-      break;
-    }
-    case 'citation': {
-      inner.innerHTML = `<div class="r-citation"><blockquote><p>${el.contenu||'Votre citation...'}</p>${el.auteur?`<div class="auteur">— ${el.auteur}</div>`:''}</blockquote></div>`;
-      break;
-    }
-    case 'encart': {
-      inner.innerHTML = `<div class="r-encart">${el.titre_encart?`<div class="et">${el.titre_encart}</div>`:''}<p>${el.contenu||''}</p></div>`;
-      break;
-    }
-    case 'filet': {
-      if (el.style_filet==='ornement') inner.innerHTML='<div class="r-filet ornement">✦ ✦ ✦</div>';
-      else {
-        const hr = document.createElement('hr');
-        hr.style.cssText=`border:none;border-top:${el.epaisseur||2}px ${el.style_filet||'solid'} ${el.couleur||'#1a1008'};width:100%;`;
-        inner.appendChild(hr);
-      }
-      break;
-    }
-    case 'forme': {
-      inner.style.cssText += `background:${el.couleur_fond||'#1B4FDB'};border-radius:${el.radius||0}px;border:${el.bordure_ep||0}px solid ${el.bordure_col||'#000'};`;
-      break;
-    }
-    case 'pub': {
-      inner.innerHTML = `<div class="r-pub"><div class="pt">EDEN GROUP</div><div class="px">${el.contenu||''}</div>${el.telephone?`<div class="tel">📞 ${el.telephone}</div>`:''}</div>`;
-      break;
-    }
-  }
-
-  div.appendChild(inner);
-  return div;
-}
-
-// ══════════════════════════════════════════════
-// INIT + RESIZE
-// ══════════════════════════════════════════════
-let resizeTimer;
-window.addEventListener('load', rendreArticle);
-window.addEventListener('resize', () => {
-  clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(rendreArticle, 250);
-});
-
-// ══════════════════════════════════════════════
-// COPIER LIEN
-// ══════════════════════════════════════════════
+// ── COPIER LIEN ──
 function copyLink() {
   navigator.clipboard.writeText(window.location.href).then(() => {
     alert('Lien copié !');
   });
 }
+
+// ── IMPRIMER PDF ──
+function imprimerPdf() {
+  const pdfUrl = '{% url "une_evenement_pdf" article.pk %}';
+  // Ouvrir dans un nouvel onglet pour imprimer
+  const win = window.open(pdfUrl, '_blank');
+  if (win) {
+    win.addEventListener('load', function() {
+      setTimeout(() => win.print(), 500);
+    });
+  }
+}
+
+// ── PLEIN ÉCRAN ──
+function pleinEcranPdf() {
+  const frame = document.getElementById('pdf-frame');
+  if (!frame) return;
+  if (frame.requestFullscreen) {
+    frame.requestFullscreen();
+  } else if (frame.webkitRequestFullscreen) {
+    frame.webkitRequestFullscreen();
+  } else if (frame.msRequestFullscreen) {
+    frame.msRequestFullscreen();
+  }
+}
+
+// ── FERMER PLEIN ÉCRAN ──
+function fermerPleinEcran() {
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if (document.webkitExitFullscreen) {
+    document.webkitExitFullscreen();
+  } else if (document.msExitFullscreen) {
+    document.msExitFullscreen();
+  }
+}
+
+// ✅ Échap ferme aussi le plein écran
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    if (document.fullscreenElement || document.webkitFullscreenElement) {
+      fermerPleinEcran();
+    }
+  }
+});
+
+// ══════════════════════════════════════════════
+// RENDU PDF AVEC PDF.js — TOUTES LES PAGES À LA SUITE
+// ══════════════════════════════════════════════
+async function chargerPdf() {
+  const container = document.getElementById('pdf-container');
+  const loading = document.getElementById('pdf-loading');
+  const progressBar = document.getElementById('pdf-progress-bar');
+  if (!container) return;
+
+  // ✅ Cache-busting : ajoute un paramètre unique basé sur la date de mise à jour
+const pdfUrl = '{% url "une_evenement_pdf" article.pk %}?v={{ article.updated_at|date:"U" }}';
+
+  try {
+    // Charger le PDF
+    const pdf = await pdfjsLib.getDocument(pdfUrl).promise;
+    const totalPages = pdf.numPages;
+
+    // Supprimer le loader
+    if (loading) loading.remove();
+
+    // Calcul de la largeur d'affichage
+    // On prend la largeur du container, max 1100px
+    const containerWidth = Math.min(container.offsetWidth, 1100);
+
+    // Afficher chaque page à la suite
+    for (let num = 1; num <= totalPages; num++) {
+      const page = await pdf.getPage(num);
+
+      // Calculer l'échelle pour que la page fasse exactement la largeur du container
+      const viewportBase = page.getViewport({ scale: 1 });
+      const scale = containerWidth / viewportBase.width;
+      const viewport = page.getViewport({ scale: scale * (window.devicePixelRatio || 1) });
+
+      // Créer le canvas
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      // Style : largeur 100% pour s'adapter au container
+      canvas.style.width = '100%';
+      canvas.style.height = 'auto';
+      canvas.dataset.page = num;
+
+      const ctx = canvas.getContext('2d');
+      await page.render({ canvasContext: ctx, viewport }).promise;
+
+      container.appendChild(canvas);
+
+      // Mettre à jour la barre de progression
+      if (progressBar) {
+        const pct = Math.round((num / totalPages) * 100);
+        progressBar.style.width = pct + '%';
+      }
+    }
+
+  } catch (e) {
+    console.error('Erreur PDF:', e);
+    if (container) {
+      container.innerHTML = `
+        <div style="padding:3rem;text-align:center;color:#fff;">
+          <div style="font-size:3rem;margin-bottom:1rem;">📄</div>
+          <div style="font-size:16px;font-weight:600;margin-bottom:1rem;">
+            Impossible de charger le PDF
+          </div>
+          <a href="${pdfUrl}" target="_blank"
+             style="display:inline-block;padding:12px 24px;background:#1B4FDB;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;">
+            📥 Télécharger le PDF
+          </a>
+        </div>
+      `;
+    }
+  }
+}
+
+// Lancer le chargement au démarrage
+window.addEventListener('load', chargerPdf);
+
+// Recalculer à la rotation / resize (optionnel : recharger)
+let resizeTimerPdf;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimerPdf);
+  resizeTimerPdf = setTimeout(() => {
+    // On ne recharge pas automatiquement (coûteux), mais le CSS s'adapte déjà
+  }, 300);
+});
 </script>
 </body>
 </html>

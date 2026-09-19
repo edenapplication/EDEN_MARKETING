@@ -1510,30 +1510,15 @@ def journal_kiosque(request):
         'derniere': derniere,
     })
 
-
 def journal_lire(request, numero):
-    """Visionneuse flipbook — accepte slug ET entiers."""
+    """Visionneuse PDF."""
     from .models import JournalEdition
     edition = get_object_or_404(JournalEdition, numero=numero, statut='publie')
-    pages = edition.pages.order_by('numero')
-
-    pages_json = json.dumps([
-        {
-            'numero': p.numero,
-            'layout': p.layout,
-            'contenu': p.contenu,
-            'couleur_fond': p.couleur_fond
-        }
-        for p in pages
-    ], ensure_ascii=False)
 
     return render(request, 'eden/journal/lire.html', {
         'edition': edition,
-        'pages': pages,
-        'pages_json': pages_json,
         'from_academie': request.GET.get('from') == 'academie',
     })
-
 
 def journal_page_json(request, numero, page):
     from .models import JournalEdition, JournalPage
@@ -1621,29 +1606,18 @@ def dashboard_journal_edition_form(request, pk=None):
         if request.FILES.get('image_une'):
             edition.image_une = request.FILES['image_une']
 
+        # ✅ NOUVEAU : upload du PDF
+        if request.FILES.get('fichier_pdf'):
+            edition.fichier_pdf = request.FILES['fichier_pdf']
+
         edition.save()
 
-        # Créer page 1 si nouvelle édition
-        if not edition.pages.exists():
-            from .models import JournalPage
-            JournalPage.objects.create(
-                edition=edition, numero=1,
-                contenu=[], layout='col2'
-            )
-
         messages.success(request, f'"{edition.titre}" enregistré.')
-
-        # Ouvrir éditeur si demandé
-        if request.POST.get('action') == 'editeur':
-            return redirect('dashboard_journal_page_editer',
-                            edition_pk=edition.pk, page_num=1)
-
         return redirect('dashboard_journal')
 
     return render(request, 'eden/dashboard/journal_edition_form.html', {
         'edition': edition,
     })
-
 
 @login_required
 @user_passes_test(is_agent)
@@ -2363,6 +2337,7 @@ def dashboard_une_form(request, pk=None):
         if not titre:
             messages.error(request, 'Le titre est obligatoire.')
             return render(request, 'eden/dashboard/une_form.html', {'article': article})
+
         if not article:
             article = UneEvenement()
         article.titre = titre
@@ -2372,33 +2347,33 @@ def dashboard_une_form(request, pk=None):
         article.statut = request.POST.get('statut', 'brouillon')
         article.ordre = int(request.POST.get('ordre', 0))
         article.created_by = request.user
+
         date_str = request.POST.get('date_evenement', '')
         date_fin_str = request.POST.get('date_fin_evenement', '')
+        from datetime import date
         if date_str:
-            from datetime import date
-            try:
-                article.date_evenement = date.fromisoformat(date_str)
-            except Exception:
-                pass
+            try: article.date_evenement = date.fromisoformat(date_str)
+            except Exception: pass
         else:
             article.date_evenement = None
         if date_fin_str:
-            from datetime import date
-            try:
-                article.date_fin_evenement = date.fromisoformat(date_fin_str)
-            except Exception:
-                pass
+            try: article.date_fin_evenement = date.fromisoformat(date_fin_str)
+            except Exception: pass
         else:
             article.date_fin_evenement = None
+
         if request.FILES.get('image_couverture'):
             article.image_couverture = request.FILES['image_couverture']
+
+        # ✅ NOUVEAU : upload du PDF
+        if request.FILES.get('fichier_pdf'):
+            article.fichier_pdf = request.FILES['fichier_pdf']
+
         article.save()
         messages.success(request, f'Article "{article.titre}" enregistré.')
-        if request.POST.get('action') == 'editeur':
-            return redirect('dashboard_une_editeur', pk=article.pk)
         return redirect('dashboard_une_liste')
-    return render(request, 'eden/dashboard/une_form.html', {'article': article})
 
+    return render(request, 'eden/dashboard/une_form.html', {'article': article})
 
 @login_required
 @user_passes_test(is_agent)
@@ -4923,3 +4898,49 @@ def admin_section_academie(request):
         return redirect('admin_section_academie')
     
     return render(request, 'eden/dashboard/section_academie.html', {'section': section})
+
+from django.http import FileResponse, Http404
+import os
+from django.conf import settings
+
+def servir_pdf(request, pk):
+    article = get_object_or_404(UneEvenement, pk=pk, statut='publie')
+    if not article.fichier_pdf:
+        raise Http404("Aucun PDF")
+    try:
+        fichier = article.fichier_pdf.open('rb')
+    except FileNotFoundError:
+        raise Http404("Fichier introuvable")
+
+    response = FileResponse(fichier, content_type='application/pdf')
+    response['X-Frame-Options'] = 'SAMEORIGIN'
+    response['Content-Security-Policy'] = "frame-ancestors 'self'"
+    response['Content-Disposition'] = f'inline; filename="{os.path.basename(article.fichier_pdf.name)}"'
+    # ✅ NE PAS METTRE EN CACHE
+    response['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
+
+def servir_pdf_journal(request, numero):
+    """Sert le PDF du journal avec les en-têtes corrects pour iframe."""
+    from .models import JournalEdition
+    edition = get_object_or_404(JournalEdition, numero=numero, statut='publie')
+
+    if not edition.fichier_pdf:
+        raise Http404("Aucun PDF pour cette édition")
+
+    try:
+        fichier = edition.fichier_pdf.open('rb')
+    except FileNotFoundError:
+        raise Http404("Fichier PDF introuvable")
+
+    response = FileResponse(fichier, content_type='application/pdf')
+    response['X-Frame-Options'] = 'SAMEORIGIN'
+    response['Content-Security-Policy'] = "frame-ancestors 'self'"
+    response['Content-Disposition'] = f'inline; filename="{os.path.basename(edition.fichier_pdf.name)}"'
+    # ✅ Pas de cache
+    response['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    return response
