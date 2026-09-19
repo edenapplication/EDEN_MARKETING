@@ -1365,11 +1365,20 @@ nav.scrolled .hamburger span{background:var(--g800);}
   position:relative;
   overflow:hidden;
   min-height:clamp(160px, 20vw, 200px);
+  background:#f8faff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:10px;
 }
 .academy-image img{
   width:100%;
   height:100%;
-  object-fit:cover;
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;  /* ✅ Image entièrement visible */
+  object-position:center center;
+  display:block;
 }
 .academy-image::before{
  display: none;
@@ -1673,6 +1682,110 @@ footer{
   box-shadow:0 8px 32px rgba(0,0,0,0.12);
 }
 .toast.show{transform:none;opacity:1;}
+/* ══ TÉMOIGNAGES — NAVIGATION ALIGNÉE ══ */
+.temoignages-nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-top:1.2rem;
+  padding-top:1rem;
+  border-top:1px solid var(--g200);
+  width:100%;
+}
+
+/* ✅ Bouton précédent : aligné à gauche */
+.temoignages-btn-prev{
+  flex-shrink:0;
+}
+
+/* ✅ Bouton suivant : aligné à droite */
+.temoignages-btn-next{
+  flex-shrink:0;
+}
+
+/* ✅ Dots au centre */
+.temoignages-dots{
+  flex:1;
+  display:flex;
+  gap:6px;
+  align-items:center;
+  justify-content:center;
+}
+
+.temoignages-btn{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  background:#fff;
+  border:1.5px solid var(--g200);
+  color:var(--g700);
+  font-size:18px;
+  font-weight:700;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:all 0.2s;
+  font-family:'Outfit',sans-serif;
+  box-shadow:0 2px 8px rgba(0,0,0,0.06);
+  padding:0;
+  line-height:1;
+  padding-bottom:3px;
+}
+
+.temoignages-btn:hover{
+  background:var(--blue);
+  border-color:var(--blue);
+  color:#fff;
+  transform:translateY(-2px);
+  box-shadow:0 4px 12px rgba(27,79,219,0.3);
+}
+
+.temoignages-btn:active{
+  transform:translateY(0);
+}
+
+.temoignages-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--g300);
+  cursor:pointer;
+  transition:all 0.3s;
+}
+
+.temoignages-dot.active{
+  background:var(--blue);
+  width:20px;
+  border-radius:100px;
+}
+
+.temoignages-dot:hover{
+  background:var(--blue);
+}
+
+/* ✅ Sur mobile, garder l'alignement */
+@media(max-width: 480px) {
+  .temoignages-nav{
+    gap:8px;
+  }
+  .temoignages-btn{
+    width:34px;
+    height:34px;
+    font-size:16px;
+  }
+  .temoignages-dots{
+    gap:5px;
+  }
+  .temoignages-dot{
+    width:7px;
+    height:7px;
+  }
+  .temoignages-dot.active{
+    width:18px;
+  }
+}
 .toast-bar{
   position:absolute;
   left:0;
@@ -2408,31 +2521,44 @@ footer{
 <div class="bottom-section">
   <div class="bottom-inner">
     <!-- Témoignages -->
-    <div>
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.3rem;">
-        <span style="font-size:2.5rem;">💬</span>
-        <div class="sec-title" style="font-size:1.5rem;">Ils nous font confiance</div>
-      </div>
-      <div style="margin-top:1rem;">
-        {% for t in temoignages %}
-        <div class="tc-quote" style="font-size:13px;line-height:1.7;color:var(--g600);font-style:italic;margin-bottom:1rem;{% if not forloop.first %}display:none;{% endif %}" data-testi="{{ forloop.counter0 }}">
-          "{{ t.texte }}"
-          <div style="margin-top:0.8rem;font-style:normal;display:flex;align-items:center;gap:12px;">
-            {% if t.avatar %}<img src="{{ t.avatar.url }}" alt="{{ t.nom }}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">{% else %}<div style="width:40px;height:40px;border-radius:50%;background:var(--blue-pale);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--blue);">{{ t.nom|first|upper }}</div>{% endif %}
-            <div><div style="font-weight:700;font-size:13px;color:var(--g800);">{{ t.nom }}</div><div style="font-size:11px;color:var(--g400);">{{ t.role }}</div></div>
-          </div>
-        </div>
-        {% empty %}
-        <div class="tc-quote" style="font-size:13px;line-height:1.7;color:var(--g600);font-style:italic;">
-          "Grâce à EDEN GROUP, j'ai acquis mon terrain en toute sécurité. Le suivi est impeccable."
-          <div style="margin-top:0.8rem;font-style:normal;display:flex;align-items:center;gap:12px;">
-            <div style="width:40px;height:40px;border-radius:50%;background:var(--blue-pale);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--blue);">M</div>
-            <div><div style="font-weight:700;font-size:13px;color:var(--g800);">Marie A. N.</div><div style="font-size:11px;color:var(--g400);">Cliente — Yaoundé</div></div>
-          </div>
-        </div>
-        {% endfor %}
+<div>
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:0.3rem;">
+    <span style="font-size:2.5rem;">💬</span>
+    <div class="sec-title" style="font-size:1.5rem;">Ils nous font confiance</div>
+  </div>
+  <div style="margin-top:1rem;" id="temoignages-container">
+    {% for t in temoignages %}
+    <div class="tc-quote" style="font-size:13px;line-height:1.7;color:var(--g600);font-style:italic;margin-bottom:1rem;{% if not forloop.first %}display:none;{% endif %}" data-testi="{{ forloop.counter0 }}">
+      "{{ t.texte }}"
+      <div style="margin-top:0.8rem;font-style:normal;display:flex;align-items:center;gap:12px;">
+        {% if t.avatar %}<img src="{{ t.avatar.url }}" alt="{{ t.nom }}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">{% else %}<div style="width:40px;height:40px;border-radius:50%;background:var(--blue-pale);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--blue);">{{ t.nom|first|upper }}</div>{% endif %}
+        <div><div style="font-weight:700;font-size:13px;color:var(--g800);">{{ t.nom }}</div><div style="font-size:11px;color:var(--g400);">{{ t.role }}</div></div>
       </div>
     </div>
+    {% empty %}
+    <div class="tc-quote" style="font-size:13px;line-height:1.7;color:var(--g600);font-style:italic;">
+      "Grâce à EDEN GROUP, j'ai acquis mon terrain en toute sécurité. Le suivi est impeccable."
+      <div style="margin-top:0.8rem;font-style:normal;display:flex;align-items:center;gap:12px;">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--blue-pale);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--blue);">M</div>
+        <div><div style="font-weight:700;font-size:13px;color:var(--g800);">Marie A. N.</div><div style="font-size:11px;color:var(--g400);">Cliente — Yaoundé</div></div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+    <!-- ✅ Boutons de navigation témoignages — alignés -->
+  {% if temoignages|length > 1 %}
+  <div class="temoignages-nav">
+    <button class="temoignages-btn temoignages-btn-prev" onclick="temoignagePrecedent()" title="Précédent">‹</button>
+    <div class="temoignages-dots" id="temoignages-dots">
+      {% for t in temoignages %}
+      <span class="temoignages-dot {% if forloop.first %}active{% endif %}" onclick="temoignageAller({{ forloop.counter0 }})"></span>
+      {% endfor %}
+    </div>
+    <button class="temoignages-btn temoignages-btn-next" onclick="temoignageSuivant()" title="Suivant">›</button>
+  </div>
+  {% endif %}
+</div>
 
     <!-- Souvenirs -->
     <div class="souvenir-card" style="background:var(--blue-d);border-radius:var(--rl);padding:1.2rem;color:#fff;min-height:250px;">
@@ -2879,6 +3005,54 @@ function fermerAjaxPanel() {
 // ══════════════════════════════════════════════
 function lancerRecherche() {
   analyserFiltre();
+}
+
+// ══════════════════════════════════════════════
+// TÉMOIGNAGES — NAVIGATION
+// ══════════════════════════════════════════════
+let temoignageIndex = 0;
+const temoignages = document.querySelectorAll('.tc-quote[data-testi]');
+
+function afficherTemoignage(idx) {
+  if (temoignages.length === 0) return;
+  temoignageIndex = (idx + temoignages.length) % temoignages.length;
+  
+  temoignages.forEach((t, i) => {
+    t.style.display = i === temoignageIndex ? 'block' : 'none';
+    // Animation fade in
+    if (i === temoignageIndex) {
+      t.style.opacity = '0';
+      t.style.transition = 'opacity 0.4s ease';
+      setTimeout(() => { t.style.opacity = '1'; }, 50);
+    }
+  });
+  
+  // Mettre à jour les dots
+  document.querySelectorAll('.temoignages-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === temoignageIndex);
+  });
+}
+
+function temoignageSuivant() {
+  afficherTemoignage(temoignageIndex + 1);
+}
+
+function temoignagePrecedent() {
+  afficherTemoignage(temoignageIndex - 1);
+}
+
+function temoignageAller(idx) {
+  afficherTemoignage(idx);
+}
+
+// ✅ Auto-défilement (optionnel — toutes les 6 secondes)
+if (temoignages.length > 1) {
+  setInterval(() => {
+    // Ne pas défiler si la souris est sur les témoignages
+    const container = document.getElementById('temoignages-container');
+    if (container && container.matches(':hover')) return;
+    temoignageSuivant();
+  }, 6000);
 }
 
 // ══════════════════════════════════════════════
