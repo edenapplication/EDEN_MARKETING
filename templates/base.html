@@ -471,6 +471,29 @@
       </button>
     </nav>
 
+    <!-- ══ MENU MOBILE ══ -->
+    <div class="mob-menu" id="mob-menu">
+      <a class="nav-lnk" href="{% url 'home' %}">Accueil</a>
+      <a class="nav-lnk" href="{% url 'sites_list' %}">Nos Terrains</a>
+      <a class="nav-lnk" href="{% url 'nos_services' %}">Nos Services</a>
+      <a class="nav-lnk" href="{% url 'nos_agences' %}">Nos Agences</a>
+      <a class="nav-lnk" href="{% url 'academie_accueil' %}">Académie</a>
+      <a class="nav-lnk" href="{% url 'une_evenements_accueil' %}"
+        >Actualités</a
+      >
+      <a class="nav-lnk" href="{% url 'a_propos' %}">À propos</a>
+      {% if user.is_staff %}<a class="nav-lnk" href="{% url 'dashboard_home' %}"
+        >Dashboard</a
+      >{% endif %}
+      <button
+        class="btn-rdv"
+        style="width: 100%; margin-top: 8px; justify-content: center"
+        onclick="openModal()"
+      >
+        📅 Contact
+      </button>
+    </div>
+
     <!-- ══ CONTENU PRINCIPAL ══ -->
     <main>{% block content %}{% endblock %}</main>
 
