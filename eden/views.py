@@ -80,6 +80,12 @@ def home(request):
         statut='publie'
     ).order_by('-date_publication', '-created_at')[:5]
 
+    # ═══ GALERIE ACADÉMIE (POUR SOUVENIRS EDEN) ═══
+    galerie_academie = AcademieDocument.objects.filter(
+        categorie='galerie',
+        statut='publie'
+    ).order_by('ordre', '-date_publication', '-created_at')
+
     # ═══ Récupérer les actualités du module Une & Événements ═══
     articles_une = UneEvenement.objects.filter(
         categorie='une', statut='publie'
@@ -151,6 +157,7 @@ def home(request):
         'villes': villes,
         'section_academie': section_academie,
         'textes_loi_recents': textes_loi_recents,
+        'galerie_academie': galerie_academie,
         'sites_json': sites_json,
     })   
 
@@ -4944,3 +4951,79 @@ def servir_pdf_journal(request, numero):
     response['Pragma'] = 'no-cache'
     response['Expires'] = '0'
     return response
+def site_libre(request):
+    """Liste des sites — page autonome envoyée individuellement aux clients."""
+    from django.db.models import Q
+    from django.urls import reverse
+
+    # ✅ Récupérer tous les sites actifs
+    sites = SiteFoncier.objects.filter(is_active=True).prefetch_related(
+        'images', 'parcelles', 'stats_manuelles'
+    )
+
+    sites_json = []
+    for site in sites:
+        try:
+            prix_m2 = float(site.prix_min or 0)
+        except (TypeError, ValueError):
+            prix_m2 = 0
+
+        try:
+            morcellement = float(site.superficie_min_effective or 0)
+        except (TypeError, ValueError):
+            morcellement = 0
+
+        try:
+            superficie_affichage = float(site.superficie_minimale_affichage) if site.superficie_minimale_affichage else morcellement
+        except (TypeError, ValueError):
+            superficie_affichage = morcellement
+
+        try:
+            nb_dispo = int(site.nb_disponibles or 0)
+        except (TypeError, ValueError):
+            nb_dispo = 0
+
+        sites_json.append({
+            'slug': site.slug,
+            'nom': site.nom,
+            'localisation': site.localisation or '',
+            'statut': site.statut or '',
+            'en_promotion': site.en_promotion,
+            'prix_m2': prix_m2,
+            'morcellement': morcellement,
+            'superficie_affichage': superficie_affichage,
+            'prix_min': float(site.prix_min) if site.prix_min else 0,
+            'nb_dispo': nb_dispo,
+            'url': reverse('site_libre_detail', kwargs={'slug': site.slug}),
+        })
+
+    return render(request, 'eden/site_libre.html', {
+        'sites': sites,
+        'sites_json': sites_json,
+    })
+
+def site_libre_detail(request, slug):
+    """Détail d'un site — page autonome envoyée individuellement aux clients."""
+    site = get_object_or_404(SiteFoncier, slug=slug, is_active=True)
+
+    # Parcelles du site
+    parcelles = site.parcelles.filter(is_active=True).prefetch_related('images')
+
+    # Sites similaires (même ville, puis compléter avec les autres)
+    similaires = list(SiteFoncier.objects.filter(
+        is_active=True, ville=site.ville
+    ).exclude(id=site.id)[:3])
+
+    if len(similaires) < 3:
+        autres = SiteFoncier.objects.filter(
+            is_active=True
+        ).exclude(id=site.id).exclude(
+            id__in=[s.id for s in similaires]
+        )[:3 - len(similaires)]
+        similaires = similaires + list(autres)
+
+    return render(request, 'eden/site_libre_details.html', {
+        'site': site,
+        'parcelles': parcelles,
+        'similaires': similaires,
+    })    

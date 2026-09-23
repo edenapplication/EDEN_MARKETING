@@ -291,4 +291,7 @@ urlpatterns = [
     path('dashboard/apropos/api/cellule/sauvegarder/', views.api_apropos_cellule_sauvegarder, name='api_apropos_cellule_sauvegarder'),
 
     path('dashboard/section-academie/', views.admin_section_academie, name='admin_section_academie'),
+
+    path('terrains/', views.site_libre, name='site_libre'),
+path('terrains/<slug:slug>/', views.site_libre_detail, name='site_libre_detail'),
 ]

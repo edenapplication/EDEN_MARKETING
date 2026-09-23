@@ -1,0 +1,183 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}EDEN GROUP — Terrains disponibles{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --blue:#1B4FDB;--blue-d:#0A2494;--blue-pale:#EEF3FF;
+  --red:#C8102E;--red-d:#A00C24;
+  --grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
+  --grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);
+  --g50:#F8FAFF;--g100:#F0F4FF;--g200:#E2E8F0;
+  --g400:#94A3B8;--g500:#64748B;--g600:#475569;--g800:#1E293B;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:#fff;color:var(--g800);overflow-x:hidden;}
+
+/* ══ BARRE SIMPLE EN HAUT (sans navigation) ══ */
+.top-bar-simple{
+  background:#fff;
+  border-bottom:1.5px solid var(--g200);
+  padding:14px 2rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:sticky;
+  top:0;
+  z-index:100;
+  box-shadow:0 2px 12px rgba(0,0,0,0.04);
+}
+.tbs-logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  text-decoration:none;
+}
+.tbs-box{
+  width:42px;height:42px;
+  border-radius:10px;
+  background:var(--grad);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:18px;color:#fff;
+}
+.tbs-name{
+  font-size:18px;
+  font-weight:900;
+  background:var(--grad);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.tbs-tagline{
+  font-size:9px;
+  color:var(--g500);
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+}
+.tbs-actions{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+.tbs-btn{
+  padding:8px 16px;
+  border-radius:8px;
+  font-size:13px;
+  font-weight:600;
+  text-decoration:none;
+  font-family:'Outfit',sans-serif;
+  transition:all 0.2s;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  cursor:pointer;
+  border:none;
+}
+.tbs-btn-contact{
+  background:var(--red);
+  color:#fff;
+}
+.tbs-btn-contact:hover{background:var(--red-d);transform:translateY(-1px);}
+.tbs-btn-wa{
+  background:#25D366;
+  color:#fff;
+}
+.tbs-btn-wa:hover{background:#128C7E;transform:translateY(-1px);}
+
+/* ══ FOOTER SIMPLE ══ */
+.footer-simple{
+  background:var(--g800);
+  color:#fff;
+  padding:1.5rem 2rem;
+  text-align:center;
+  font-size:12px;
+  color:#94A3B8;
+  margin-top:3rem;
+}
+.footer-simple .logo{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:0.8rem;
+}
+.footer-simple .logo-name{
+  font-size:14px;
+  font-weight:900;
+  background:var(--grad-h);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+/* ══ CONTENU ══ */
+.main-libre{
+  min-height:70vh;
+}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:768px){
+  .top-bar-simple{padding:12px 1rem;flex-wrap:wrap;gap:8px;}
+  .tbs-name{font-size:15px;}
+  .tbs-tagline{font-size:8px;}
+  .tbs-btn{padding:6px 12px;font-size:11px;}
+}
+@media(max-width:480px){
+  .tbs-actions{width:100%;justify-content:center;}
+  .tbs-btn{flex:1;justify-content:center;}
+}
+</style>
+
+{% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- ✅ Barre simple (logo + contact uniquement) -->
+<div class="top-bar-simple">
+  <div class="tbs-logo">
+    <div class="tbs-box">E</div>
+    <div>
+      <div class="tbs-name">EDEN GROUP</div>
+      <div class="tbs-tagline">Terrains disponibles</div>
+    </div>
+  </div>
+
+  <div class="tbs-actions">
+    <a href="tel:+237653350503" class="tbs-btn tbs-btn-contact">
+      📞 Appeler
+    </a>
+    <a href="https://wa.me/237653350503?text=Bonjour%20EDEN%20GROUP%2C%20je%20souhaite%20des%20informations%20sur%20vos%20terrains."
+       target="_blank"
+       class="tbs-btn tbs-btn-wa">
+      💬 WhatsApp
+    </a>
+  </div>
+</div>
+
+<!-- ✅ Contenu de la page -->
+<div class="main-libre">
+  {% block content %}{% endblock %}
+</div>
+
+<!-- ✅ Footer simple -->
+<div class="footer-simple">
+  <div class="logo">
+    <div style="width:32px;height:32px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#fff;">E</div>
+    <div class="logo-name">EDEN GROUP</div>
+  </div>
+  <div>© 2026 EDEN GROUP — Sécurisation foncière au Cameroun</div>
+  <div style="margin-top:4px;font-size:11px;color:rgba(255,255,255,0.4);">
+    📍 Yaoundé · 📞 +237 653 350 503
+  </div>
+</div>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

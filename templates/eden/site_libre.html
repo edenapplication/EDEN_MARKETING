@@ -1,7 +1,5 @@
-{% extends 'base.html' %}
 {% load static %}
 {% load humanize %}
-{% block content %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -28,47 +26,32 @@ body{font-family:'Outfit',sans-serif;background:#fff;color:var(--g800);overflow-
 ::-webkit-scrollbar{width:5px;}
 ::-webkit-scrollbar-thumb{background:var(--grad-h);border-radius:100px;}
 
-/* ══ NAV TRANSPARENTE ══ */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:1000;height:70px;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 2rem;background:transparent;
-  border-bottom:1px solid transparent;box-shadow:none;
-  transition:background .4s ease,backdrop-filter .4s ease,border-color .4s ease,box-shadow .4s ease;
+/* ══ BARRE SIMPLE AVEC LOGO + RETOUR ══ */
+.top-bar-simple{
+  background:#fff;
+  border-bottom:1.5px solid var(--g200);
+  padding:14px 2rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:sticky;
+  top:0;
+  z-index:100;
+  box-shadow:0 2px 12px rgba(0,0,0,0.04);
 }
-nav.scrolled{
-  background:rgba(255,255,255,.92);backdrop-filter:blur(22px);
-  -webkit-backdrop-filter:blur(22px);
-  border-bottom:1px solid rgba(226,232,240,.9);
-  box-shadow:0 10px 30px rgba(0,0,0,.08);
+.tbs-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.tbs-box{width:42px;height:42px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#fff;}
+.tbs-name{font-size:18px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.tbs-tagline{font-size:9px;color:var(--g500);letter-spacing:1.5px;text-transform:uppercase;}
+.tbs-btn-back{
+  padding:9px 18px;border-radius:8px;font-size:13px;font-weight:700;
+  text-decoration:none;font-family:'Outfit',sans-serif;
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--blue);color:#fff;transition:all 0.2s;
 }
-.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
-.logo-box{width:42px;height:42px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#fff;}
-.logo-name{font-size:18px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.logo-tagline{font-size:9px;color:var(--g500);letter-spacing:1.5px;text-transform:uppercase;}
-.nav-links{display:flex;align-items:center;gap:0;}
-.nav-lnk{padding:6px 13px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.85);text-decoration:none;border-radius:7px;transition:all 0.18s;position:relative;}
-.nav-lnk:hover,.nav-lnk.active{color:#fff;}
-.nav-lnk.active::after{content:'';position:absolute;bottom:-4px;left:13px;right:13px;height:2px;background:var(--red);border-radius:100px;}
-nav.scrolled .nav-lnk{color:var(--g600);}
-nav.scrolled .nav-lnk:hover,nav.scrolled .nav-lnk.active{color:var(--blue);}
-.nav-right{display:flex;align-items:center;gap:8px;}
-.nav-icon-btn{width:36px;height:36px;border-radius:8px;border:1.5px solid rgba(255,255,255,0.25);background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:all 0.18s;color:#fff;text-decoration:none;}
-.nav-icon-btn:hover{border-color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.2);}
-nav.scrolled .nav-icon-btn{background:#fff;border-color:var(--g200);color:var(--g600);}
-nav.scrolled .nav-icon-btn:hover{border-color:var(--blue);background:var(--blue-pale);}
-.btn-rdv{background:var(--red);color:#fff;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;display:flex;align-items:center;gap:7px;text-decoration:none;}
-.btn-rdv:hover{background:var(--red-d);transform:translateY(-1px);box-shadow:0 4px 16px rgba(200,16,46,0.3);}
-.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;background:none;border:none;padding:6px;}
-.hamburger span{width:22px;height:2px;background:#fff;border-radius:2px;display:block;transition:background 0.3s;}
-nav.scrolled .hamburger span{background:var(--g800);}
-.mob-menu{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(255,255,255,0.98);border-bottom:1px solid var(--g200);padding:1rem 1.5rem;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.1);backdrop-filter:blur(10px);}
-.mob-menu.open{display:flex;flex-direction:column;gap:4px;}
-.mob-menu .nav-lnk{color:var(--g600);padding:8px 0;}
-.mob-menu .nav-lnk.active{color:var(--blue);}
-.mob-menu .nav-lnk.active::after{display:none;}
+.tbs-btn-back:hover{background:var(--blue-d);transform:translateY(-1px);box-shadow:0 4px 12px rgba(27,79,219,0.3);}
 
-/* ══ HERO CARROUSEL — MÊME DIMENSION QUE HOME ══ */
+/* ══ HERO CARROUSEL ══ */
 .hero{
   position:relative;
   height:min(85vh, 750px);
@@ -82,7 +65,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .hero-slide img{width:100%;height:100%;object-fit:cover;display:block;}
 .hero-slide-placeholder{width:100%;height:100%;background:linear-gradient(135deg,#0A2494 0%,#1B4FDB 45%,#7B20B4 75%,#C8102E 100%);}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(10,22,40,0.55) 0%,rgba(10,22,40,0.3) 60%,rgba(10,22,40,0.1) 100%);z-index:1;}
-.hero-inner{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;padding-top:70px;max-width:1280px;margin:0 auto;left:0;right:0;overflow:hidden;}
+.hero-inner{position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;max-width:1280px;margin:0 auto;left:0;right:0;overflow:hidden;}
 .hero-left{max-width:560px;position:relative;z-index:20;}
 .hero-glow-white{position:relative;z-index:10;isolation:isolate;}
 .hero-glow-white::before{content:"";position:absolute;inset:-2px -20px;background:radial-gradient(ellipse at center,rgba(255,255,255,.20) 0%,rgba(255,255,255,.08) 40%,rgba(255,255,255,0) 75%);filter:blur(12px);border-radius:60px;z-index:-1;pointer-events:none;}
@@ -194,7 +177,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .site-card:hover .sc-img img{transform:scale(1.04);}
 .sc-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,22,40,0.65) 0%,transparent 55%);}
 .sc-promo{position:absolute;top:12px;right:12px;background:var(--grad);color:#fff;padding:4px 10px;border-radius:100px;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
-.sc-loc{position:absolute;bottom:14px;left:14px;font-size:11px;color:rgba(255,255,255,0.9);display:flex;align-items:center;gap:5px;}
+.sc-loc{position:absolute;bottom:38px;left:14px;right:14px;font-size:11px;color:rgba(255,255,255,0.9);display:flex;align-items:center;gap:5px;z-index:3;}
 .sc-body{padding:1.2rem;}
 .sc-name{font-size:1.2rem;font-weight:800;color:var(--g800);margin-bottom:0.3rem;}
 .sc-desc{font-size:12px;color:var(--g400);line-height:1.6;margin-bottom:0.8rem;}
@@ -233,9 +216,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .empty{text-align:center;padding:4rem;color:var(--g400);grid-column:1/-1;}
 .empty-ico{font-size:3rem;margin-bottom:1rem;}
 
-/* ══════════════════════════════════════════════════
-   BADGE STATUT — EN HAUT (position sur l'image)
-   ══════════════════════════════════════════════════ */
+/* ══ BADGE STATUT ══ */
 .sc-status{
   position:absolute;
   top:12px;
@@ -260,9 +241,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .st-p{background:rgba(27,79,219,0.92);color:#fff;}
 .st-c{background:rgba(200,16,46,0.92);color:#fff;}
 
-/* ══════════════════════════════════════════════════
-   BADGE POPULARITÉ — EN BAS (bande pleine largeur)
-   ══════════════════════════════════════════════════ */
+/* ══ BADGE POPULARITÉ ══ */
 .sc-popularite{
   position:absolute;
   bottom:0;
@@ -281,21 +260,6 @@ nav.scrolled .hamburger span{background:var(--g800);}
   overflow:hidden;
   text-overflow:ellipsis;
   line-height:1.2;
-  border-radius:0;
-}
-
-/* Ajustement localisation au-dessus de la popularité */
-.sc-loc{
-  position:absolute;
-  bottom:38px;
-  left:14px;
-  right:14px;
-  font-size:11px;
-  color:rgba(255,255,255,0.9);
-  display:flex;
-  align-items:center;
-  gap:5px;
-  z-index:3;
 }
 
 /* ══ MODAL ══ */
@@ -322,147 +286,74 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .toast.show{transform:none;opacity:1;}
 .toast-bar{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:var(--r) 0 0 var(--r);background:var(--grad-h);}
 
-/* ══ FOOTER ══ */
-.footer-bar{height:3px;background:var(--grad-h);}
-footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1px solid #334155;}
-.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1.5fr;gap:2rem;max-width:1280px;margin:0 auto 2rem;}
-.footer-logo-img{height:40px;object-fit:contain;}
-.footer-desc{font-size:12px;color:#94A3B8;line-height:1.75;max-width:260px;margin-bottom:1rem;margin-top:0.8rem;}
-.footer-tagline{font-size:11px;color:rgba(255,255,255,0.4);font-style:italic;}
-.footer-col h4{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:var(--grad-h);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.9rem;}
-.footer-lnk{display:block;font-size:12px;color:#94A3B8;text-decoration:none;margin-bottom:6px;transition:color 0.2s;}
-.footer-lnk:hover{color:#fff;}
-.footer-agences-item{display:flex;align-items:center;gap:5px;font-size:12px;color:#94A3B8;margin-bottom:6px;}
-.footer-socials{display:flex;gap:8px;margin-top:0.8rem;}
-.footer-social-btn{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;transition:all 0.2s;}
-.fs-fb{background:#1877F2;color:#fff;}
-.fs-tt{background:#010101;color:#fff;}
-.fs-yt{background:#FF0000;color:#fff;}
-.fs-li{background:#0A66C2;color:#fff;}
-.fs-ig{background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;}
-.footer-social-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.3);}
-.footer-nl-wrap{position:relative;}
-.footer-nl-input{width:100%;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);border-radius:8px;padding:9px 48px 9px 12px;font-size:12px;color:#fff;font-family:'Outfit',sans-serif;outline:none;}
-.footer-nl-input::placeholder{color:rgba(255,255,255,0.35);}
-.footer-nl-btn{position:absolute;right:0;top:0;bottom:0;background:var(--red);border:none;width:40px;border-radius:0 8px 8px 0;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;transition:background 0.2s;}
-.footer-nl-btn:hover{background:var(--red-d);}
-.footer-bot{border-top:1px solid #334155;max-width:1280px;margin:0 auto;padding-top:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
-.footer-copy{font-size:12px;color:#64748B;}
-.footer-links-bot{display:flex;gap:1.5rem;}
-.footer-links-bot a{font-size:12px;color:#64748B;text-decoration:none;transition:color 0.2s;}
-.footer-links-bot a:hover{color:#fff;}
+/* ══ FOOTER SIMPLE ══ */
+.footer-simple{
+  background:var(--g800);
+  color:#fff;
+  padding:2rem;
+  text-align:center;
+  font-size:12px;
+  color:#94A3B8;
+}
+.footer-simple .logo-simple{
+  display:inline-flex;align-items:center;gap:8px;margin-bottom:0.8rem;
+}
+.footer-simple .logo-simple-box{
+  width:32px;height:32px;border-radius:8px;background:var(--grad);
+  display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#fff;
+}
+.footer-simple .logo-simple-name{
+  font-size:14px;font-weight:900;
+  background:var(--grad-h);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.footer-simple .contact-info{margin-top:6px;font-size:11px;color:rgba(255,255,255,0.45);}
 
-/* ══════════════════════════════════════════════════ */
 /* ══ RESPONSIVE ══ */
-/* ══════════════════════════════════════════════════ */
 @media(max-width:1200px){.search-fields{grid-template-columns:1fr 1fr;}}
-@media(max-width:1024px){.footer-grid{grid-template-columns:1fr 1fr 1fr;}}
-
 @media(max-width:768px){
-  nav{padding:0 1rem;}
-  .nav-links{display:none;}
-  .hamburger{display:flex;}
-  .hero-inner{flex-direction:column;justify-content:center;padding-top:80px;padding-left:1.5rem;padding-right:1.5rem;}
+  .top-bar-simple{padding:12px 1rem;flex-wrap:wrap;gap:10px;}
+  .tbs-name{font-size:15px;}
+  .tbs-tagline{font-size:8px;}
+  .tbs-btn-back{padding:7px 14px;font-size:12px;}
+  .hero-inner{flex-direction:column;justify-content:center;padding-left:1.5rem;padding-right:1.5rem;}
   .hero-right{display:none;}
   .hero-nav{display:none;}
   .hero-indicators{bottom:60px;}
   .hero-title{font-size:2rem;}
   .hero-desc{font-size:13px;}
-
-  /* ✅ TRUST ITEMS EN 2 PAR 2 SUR MOBILE */
-  .hero-trust-row{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:0.6rem;
-    width:100%;
-    max-width:100%;
-  }
-  .hero-trust-item{
-    width:100%;
-    min-width:0;
-    padding:4px 8px 4px 4px;
-  }
-  .hero-trust-txt{
-    font-size:9px;
-    line-height:1.2;
-  }
-  .hero-trust-txt strong{
-    font-size:10px;
-  }
-
+  .hero-trust-row{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;width:100%;max-width:100%;}
+  .hero-trust-item{width:100%;min-width:0;padding:4px 8px 4px 4px;}
+  .hero-trust-txt{font-size:9px;line-height:1.2;}
+  .hero-trust-txt strong{font-size:10px;}
   .search-wrap{margin:0 1rem;margin-top:-50px;padding:1rem;}
   .search-fields{grid-template-columns:1fr;}
   .controls{flex-direction:column;align-items:stretch;padding:1.5rem 1rem;}
   .search-wrap-card{max-width:100%;}
   .sites-grid{grid-template-columns:1fr;padding:1rem;}
-  .footer-grid{grid-template-columns:1fr 1fr;gap:1.5rem;}
-  .footer-grid>div:first-child{grid-column:1/-1;}
   .f-row{grid-template-columns:1fr;}
   .sites-section{padding:0 1rem 4rem;}
-
-  /* Badges sites */
-  .sc-status{
-    top:10px;
-    left:10px;
-    font-size:8px;
-    padding:4px 11px;
-    max-width:calc(100% - 20px);
-  }
-  .sc-popularite{
-    font-size:10px;
-    padding:5px 12px;
-  }
-  .sc-loc{
-    bottom:36px;
-    font-size:10px;
-  }
+  .sc-status{top:10px;left:10px;font-size:8px;padding:4px 11px;max-width:calc(100% - 20px);}
+  .sc-popularite{font-size:10px;padding:5px 12px;}
+  .sc-loc{bottom:36px;font-size:10px;}
 }
-
 @media(max-width:480px){
   .hero-title{font-size:1.8rem;}
   .sites-grid{grid-template-columns:1fr;}
   .filter-pills{justify-content:center;}
-
-  /* ✅ Garde le 2 par 2 même sur petits écrans */
-  .hero-trust-row{
-    grid-template-columns:1fr 1fr;
-    gap:0.5rem;
-  }
-  .hero-trust-item{
-    padding:3px 6px 3px 3px;
-  }
-  .hero-trust-ico{
-    width:26px;
-    height:26px;
-    font-size:11px;
-  }
-  .hero-trust-txt{
-    font-size:8px;
-  }
-  .hero-trust-txt strong{
-    font-size:9px;
-  }
-
-  /* Badges sites - ajustements finaux */
-  .sc-status{
-    font-size:7px;
-    padding:3px 9px;
-  }
-  .sc-popularite{
-    font-size:9px;
-    padding:4px 10px;
-  }
-  .sc-loc{
-    bottom:32px;
-    font-size:9px;
-  }
+  .hero-trust-row{grid-template-columns:1fr 1fr;gap:0.5rem;}
+  .hero-trust-item{padding:3px 6px 3px 3px;}
+  .hero-trust-ico{width:26px;height:26px;font-size:11px;}
+  .hero-trust-txt{font-size:8px;}
+  .hero-trust-txt strong{font-size:9px;}
+  .sc-status{font-size:7px;padding:3px 9px;}
+  .sc-popularite{font-size:9px;padding:4px 10px;}
+  .sc-loc{bottom:32px;font-size:9px;}
 }
-
-/* ══ HAUTEUR HERO MOBILE — MÊME QUE HOME ══ */
 @media(max-width:768px){
   .hero-overlay{background:linear-gradient(to bottom,rgba(10,22,40,0.7) 0%,rgba(10,22,40,0.5) 50%,rgba(10,22,40,0.3) 100%);}
   .hero{height:min(60vh,420px);}
-  .hero-inner{padding-top:80px;padding-left:1rem;padding-right:1rem;align-items:flex-start;justify-content:flex-start;}
+  .hero-inner{padding-left:1rem;padding-right:1rem;align-items:flex-start;justify-content:flex-start;}
   .hero-left{max-width:100%;margin-top:5px;}
   .hero-title{font-size:1.5rem;line-height:1.1;text-shadow:0 2px 20px rgba(0,0,0,0.6);}
   .hero-desc{font-size:0.8rem;text-shadow:0 2px 16px rgb(249, 247, 247);margin-bottom:1rem;}
@@ -476,7 +367,19 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
 </head>
 <body>
 
-<!-- ══ HERO CARROUSEL — images des sites (MÊME HAUTEUR QUE HOME) ══ -->
+<!-- ══ BARRE SIMPLE AVEC LOGO + BOUTON RETOUR ══ -->
+<div class="top-bar-simple">
+  <div class="tbs-logo">
+    <div class="tbs-box">E</div>
+    <div>
+      <div class="tbs-name">EDEN GROUP</div>
+      <div class="tbs-tagline">Nos sites fonciers</div>
+    </div>
+  </div>
+ 
+</div>
+
+<!-- ══ HERO CARROUSEL ══ -->
 <section class="hero">
   <div class="hero-slides">
     {% for site in sites %}
@@ -486,15 +389,9 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
       </div>
       {% endif %}
     {% empty %}
-      {% if hero_config and hero_config.image_fond %}
-      <div class="hero-slide active">
-        <img src="{{ hero_config.image_fond.url }}" alt="EDEN GROUP">
-      </div>
-      {% else %}
       <div class="hero-slide active">
         <div class="hero-slide-placeholder"></div>
       </div>
-      {% endif %}
     {% endfor %}
     <div class="hero-overlay"></div>
   </div>
@@ -510,22 +407,12 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
   <div class="hero-inner">
     <div class="hero-left">
       <h1 class="hero-title hero-glow-white">
-        {% if hero_config and hero_config.titre_ligne1 %}
-          {{ hero_config.titre_ligne1 }}<br>
-          <span class="accent">{{ hero_config.titre_ligne2 }}</span>
-        {% else %}
-          Investissez aujourd'hui<br>
-          <span class="accent">dans un avenir sécurisé.</span>
-        {% endif %}
+        Investissez aujourd'hui<br>
+        <span class="accent">dans un avenir sécurisé.</span>
       </h1>
       <p class="hero-desc hero-glow-white">
-        {% if hero_config and hero_config.description %}{{ hero_config.description }}
-        {% else %}EDEN GROUP vous accompagne dans l'acquisition, l'aménagement et la sécurisation de vos terrains avec <em>professionnalisme et transparence.</em>{% endif %}
+        EDEN GROUP vous accompagne dans l'acquisition, l'aménagement et la sécurisation de vos terrains avec <em>professionnalisme et transparence.</em>
       </p>
-      <div class="hero-btns">
-        <a href="{% url 'sites_list' %}" class="btn-hero-p">Découvrir nos terrains ›</a>
-        <a href="{% url 'carte' %}" class="btn-hero-o">📍 Visite des sites</a>
-      </div>
       <div class="hero-trust-row hero-glow-white">
         <div class="hero-trust-item"><div class="hero-trust-ico">🔒</div><div class="hero-trust-txt"><strong>Titres sécurisés</strong></div></div>
         <div class="hero-trust-item"><div class="hero-trust-ico">🤝</div><div class="hero-trust-txt"><strong>Accompagnement A→Z</strong></div></div>
@@ -534,7 +421,6 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
       </div>
     </div>
 
-    <!-- Carte dynamique défilant avec le carrousel -->
     <div class="hero-right">
       <div class="hero-site-card">
         <div class="hsc-label">Site mis en avant</div>
@@ -561,8 +447,6 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
     <div class="sf-lbl" style="color: #0e0d0d;">Complétez les informations ci-dessous afin de trouver le site qui correspond à vos critères.</div><br>
 
     <div class="search-fields">
-
-      <!-- 1. LOCALISATION -->
       <div class="sf-grp">
         <div class="sf-lbl">📍 Site / Localisation</div>
         <div class="sf-inp-wrap">
@@ -576,7 +460,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
               data-prix-max="{{ site.prix_max_effectif|default:0 }}"
               data-sup-min="{{ site.superficie_min_effectif|default:0 }}"
               data-sup-max="{{ site.superficie_max_effectif|default:0 }}"
-              data-nb-dispo="{{ site.nb_disponibles|default:0 }}" >
+              data-nb-dispo="{{ site.nb_disponibles|default:0 }}">
               {{ site.nom }} — {{ site.localisation }}
             </option>
             {% endfor %}
@@ -584,7 +468,6 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
         </div>
       </div>
 
-      <!-- 2. SUPERFICIE -->
       <div class="sf-grp">
         <div class="sf-lbl">📐 Superficie souhaitée (m²)</div>
         <div class="sf-inp-wrap">
@@ -592,7 +475,6 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
         </div>
       </div>
 
-      <!-- 3. BUDGET -->
       <div class="sf-grp">
         <div class="sf-lbl">💰 Budget (FCFA)</div>
         <div class="sf-inp-wrap">
@@ -600,7 +482,6 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
         </div>
       </div>
 
-      <!-- 4. STATUT -->
       <div class="sf-grp">
         <div class="sf-lbl">✅ Statut</div>
         <div class="sf-inp-wrap">
@@ -616,7 +497,6 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
     </div>
   </div>
 
-  <!-- Panel AJAX résultats filtre -->
   <div class="ajax-result-panel" id="ajax-panel">
     <div class="arp-header">
       <div class="arp-tit" id="arp-tit">🎯 Résultats de votre recherche</div>
@@ -644,7 +524,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
   <div class="sites-grid" id="sites-grid">
     {% for site in sites %}
     <a class="site-card"
-       href="{% url 'site_detail' site.slug %}"
+       href="{% url 'site_libre_detail' site.slug %}"
        data-statut="{{ site.statut }}"
        data-nom="{{ site.nom|lower }}"
        data-ville="{{ site.ville|lower }}"
@@ -663,17 +543,14 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
         {% endif %}
         <div class="sc-overlay"></div>
 
-        <!-- ⬆️ BADGE STATUT (EN HAUT) -->
         <span class="sc-status {% if site.statut == 'disponible' %}st-a{% elif site.statut == 'site_titre' %}st-p{% elif site.statut == 'en_cours_immatriculation' %}st-c{% elif site.statut == 'titre_et_lotis' %}st-p{% elif site.statut == 'complet' %}st-c{% elif site.statut == 'prochainement' %}st-p{% else %}st-p{% endif %}">
           {{ site.get_statut_display }}
         </span>
 
         {% if site.en_promotion %}<span class="sc-promo">🔥 Promo</span>{% endif %}
 
-        <!-- Localisation au-dessus de la popularité -->
         <div class="sc-loc">📍 {{ site.localisation }}{% if site.superficie_totale %} - Superficie de {{ site.superficie_totale }}{% endif %}</div>
 
-        <!-- ⬇️ BADGE POPULARITÉ (EN BAS) -->
         {% if site.popularite %}
         <span class="sc-popularite">{{ site.popularite }}</span>
         {% endif %}
@@ -709,7 +586,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
           <div class="sm-i"><div class="sm-v green">{{ site.nb_disponibles|default:0 }}</div><div class="sm-k">Parcelle Disponibles</div></div>
         </div>
         <div class="sc-btns">
-          <span class="btn-so" onclick="event.preventDefault();event.stopPropagation();window.location='{% url 'carte' %}'">🗺 Voir sur la carte</span>
+          <span class="btn-so" onclick="event.preventDefault();event.stopPropagation();window.open('https://wa.me/237653350503?text=Bonjour%20EDEN%20GROUP%2C%20je%20suis%20int%C3%A9ress%C3%A9%20par%20le%20site%20{{ site.nom|urlencode }}','_blank')">💬 WhatsApp</span>
           <button class="btn-sg" onclick="event.preventDefault();event.stopPropagation();document.getElementById('msite').value='{{ site.nom }}';openModal()">Réserver →</button>
         </div>
       </div>
@@ -718,9 +595,32 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
     <div class="empty">
       <div class="empty-ico">🏡</div>
       <p>Aucun site foncier disponible pour le moment.</p>
-      <p style="margin-top:0.5rem;font-size:12px;color:var(--g400);">Ajoutez des sites depuis l'administration EDEN GROUP.</p>
     </div>
     {% endfor %}
+  </div>
+</div>
+
+<!-- ══ MODAL ══ -->
+<div class="overlay" id="modal">
+  <div class="modal">
+    <button class="m-close" onclick="closeModal()">✕</button>
+    <div id="modal-content">
+      <div class="m-tag">✦ EDEN GROUP</div>
+      <div class="m-tit">Prendre rendez-vous</div>
+      <div class="m-desc">Notre équipe vous contactera sous 24 heures.</div>
+      <form id="mform">
+        {% csrf_token %}
+        <div class="f-row">
+          <div class="fg"><label>Prénom *</label><input class="fi" type="text" name="prenom" placeholder="Jean-Marie" required></div>
+          <div class="fg"><label>Nom *</label><input class="fi" type="text" name="nom" placeholder="Nguema" required></div>
+        </div>
+        <div class="fg"><label>Téléphone / WhatsApp *</label><input class="fi" type="tel" name="telephone" placeholder="+237 6XX XXX XXX" required></div>
+        <div class="fg"><label>Email</label><input class="fi" type="email" name="email" placeholder="votre@email.com"></div>
+        <div class="fg"><label>Site d'intérêt</label><input class="fi" type="text" id="msite" name="site_interet" placeholder="Ex: NTOUESSONG 5"></div>
+        <div class="fg"><label>Message</label><textarea class="fi" name="message" rows="2" placeholder="Vos questions..." style="resize:none;"></textarea></div>
+        <button type="button" class="m-submit" onclick="submitModal()">Envoyer la demande →</button>
+      </form>
+    </div>
   </div>
 </div>
 
@@ -728,22 +628,21 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
 <div class="toast" id="toast"><div class="toast-bar"></div><span id="t-ico" style="font-size:18px;">✅</span><span id="t-msg"></span></div>
 
 {{ sites_json|json_script:"sites-data" }}
+
+<!-- ══ FOOTER SIMPLE ══ -->
+<div class="footer-simple">
+  <div class="logo-simple">
+    <div class="logo-simple-box">E</div>
+    <div class="logo-simple-name">EDEN GROUP</div>
+  </div>
+  <div>© 2026 EDEN GROUP — Sécurisation foncière au Cameroun</div>
+  <div class="contact-info">📍 Yaoundé · 📞 +237 653 350 503 · ✉ contact@edengroup.cm</div>
+</div>
+
 <script>
-// ══════════════════════════════════════════════
-// DONNÉES SITES
-// ══════════════════════════════════════════════
-const SITES_DATA = JSON.parse(
-    document.getElementById('sites-data').textContent
-);
-
+const SITES_DATA = JSON.parse(document.getElementById('sites-data').textContent);
 console.log('📊 SITES_DATA chargés :', SITES_DATA.length);
-SITES_DATA.forEach((s, i) => {
-  console.log(`Site ${i+1}: ${s.nom} | prix_m2: ${s.prix_m2} | morcellement: ${s.morcellement} | superficie_affichage: ${s.superficie_affichage} | nb_dispo: ${s.nb_dispo}`);
-});
 
-// ══════════════════════════════════════════════
-// FONCTIONS UTILITAIRES
-// ══════════════════════════════════════════════
 function formatFCFA(n) {
   if (n === undefined || n === null || isNaN(n)) return '0';
   return new Intl.NumberFormat('fr-FR').format(Math.round(n));
@@ -763,29 +662,7 @@ function showToast(ico, msg) {
   setTimeout(() => t.classList.remove('show'), 4500);
 }
 
-// ══════════════════════════════════════════════
-// NAV
-// ══════════════════════════════════════════════
-function toggleMob() { document.getElementById('mob-menu')?.classList.toggle('open'); }
-
-window.addEventListener('scroll', function() {
-  const nav = document.getElementById('navbar');
-  if (nav) {
-    if (window.scrollY > 40) nav.classList.add('scrolled');
-    else nav.classList.remove('scrolled');
-  }
-});
-
-function souscrireFooter() {
-  const e = document.getElementById('footer-nl')?.value;
-  if (!e) return;
-  showToast('✅', 'Inscription confirmée !');
-  document.getElementById('footer-nl').value = '';
-}
-
-// ══════════════════════════════════════════════
-// HERO CARROUSEL
-// ══════════════════════════════════════════════
+// ══ HERO CARROUSEL ══
 const heroSlides = Array.from(document.querySelectorAll('.hero-slide'));
 const heroDots   = Array.from(document.querySelectorAll('.hero-dot'));
 const hscSlides  = Array.from(document.querySelectorAll('.hsc-slide'));
@@ -812,9 +689,7 @@ function resetHeroTimer() {
 }
 resetHeroTimer();
 
-// ══════════════════════════════════════════════
-// AJAX PANEL — ANALYSE FILTRE
-// ══════════════════════════════════════════════
+// ══ AJAX FILTRE ══
 let analyseTimer = null;
 
 function analyserFiltre() {
@@ -850,58 +725,43 @@ function analyserFiltre() {
     const prixMorcellement = morcellement * prixM2;
     const lignes = [];
 
-    // ══ CAS 1 : BUDGET seul
     if (budget !== null && superficie === null) {
       const supPossible = budget / prixM2;
       if (supPossible < superficieAffichage) return;
-
       lignes.push(`💰 <span class="arp-hl">${formatFCFA(budget)} FCFA</span> vous permet d'avoir une superficie de <span class="arp-hl">${formatSup(supPossible)} m²</span> dans ce site`);
-
       if (supPossible >= superficieAffichage && supPossible < morcellement) {
         const manque = prixMorcellement - budget;
         lignes.push(`⚠️ Votre budget actuel ne vous permet pas d'accéder à ce site`);
         lignes.push(`💰 Il vous manque <span class="arp-hl">${formatFCFA(manque)} FCFA</span> pour accéder à ce site`);
         lignes.push(`📏 Ce site est morcellable à partir de <span class="arp-hl">${formatSup(morcellement)} m²</span>`);
       }
-
       if (supPossible >= morcellement) {
         lignes.push(`✅ Votre budget vous permet d'accéder à ce site`);
         lignes.push(`📏 Ce site est morcellable à partir de <span class="arp-hl">${formatSup(morcellement)} m²</span>`);
       }
-
       lignes.push(`📐 Prix au m² : <span class="arp-hl">${formatFCFA(prixM2)} FCFA/m²</span>`);
       lignes.push(`📦 ${nbDispo} lot${nbDispo > 1 ? 's' : ''} disponible${nbDispo > 1 ? 's' : ''}`);
-
-    // ══ CAS 2 : SUPERFICIE seule
     } else if (superficie !== null && budget === null) {
       const prixTotal = prixM2 * superficie;
       if (superficie < superficieAffichage) return;
-
       lignes.push(`📐 <span class="arp-hl">${formatSup(superficie)} m²</span> → <span class="arp-hl">${formatFCFA(prixTotal)} FCFA</span>`);
-
       if (superficie >= superficieAffichage && superficie < morcellement) {
         const manque = prixMorcellement - prixTotal;
         lignes.push(`⚠️ Votre superficie actuelle ne vous permet pas d'accéder à ce site`);
         lignes.push(`💰 Il vous manque <span class="arp-hl">${formatFCFA(manque)} FCFA</span> pour accéder à ce site`);
         lignes.push(`📏 Ce site est morcellable à partir de <span class="arp-hl">${formatSup(morcellement)} m²</span>`);
       }
-
       if (superficie >= morcellement) {
         lignes.push(`✅ Votre superficie vous permet d'accéder à ce site`);
         lignes.push(`📏 Ce site est morcellable à partir de <span class="arp-hl">${formatSup(morcellement)} m²</span>`);
       }
-
       lignes.push(`📐 Prix au m² : <span class="arp-hl">${formatFCFA(prixM2)} FCFA/m²</span>`);
       lignes.push(`📦 ${nbDispo} lot${nbDispo > 1 ? 's' : ''} disponible${nbDispo > 1 ? 's' : ''}`);
-
-    // ══ CAS 3 : BUDGET + SUPERFICIE
     } else if (budget !== null && superficie !== null) {
       const prixTotal = prixM2 * superficie;
       const supPossible = budget / prixM2;
       if (superficie < superficieAffichage) return;
-
       lignes.push(`📐 <span class="arp-hl">${formatSup(superficie)} m²</span> → <span class="arp-hl">${formatFCFA(prixTotal)} FCFA</span>`);
-
       if (superficie >= superficieAffichage && superficie < morcellement) {
         lignes.push(`⚠️ Votre superficie actuelle ne vous permet pas d'accéder à ce site`);
         lignes.push(`📏 Ce site est morcellable à partir de <span class="arp-hl">${formatSup(morcellement)} m²</span>`);
@@ -917,7 +777,6 @@ function analyserFiltre() {
           lignes.push(`💰 Il vous manque <span class="arp-hl">${formatFCFA(manque)} FCFA</span> pour accéder à ${formatSup(superficie)} m²`);
         }
       }
-
       if (superficie >= morcellement) {
         lignes.push(`✅ Cette superficie vous permet d'accéder à ce site`);
         lignes.push(`📏 Ce site est morcellable à partir de <span class="arp-hl">${formatSup(morcellement)} m²</span>`);
@@ -930,11 +789,8 @@ function analyserFiltre() {
           lignes.push(`💰 Il vous manque <span class="arp-hl">${formatFCFA(manque)} FCFA</span>`);
         }
       }
-
       lignes.push(`📐 Prix au m² : <span class="arp-hl">${formatFCFA(prixM2)} FCFA/m²</span>`);
       lignes.push(`📦 ${nbDispo} lot${nbDispo > 1 ? 's' : ''} disponible${nbDispo > 1 ? 's' : ''}`);
-
-    // ══ CAS 4 : Site seul sélectionné
     } else if (siteSlug && site.slug === siteSlug) {
       lignes.push(`📐 Prix au m² : <span class="arp-hl">${formatFCFA(prixM2)} FCFA/m²</span>`);
       lignes.push(`📏 Seuil d'affichage : <span class="arp-hl">${formatSup(superficieAffichage)} m²</span>`);
@@ -943,9 +799,7 @@ function analyserFiltre() {
       lignes.push(`📦 ${nbDispo} lot${nbDispo > 1 ? 's' : ''} disponible${nbDispo > 1 ? 's' : ''}`);
     }
 
-    if (lignes.length > 0) {
-      resultats.push({ site, lignes });
-    }
+    if (lignes.length > 0) resultats.push({ site, lignes });
   });
 
   if (resultats.length === 0) {
@@ -969,7 +823,6 @@ function analyserFiltre() {
         <div style="color:#fff;font-size:13px;margin-bottom:6px;">${message}</div>
         <div style="color:rgba(255,255,255,0.7);font-size:11px;">${detail}</div>
         <div style="margin-top:10px;font-size:10px;color:rgba(255,255,255,0.5);">${SITES_DATA.length} site(s) disponible(s) en base de données</div>
-        <a href="#" onclick="fermerAjaxPanel();return false;" style="display:inline-block;margin-top:10px;color:#FFD700;text-decoration:underline;font-size:12px;">Voir tous les sites →</a>
       </div>`;
     document.getElementById('ajax-panel').classList.add('visible');
     return;
@@ -989,7 +842,6 @@ function analyserFiltre() {
       <div class="arp-item-lignes">
         ${r.lignes.map(l => `<div class="arp-ligne">• ${l}</div>`).join('')}
       </div>
-      <a href="${r.site.url}" class="arp-voir" onclick="event.stopPropagation()">Voir ce site →</a>
     </div>
   `).join('');
 
@@ -998,8 +850,7 @@ function analyserFiltre() {
 }
 
 function fermerAjaxPanel() {
-  const panel = document.getElementById('ajax-panel');
-  if (panel) panel.classList.remove('visible');
+  document.getElementById('ajax-panel')?.classList.remove('visible');
   document.querySelectorAll('.site-card').forEach(c => c.classList.remove('highlight-card'));
 }
 
@@ -1018,9 +869,6 @@ function highlightSites(slugs) {
   });
 }
 
-// ══════════════════════════════════════════════
-// RECHERCHE + FILTRES
-// ══════════════════════════════════════════════
 function lancerRecherche() { analyserFiltre(); }
 
 let currentFilter = 'all';
@@ -1051,9 +899,6 @@ function filterCards() {
   if (nb) nb.textContent = visible + ' site' + (visible > 1 ? 's' : '');
 }
 
-// ══════════════════════════════════════════════
-// MODAL
-// ══════════════════════════════════════════════
 function openModal(s) {
   if (s) { const f = document.getElementById('msite'); if (f) f.value = s; }
   document.getElementById('modal')?.classList.add('open');
@@ -1084,14 +929,11 @@ function submitModal() {
       + '<p style="font-size:13px;color:var(--g500);margin-bottom:1.5rem;">Notre équipe vous contactera sous 24h.</p>'
       + '<button class="m-submit" onclick="closeModal()" style="background:var(--red);">Fermer</button>'
       + '</div>';
-    showToast('✅', 'Demande envoyée ! Nous vous contacterons sous 24h.');
+    showToast('✅', 'Demande envoyée !');
   })
   .catch(() => showToast('⚠️', 'Erreur réseau.'));
 }
 
-// ══════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', function() {
   ['s-loc', 's-surf', 's-budget', 's-statut'].forEach(id => {
     const el = document.getElementById(id);
@@ -1106,13 +948,6 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
   });
-
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' && ['s-loc','s-surf','s-budget','s-statut'].includes(document.activeElement?.id)) {
-      lancerRecherche();
-    }
-  });
-
   filterCards();
 });
 
@@ -1121,4 +956,3 @@ filterCards();
 
 </body>
 </html>
-{% endblock %}
