@@ -27,30 +27,15 @@ body{font-family:'Outfit',sans-serif;background:#fff;color:var(--g800);overflow-
 
 /* ══ NAV TRANSPARENTE ══ */
 nav{
-    position:fixed;
-    top:0;
-    left:0;
-    right:0;
-    z-index:1000;
-    height:70px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:0 2rem;
-    background:transparent;
-    border-bottom:1px solid transparent;
-    box-shadow:none;
-    transition:
-        background .4s ease,
-        backdrop-filter .4s ease,
-        border-color .4s ease,
-        box-shadow .4s ease;
+    position:fixed;top:0;left:0;right:0;z-index:1000;height:70px;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 2rem;background:transparent;
+    border-bottom:1px solid transparent;box-shadow:none;
+    transition:background .4s ease,backdrop-filter .4s ease,border-color .4s ease,box-shadow .4s ease;
 }
-
 nav.scrolled{
     background:rgba(255,255,255,.92);
-    backdrop-filter:blur(22px);
-    -webkit-backdrop-filter:blur(22px);
+    backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
     border-bottom:1px solid rgba(226,232,240,.9);
     box-shadow:0 10px 30px rgba(0,0,0,.08);
 }
@@ -64,8 +49,7 @@ nav.scrolled{
 .nav-lnk:hover,.nav-lnk.active{color:#fff;}
 .nav-lnk.active::after{content:'';position:absolute;bottom:-4px;left:13px;right:13px;height:2px;background:var(--red);border-radius:100px;}
 nav.scrolled .nav-lnk{color:var(--g600);}
-nav.scrolled .nav-lnk:hover,
-nav.scrolled .nav-lnk.active{color:var(--blue);}
+nav.scrolled .nav-lnk:hover,nav.scrolled .nav-lnk.active{color:var(--blue);}
 .nav-right{display:flex;align-items:center;gap:8px;}
 .nav-icon-btn{width:36px;height:36px;border-radius:8px;border:1.5px solid rgba(255,255,255,0.25);background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:all 0.18s;color:#fff;text-decoration:none;}
 .nav-icon-btn:hover{border-color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.2);}
@@ -83,109 +67,30 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .mob-menu .nav-lnk.active::after{display:none;}
 
 /* ══ HERO AGENCES ══ */
-.hero-agences{
-  position:relative;
-  height:min(80vh, 600px);
-  min-height:320px;
-  overflow:hidden;
+.hero-agences{position:relative;height:min(80vh, 600px);min-height:320px;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.hero-bg img{width:100%;height:100%;object-fit:cover;display:block;object-position:center;position:relative;z-index:0;}
+.hero-bg::before{
+    content:'';position:absolute;inset:0;z-index:1;
+    background:radial-gradient(ellipse 80% 90% at center,transparent 38%,rgba(10,36,148,0.03) 44%,rgba(10,36,148,0.08) 50%,rgba(10,36,148,0.18) 56%,rgba(10,36,148,0.32) 62%,rgba(10,36,148,0.50) 68%,rgba(10,36,148,0.68) 74%,rgba(10,36,148,0.82) 80%,rgba(10,36,148,0.92) 86%,#0A2494 92%,#0A2494 100%);
+    pointer-events:none;
 }
-
-.hero-bg{
-  position:absolute;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+.hero-bg::after{
+    content:'';position:absolute;inset:0;z-index:1;
+    background:radial-gradient(ellipse 90% 95% at center,transparent 30%,rgba(10,36,148,0.02) 40%,rgba(10,36,148,0.06) 50%,rgba(10,36,148,0.15) 60%,rgba(10,36,148,0.30) 70%,rgba(10,36,148,0.50) 80%,#0A2494 100%);
+    pointer-events:none;opacity:0.8;
 }
-
-.hero-bg img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    object-position: center;
-    position: relative;
-    z-index: 0;
-}
-
-.hero-bg::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    background: radial-gradient(
-        ellipse 80% 90% at center,
-        transparent 38%,
-        rgba(10, 36, 148, 0.03) 44%,
-        rgba(10, 36, 148, 0.08) 50%,
-        rgba(10, 36, 148, 0.18) 56%,
-        rgba(10, 36, 148, 0.32) 62%,
-        rgba(10, 36, 148, 0.50) 68%,
-        rgba(10, 36, 148, 0.68) 74%,
-        rgba(10, 36, 148, 0.82) 80%,
-        rgba(10, 36, 148, 0.92) 86%,
-        #0A2494 92%,
-        #0A2494 100%
-    );
-    pointer-events: none;
-}
-
-.hero-bg::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    background: radial-gradient(
-        ellipse 90% 95% at center,
-        transparent 30%,
-        rgba(10, 36, 148, 0.02) 40%,
-        rgba(10, 36, 148, 0.06) 50%,
-        rgba(10, 36, 148, 0.15) 60%,
-        rgba(10, 36, 148, 0.30) 70%,
-        rgba(10, 36, 148, 0.50) 80%,
-        #0A2494 100%
-    );
-    pointer-events: none;
-    opacity: 0.8;
-}
-
-.hero-bg-ph{
-  width:100%;
-  height:100%;
-  background:linear-gradient(135deg,#0A2494,#1B4FDB 50%,#7B20B4);
-}
-
+.hero-bg-ph{width:100%;height:100%;background:linear-gradient(135deg,#0A2494,#1B4FDB 50%,#7B20B4);}
 .hero-overlay{
-    position:absolute;
-    inset:0;
-    background:
-        linear-gradient(
-            90deg,
-            rgba(5,15,50,.98) 0%,
-            rgba(8,25,70,.92) 15%,
-            rgba(10,30,80,.80) 30%,
-            rgba(10,35,85,.65) 45%,
-            rgba(10,35,85,.45) 55%,
-            rgba(10,35,85,.25) 70%,
-            rgba(10,35,85,.10) 85%,
-            rgba(0,0,0,0) 100%
-        );
+    position:absolute;inset:0;
+    background:linear-gradient(90deg,rgba(5,15,50,.98) 0%,rgba(8,25,70,.92) 15%,rgba(10,30,80,.80) 30%,rgba(10,35,85,.65) 45%,rgba(10,35,85,.45) 55%,rgba(10,35,85,.25) 70%,rgba(10,35,85,.10) 85%,rgba(0,0,0,0) 100%);
     z-index:2;
 }
-
 .hero-inner{
-  position:relative;
-  z-index:3;
-  display:grid;
-  grid-template-columns:1fr 320px;
-  align-items:center;
-  gap:2rem;
-  padding:6rem 2rem 2.5rem;
-  max-width:1280px;
-  margin:0 auto;
-  height:100%;
+    position:relative;z-index:3;
+    display:grid;grid-template-columns:1fr 320px;align-items:center;gap:2rem;
+    padding:6rem 2rem 2.5rem;max-width:1280px;margin:0 auto;height:100%;
 }
-
 .hero-left{padding:0;display:flex;flex-direction:column;justify-content:center;}
 .breadcrumb{font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:0.8rem;display:flex;align-items:center;gap:6px;}
 .breadcrumb a{color:rgba(255,255,255,0.6);text-decoration:none;}
@@ -199,755 +104,374 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .hb-ico{width:30px;height:30px;border-radius:7px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
 .hb-txt{font-size:10px;color:rgba(255,255,255,0.75);font-weight:500;line-height:1.2;}
 .hb-txt strong{display:block;font-size:11px;color:#fff;font-weight:700;}
-
-/* Hero right card */
 .hero-engagement-card{
     background:linear-gradient(135deg,#0A1A3A,#0D2B5E 50%,#1B4FDB);
-    backdrop-filter:blur(12px);
-    border:1.5px solid rgba(255,255,255,0.10);
-    border-radius:var(--rl);
-    padding:1.3rem;
-    color:#fff;
+    backdrop-filter:blur(12px);border:1.5px solid rgba(255,255,255,0.10);
+    border-radius:var(--rl);padding:1.3rem;color:#fff;
     box-shadow:0 8px 32px rgba(0,0,0,0.3);
 }
-.hec-ico{
-    width:44px;
-    height:44px;
-    border-radius:50%;
-    background:rgba(255,255,255,0.10);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:20px;
-    margin-bottom:0.8rem;
-}
-.hec-tit{
-    font-size:14px;
-    font-weight:800;
-    color:#fff;
-    margin-bottom:0.4rem;
-}
-.hec-desc{
-    font-size:12px;
-    color:rgba(255,255,255,0.80);
-    line-height:1.65;
-}
+.hec-ico{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.10);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:0.8rem;}
+.hec-tit{font-size:14px;font-weight:800;color:#fff;margin-bottom:0.4rem;}
+.hec-desc{font-size:12px;color:rgba(255,255,255,0.80);line-height:1.65;}
 
-/* ══ SECTION NOS AGENCES ══ */
+/* ══ SECTION PRINCIPALE ══ */
 .section{padding:3.5rem 1.5rem;}
 .sec-inner{max-width:1280px;margin:0 auto;}
 .sec-tit{font-size:clamp(1.4rem,2vw,1.8rem);font-weight:800;color:var(--g800);margin-bottom:0.3rem;}
 .sec-tit span{color:var(--blue);}
 
-/* ══ 3 COLONNES ÉGALES ══ */
-.agences-layout{
+/* ══════════════════════════════════════════════ */
+/* ══ LIGNE 1 : SIÈGE + IMAGE + STATS ══ */
+/* ══════════════════════════════════════════════ */
+.siege-layout{
     display:grid;
-    grid-template-columns:2.2fr 0.9fr 0.9fr;
+    grid-template-columns:1.4fr 1fr 1fr;
     gap:1.5rem;
-    align-items:stretch;
     margin-top:1.8rem;
+    align-items:stretch;
 }
 
-/* ══ COLONNE 1 : CARROUSEL AGENCES ══ */
-.agences-wrapper{
-    position:relative;
-    overflow:hidden;
-    background:#fff;
-    border-radius:var(--rl);
-    border:1.5px solid var(--g200);
-    box-shadow:var(--sh);
+.siege-card-wrap{
     display:flex;
     flex-direction:column;
-    min-height:500px;
 }
 
-.agences-carousel-track{
-    display:flex;
-    transition:transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    will-change:transform;
+.siege-main-card{
     flex:1;
+    display:flex;
+    flex-direction:column;
+    background:#fff;
+    border:2px solid var(--blue);
+    border-radius:var(--rl);
+    overflow:hidden;
+    box-shadow:var(--sh-lg);
+    position:relative;
 }
 
-.agences-carousel-slide{
-    flex:0 0 100%;
-    display:grid;
-    grid-template-columns:repeat(3, 1fr);
-    gap:1rem;
-    padding:1.2rem;
-    align-content:start;
-    height:100%;
+.siege-main-card::before{
+    content:'⭐';
+    position:absolute;
+    top:12px;
+    right:12px;
+    font-size:20px;
+    z-index:3;
+    filter:drop-shadow(0 2px 4px rgba(0,0,0,0.4));
 }
 
-/* Carte agence - GRANDE TAILLE */
+.siege-main-card .ac-body{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+}
+
+.siege-main-card .ac-btns{
+    margin-top:auto;
+}
+
+/* Image fixe */
+.col-image{
+    border-radius:var(--rl);
+    overflow:hidden;
+    border:1.5px solid var(--g200);
+    box-shadow:var(--sh);
+    min-height:400px;
+    background:var(--g200);
+}
+.col-image img{width:100%;height:100%;min-height:400px;object-fit:cover;display:block;}
+.col-image .img-placeholder{
+    width:100%;height:100%;min-height:400px;
+    background:linear-gradient(135deg,var(--blue-pale),#D6E0FF);
+    display:flex;align-items:center;justify-content:center;
+    font-size:4rem;color:var(--g400);
+}
+
+/* Stats */
+.stats-card{
+    background:var(--blue-d);
+    border-radius:var(--rl);
+    padding:1.5rem 1.2rem;
+    color:#fff;
+    min-height:400px;
+    display:flex;flex-direction:column;justify-content:center;
+    border:1.5px solid var(--blue-d);
+    box-shadow:var(--sh);
+}
+.sc-tit{
+    font-size:11px;font-weight:700;letter-spacing:2px;
+    text-transform:uppercase;color:rgba(255,255,255,0.6);
+    margin-bottom:1.2rem;text-align:center;
+}
+.stats-list{display:flex;flex-direction:column;gap:0.8rem;}
+.stat-row{
+    display:flex;align-items:center;gap:12px;
+    padding:10px 14px;background:rgba(255,255,255,0.08);
+    border-radius:var(--r);transition:all 0.3s;
+}
+.stat-row:hover{background:rgba(255,255,255,0.15);transform:translateX(4px);}
+.stat-ico{font-size:1.4rem;flex-shrink:0;width:32px;text-align:center;}
+.stat-info{flex:1;}
+.stat-n{font-size:1.1rem;font-weight:900;color:#fff;line-height:1.2;}
+.stat-l{font-size:10px;color:rgba(255,255,255,0.65);font-weight:500;line-height:1.2;}
+
+/* Carte agence */
 .agence-card{
     background:#fff;
     border:1.5px solid var(--g200);
     border-radius:var(--r);
     overflow:hidden;
     transition:all 0.3s;
-    display:flex;
-    flex-direction:column;
-    height:100%;
+    display:flex;flex-direction:column;height:100%;
 }
-
-.agence-card:hover{
-    border-color:var(--blue);
-    box-shadow:var(--sh-lg);
-    transform:translateY(-3px);
-}
-
-.agence-card.siege-card{
-    border-color:var(--blue);
-    border-width:2px;
-    position:relative;
-}
-
-.agence-card.siege-card::after{
-    content:'⭐';
-    position:absolute;
-    top:10px;
-    right:10px;
-    font-size:16px;
-    z-index:2;
-}
-
-.ac-img-wrap{
-    position:relative;
-    height:180px;
-    overflow:hidden;
-    flex-shrink:0;
-}
-
-.ac-img-wrap img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    display:block;
-    transition:transform 0.4s;
-}
-
-.agence-card:hover .ac-img-wrap img{
-    transform:scale(1.05);
-}
-
+.agence-card:hover{border-color:var(--blue);box-shadow:var(--sh-lg);transform:translateY(-3px);}
+.ac-img-wrap{position:relative;height:180px;overflow:hidden;flex-shrink:0;}
+.ac-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s;}
+.agence-card:hover .ac-img-wrap img{transform:scale(1.05);}
 .ac-img-ph{
-    width:100%;
-    height:100%;
+    width:100%;height:100%;
     background:linear-gradient(135deg,var(--blue-pale),#E8EDFF);
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    display:flex;align-items:center;justify-content:center;
     font-size:3rem;
 }
-
 .ac-badge{
-    position:absolute;
-    top:10px;
-    left:10px;
-    padding:4px 14px;
-    font-size:9px;
-    font-weight:800;
-    text-transform:uppercase;
-    letter-spacing:0.5px;
-    color:#fff;
-    border-radius:4px;
-    background:var(--red);
+    position:absolute;top:10px;left:10px;
+    padding:4px 14px;font-size:9px;font-weight:800;
+    text-transform:uppercase;letter-spacing:0.5px;
+    color:#fff;border-radius:4px;background:var(--red);
 }
-
-.ac-badge.siege{
-    background:var(--blue);
-}
-
-.ac-body{
-    padding:0.8rem 1rem 1rem;
-    flex:1;
-    display:flex;
-    flex-direction:column;
-}
-
-.ac-ville{
-    font-size:1rem;
-    font-weight:900;
-    color:var(--g800);
-    margin-bottom:2px;
-}
-
+.ac-badge.siege{background:var(--blue);}
+.ac-body{padding:0.8rem 1rem 1rem;flex:1;display:flex;flex-direction:column;}
+.ac-ville{font-size:1rem;font-weight:900;color:var(--g800);margin-bottom:2px;}
 .ac-ville .badge{
-    font-size:7px;
-    font-weight:700;
-    text-transform:uppercase;
-    color:#fff;
-    padding:1px 8px;
-    border-radius:3px;
-    margin-left:4px;
-    vertical-align:middle;
+    font-size:7px;font-weight:700;text-transform:uppercase;
+    color:#fff;padding:1px 8px;border-radius:3px;
+    margin-left:4px;vertical-align:middle;
 }
-
 .ac-info-row{
-    display:flex;
-    align-items:flex-start;
-    gap:4px;
-    font-size:11px;
-    color:var(--g500);
-    margin-bottom:3px;
-    line-height:1.4;
+    display:flex;align-items:flex-start;gap:4px;
+    font-size:11px;color:var(--g500);margin-bottom:3px;line-height:1.4;
 }
-
-.ac-info-ico{
-    font-size:11px;
-    flex-shrink:0;
-    margin-top:1px;
-}
-
-.ac-btns{
-    display:flex;
-    gap:6px;
-    margin-top:0.6rem;
-}
-
+.ac-info-ico{font-size:11px;flex-shrink:0;margin-top:1px;}
+.ac-btns{display:flex;gap:6px;margin-top:0.6rem;}
 .btn-detail{
-    flex:1;
-    padding:6px 10px;
-    border-radius:5px;
-    font-size:10px;
-    font-weight:700;
-    border:1.5px solid var(--g200);
-    background:#fff;
-    color:var(--g700);
-    cursor:pointer;
-    font-family:'Outfit',sans-serif;
-    transition:all 0.2s;
-    text-align:center;
+    flex:1;padding:6px 10px;border-radius:5px;
+    font-size:10px;font-weight:700;
+    border:1.5px solid var(--g200);background:#fff;
+    color:var(--g600);cursor:pointer;font-family:'Outfit',sans-serif;
+    transition:all 0.2s;text-align:center;
 }
-
-.btn-detail:hover{
-    border-color:var(--blue);
-    color:var(--blue);
-    background:var(--blue-pale);
-}
-
+.btn-detail:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-pale);}
 .btn-itineraire{
-    flex:1;
-    padding:6px 10px;
-    border-radius:5px;
-    font-size:10px;
-    font-weight:700;
-    border:none;
-    background:var(--red);
-    color:#fff;
-    cursor:pointer;
-    font-family:'Outfit',sans-serif;
-    transition:all 0.2s;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:4px;
-    text-decoration:none;
-    text-align:center;
+    flex:1;padding:6px 10px;border-radius:5px;
+    font-size:10px;font-weight:700;border:none;
+    background:var(--red);color:#fff;cursor:pointer;
+    font-family:'Outfit',sans-serif;transition:all 0.2s;
+    display:flex;align-items:center;justify-content:center;
+    gap:4px;text-decoration:none;text-align:center;
+}
+.btn-itineraire:hover{background:var(--red-d);}
+
+/* ══════════════════════════════════════════════ */
+/* ══ LIGNE 2 : AUTRES AGENCES EN CARROUSEL INFINI ══ */
+/* ══════════════════════════════════════════════ */
+.autres-agences-section{
+    margin-top:2.5rem;
+    padding-top:2rem;
+    border-top:1.5px solid var(--g200);
 }
 
-.btn-itineraire:hover{
-    background:var(--red-d);
+.autres-agences-header{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:1.2rem;gap:1rem;flex-wrap:wrap;
 }
 
-/* Contrôles du carrousel - STYLE ÉLÉGANT */
-.carousel-controls-agences{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:1rem;
-    padding:0.8rem 0.8rem 0.9rem;
-    border-top:1px solid var(--g200);
-    background:var(--g50);
-    flex-shrink:0;
+.autres-agences-header h3{
+    font-size:1.2rem;font-weight:800;color:var(--g800);
+    display:flex;align-items:center;gap:8px;
 }
+.autres-agences-header h3::before{content:'🏢';font-size:1.3rem;}
+
+.autres-agences-nav{display:flex;gap:8px;}
 
 .carousel-btn-agence{
-    width:36px;
-    height:36px;
-    border-radius:50%;
-    border:1.5px solid var(--g200);
-    background:#fff;
-    color:var(--g600);
-    cursor:pointer;
-    font-size:15px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    width:36px;height:36px;border-radius:50%;
+    border:1.5px solid var(--g200);background:#fff;
+    color:var(--g600);cursor:pointer;font-size:15px;
+    display:flex;align-items:center;justify-content:center;
     transition:all 0.2s;
 }
+.carousel-btn-agence:hover{border-color:var(--blue);background:var(--blue-pale);color:var(--blue);}
 
-.carousel-btn-agence:hover{
-    border-color:var(--blue);
-    background:var(--blue-pale);
-    color:var(--blue);
-}
-
-.carousel-dots-agences{
-    display:flex;
-    gap:8px;
-    align-items:center;
-}
-
-.carousel-dot-agence{
-    width:8px;
-    height:8px;
-    border-radius:50%;
-    background:var(--g200);
-    border:none;
-    cursor:pointer;
-    padding:0;
-    transition:all 0.3s ease;
-}
-
-.carousel-dot-agence.active{
-    background:var(--blue);
-    width:28px;
-    border-radius:100px;
-}
-
-.carousel-dot-agence:hover{
-    background:var(--blue);
-}
-
-/* ══ COLONNE 2 : IMAGE FIXE ══ */
-.col-image{
-    border-radius:var(--rl);
+/* Container avec masque de fondu */
+.autres-agences-outer{
+    position:relative;
     overflow:hidden;
+    padding:4px 0;
+    -webkit-mask-image:linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+    mask-image:linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+}
+
+/* Track qui défile à l'infini */
+.autres-agences-track{
+    display:flex;
+    gap:1rem;
+    width:max-content;
+    animation:scrollInfini 40s linear infinite;
+    will-change:transform;
+}
+.autres-agences-track:hover{animation-play-state:paused;}
+
+@keyframes scrollInfini{
+    0%{transform:translateX(0);}
+    100%{transform:translateX(-50%);}
+}
+
+/* Carte agence compacte */
+.agence-card-small{
+    flex:0 0 auto;
+    width:250px;
+    background:#fff;
     border:1.5px solid var(--g200);
-    box-shadow:var(--sh);
-    min-height:500px;
-    background:var(--g200);
-}
-
-.col-image img{
-    width:100%;
-    height:100%;
-    min-height:500px;
-    object-fit:cover;
-    display:block;
-}
-
-.col-image .img-placeholder{
-    width:100%;
-    height:100%;
-    min-height:500px;
-    background:linear-gradient(135deg,var(--blue-pale),#D6E0FF);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:4rem;
-    color:var(--g400);
-}
-
-/* ══ COLONNE 3 : STATISTIQUES ══ */
-.stats-card{
-    background:var(--blue-d);
-    border-radius:var(--rl);
-    padding:1.5rem 1.2rem;
-    color:#fff;
-    min-height:500px;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    border:1.5px solid var(--blue-d);
-    box-shadow:var(--sh);
-}
-
-.sc-tit{
-    font-size:11px;
-    font-weight:700;
-    letter-spacing:2px;
-    text-transform:uppercase;
-    color:rgba(255,255,255,0.6);
-    margin-bottom:1.2rem;
-    text-align:center;
-}
-
-.stats-list{
-    display:flex;
-    flex-direction:column;
-    gap:0.8rem;
-}
-
-.stat-row{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding:10px 14px;
-    background:rgba(255,255,255,0.08);
     border-radius:var(--r);
+    overflow:hidden;
     transition:all 0.3s;
+    display:flex;flex-direction:column;
 }
-
-.stat-row:hover{
-    background:rgba(255,255,255,0.15);
-    transform:translateX(4px);
+.agence-card-small:hover{
+    border-color:var(--blue);
+    box-shadow:var(--sh-lg);
+    transform:translateY(-4px);
 }
-
-.stat-ico{
-    font-size:1.4rem;
-    flex-shrink:0;
-    width:32px;
-    text-align:center;
+.acs-img{position:relative;height:140px;overflow:hidden;flex-shrink:0;}
+.acs-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s;}
+.agence-card-small:hover .acs-img img{transform:scale(1.05);}
+.acs-img-ph{
+    width:100%;height:100%;
+    background:linear-gradient(135deg,var(--blue-pale),#E8EDFF);
+    display:flex;align-items:center;justify-content:center;font-size:2.5rem;
 }
-
-.stat-info{
-    flex:1;
+.acs-badge{
+    position:absolute;top:8px;left:8px;
+    padding:3px 10px;font-size:8px;font-weight:800;
+    text-transform:uppercase;letter-spacing:0.5px;
+    color:#fff;border-radius:4px;
 }
-
-.stat-n{
-    font-size:1.1rem;
-    font-weight:900;
-    color:#fff;
-    line-height:1.2;
+.acs-body{padding:0.8rem;flex:1;display:flex;flex-direction:column;}
+.acs-ville{font-size:0.95rem;font-weight:900;color:var(--g800);margin-bottom:4px;}
+.acs-info{font-size:10px;color:var(--g500);margin-bottom:3px;line-height:1.4;}
+.acs-btns{display:flex;gap:6px;margin-top:auto;padding-top:0.6rem;}
+.acs-btn{
+    flex:1;padding:5px 8px;border-radius:5px;
+    font-size:10px;font-weight:700;cursor:pointer;
+    font-family:'Outfit',sans-serif;transition:all 0.2s;
+    text-align:center;border:none;text-decoration:none;
+    display:flex;align-items:center;justify-content:center;
 }
-
-.stat-l{
-    font-size:10px;
-    color:rgba(255,255,255,0.65);
-    font-weight:500;
-    line-height:1.2;
-}
+.acs-btn-detail{background:#fff;border:1.5px solid var(--g200);color:var(--g600);}
+.acs-btn-detail:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-pale);}
+.acs-btn-itin{background:var(--red);color:#fff;flex:0 0 auto;min-width:40px;}
+.acs-btn-itin:hover{background:var(--red-d);}
 
 /* ══ SERVICES EN BAS ══ */
-.services-bar{
-    background:#fff;
-    padding:2.5rem 1.5rem;
-    border-top:1px solid var(--g200);
-}
-
-.sb-inner{
-    max-width:1280px;
-    margin:0 auto;
-}
-
-.services-grid{
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:1rem;
-    margin-top:1.2rem;
-}
-
-.srv-item{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    text-align:center;
-    gap:0.5rem;
-}
-
+.services-bar{background:#fff;padding:2.5rem 1.5rem;border-top:1px solid var(--g200);}
+.sb-inner{max-width:1280px;margin:0 auto;}
+.services-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;margin-top:1.2rem;}
+.srv-item{display:flex;flex-direction:column;align-items:center;text-align:center;gap:0.5rem;}
 .srv-ico-box{
-    width:52px;
-    height:52px;
-    border-radius:50%;
-    background:var(--g50);
-    border:1.5px solid var(--g200);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:20px;
-    box-shadow:var(--sh);
-    transition:all 0.2s;
+    width:52px;height:52px;border-radius:50%;
+    background:var(--g50);border:1.5px solid var(--g200);
+    display:flex;align-items:center;justify-content:center;
+    font-size:20px;box-shadow:var(--sh);transition:all 0.2s;
 }
-
-.srv-item:hover .srv-ico-box{
-    border-color:var(--blue);
-    background:var(--blue-pale);
-    transform:scale(1.05);
-}
-
-.srv-nom{
-    font-size:13px;
-    font-weight:700;
-    color:var(--g800);
-}
-
-.srv-desc{
-    font-size:10px;
-    color:var(--g500);
-    line-height:1.4;
-}
+.srv-item:hover .srv-ico-box{border-color:var(--blue);background:var(--blue-pale);transform:scale(1.05);}
+.srv-nom{font-size:13px;font-weight:700;color:var(--g800);}
+.srv-desc{font-size:10px;color:var(--g500);line-height:1.4;}
 
 /* ══ BOTTOM CTA ══ */
-.cta-bar{
-    background:var(--blue-d);
-    padding:1.5rem 1.5rem;
-}
-
+.cta-bar{background:var(--blue-d);padding:1.5rem 1.5rem;}
 .cta-inner{
-    max-width:1280px;
-    margin:0 auto;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:2rem;
-    flex-wrap:wrap;
+    max-width:1280px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:2rem;flex-wrap:wrap;
 }
-
-.cta-left{
-    display:flex;
-    align-items:center;
-    gap:0.8rem;
-}
-
+.cta-left{display:flex;align-items:center;gap:0.8rem;}
 .cta-ico{
-    width:40px;
-    height:40px;
-    border-radius:50%;
+    width:40px;height:40px;border-radius:50%;
     background:rgba(255,255,255,0.12);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:18px;
-    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;flex-shrink:0;
 }
-
-.cta-tit{
-    font-size:0.9rem;
-    font-weight:800;
-    color:#fff;
-    margin-bottom:1px;
-}
-
-.cta-sub{
-    font-size:11px;
-    color:rgba(255,255,255,0.7);
-}
-
-.cta-contacts{
-    display:flex;
-    gap:1.5rem;
-    flex-wrap:wrap;
-}
-
-.cta-contact-item{
-    display:flex;
-    align-items:center;
-    gap:8px;
-}
-
+.cta-tit{font-size:0.9rem;font-weight:800;color:#fff;margin-bottom:1px;}
+.cta-sub{font-size:11px;color:rgba(255,255,255,0.7);}
+.cta-contacts{display:flex;gap:1.5rem;flex-wrap:wrap;}
+.cta-contact-item{display:flex;align-items:center;gap:8px;}
 .cci-ico{
-    width:32px;
-    height:32px;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:14px;
-    flex-shrink:0;
+    width:32px;height:32px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;flex-shrink:0;
 }
-
-.cci-call{
-    background:rgba(27,79,219,0.3);
-}
-
-.cci-wa{
-    background:rgba(37,211,102,0.25);
-}
-
-.cci-lbl{
-    font-size:9px;
-    color:rgba(255,255,255,0.6);
-    text-transform:uppercase;
-    letter-spacing:0.5px;
-}
-
-.cci-val{
-    font-size:12px;
-    font-weight:700;
-    color:#fff;
-}
-
+.cci-call{background:rgba(27,79,219,0.3);}
+.cci-wa{background:rgba(37,211,102,0.25);}
+.cci-lbl{font-size:9px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.5px;}
+.cci-val{font-size:12px;font-weight:700;color:#fff;}
 .btn-cta-rdv{
-    background:var(--red);
-    color:#fff;
-    padding:9px 20px;
-    border-radius:6px;
-    font-size:12px;
-    font-weight:700;
-    border:none;
-    cursor:pointer;
-    font-family:'Outfit',sans-serif;
-    display:flex;
-    align-items:center;
-    gap:6px;
-    white-space:nowrap;
-    text-decoration:none;
-    transition:all 0.2s;
+    background:var(--red);color:#fff;padding:9px 20px;
+    border-radius:6px;font-size:12px;font-weight:700;
+    border:none;cursor:pointer;font-family:'Outfit',sans-serif;
+    display:flex;align-items:center;gap:6px;
+    white-space:nowrap;text-decoration:none;transition:all 0.2s;
 }
-
-.btn-cta-rdv:hover{
-    background:var(--red-d);
-    transform:translateY(-2px);
-    box-shadow:0 4px 16px rgba(200,16,46,0.3);
-}
+.btn-cta-rdv:hover{background:var(--red-d);transform:translateY(-2px);box-shadow:0 4px 16px rgba(200,16,46,0.3);}
 
 /* ══ MODAL DÉTAIL ══ */
 .modal-overlay{
-    position:fixed;
-    inset:0;
-    background:rgba(15,23,42,0.6);
-    z-index:3000;
-    display:none;
-    align-items:center;
-    justify-content:center;
-    padding:1rem;
-    backdrop-filter:blur(4px);
+    position:fixed;inset:0;background:rgba(15,23,42,0.6);
+    z-index:3000;display:none;align-items:center;justify-content:center;
+    padding:1rem;backdrop-filter:blur(4px);
 }
-
-.modal-overlay.open{
-    display:flex;
-}
-
+.modal-overlay.open{display:flex;}
 .modal-box{
-    background:#fff;
-    border-radius:var(--rxl);
-    max-width:520px;
-    width:100%;
-    overflow:hidden;
+    background:#fff;border-radius:var(--rxl);
+    max-width:520px;width:100%;overflow:hidden;
     animation:mIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
     box-shadow:0 24px 80px rgba(0,0,0,0.2);
-    max-height:90vh;
-    overflow-y:auto;
+    max-height:90vh;overflow-y:auto;
 }
-
-@keyframes mIn{
-    from{opacity:0;transform:scale(0.92);}
-    to{opacity:1;transform:none;}
-}
-
-.modal-img{
-    height:200px;
-    position:relative;
-    overflow:hidden;
-}
-
-.modal-img img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    display:block;
-}
-
+@keyframes mIn{from{opacity:0;transform:scale(0.92);}to{opacity:1;transform:none;}}
+.modal-img{height:200px;position:relative;overflow:hidden;}
+.modal-img img{width:100%;height:100%;object-fit:cover;display:block;}
 .modal-img-ph{
-    width:100%;
-    height:100%;
+    width:100%;height:100%;
     background:linear-gradient(135deg,var(--blue-d),var(--blue));
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:3.5rem;
+    display:flex;align-items:center;justify-content:center;font-size:3.5rem;
 }
-
 .modal-badge{
-    position:absolute;
-    top:0;
-    left:0;
-    padding:4px 12px;
-    font-size:9px;
-    font-weight:800;
-    text-transform:uppercase;
-    color:#fff;
+    position:absolute;top:0;left:0;
+    padding:4px 12px;font-size:9px;font-weight:800;
+    text-transform:uppercase;color:#fff;
 }
-
 .modal-close{
-    position:absolute;
-    top:0.8rem;
-    right:0.8rem;
-    background:rgba(0,0,0,0.4);
-    border:none;
-    color:#fff;
-    width:28px;
-    height:28px;
-    border-radius:50%;
-    cursor:pointer;
-    font-size:13px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    position:absolute;top:0.8rem;right:0.8rem;
+    background:rgba(0,0,0,0.4);border:none;color:#fff;
+    width:28px;height:28px;border-radius:50%;cursor:pointer;
+    font-size:13px;display:flex;align-items:center;justify-content:center;
 }
-
-.modal-close:hover{
-    background:rgba(0,0,0,0.6);
-}
-
-.modal-body{
-    padding:1.2rem;
-}
-
-.modal-ville{
-    font-size:1.2rem;
-    font-weight:900;
-    color:var(--g800);
-    margin-bottom:0.6rem;
-}
-
-.modal-infos{
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-    margin-bottom:1rem;
-}
-
-.mi-row{
-    display:flex;
-    align-items:flex-start;
-    gap:7px;
-    font-size:12px;
-    color:var(--g600);
-}
-
-.mi-ico{
-    font-size:13px;
-    flex-shrink:0;
-    margin-top:1px;
-}
-
-.modal-services{
-    margin-bottom:1rem;
-}
-
+.modal-close:hover{background:rgba(0,0,0,0.6);}
+.modal-body{padding:1.2rem;}
+.modal-ville{font-size:1.2rem;font-weight:900;color:var(--g800);margin-bottom:0.6rem;}
+.modal-infos{display:flex;flex-direction:column;gap:6px;margin-bottom:1rem;}
+.mi-row{display:flex;align-items:flex-start;gap:7px;font-size:12px;color:var(--g600);}
+.mi-ico{font-size:13px;flex-shrink:0;margin-top:1px;}
+.modal-services{margin-bottom:1rem;}
 .ms-tit{
-    font-size:10px;
-    font-weight:700;
-    letter-spacing:1px;
-    text-transform:uppercase;
-    color:var(--g400);
-    margin-bottom:0.4rem;
+    font-size:10px;font-weight:700;letter-spacing:1px;
+    text-transform:uppercase;color:var(--g400);margin-bottom:0.4rem;
 }
-
-.ms-list{
-    display:flex;
-    flex-direction:column;
-    gap:3px;
-}
-
-.ms-item{
-    font-size:11px;
-    color:var(--g600);
-    display:flex;
-    align-items:center;
-    gap:5px;
-}
-
-.ms-item::before{
-    content:'✓';
-    color:var(--blue);
-    font-weight:700;
-}
-
-.modal-btns{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-}
-
+.ms-list{display:flex;flex-direction:column;gap:3px;}
+.ms-item{font-size:11px;color:var(--g600);display:flex;align-items:center;gap:5px;}
+.ms-item::before{content:'✓';color:var(--blue);font-weight:700;}
+.modal-btns{display:flex;gap:8px;flex-wrap:wrap;}
 .modal-btns .btn-detail,.modal-btns .btn-itineraire{
-    font-size:11px;
-    padding:7px 12px;
-    flex:1;
-    min-width:80px;
+    font-size:11px;padding:7px 12px;flex:1;min-width:80px;
 }
 
 /* ══ FOOTER ══ */
@@ -984,30 +508,22 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
 .toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1px solid var(--g200);border-radius:var(--r);padding:14px 20px;font-size:13px;color:var(--g800);z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(100px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.12);}
 .toast.show{transform:none;opacity:1;}
 
-/* RESPONSIVE */
+/* ══ RESPONSIVE ══ */
 @media(max-width:1024px){
-    .agences-layout{
-        grid-template-columns:1.5fr 0.8fr;
-    }
-    .col-image{
-        display:none;
-    }
+    .siege-layout{grid-template-columns:1fr 1fr;}
+    .siege-layout .col-image{display:none;}
+    .agence-card-small{width:230px;}
 }
-
 @media(max-width:768px){
     nav{padding:0 1rem;}
     .nav-links{display:none;}
     .hamburger{display:flex;}
     .hero-inner{grid-template-columns:1fr;padding:5rem 1.5rem 2rem;}
     .hero-engagement-card{display:none;}
-    .agences-layout{
-        grid-template-columns:1fr;
-        gap:1rem;
-    }
-    .agences-carousel-slide{
-        grid-template-columns:1fr;
-    }
-    .col-image{display:none;}
+    .siege-layout{grid-template-columns:1fr;gap:1rem;}
+    .agence-card-small{width:200px;}
+    .autres-agences-track{animation-duration:30s;}
+    .autres-agences-header h3{font-size:1rem;}
     .stats-card{min-height:auto;}
     .services-grid{grid-template-columns:1fr 1fr;}
     .cta-inner{flex-direction:column;text-align:center;}
@@ -1017,7 +533,6 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
     .footer-grid>div:first-child{grid-column:1/-1;}
     .footer-bot{flex-direction:column;text-align:center;}
 }
-
 @media(max-width:480px){
     .hero-tit{font-size:1.8rem;}
     .hero-desc{font-size:12px;}
@@ -1032,9 +547,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
 
 <!-- MODAL DÉTAIL AGENCE -->
 <div class="modal-overlay" id="modal-agence">
-  <div class="modal-box" id="modal-content">
-    <!-- Rempli par JS -->
-  </div>
+  <div class="modal-box" id="modal-content"></div>
 </div>
 
 <!-- ══ HERO AGENCES ══ -->
@@ -1091,107 +604,150 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
   <div class="sec-inner">
     <h2 class="sec-tit">Nos agences à <span>votre service</span></h2>
 
-    <div class="agences-layout">
+    <!-- ═══ LIGNE 1 : SIÈGE + IMAGE + STATS ═══ -->
+    <div class="siege-layout">
 
-      <!-- ═══ COLONNE 1 : CARROUSEL AGENCES ═══ -->
-      <div class="agences-wrapper">
-        <div class="agences-carousel-track" id="agencesTrack">
-          {% for slide in agences_slides %}
-          <div class="agences-carousel-slide">
-            {% for ag in slide %}
-            <div class="agence-card {% if ag.type_agence == 'siege' %}siege-card{% endif %}">
-              <div class="ac-img-wrap">
-                {% if ag.image %}
-                  <img src="{{ ag.image.url }}" alt="{{ ag.ville }}">
-                {% else %}
-                  <div class="ac-img-ph">🏢</div>
-                {% endif %}
-                <div class="ac-badge {% if ag.type_agence == 'siege' %}siege{% endif %}" style="background:{{ ag.badge_color }};">
-                  {{ ag.badge_label }}
-                </div>
-              </div>
-              <div class="ac-body">
-                <div class="ac-ville">
-                  {{ ag.ville }}
-                  <span class="badge" style="background:{{ ag.badge_color }};">{{ ag.badge_label }}</span>
-                </div>
-                {% if ag.adresse %}
-                <div class="ac-info-row"><span class="ac-info-ico">📍</span>{{ ag.adresse|truncatechars:40 }}</div>
-                {% endif %}
-                {% if ag.telephone %}
-                <div class="ac-info-row"><span class="ac-info-ico">📞</span>{{ ag.telephone }}</div>
-                {% endif %}
-                {% if ag.horaires %}
-                <div class="ac-info-row"><span class="ac-info-ico">🕐</span>{{ ag.horaires }}</div>
-                {% endif %}
-                {% if ag.email %}
-                <div class="ac-info-row"><span class="ac-info-ico">✉</span>{{ ag.email }}</div>
-                {% endif %}
-                <div class="ac-btns">
-                  <button class="btn-detail" onclick="ouvrirModal({{ ag.pk }})">Détails</button>
-                  {% if ag.lien_itineraire %}
-                  <a class="btn-itineraire" href="{{ ag.lien_itineraire }}" target="_blank">Itinéraire</a>
-                  {% else %}
-                  <button class="btn-itineraire" onclick="showToast('📍','Itinéraire bientôt disponible.')">Itinéraire</button>
-                  {% endif %}
-                </div>
-              </div>
+      <!-- BLOC 1 : SIÈGE SOCIAL -->
+      <div class="siege-card-wrap">
+        {% if siege %}
+        <div class="agence-card siege-main-card">
+          <div class="ac-img-wrap" style="height:220px;">
+            {% if siege.image %}
+              <img src="{{ siege.image.url }}" alt="{{ siege.ville }}">
+            {% else %}
+              <div class="ac-img-ph">🏢</div>
+            {% endif %}
+            <div class="ac-badge siege">⭐ SIÈGE SOCIAL</div>
+          </div>
+          <div class="ac-body">
+            <div class="ac-ville">
+              {{ siege.ville }}
+              <span class="badge siege" style="background:#1B4FDB;">SIÈGE</span>
             </div>
-            {% endfor %}
+            {% if siege.adresse %}
+            <div class="ac-info-row"><span class="ac-info-ico">📍</span>{{ siege.adresse }}</div>
+            {% endif %}
+            {% if siege.telephone %}
+            <div class="ac-info-row"><span class="ac-info-ico">📞</span>{{ siege.telephone }}</div>
+            {% endif %}
+            {% if siege.horaires %}
+            <div class="ac-info-row"><span class="ac-info-ico">🕐</span>{{ siege.horaires }}</div>
+            {% endif %}
+            {% if siege.email %}
+            <div class="ac-info-row"><span class="ac-info-ico">✉</span>{{ siege.email }}</div>
+            {% endif %}
+            <div class="ac-btns">
+              <button class="btn-detail" onclick="ouvrirModal({{ siege.pk }})">Détails</button>
+              <a class="btn-itineraire" href="#" onclick="ouvrirItineraire({{ siege.pk }});return false;">📍 Itinéraire</a>
+            </div>
           </div>
-          {% endfor %}
         </div>
-
-        <!-- Contrôles du carrousel - UNIQUEMENT FLÈCHES ET POINTS -->
-        <div class="carousel-controls-agences">
-          <button class="carousel-btn-agence" onclick="slideAgences(-1)" aria-label="Précédent">‹</button>
-          <div class="carousel-dots-agences" id="agencesDots">
-            {% for slide in agences_slides %}
-            <button class="carousel-dot-agence {% if forloop.first %}active{% endif %}" onclick="goToSlideAgence({{ forloop.counter0 }})" aria-label="Slide {{ forloop.counter }}"></button>
-            {% endfor %}
-          </div>
-          <button class="carousel-btn-agence" onclick="slideAgences(1)" aria-label="Suivant">›</button>
-        </div>
-      </div>
-
-    
-      <div class="col-image">
-        {% if stats_image_url %}
-          <img src="{{ stats_image_url }}" alt="EDEN GROUP">
         {% else %}
-          <div class="img-placeholder">🏢</div>
+        <div class="agence-card siege-main-card">
+          <div class="ac-img-wrap" style="height:220px;">
+            <div class="ac-img-ph">🏢</div>
+            <div class="ac-badge siege">⭐ SIÈGE SOCIAL</div>
+          </div>
+          <div class="ac-body">
+            <div class="ac-ville">Siège social</div>
+            <div class="ac-info-row">Aucun siège défini</div>
+          </div>
+        </div>
         {% endif %}
       </div>
 
-      <!-- ═══ COLONNE 3 : STATISTIQUES ═══ -->
+      <!-- BLOC 2 : IMAGE FIXE -->
+<div class="col-image">
+  <img src="{% static 'images/cameroun.png' %}" alt="EDEN GROUP — Cameroun">
+</div>
+
+      <!-- BLOC 3 : STATISTIQUES -->
       <div class="stats-card">
         <div class="sc-tit">EDEN GROUP en chiffres</div>
         <div class="stats-list">
-          {% if stats_are_objects %}
-            {% for s in stats %}
-            <div class="stat-row">
-              <span class="stat-ico">{{ s.icone }}</span>
-              <div class="stat-info">
-                <div class="stat-n">{{ s.valeur }}</div>
-                <div class="stat-l">{{ s.label }}</div>
-              </div>
+          {% for s in stats %}
+          <div class="stat-row">
+            <span class="stat-ico">{{ s.icone }}</span>
+            <div class="stat-info">
+              <div class="stat-n">{{ s.valeur }}</div>
+              <div class="stat-l">{{ s.label }}</div>
             </div>
-            {% endfor %}
-          {% else %}
-            {% for s in stats %}
-            <div class="stat-row">
-              <span class="stat-ico">{{ s.icone }}</span>
-              <div class="stat-info">
-                <div class="stat-n">{{ s.valeur }}</div>
-                <div class="stat-l">{{ s.label }}</div>
-              </div>
-            </div>
-            {% endfor %}
-          {% endif %}
+          </div>
+          {% endfor %}
         </div>
       </div>
 
-    </div><!-- fin agences-layout -->
+    </div><!-- fin siege-layout -->
+
+    <!-- ═══ LIGNE 2 : AUTRES AGENCES EN CARROUSEL INFINI ═══ -->
+    {% if autres_agences %}
+    <div class="autres-agences-section">
+      <div class="autres-agences-header">
+        <h3>Nos autres agences</h3>
+        <div class="autres-agences-nav">
+          <button class="carousel-btn-agence" onclick="scrollAutresAgences(-1)" aria-label="Précédent">‹</button>
+          <button class="carousel-btn-agence" onclick="scrollAutresAgences(1)" aria-label="Suivant">›</button>
+        </div>
+      </div>
+
+      <div class="autres-agences-outer">
+        <div class="autres-agences-track" id="autresAgencesTrack">
+          {% for ag in autres_agences %}
+          <div class="agence-card-small">
+            <div class="acs-img">
+              {% if ag.image %}
+                <img src="{{ ag.image.url }}" alt="{{ ag.ville }}">
+              {% else %}
+                <div class="acs-img-ph">🏢</div>
+              {% endif %}
+              <span class="acs-badge" style="background:{{ ag.badge_color }};">{{ ag.badge_label }}</span>
+            </div>
+            <div class="acs-body">
+              <div class="acs-ville">{{ ag.ville }}</div>
+              {% if ag.adresse %}
+              <div class="acs-info">📍 {{ ag.adresse|truncatechars:35 }}</div>
+              {% endif %}
+              {% if ag.telephone %}
+              <div class="acs-info">📞 {{ ag.telephone }}</div>
+              {% endif %}
+              <div class="acs-btns">
+                <button class="acs-btn acs-btn-detail" onclick="ouvrirModal({{ ag.pk }})">Détails</button>
+                <a class="acs-btn acs-btn-itin" href="#" onclick="ouvrirItineraire({{ ag.pk }});return false;">📍</a>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+          {# Duplication pour défilement infini #}
+          {% for ag in autres_agences %}
+          <div class="agence-card-small">
+            <div class="acs-img">
+              {% if ag.image %}
+                <img src="{{ ag.image.url }}" alt="{{ ag.ville }}">
+              {% else %}
+                <div class="acs-img-ph">🏢</div>
+              {% endif %}
+              <span class="acs-badge" style="background:{{ ag.badge_color }};">{{ ag.badge_label }}</span>
+            </div>
+            <div class="acs-body">
+              <div class="acs-ville">{{ ag.ville }}</div>
+              {% if ag.adresse %}
+              <div class="acs-info">📍 {{ ag.adresse|truncatechars:35 }}</div>
+              {% endif %}
+              {% if ag.telephone %}
+              <div class="acs-info">📞 {{ ag.telephone }}</div>
+              {% endif %}
+              <div class="acs-btns">
+                <button class="acs-btn acs-btn-detail" onclick="ouvrirModal({{ ag.pk }})">Détails</button>
+                <a class="acs-btn acs-btn-itin" href="#" onclick="ouvrirItineraire({{ ag.pk }});return false;">📍</a>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
   </div>
 </section>
 
@@ -1281,7 +837,9 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
 </div>
 
 <script>
-// Données JSON pour le modal
+// ══════════════════════════════════════════════
+// DONNÉES JSON DES AGENCES
+// ══════════════════════════════════════════════
 const AGENCES_DATA = {
   {% for ag in agences %}
   {{ ag.pk }}: {
@@ -1299,54 +857,45 @@ const AGENCES_DATA = {
     description: `{{ ag.description|escapejs }}`,
     image: '{% if ag.image %}{{ ag.image.url }}{% endif %}',
     lien_itineraire: '{{ ag.lien_itineraire|escapejs }}',
+    latitude: '{{ ag.latitude|default:"" }}',
+    longitude: '{{ ag.longitude|default:"" }}',
     services: [{% for s in ag.services.all %}'{{ s.nom|escapejs }}'{% if not forloop.last %},{% endif %}{% endfor %}],
   },
   {% endfor %}
 };
 
-// ── CARROUSEL AGENCES ──
-let currentSlideAgence = 0;
-const slideCountAgence = {{ agences_slides|length|default:1 }};
-let autoPlayAgence = null;
-const AUTOPLAY_DELAY = 5000;
+// ══════════════════════════════════════════════
+// ✅ ITINÉRAIRE — Ouvre Google Maps
+// ══════════════════════════════════════════════
+function ouvrirItineraire(pk) {
+  const ag = AGENCES_DATA[pk];
+  if (!ag) return;
 
-function goToSlideAgence(index) {
-    if (slideCountAgence <= 0) return;
-    if (index < 0) index = slideCountAgence - 1;
-    if (index >= slideCountAgence) index = 0;
-    currentSlideAgence = index;
-    
-    const track = document.getElementById('agencesTrack');
-    if (track) {
-        track.style.transform = `translateX(-${index * 100}%)`;
+  let url = ag.lien_itineraire;
+
+  // Si pas de lien direct, construire une URL Google Maps
+  if (!url) {
+    // Essayer avec les coordonnées GPS
+    if (ag.latitude && ag.longitude) {
+      url = `https://www.google.com/maps/dir/?api=1&destination=${ag.latitude},${ag.longitude}`;
     }
-    
-    const dots = document.querySelectorAll('.carousel-dot-agence');
-    dots.forEach((dot, i) => {
-        dot.classList.toggle('active', i === index);
-    });
-    
-    resetAutoPlayAgence();
+    // Sinon, recherche par adresse
+    else if (ag.adresse || ag.ville) {
+      const query = encodeURIComponent(`${ag.ville || ''}, ${ag.adresse || ''}, Cameroun`);
+      url = `https://www.google.com/maps/search/?api=1&query=${query}`;
+    }
+  }
+
+  if (url) {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  } else {
+    showToast('📍', 'Itinéraire bientôt disponible.');
+  }
 }
 
-function slideAgences(direction) {
-    if (slideCountAgence <= 0) return;
-    goToSlideAgence(currentSlideAgence + direction);
-}
-
-function resetAutoPlayAgence() {
-    if (autoPlayAgence) {
-        clearInterval(autoPlayAgence);
-        autoPlayAgence = null;
-    }
-    if (slideCountAgence > 1) {
-        autoPlayAgence = setInterval(() => {
-            goToSlideAgence((currentSlideAgence + 1) % slideCountAgence);
-        }, AUTOPLAY_DELAY);
-    }
-}
-
-// ── MODAL ──
+// ══════════════════════════════════════════════
+// MODAL DÉTAIL
+// ══════════════════════════════════════════════
 function ouvrirModal(pk) {
   const ag = AGENCES_DATA[pk];
   if (!ag) return;
@@ -1379,7 +928,7 @@ function ouvrirModal(pk) {
       <div class="modal-btns">
         ${ag.telephone ? `<a href="tel:${ag.telephone}" class="btn-detail" style="flex:1;text-align:center;text-decoration:none;padding:10px;">📞 Appeler</a>` : ''}
         ${ag.whatsapp ? `<a href="https://wa.me/${ag.whatsapp.replace(/[^0-9]/g,'')}" target="_blank" class="btn-detail" style="flex:1;text-align:center;text-decoration:none;padding:10px;background:#25D366;color:#fff;border-color:#25D366;">💬 WhatsApp</a>` : ''}
-        ${ag.lien_itineraire ? `<a href="${ag.lien_itineraire}" target="_blank" class="btn-itineraire" style="flex:1;">📍 Itinéraire</a>` : `<button class="btn-itineraire" style="flex:1;" onclick="showToast('📍','Itinéraire bientôt disponible.')">📍 Itinéraire</button>`}
+        <a href="#" onclick="ouvrirItineraire(${ag.pk});return false;" class="btn-itineraire" style="flex:1;">📍 Itinéraire</a>
       </div>
     </div>
   `;
@@ -1398,6 +947,40 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') fermerModal();
 });
 
+// ══════════════════════════════════════════════
+// ✅ AUTRES AGENCES — Navigation manuelle
+// ══════════════════════════════════════════════
+function scrollAutresAgences(dir) {
+  const track = document.getElementById('autresAgencesTrack');
+  if (!track) return;
+
+  // Pause l'animation
+  const currentTransform = window.getComputedStyle(track).transform;
+  track.style.animation = 'none';
+
+  // Calculer la position actuelle
+  let currentX = 0;
+  if (currentTransform && currentTransform !== 'none') {
+    const matrix = new DOMMatrix(currentTransform);
+    currentX = matrix.m41;
+  }
+
+  // Avancer/reculer de la largeur d'une carte
+  const cardWidth = 260; // 250px + gap 10px
+  const newX = currentX + (dir * cardWidth * -1);
+
+  track.style.transform = `translateX(${newX}px)`;
+
+  // Reprendre l'animation après un délai
+  setTimeout(() => {
+    track.style.animation = '';
+    track.style.transform = '';
+  }, 3000);
+}
+
+// ══════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════
 function showToast(ico, msg) {
   const t = document.getElementById('toast');
   document.getElementById('t-ico').textContent = ico;
@@ -1417,43 +1000,19 @@ function souscrireFooter() {
   document.getElementById('footer-nl').value = '';
 }
 
-// ── Gestion du scroll navbar ──
+// ══════════════════════════════════════════════
+// SCROLL NAVBAR
+// ══════════════════════════════════════════════
 window.addEventListener('scroll', () => {
   const nav = document.getElementById('navbar');
-  if (window.scrollY > 40) {
-    nav.classList.add('scrolled');
-  } else {
-    nav.classList.remove('scrolled');
-  }
+  if (window.scrollY > 40) nav.classList.add('scrolled');
+  else nav.classList.remove('scrolled');
 });
 
-// ── Initialisation ──
 document.addEventListener('DOMContentLoaded', function() {
   const nav = document.getElementById('navbar');
-  if (window.scrollY > 40) {
-    nav.classList.add('scrolled');
-  } else {
-    nav.classList.remove('scrolled');
-  }
-  
-  if (slideCountAgence > 0) {
-    goToSlideAgence(0);
-  }
-  
-  const wrapper = document.querySelector('.agences-wrapper');
-  if (wrapper) {
-    wrapper.addEventListener('mouseenter', () => {
-      if (autoPlayAgence) {
-        clearInterval(autoPlayAgence);
-        autoPlayAgence = null;
-      }
-    });
-    wrapper.addEventListener('mouseleave', () => {
-      if (slideCountAgence > 1) {
-        resetAutoPlayAgence();
-      }
-    });
-  }
+  if (window.scrollY > 40) nav.classList.add('scrolled');
+  else nav.classList.remove('scrolled');
 });
 </script>
 </body>

@@ -29,15 +29,138 @@ select{appearance:none;}
 .chk-row{display:flex;align-items:center;gap:10px;padding:6px 0;}
 .chk-row input[type="checkbox"]{width:18px;height:18px;cursor:pointer;}
 .chk-row label{font-size:13px;color:var(--g700);margin:0;cursor:pointer;}
+
+/* ✅ Aperçu multiple vidéos */
+.preview-multiple-videos{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:10px;
+  margin-top:1rem;
+  margin-bottom:1rem;
+}
+.preview-multiple-videos:empty{display:none;}
+.pmv-item{
+  position:relative;
+  aspect-ratio:16/9;
+  border-radius:10px;
+  overflow:hidden;
+  background:#000;
+  border:2px solid var(--g200);
+  transition:transform 0.2s, border-color 0.2s;
+}
+.pmv-item:hover{
+  transform:scale(1.03);
+  border-color:var(--blue);
+}
+.pmv-item video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.pmv-count{
+  position:absolute;
+  top:6px;
+  left:6px;
+  background:rgba(27,79,219,0.95);
+  color:#fff;
+  font-size:10px;
+  font-weight:700;
+  padding:2px 8px;
+  border-radius:100px;
+  z-index:2;
+}
+.pmv-name{
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  background:rgba(0,0,0,0.75);
+  color:#fff;
+  font-size:9px;
+  padding:4px 6px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  z-index:2;
+}
+
+/* ✅ Compteur de fichiers */
+.nb-fichiers{
+  display:none;
+  background:var(--bpale);
+  border:1.5px solid rgba(27,79,219,0.25);
+  border-radius:10px;
+  padding:10px 14px;
+  font-size:13px;
+  font-weight:600;
+  color:var(--blue);
+  margin-top:10px;
+  align-items:center;
+  gap:8px;
+}
+.nb-fichiers.visible{display:flex;}
+
+/* ✅ Aperçu multiple miniatures */
+.preview-multiple-miniatures{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  gap:10px;
+  margin-top:1rem;
+  margin-bottom:1rem;
+}
+.preview-multiple-miniatures:empty{display:none;}
+.pmm-item{
+  position:relative;
+  aspect-ratio:16/9;
+  border-radius:10px;
+  overflow:hidden;
+  background:var(--g200);
+  border:2px solid var(--g200);
+}
+.pmm-item img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.pmm-count{
+  position:absolute;
+  top:6px;
+  left:6px;
+  background:rgba(200,16,46,0.95);
+  color:#fff;
+  font-size:10px;
+  font-weight:700;
+  padding:2px 8px;
+  border-radius:100px;
+  z-index:2;
+}
+.pmm-name{
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  background:rgba(0,0,0,0.75);
+  color:#fff;
+  font-size:9px;
+  padding:4px 6px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  z-index:2;
+}
+
 .preview-img{width:100%;height:140px;object-fit:cover;border-radius:var(--r);margin-top:8px;display:none;border:1.5px solid var(--g200);}
 .existing-video{background:var(--g50);border:1.5px solid var(--g200);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--g700);display:flex;align-items:center;gap:8px;margin-bottom:8px;}
 .progress-bar{display:none;margin-top:8px;height:6px;background:var(--g200);border-radius:100px;overflow:hidden;}
 .progress-fill{height:100%;background:var(--grad-h);border-radius:100px;width:0%;transition:width 0.3s;}
 .btn-save{background:var(--grad);color:#fff;padding:13px 28px;border-radius:var(--r);font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;}
+.btn-save:disabled{opacity:0.6;cursor:not-allowed;}
 .btn-cancel{background:#fff;color:var(--g500);padding:13px 24px;border-radius:var(--r);font-size:14px;font-weight:500;border:1.5px solid var(--g200);cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;}
 .err{background:#fee2e2;border:1.5px solid #fca5a5;border-radius:var(--r);padding:12px 16px;font-size:13px;color:#dc2626;margin-bottom:1.5rem;}
 .info-box{background:var(--bpale);border:1.5px solid rgba(27,79,219,0.2);border-radius:var(--r);padding:1rem 1.2rem;margin-bottom:1.5rem;font-size:13px;color:var(--blue);}
-@media(max-width:768px){.form-grid{grid-template-columns:1fr;}.wrap{padding:80px 1rem 2rem;}}
+@media(max-width:768px){.form-grid{grid-template-columns:1fr;}.wrap{padding:80px 1rem 2rem;}.preview-multiple-videos{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}.preview-multiple-miniatures{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));}}
 </style>
 </head>
 <body>
@@ -49,19 +172,23 @@ select{appearance:none;}
 </nav>
 
 <div class="wrap">
-  <div class="page-tit">{% if video %}✏ Modifier "{{ video.titre }}"{% else %}🎬 Nouvelle vidéo Académie{% endif %}</div>
+  <div class="page-tit">{% if video %}✏ Modifier "{{ video.titre }}"{% else %}🎬 Nouvelles vidéos Académie{% endif %}</div>
 
   {% if messages %}{% for msg in messages %}<div class="err">{{ msg }}</div>{% endfor %}{% endif %}
 
   <div class="info-box">
-    🎬 Uploadez un fichier vidéo directement depuis votre ordinateur. Formats supportés : <strong>MP4, WebM, MOV</strong>. La vidéo sera servie en streaming depuis le serveur EDEN GROUP. Pour les grandes vidéos, le temps d'upload peut être long — ne fermez pas la page.
+    {% if video %}
+      🎬 Modifiez les informations de la vidéo. Laissez les fichiers vides pour les conserver.
+    {% else %}
+      🎬 Vous pouvez uploader <strong>plusieurs vidéos en une seule fois</strong>. Elles auront toutes le même titre, description, auteur et durée. Formats supportés : <strong>MP4, WebM, MOV</strong>.
+    {% endif %}
   </div>
 
   <form method="post" enctype="multipart/form-data" id="video-form">
     {% csrf_token %}
 
     <div class="card">
-      <div class="card-tit">📋 Informations</div>
+      <div class="card-tit">📋 Informations{% if not video %} (communes à toutes les vidéos){% endif %}</div>
       <div class="fg">
         <label>Titre *</label>
         <input type="text" name="titre" value="{{ video.titre|default:'' }}" placeholder="Ex: L'implantation d'une parcelle : étapes et importance" required>
@@ -97,6 +224,7 @@ select{appearance:none;}
       <div class="fg">
         <label>Ordre d'affichage</label>
         <input type="number" name="ordre" value="{{ video.ordre|default:'0' }}" min="0">
+        {% if not video %}<div class="hint">Les vidéos suivantes seront incrémentées automatiquement.</div>{% endif %}
       </div>
       <div class="chk-row">
         <input type="checkbox" name="est_video_moment" id="est_moment" {% if video and video.est_video_moment %}checked{% endif %}>
@@ -105,7 +233,8 @@ select{appearance:none;}
     </div>
 
     <div class="card">
-      <div class="card-tit">🎬 Fichier vidéo</div>
+      <div class="card-tit">🎬 Fichier{% if not video %}s{% endif %} vidéo</div>
+
       {% if video and video.fichier_video %}
       <div class="existing-video">
         <span style="font-size:1.2rem;">🎬</span>
@@ -114,62 +243,224 @@ select{appearance:none;}
       </div>
       <div style="font-size:12px;color:var(--g500);margin-bottom:8px;">Choisissez un nouveau fichier pour le remplacer :</div>
       {% endif %}
+
       <div class="fg">
-        <label>Fichier vidéo {% if not video %}*{% endif %}</label>
-        <input type="file" name="fichier_video" accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov" onchange="afficherProgressBar(this)" {% if not video %}required{% endif %}>
-        <div class="hint">Formats : MP4, WebM, MOV. Taille max : dépend de la configuration serveur (généralement 500MB - 2GB).</div>
+        <label>Fichier{% if not video %}s{% endif %} vidéo {% if not video %}*{% endif %}</label>
+        <input type="file"
+               name="fichier_video"
+               accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov"
+               {% if not video %}multiple{% endif %}
+               onchange="afficherApercuVideos(this)"
+               {% if not video %}required{% endif %}>
+        <div class="hint">
+          {% if video %}
+            Formats : MP4, WebM, MOV. Taille max : dépend de la configuration serveur.
+          {% else %}
+            ✅ Sélectionnez <strong>plusieurs vidéos en une seule fois</strong>.<br>
+            Formats : MP4, WebM, MOV.
+          {% endif %}
+        </div>
         <div class="progress-bar" id="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
         <div id="file-info" style="font-size:11px;color:var(--g500);margin-top:4px;"></div>
       </div>
+
+      <!-- ✅ Aperçu multiple -->
+      <div class="preview-multiple-videos" id="preview-multiple-videos"></div>
+
+      <!-- ✅ Compteur -->
+      {% if not video %}
+      <div class="nb-fichiers" id="nb-fichiers">
+        <span>✅</span>
+        <span id="nb-fichiers-txt">0 vidéo sélectionnée</span>
+      </div>
+      {% endif %}
     </div>
 
     <div class="card">
-      <div class="card-tit">🖼 Miniature (vignette)</div>
+      <div class="card-tit">🖼 Miniature{% if not video %}s{% endif %} (vignette)</div>
+
       {% if video and video.image_miniature %}
         <img src="{{ video.image_miniature.url }}" class="preview-img" id="preview" style="display:block;" alt="">
         <div style="margin-top:0.8rem;"></div>
       {% else %}
         <img class="preview-img" id="preview" alt="">
       {% endif %}
+
       <div class="fg">
-        <label>Image miniature (optionnel)</label>
-        <input type="file" name="image_miniature" accept="image/*" onchange="previewImg(this)">
-        <div class="hint">Recommandé : 1280×720px (format 16:9). Si non fournie, une capture de la vidéo sera affichée.</div>
+        <label>Image{% if not video %}s{% endif %} miniature (optionnel)</label>
+        <input type="file"
+               name="image_miniature"
+               accept="image/*"
+               {% if not video %}multiple{% endif %}
+               onchange="afficherApercuMiniatures(this)">
+        <div class="hint">
+          {% if video %}
+            Recommandé : 1280×720px (format 16:9).
+          {% else %}
+            Vous pouvez sélectionner plusieurs miniatures. Elles seront associées aux vidéos dans l'ordre.<br>
+            Recommandé : 1280×720px (format 16:9).
+          {% endif %}
+        </div>
       </div>
+
+      <!-- ✅ Aperçu multiple miniatures -->
+      <div class="preview-multiple-miniatures" id="preview-multiple-miniatures"></div>
     </div>
 
     <div style="display:flex;gap:12px;flex-wrap:wrap;">
-      <button type="submit" class="btn-save" id="btn-submit">💾 {% if video %}Enregistrer{% else %}Uploader la vidéo{% endif %}</button>
+      <button type="submit" class="btn-save" id="btn-submit">
+        💾 {% if video %}Enregistrer{% else %}Uploader les vidéos{% endif %}
+      </button>
       <a href="{% url 'dashboard_academie_videos' %}" class="btn-cancel">Annuler</a>
     </div>
-    <div style="font-size:12px;color:var(--g400);margin-top:0.8rem;">⚠ Ne fermez pas cette page pendant l'upload. Les grandes vidéos peuvent prendre plusieurs minutes.</div>
+    <div style="font-size:12px;color:var(--g400);margin-top:0.8rem;">
+      ⚠ Ne fermez pas cette page pendant l'upload. Les grandes vidéos peuvent prendre plusieurs minutes.
+    </div>
   </form>
 </div>
 
 <script>
+// ══════════════════════════════════════════════
+// ✅ APERÇU DES VIDÉOS SÉLECTIONNÉES
+// ══════════════════════════════════════════════
+function afficherApercuVideos(input) {
+  if (!input.files || !input.files.length) return;
+
+  const preview = document.getElementById('preview-multiple-videos');
+  const nbWrap = document.getElementById('nb-fichiers');
+  const nbTxt = document.getElementById('nb-fichiers-txt');
+  const fileInfo = document.getElementById('file-info');
+  const progressBar = document.getElementById('progress-bar');
+
+  const files = Array.from(input.files);
+
+  // Mode modification (1 seule vidéo)
+  if (!input.multiple) {
+    const file = files[0];
+    const mb = (file.size / 1024 / 1024).toFixed(1);
+    fileInfo.textContent = `Fichier sélectionné : ${file.name} (${mb} MB)`;
+    progressBar.style.display = 'block';
+
+    if (preview) {
+      preview.innerHTML = '';
+      const div = document.createElement('div');
+      div.className = 'pmv-item';
+      div.innerHTML = `
+        <video src="${URL.createObjectURL(file)}" preload="metadata" muted playsinline></video>
+        <span class="pmv-count">1</span>
+        <span class="pmv-name" title="${file.name}">${file.name}</span>
+      `;
+      preview.appendChild(div);
+    }
+    return;
+  }
+
+  // Mode ajout (plusieurs vidéos)
+  if (preview) preview.innerHTML = '';
+
+  let totalSize = 0;
+
+  files.forEach((file, idx) => {
+    totalSize += file.size;
+    const div = document.createElement('div');
+    div.className = 'pmv-item';
+
+    const video = document.createElement('video');
+    video.src = URL.createObjectURL(file);
+    video.preload = 'metadata';
+    video.muted = true;
+    video.playsInline = true;
+
+    const count = document.createElement('span');
+    count.className = 'pmv-count';
+    count.textContent = idx + 1;
+
+    const name = document.createElement('span');
+    name.className = 'pmv-name';
+    name.title = file.name;
+    name.textContent = file.name;
+
+    div.appendChild(video);
+    div.appendChild(count);
+    div.appendChild(name);
+    preview.appendChild(div);
+  });
+
+  // Afficher le compteur
+  if (nbWrap && nbTxt) {
+    nbWrap.classList.add('visible');
+    const sizeMB = (totalSize / 1024 / 1024).toFixed(1);
+    nbTxt.textContent = files.length + ' vidéo' + (files.length > 1 ? 's' : '') + ' sélectionnée' + (files.length > 1 ? 's' : '') + ' (' + sizeMB + ' MB)';
+  }
+
+  if (fileInfo) {
+    fileInfo.textContent = '';
+  }
+}
+
+// ══════════════════════════════════════════════
+// ✅ APERÇU DES MINIATURES SÉLECTIONNÉES
+// ══════════════════════════════════════════════
+function afficherApercuMiniatures(input) {
+  if (!input.files || !input.files.length) return;
+
+  const preview = document.getElementById('preview-multiple-miniatures');
+  const img = document.getElementById('preview');
+
+  // Mode modification (1 seule image)
+  if (!input.multiple) {
+    if (img && input.files[0]) {
+      img.src = URL.createObjectURL(input.files[0]);
+      img.style.display = 'block';
+    }
+    if (preview) preview.innerHTML = '';
+    return;
+  }
+
+  // Mode ajout (plusieurs images)
+  if (preview) preview.innerHTML = '';
+
+  Array.from(input.files).forEach((file, idx) => {
+    const div = document.createElement('div');
+    div.className = 'pmm-item';
+    div.innerHTML = `
+      <img src="${URL.createObjectURL(file)}" alt="">
+      <span class="pmm-count">${idx + 1}</span>
+      <span class="pmm-name" title="${file.name}">${file.name}</span>
+    `;
+    preview.appendChild(div);
+  });
+}
+
+// ══════════════════════════════════════════════
+// ANCIENNE FONCTION (compatibilité)
+// ══════════════════════════════════════════════
 function previewImg(input) {
   const img = document.getElementById('preview');
-  if (input.files && input.files[0]) { img.src = URL.createObjectURL(input.files[0]); img.style.display = 'block'; }
+  if (input.files && input.files[0]) {
+    img.src = URL.createObjectURL(input.files[0]);
+    img.style.display = 'block';
+  }
 }
 
-function afficherProgressBar(input) {
-  if (!input.files || !input.files[0]) return;
-  const file = input.files[0];
-  const mb = (file.size / 1024 / 1024).toFixed(1);
-  document.getElementById('file-info').textContent = `Fichier sélectionné : ${file.name} (${mb} MB)`;
-  document.getElementById('progress-bar').style.display = 'block';
-}
-
+// ══════════════════════════════════════════════
+// SOUMISSION DU FORMULAIRE
+// ══════════════════════════════════════════════
 document.getElementById('video-form').addEventListener('submit', function(e) {
   const btn = document.getElementById('btn-submit');
   btn.textContent = '⏳ Upload en cours...';
   btn.disabled = true;
+
   // Simuler progression visuelle
   let pct = 0;
   const fill = document.getElementById('progress-fill');
+  const progressBar = document.getElementById('progress-bar');
+
+  if (progressBar) progressBar.style.display = 'block';
+
   const interval = setInterval(() => {
     pct = Math.min(pct + Math.random() * 8, 90);
-    fill.style.width = pct + '%';
+    if (fill) fill.style.width = pct + '%';
     if (pct >= 90) clearInterval(interval);
   }, 500);
 });

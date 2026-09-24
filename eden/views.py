@@ -2733,57 +2733,51 @@ def dashboard_projet_infrastructures(request, pk):
 # ══════════════════════════════════════════════
 # MODULE NOS AGENCES
 # ══════════════════════════════════════════════
-
-
 def nos_agences(request):
-    agences = Agence.objects.filter(is_active=True).prefetch_related('services').order_by('ordre')
+    """Page Nos Agences — siège + autres agences en carrousel infini."""
+    from .models import Agence, AgenceService
     
-    # Récupérer le siège
+    agences = Agence.objects.filter(is_active=True).order_by('ordre', 'ville')
+    
+    # ✅ Séparer le siège et les autres agences
     siege = agences.filter(type_agence='siege').first()
+    autres_agences = list(agences.exclude(type_agence='siege'))
     
-    # Créer la liste des agences pour le carrousel (siège en premier)
-    agences_list = []
-    if siege:
-        agences_list.append(siege)
-    # Ajouter les autres agences (hors siège)
-    agences_list.extend(agences.filter(type_agence__in=['agence', 'bureau']).order_by('ordre'))
+    # Si pas de siège défini, prendre la première agence
+    if not siege and agences.exists():
+        siege = agences.first()
+        autres_agences = list(agences.exclude(pk=siege.pk))
     
-    # Créer des slides de 3 agences avec décalage pour carrousel circulaire
-    agences_slides = []
-    n = len(agences_list)
-    if n > 0:
-        # Créer des slides avec décalage : 0,1,2 puis 1,2,3 puis 2,3,4 ...
-        for i in range(n):
-            slide = []
-            for j in range(3):
-                idx = (i + j) % n
-                slide.append(agences_list[idx])
-            agences_slides.append(slide)
-    else:
-        agences_slides = [[]]
+    # ✅ IMPORTANT : passer TOUTES les agences pour le JSON du modal
+    # (pas seulement le siège + autres — TOUTES)
+    agences_all = agences
     
-    # Image fixe pour la colonne 2 (URL directe)
-    stats_image_url = "/static/images/cameroun.png" # À personnaliser
-    
-    # Stats
-    stats = StatAgence.objects.filter(is_active=True).order_by('ordre')
-    stats_defaults = [
-        {'valeur': str(agences.filter(type_agence__in=['siege','agence']).count()), 'label': 'Agences principales', 'icone': '🏢'},
-        {'valeur': str(agences.filter(type_agence='bureau').count()) + '+', 'label': 'Bureaux relais', 'icone': '🏪'},
-        {'valeur': '50+', 'label': 'Collaborateurs à votre service', 'icone': '👥'},
-        {'valeur': '20+', 'label': "Ans d'expérience", 'icone': '🏆'},
+    # Statistiques
+    stats = [
+        {'icone': '🏢', 'valeur': f'{agences.count()}+', 'label': 'Agences au Cameroun'},
+        {'icone': '👥', 'valeur': '10 000+', 'label': 'Clients satisfaits'},
+        {'icone': '📍', 'valeur': '15+', 'label': 'Sites fonciers'},
+        {'icone': '🤝', 'valeur': '100%', 'label': 'Terrains sécurisés'},
+        {'icone': '📋', 'valeur': '20+', 'label': "Années d'expérience"},
     ]
-
+    
+    # ✅ Image fixe du milieu — Récupérer depuis HeroConfig ou une autre source
+    stats_image_url = None
+    try:
+        from .models import HeroConfig
+        hero = HeroConfig.objects.filter(pk=1).first()
+        if hero and hero.image_fond:
+            stats_image_url = hero.image_fond.url
+    except Exception:
+        pass
+    
     return render(request, 'eden/nos_agences.html', {
-        'agences': agences,
-        'agences_slides': agences_slides,
         'siege': siege,
-        'stats_image_url': stats_image_url,  # URL de l'image fixe
-        'stats': stats if stats.exists() else stats_defaults,
-        'stats_are_objects': stats.exists(),
+        'autres_agences': autres_agences,
+        'agences': agences_all,          # ✅ Pour le JSON du modal
+        'stats': stats,
+        'stats_image_url': stats_image_url,   # ✅ Image centrale
     })
-
-
 
 @login_required
 @user_passes_test(is_agent)
@@ -3678,36 +3672,73 @@ def dashboard_academie_videos(request):
 @login_required
 @user_passes_test(is_agent)
 def dashboard_academie_video_form(request, pk=None):
-    video = get_object_or_404(AcademieVideo, pk=pk) if pk else None
+    item = get_object_or_404(AcademieVideo, pk=pk) if pk else None
+
     if request.method == 'POST':
         titre = request.POST.get('titre', '').strip()
         if not titre:
             messages.error(request, 'Le titre est obligatoire.')
-            return render(request, 'eden/dashboard/academie_video_form.html', {'video': video})
-        if not video:
-            video = AcademieVideo()
-        video.titre = titre
-        video.description = request.POST.get('description', '').strip()
-        video.auteur = request.POST.get('auteur', '').strip()
-        video.duree = request.POST.get('duree', '').strip()
-        video.statut = request.POST.get('statut', 'brouillon')
-        video.est_video_moment = request.POST.get('est_video_moment') == 'on'
-        video.ordre = int(request.POST.get('ordre', 0) or 0)
-        date_str = request.POST.get('date_publication', '')
-        if date_str:
-            from datetime import date
-            try:
-                video.date_publication = date.fromisoformat(date_str)
-            except Exception:
-                pass
-        if request.FILES.get('fichier_video'):
-            video.fichier_video = request.FILES['fichier_video']
-        if request.FILES.get('image_miniature'):
-            video.image_miniature = request.FILES['image_miniature']
-        video.save()
-        messages.success(request, f'Vidéo "{video.titre}" enregistrée.')
+            return render(request, 'eden/dashboard/academie_video_form.html', {'item': item})
+
+        description = request.POST.get('description', '').strip()
+        auteur = request.POST.get('auteur', '').strip()
+        duree = request.POST.get('duree', '').strip()
+        statut = request.POST.get('statut', 'publie')
+        ordre_base = int(request.POST.get('ordre', 0) or 0)
+
+        # ✅ Récupérer TOUS les fichiers vidéo
+        videos = request.FILES.getlist('fichier_video')
+        miniatures = request.FILES.getlist('image_miniature')
+
+        # ── MODE MODIFICATION ──
+        if item:
+            item.titre = titre
+            item.description = description
+            item.auteur = auteur
+            item.duree = duree
+            item.statut = statut
+            item.ordre = ordre_base
+
+            if videos:
+                item.fichier_video = videos[0]
+            if miniatures:
+                item.image_miniature = miniatures[0]
+
+            item.save()
+            messages.success(request, f'Vidéo "{item.titre}" mise à jour.')
+            return redirect('dashboard_academie_videos')
+
+        # ── MODE AJOUT ──
+        if not videos:
+            messages.error(request, 'Veuillez sélectionner au moins une vidéo.')
+            return render(request, 'eden/dashboard/academie_video_form.html', {'item': item})
+
+        nb_ajoutes = 0
+        for idx, fichier in enumerate(videos):
+            new_item = AcademieVideo()
+            new_item.titre = titre
+            new_item.description = description
+            new_item.auteur = auteur
+            new_item.duree = duree
+            new_item.statut = statut
+            new_item.ordre = ordre_base + idx
+            new_item.fichier_video = fichier
+
+            # Associer une miniature si disponible
+            if idx < len(miniatures):
+                new_item.image_miniature = miniatures[idx]
+
+            new_item.save()
+            nb_ajoutes += 1
+
+        if nb_ajoutes == 1:
+            messages.success(request, f'Vidéo "{titre}" ajoutée.')
+        else:
+            messages.success(request, f'{nb_ajoutes} vidéos ajoutées avec le titre "{titre}".')
+
         return redirect('dashboard_academie_videos')
-    return render(request, 'eden/dashboard/academie_video_form.html', {'video': video})
+
+    return render(request, 'eden/dashboard/academie_video_form.html', {'item': item})
 
 
 @login_required
@@ -3987,24 +4018,53 @@ def dashboard_academie_galerie_form(request, pk=None):
             messages.error(request, 'Le titre est obligatoire.')
             return render(request, 'eden/dashboard/academie_galerie_form.html', {'item': item})
 
-        if not item:
-            item = AcademieDocument()
-            item.categorie = 'galerie'
+        description = request.POST.get('description', '').strip()
+        statut = request.POST.get('statut', 'publie')
+        ordre_base = int(request.POST.get('ordre', 0) or 0)
 
-        item.titre = titre
-        item.description = request.POST.get('description', '').strip()
-        item.statut = request.POST.get('statut', 'publie')
-        item.ordre = int(request.POST.get('ordre', 0) or 0)
+        # ✅ Récupérer TOUS les fichiers uploadés
+        fichiers = request.FILES.getlist('image_couverture')
 
-        if request.FILES.get('image_couverture'):
-            item.image_couverture = request.FILES['image_couverture']
+        # ── MODE MODIFICATION (une seule image) ──
+        if item:
+            item.titre = titre
+            item.description = description
+            item.statut = statut
+            item.ordre = ordre_base
 
-        item.save()
-        messages.success(request, f'Image "{item.titre}" enregistrée.')
+            if fichiers:
+                # Remplacer l'image existante par la première
+                item.image_couverture = fichiers[0]
+
+            item.save()
+            messages.success(request, f'Image "{item.titre}" mise à jour.')
+            return redirect('dashboard_academie_galerie')
+
+        # ── MODE AJOUT (plusieurs images) ──
+        if not fichiers:
+            messages.error(request, 'Veuillez sélectionner au moins une image.')
+            return render(request, 'eden/dashboard/academie_galerie_form.html', {'item': item})
+
+        nb_ajoutes = 0
+        for idx, fichier in enumerate(fichiers):
+            new_item = AcademieDocument()
+            new_item.categorie = 'galerie'
+            new_item.titre = titre
+            new_item.description = description
+            new_item.statut = statut
+            new_item.ordre = ordre_base + idx  # Incrémenter l'ordre
+            new_item.image_couverture = fichier
+            new_item.save()
+            nb_ajoutes += 1
+
+        if nb_ajoutes == 1:
+            messages.success(request, f'Image "{titre}" ajoutée à la galerie.')
+        else:
+            messages.success(request, f'{nb_ajoutes} images ajoutées à la galerie avec le titre "{titre}".')
+
         return redirect('dashboard_academie_galerie')
 
     return render(request, 'eden/dashboard/academie_galerie_form.html', {'item': item})
-
 
 @login_required
 @user_passes_test(is_agent)

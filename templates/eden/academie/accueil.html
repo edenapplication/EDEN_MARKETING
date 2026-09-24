@@ -168,14 +168,15 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .slide-item{min-width:100%;padding:0 2px;flex-shrink:0;}
 
 /* ══ GALERIE (accueil) ══ */
-/* ══ GALERIE (accueil) ══ */
 .galerie-item{width:100%;height:200px;border-radius:var(--rl);overflow:hidden;position:relative;cursor:pointer;}
 .galerie-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s;}
 .galerie-item:hover img{transform:scale(1.04);}
 .galerie-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 40%);display:flex;flex-direction:column;justify-content:flex-end;padding:16px;}
 .galerie-tit{font-size:14px;font-weight:700;color:#fff;line-height:1.2;}
 .galerie-desc{font-size:11px;color:rgba(255,255,255,0.8);margin-top:4px;}
-.galerie-container{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);padding:0.6rem;height:100%;display:flex;flex-direction:column;}/* ══ REVUE CARD ══ */
+.galerie-container{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);padding:0.6rem;height:100%;display:flex;flex-direction:column;}
+
+/* ══ REVUE CARD ══ */
 .revue-card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);overflow:hidden;display:flex;flex-direction:column;height:100%;}
 .revue-img{height:180px;overflow:hidden;background:var(--blue-pale);flex-shrink:0;}
 .revue-img img{width:100%;height:100%;object-fit:cover;display:block;}
@@ -201,7 +202,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .ed-meta{font-size:8px;color:var(--g400);}
 .ed-ouvrir{font-size:9px;font-weight:700;color:var(--blue);margin-top:3px;display:flex;align-items:center;gap:3px;}
 
-/* ══ TEXTE DE LOI MINI (défilement vertical) ══ */
+/* ══ TEXTE DE LOI MINI ══ */
 .doc-mini{display:flex;gap:6px;padding:0.5rem 0;border-bottom:1px solid var(--g100);cursor:pointer;transition:all 0.15s;text-decoration:none;}
 .doc-mini:last-child{border-bottom:none;padding-bottom:0;}
 .doc-mini:hover .dm-tit{color:var(--blue);}
@@ -238,7 +239,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .guide-desc{font-size:10px;color:var(--g500);line-height:1.4;margin-bottom:6px;}
 .guide-btns{display:flex;gap:5px;margin-top:8px;}
 
-/* ══ FAQ CARD (défilement vertical) ══ */
+/* ══ FAQ CARD ══ */
 .faq-card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);padding:0.8rem;display:flex;flex-direction:column;height:100%;overflow:hidden;}
 .faq-card .scroll-vertical{flex:1;overflow-y:auto;animation:scrollVertical 18s linear infinite;}
 .faq-card .scroll-vertical:hover{animation-play-state:paused;}
@@ -250,7 +251,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .faq-item-wrap{padding:0.6rem 0;border-bottom:1px solid var(--g100);}
 .faq-item-wrap:last-child{border-bottom:none;}
 
-/* ══ SECTION COMPLÈTE (pages internes) ══ */
+/* ══ SECTION COMPLÈTE ══ */
 .full-section{display:none;padding:1.5rem;background:#f5f6fa;}
 .full-section.visible{display:block;}
 .full-section .fs-header{background:#fff;border-radius:var(--rl);padding:0.8rem 1rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--sh);}
@@ -270,7 +271,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .full-section .ecf-btn{display:flex;align-items:center;justify-content:center;gap:4px;background:var(--blue);color:#fff;padding:5px 10px;border-radius:5px;font-size:10px;font-weight:700;text-decoration:none;width:100%;transition:all 0.2s;}
 .full-section .ecf-btn:hover{background:var(--blue-d);}
 
-/* ══ GALERIE GRID FULL (page galerie) ══ */
+/* ══ GALERIE GRID FULL ══ */
 .galerie-grid-full{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;}
 .gf-item{height:140px;border-radius:var(--rl);overflow:hidden;position:relative;cursor:pointer;}
 .gf-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s;}
@@ -307,13 +308,54 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .vm-tit{font-size:12px;font-weight:700;color:#fff;margin-bottom:2px;}
 .vm-meta{font-size:10px;color:rgba(255,255,255,0.5);}
 
+/* ✅ LIGHTBOX avec navigation */
 .lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:3000;display:none;align-items:center;justify-content:center;padding:1rem;}
 .lightbox.open{display:flex;}
 .lb-img{max-width:90vw;max-height:85vh;object-fit:contain;border-radius:var(--r);}
-.lb-close{position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,0.15);border:none;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;}
-.lb-info{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);padding:1rem;text-align:center;}
+.lb-close{position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,0.15);border:none;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;z-index:20;transition:all 0.2s;}
+.lb-close:hover{background:rgba(200,16,46,0.8);}
+.lb-info{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);padding:1rem;text-align:center;pointer-events:none;}
 .lb-tit{font-size:13px;font-weight:700;color:#fff;}
 .lb-desc{font-size:11px;color:rgba(255,255,255,0.7);margin-top:3px;}
+
+/* ✅ Flèches navigation lightbox */
+.lb-nav{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  width:52px;
+  height:52px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.12);
+  border:2px solid rgba(255,255,255,0.3);
+  color:#fff;
+  font-size:28px;
+  font-weight:700;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:all 0.2s;
+  z-index:15;
+  font-family:'Outfit',sans-serif;
+  padding-bottom:4px;
+}
+.lb-nav:hover{
+  background:rgba(255,255,255,0.25);
+  border-color:#fff;
+  transform:translateY(-50%) scale(1.1);
+}
+.lb-nav:active{
+  transform:translateY(-50%) scale(0.95);
+}
+.lb-nav-prev{left:1.5rem;}
+.lb-nav-next{right:1.5rem;}
+
+@media(max-width:768px){
+  .lb-nav{width:42px;height:42px;font-size:22px;}
+  .lb-nav-prev{left:8px;}
+  .lb-nav-next{right:8px;}
+}
 
 .toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1px solid var(--g200);border-radius:var(--r);padding:10px 16px;font-size:12px;color:var(--g800);z-index:5000;display:flex;align-items:center;gap:8px;transform:translateY(80px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);max-width:320px;box-shadow:0 8px 32px rgba(0,0,0,0.12);}
 .toast.show{transform:none;opacity:1;}
@@ -399,13 +441,14 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
   </div>
 </div>
 
-<!-- LIGHTBOX GALERIE -->
+<!-- ✅ LIGHTBOX GALERIE avec navigation -->
 <div class="lightbox" id="lightbox">
   <button class="lb-close" onclick="fermerLightbox()">✕</button>
+  <button class="lb-nav lb-nav-prev" onclick="lbPrecedent(event)" aria-label="Image précédente">‹</button>
+  <button class="lb-nav lb-nav-next" onclick="lbSuivant(event)" aria-label="Image suivante">›</button>
   <img class="lb-img" id="lb-img" src="" alt="">
   <div class="lb-info"><div class="lb-tit" id="lb-tit"></div><div class="lb-desc" id="lb-desc"></div></div>
 </div>
-
 
 
 <!-- ══ HERO ══ -->
@@ -499,7 +542,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
     <!-- VUE ACCUEIL -->
     <div id="vue-accueil" class="acceuil">
 
-      <!-- ═══ LIGNE 4 : PARCOURS | GALERIE (carrousel horizontal) | REVUE (carrousel horizontal) ═══ -->
+      <!-- ═══ LIGNE 4 : PARCOURS | GALERIE | REVUE ═══ -->
       <div class="row-3-col">
 
         <!-- PARCOURS INVESTISSEUR -->
@@ -523,7 +566,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
           </div>
         </div>
 
-        <!-- GALERIE (carrousel horizontal - 1 slide à la fois) -->
+        <!-- GALERIE -->
         <div>
           <div class="section-hd">
             <div><div class="section-tag">GALERIE</div><div class="section-tit">Photos &amp; Images</div></div>
@@ -535,7 +578,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
                 {% if galerie %}
                   {% for img in galerie %}
                   <div class="slide-item">
-                    <div class="galerie-item" onclick="ouvrirLightbox('{{ img.image_couverture.url }}','{{ img.titre|escapejs }}','{{ img.description|escapejs }}')">
+                    <div class="galerie-item" onclick="ouvrirLightbox('{{ img.image_couverture.url }}','{{ img.titre|escapejs }}','{{ img.description|escapejs }}',{{ forloop.counter0 }})">
                       {% if img.image_couverture %}
                         <img src="{{ img.image_couverture.url }}" alt="{{ img.titre }}">
                       {% else %}
@@ -560,7 +603,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
           </div>
         </div>
 
-        <!-- REVUE EDEN GROUP (carrousel horizontal - 1 slide à la fois) -->
+        <!-- REVUE EDEN GROUP -->
         <div>
           <div class="section-hd">
             <div><div class="section-tag">REVUE EDEN GROUP</div><div class="section-tit">Dernière parution</div></div>
@@ -599,7 +642,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
         </div>
       </div>
 
-      <!-- ═══ LIGNE 5 : ARTICLES (carrousel multi-slides) ═══ -->
+      <!-- ═══ LIGNE 5 : ARTICLES ═══ -->
       {% if articles_journal %}
       <div class="row-articles">
         <div class="section-hd">
@@ -634,7 +677,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
       <!-- ═══ LIGNE 6 : 4 COLONNES ═══ -->
       <div class="row-4-col">
 
-        <!-- TEXTES DE LOI (défilement vertical) -->
+        <!-- TEXTES DE LOI -->
         <div>
           <div class="section-hd">
             <div><div class="section-tag">REGLEMENTATION</div></div>
@@ -653,7 +696,6 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
                   </div>
                 </a>
                 {% endfor %}
-                <!-- Dupliquer pour l'effet infini -->
                 {% for doc in textes_loi %}
                 <a class="doc-mini" href="{% url 'academie_telecharger' doc.pk %}">
                   <span class="dm-ico">📜</span>
@@ -671,7 +713,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
           </div>
         </div>
 
-        <!-- VIDÉO DU MOMENT (carrousel horizontal - 1 slide à la fois) -->
+        <!-- VIDÉO DU MOMENT -->
         <div>
           <div class="section-hd">
             <div><div class="section-tag">VIDÉOS</div></div>
@@ -710,7 +752,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
           </div>
         </div>
 
-        <!-- GUIDE PRATIQUE (carrousel horizontal - 1 slide à la fois) -->
+        <!-- GUIDE PRATIQUE -->
         <div>
           <div class="section-hd">
             <div><div class="section-tag">GUIDE PRATIQUE</div></div>
@@ -750,7 +792,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
           </div>
         </div>
 
-        <!-- QUESTION FRÉQUENTE (défilement vertical) -->
+        <!-- QUESTION FRÉQUENTE -->
         <div>
           <div class="section-hd">
             <div><div class="section-tag">QUESTION FRÉQUENTE</div></div>
@@ -767,7 +809,6 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
                   <a class="faq-voir" href="#" onclick="afficherSection('faq','❓ FAQ',null);return false;">Réponse complète →</a>
                 </div>
                 {% endfor %}
-                <!-- Dupliquer pour l'effet infini -->
                 {% for faq in faqs %}
                 <div class="faq-item-wrap">
                   <div class="faq-q"><span class="faq-q-prefix">Q.</span>{{ faq.question|truncatechars:60 }}</div>
@@ -973,7 +1014,7 @@ function rendreGalerie() {
   if (!GALERIE_DATA.length) return `<div style="text-align:center;padding:3rem;color:var(--g400);"><div style="font-size:3rem;margin-bottom:1rem;">🖼</div>Aucune image dans la galerie.</div>`;
   return `<div class="galerie-grid-full">
     ${GALERIE_DATA.map((img, i) => `
-      <div class="gf-item" onclick="ouvrirLightbox('${img.image}','${img.titre}','${img.desc}')">
+      <div class="gf-item" onclick="ouvrirLightbox('${img.image}','${img.titre}','${img.desc}',${i})">
         ${img.image ? `<img src="${img.image}" alt="${img.titre}">` : `<div style="width:100%;height:100%;background:var(--blue-pale);display:flex;align-items:center;justify-content:center;font-size:2.5rem;">🖼</div>`}
         <div class="gf-overlay">
           <div class="gf-tit">${img.titre}</div>
@@ -1062,24 +1103,100 @@ document.getElementById('video-modal').addEventListener('click', function(e) {
   if (e.target === this) fermerVideo();
 });
 
-function ouvrirLightbox(src, titre, desc) {
+// ══════════════════════════════════════════════
+// ✅ LIGHTBOX GALERIE — avec navigation
+// ══════════════════════════════════════════════
+let lbIndex = 0;
+let lbImages = [];
+
+function ouvrirLightbox(src, titre, desc, index) {
   if (!src) return;
-  document.getElementById('lb-img').src = src;
-  document.getElementById('lb-tit').textContent = titre || '';
-  document.getElementById('lb-desc').textContent = desc || '';
+
+  // Construire la liste des images
+  lbImages = GALERIE_DATA.filter(img => img.image);
+
+  if (typeof index === 'number' && index >= 0) {
+    lbIndex = index;
+  } else {
+    lbIndex = lbImages.findIndex(img => img.image === src);
+    if (lbIndex < 0) lbIndex = 0;
+  }
+
+  afficherImageLightbox(lbIndex);
   document.getElementById('lightbox').classList.add('open');
 }
+
+function afficherImageLightbox(idx) {
+  if (!lbImages.length) return;
+
+  // Boucle circulaire
+  lbIndex = ((idx % lbImages.length) + lbImages.length) % lbImages.length;
+
+  const img = lbImages[lbIndex];
+  document.getElementById('lb-img').src = img.image;
+  document.getElementById('lb-tit').textContent = img.titre || '';
+  document.getElementById('lb-desc').textContent = img.desc || '';
+}
+
+function lbSuivant(e) {
+  if (e) e.stopPropagation();
+  if (lbImages.length <= 1) return;
+  afficherImageLightbox(lbIndex + 1);
+}
+
+function lbPrecedent(e) {
+  if (e) e.stopPropagation();
+  if (lbImages.length <= 1) return;
+  afficherImageLightbox(lbIndex - 1);
+}
+
 function fermerLightbox() {
   document.getElementById('lightbox').classList.remove('open');
   document.getElementById('lb-img').src = '';
 }
+
 document.getElementById('lightbox').addEventListener('click', function(e) {
   if (e.target === this) fermerLightbox();
 });
 
+// Navigation clavier
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { fermerVideo(); fermerLightbox(); }
+  const lightboxOpen = document.getElementById('lightbox').classList.contains('open');
+
+  if (lightboxOpen) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      lbSuivant();
+    }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      lbPrecedent();
+    }
+  }
+
+  if (e.key === 'Escape') {
+    fermerVideo();
+    fermerLightbox();
+  }
 });
+
+// Navigation tactile (swipe) sur mobile
+let lbTouchStartX = 0;
+let lbTouchEndX = 0;
+
+document.getElementById('lightbox').addEventListener('touchstart', function(e) {
+  lbTouchStartX = e.changedTouches[0].screenX;
+}, { passive: true });
+
+document.getElementById('lightbox').addEventListener('touchend', function(e) {
+  lbTouchEndX = e.changedTouches[0].screenX;
+  const diff = lbTouchStartX - lbTouchEndX;
+
+  if (Math.abs(diff) > 50) {
+    if (diff > 0) lbSuivant();
+    else lbPrecedent();
+  }
+}, { passive: true });
 
 function showToast(ico, msg) {
   const t = document.getElementById('toast');
@@ -1140,7 +1257,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const label = labels[section] || '📂 Section';
             afficherSection(section, label, null);
             
-            // Nettoyer l'URL
             history.replaceState(null, '', window.location.pathname);
         }, 300);
     }
