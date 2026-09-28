@@ -7,6 +7,7 @@ import os
 urlpatterns = [
     # ── PAGES PUBLIQUES ──
      path('', views.splash, name='splash'),
+     path('sites_eden/',  views.splash_libre, name='sites_eden'),
      path('accueil/', views.home, name='home'),
     path('sites/', views.sites_list, name='sites_list'),
     path('sites/<slug:slug>/', views.site_detail, name='site_detail'),
@@ -294,4 +295,6 @@ urlpatterns = [
 
     path('terrains/', views.site_libre, name='site_libre'),
 path('terrains/<slug:slug>/', views.site_libre_detail, name='site_libre_detail'),
+# urls.py
+path('journal/pdf/<int:numero>/', views.journal_pdf, name='journal_pdf'),
 ]

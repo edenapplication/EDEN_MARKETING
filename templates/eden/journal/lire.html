@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>{{ edition.titre }} — Journal EDEN GROUP</title>
+<title>{{ edition.titre }} — ACADÉMIE EDEN GROUP</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=IM+Fell+English:ital@0;1&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <!-- ✅ PDF.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -34,6 +34,15 @@ html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;background
 .tb-actions{display:flex;gap:4px;flex-shrink:0;}
 .tb-btn{padding:4px 10px;border-radius:6px;font-size:10px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.75);background:rgba(255,255,255,0.05);text-decoration:none;transition:all 0.2s;}
 .tb-btn:hover{background:rgba(255,255,255,0.15);color:#fff;}
+.tb-btn.download{
+  background:linear-gradient(135deg,#1B4FDB,#C8102E);
+  border-color:transparent;
+  color:#fff;
+}
+.tb-btn.download:hover{
+  box-shadow:0 4px 12px rgba(27,79,219,0.4);
+  transform:translateY(-1px);
+}
 .page-info-top{font-size:10px;color:rgba(255,255,255,0.5);white-space:nowrap;}
 
 /* ── VIEWER ── */
@@ -91,6 +100,95 @@ html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;background
   height:100%;
   background:linear-gradient(90deg,#1B4FDB,#7B20B4,#C8102E);
   width:0%;transition:width 0.3s ease;border-radius:100px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ✅ OVERLAY DE CHARGEMENT GLOBAL
+   ═══════════════════════════════════════════════════════════ */
+#global-loader{
+  position:fixed;
+  inset:52px 0 60px 0;
+  z-index:300;
+  background:rgba(13,13,26,0.98);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:24px;
+  transition:opacity 0.4s ease, visibility 0.4s ease;
+}
+#global-loader.hidden{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+.gl-logo{
+  font-family:'Playfair Display',serif;
+  font-size:2rem;
+  font-weight:900;
+  background:linear-gradient(90deg,#1B4FDB,#7B20B4,#C8102E);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  letter-spacing:2px;
+  animation:glPulse 2s ease-in-out infinite;
+  text-align:center;
+  line-height:1.3;
+}
+.gl-logo small{
+  display:block;
+  font-size:0.9rem;
+  font-weight:700;
+  letter-spacing:4px;
+  margin-top:4px;
+}
+@keyframes glPulse{
+  0%,100%{opacity:1;transform:scale(1);}
+  50%{opacity:0.7;transform:scale(0.98);}
+}
+.gl-spinner{
+  width:64px;height:64px;
+  border:4px solid rgba(255,255,255,0.1);
+  border-top-color:#1B4FDB;
+  border-right-color:#7B20B4;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+}
+.gl-text{
+  font-family:'Outfit',sans-serif;
+  font-size:13px;
+  color:rgba(255,255,255,0.65);
+  font-weight:500;
+  letter-spacing:0.5px;
+  text-align:center;
+}
+.gl-subtext{
+  font-family:'Outfit',sans-serif;
+  font-size:11px;
+  color:rgba(255,255,255,0.4);
+  margin-top:-16px;
+}
+.gl-progress-wrap{
+  width:min(400px,80vw);
+  height:6px;
+  background:rgba(255,255,255,0.1);
+  border-radius:100px;
+  overflow:hidden;
+  margin-top:8px;
+}
+.gl-progress-fill{
+  height:100%;
+  background:linear-gradient(90deg,#1B4FDB,#7B20B4,#C8102E);
+  border-radius:100px;
+  width:0%;
+  transition:width 0.3s ease;
+}
+.gl-percent{
+  font-family:'Outfit',sans-serif;
+  font-size:12px;
+  color:rgba(255,255,255,0.5);
+  font-weight:600;
+  margin-top:-8px;
 }
 
 /* ── NAV BAR ── */
@@ -164,6 +262,7 @@ html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;background
   font-family:'Outfit',sans-serif;
   display:flex;align-items:center;justify-content:center;
   transition:all 0.15s;
+  text-decoration:none;
 }
 .tl-btn:hover{background:rgba(255,255,255,0.15);color:#fff;}
 .tl-btn.active{background:rgba(27,79,219,0.4);border-color:var(--blue);color:#fff;}
@@ -173,19 +272,29 @@ html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;background
   text-align:center;padding:2px 0;
   font-weight:600;
 }
+/* ✅ Bouton télécharger dans la barre d'outils */
+.tl-btn.download{
+  background:linear-gradient(135deg,rgba(27,79,219,0.4),rgba(200,16,46,0.4));
+  border-color:rgba(27,79,219,0.6);
+  color:#fff;
+}
+.tl-btn.download:hover{
+  background:linear-gradient(135deg,rgba(27,79,219,0.7),rgba(200,16,46,0.7));
+}
 
 /* ── MODE PLEIN ÉCRAN ── */
-/* ✅ On cache UNIQUEMENT la top-bar, PAS la nav-bar */
 body.fs-mode .top-bar{display:none;}
 body.fs-mode .viewer-wrap{
   top:0;
-  /* ✅ On laisse 60px en bas pour la nav-bar */
   bottom:60px;
 }
 body.fs-mode .tools-lecture{
   top:12px;
 }
 body.fs-mode .progress-bar{display:none;}
+body.fs-mode #global-loader{
+  inset:0 0 60px 0;
+}
 
 /* ── RESPONSIVE ── */
 @media(max-width:900px){
@@ -209,6 +318,9 @@ body.fs-mode .progress-bar{display:none;}
   .tl-sep{width:1px;height:100%;margin:0 2px;}
   .tl-btn{width:36px;height:36px;font-size:14px;}
   .tl-zoom-val{min-width:38px;}
+  .gl-logo{font-size:1.4rem;}
+  .gl-logo small{font-size:0.7rem;letter-spacing:3px;}
+  .gl-spinner{width:52px;height:52px;}
 }
 </style>
 </head>
@@ -218,15 +330,39 @@ body.fs-mode .progress-bar{display:none;}
 <a class="btn-retour-academie" href="{% url 'academie_accueil' %}">← Académie</a>
 {% endif %}
 
+<!-- ✅ OVERLAY DE CHARGEMENT GLOBAL -->
+<div id="global-loader">
+  <div class="gl-logo">
+    ACADÉMIE
+    <small>EDEN GROUP</small>
+  </div>
+  <div class="gl-spinner"></div>
+  <div class="gl-text" id="gl-text">Chargement de l'édition…</div>
+  <div class="gl-subtext" id="gl-subtext">Préparation de la couverture</div>
+  <div class="gl-progress-wrap">
+    <div class="gl-progress-fill" id="gl-progress-fill"></div>
+  </div>
+  <div class="gl-percent" id="gl-percent">0%</div>
+</div>
+
 <!-- TOP BAR -->
 <div class="top-bar">
   <div class="tb-title">
-    <span style="color:rgba(255,255,255,0.4);font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-right:8px;">EDEN GROUP</span>
+    <span style="color:rgba(255,255,255,0.4);font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-right:8px;">ACADÉMIE EDEN GROUP</span>
     {{ edition.titre }}
   </div>
   <div class="tb-num">N°{{ edition.numero }}</div>
   <div class="tb-actions">
     <span class="page-info-top" id="page-info">Couverture</span>
+
+    <!-- ✅ BOUTON TÉLÉCHARGER -->
+    <a class="tb-btn download"
+       href="{% url 'journal_pdf' edition.numero %}"
+       download="Academie_EDEN_N{{ edition.numero }}.pdf"
+       title="Télécharger le PDF">
+      ⬇ Télécharger
+    </a>
+
     {% if user.is_staff %}
     <a class="tb-btn" href="{% url 'dashboard_journal_edition_modifier' edition.pk %}">✏ Modifier</a>
     {% endif %}
@@ -252,6 +388,16 @@ body.fs-mode .progress-bar{display:none;}
   <button class="tl-btn" onclick="resetZoomLecture()" title="Ajuster à l'écran (0)">⊡</button>
   <button class="tl-btn" id="btn-rotate" onclick="toggleRotation()" title="Rotation portrait/paysage (R)">⟳</button>
   <button class="tl-btn" id="btn-fullscreen" onclick="togglePleinEcran()" title="Plein écran (F)">⛶</button>
+
+  <div class="tl-sep"></div>
+
+  <!-- ✅ BOUTON TÉLÉCHARGER dans la barre d'outils -->
+  <a class="tl-btn download"
+     href="{% url 'journal_pdf' edition.numero %}"
+     download="Academie_EDEN_N{{ edition.numero }}.pdf"
+     title="Télécharger le PDF">
+    ⬇
+  </a>
 </div>
 
 <!-- NAV BAR -->
@@ -277,15 +423,53 @@ const EDITION = {
 
 let pdfDoc = null;
 let totalPagesPdf = 0;
-// ✅ Index 0 = couverture, ensuite 1..N = pages du PDF
 let pageCourante = 0;
-let totalCartes = 1;  // Sera mis à jour après chargement du PDF
+let totalCartes = 1;
 let isTransitioning = false;
 
-// Zoom & rotation
 let zoomManuelLecture = 1;
 let zoomAuto = 1;
 let rotationActive = false;
+
+// ════════════════════════════════════════
+// ✅ GESTION DU LOADER GLOBAL
+// ════════════════════════════════════════
+const GlobalLoader = {
+  el: null,
+  textEl: null,
+  subtextEl: null,
+  fillEl: null,
+  percentEl: null,
+
+  init() {
+    this.el = document.getElementById('global-loader');
+    this.textEl = document.getElementById('gl-text');
+    this.subtextEl = document.getElementById('gl-subtext');
+    this.fillEl = document.getElementById('gl-progress-fill');
+    this.percentEl = document.getElementById('gl-percent');
+  },
+
+  update(percent, text, subtext) {
+    if (this.fillEl) this.fillEl.style.width = percent + '%';
+    if (this.percentEl) this.percentEl.textContent = Math.round(percent) + '%';
+    if (text && this.textEl) this.textEl.textContent = text;
+    if (subtext !== undefined && this.subtextEl) this.subtextEl.textContent = subtext;
+  },
+
+  hide() {
+    if (!this.el) return;
+    this.el.classList.add('hidden');
+    setTimeout(() => {
+      if (this.el) this.el.style.display = 'none';
+    }, 400);
+  },
+
+  show() {
+    if (!this.el) return;
+    this.el.style.display = 'flex';
+    setTimeout(() => this.el.classList.remove('hidden'), 10);
+  }
+};
 
 // ════════════════════════════════════════
 // RENDU COUVERTURE
@@ -296,16 +480,16 @@ function renderCouverture() {
   canvas.innerHTML = `
     <div style="width:100%;height:100%;display:flex;flex-direction:column;padding:24px 28px 30px;">
       <div style="background:linear-gradient(90deg,#1B4FDB,#7B20B4,#C8102E);padding:12px 24px;display:flex;justify-content:space-between;align-items:center;border-radius:8px;flex-shrink:0;">
-        <span style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:900;color:#fff;letter-spacing:1px;">Le Journal <span style="color:#C8102E;">EDEN</span></span>
+        <span style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:900;color:#fff;letter-spacing:1px;line-height:1.1;">ACADÉMIE<br><span style="font-size:0.85rem;letter-spacing:3px;">EDEN GROUP</span></span>
         <span style="font-size:1rem;font-weight:700;color:rgba(255,255,255,0.85);">N°${EDITION.numero}</span>
       </div>
       <div style="flex:1;overflow:hidden;min-height:0;margin:16px 0;border-radius:8px;">
         ${EDITION.image_une
           ? `<img src="${EDITION.image_une}" alt="Une" style="width:100%;height:100%;object-fit:cover;display:block;">`
-          : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:5rem;background:linear-gradient(135deg,rgba(27,79,219,0.3),rgba(200,16,46,0.2));border-radius:8px;">📰</div>`}
+          : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:5rem;background:linear-gradient(135deg,rgba(27,79,219,0.3),rgba(200,16,46,0.2));border-radius:8px;">🎓</div>`}
       </div>
       <div style="padding:12px 0 6px;flex-shrink:0;">
-        <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:4px;">EDEN GROUP · Gazette Foncière</div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:4px;">ACADÉMIE EDEN GROUP · Formation & Excellence</div>
         <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:#fff;line-height:1.2;">${esc(EDITION.titre)}</div>
         ${EDITION.sous_titre ? `<div style="font-size:1rem;color:rgba(255,255,255,0.7);margin-top:4px;font-style:italic;">${esc(EDITION.sous_titre)}</div>` : ''}
       </div>
@@ -319,62 +503,96 @@ function esc(str) {
 }
 
 // ════════════════════════════════════════
-// CHARGER LE PDF
+// CHARGER LE PDF (avec progression)
 // ════════════════════════════════════════
 async function chargerPdf() {
-  // Afficher d'abord la couverture immédiatement
+  GlobalLoader.init();
+  GlobalLoader.update(5, 'Initialisation…', 'Préparation de la couverture');
+
   renderCouverture();
   document.getElementById('page-info').textContent = 'Couverture';
   document.getElementById('nav-label').textContent = 'Couverture';
 
-  try {
-    pdfDoc = await pdfjsLib.getDocument(EDITION.pdf_url).promise;
-    totalPagesPdf = pdfDoc.numPages;
-    totalCartes = totalPagesPdf + 1;  // ✅ +1 pour la couverture
+  GlobalLoader.update(15, 'Chargement du document…', 'Connexion au serveur');
 
-    // Construire les dots
+  try {
+    const loadingTask = pdfjsLib.getDocument({
+      url: EDITION.pdf_url,
+      onProgress: (progress) => {
+        if (progress.total) {
+          const pct = 15 + (progress.loaded / progress.total) * 65;
+          GlobalLoader.update(
+            pct,
+            'Chargement du document…',
+            `${Math.round((progress.loaded / progress.total) * 100)}% reçus`
+          );
+        }
+      }
+    });
+
+    pdfDoc = await loadingTask.promise;
+    totalPagesPdf = pdfDoc.numPages;
+    totalCartes = totalPagesPdf + 1;
+
+    GlobalLoader.update(85, 'Préparation des pages…', `${totalPagesPdf} page(s) détectée(s)`);
+
     construireDots();
 
-    // Boutons
     document.getElementById('btn-prev').disabled = true;
     document.getElementById('btn-next').disabled = totalCartes <= 1;
 
-    // Appliquer zoom
-    appliquerZoomLecture();
+    if (totalPagesPdf > 0) {
+      GlobalLoader.update(92, 'Rendu de la première page…', 'Presque terminé…');
+      try {
+        await pdfDoc.getPage(1);
+      } catch (e) {
+        console.warn('Pré-chargement page 1 échoué:', e);
+      }
+    }
+
+    GlobalLoader.update(100, 'Document prêt !', 'Bonne lecture 📖');
+
+    setTimeout(() => {
+      GlobalLoader.hide();
+      appliquerZoomLecture();
+    }, 500);
+
   } catch (e) {
     console.error('Erreur PDF:', e);
-    // On garde la couverture, mais on affiche un message
+    GlobalLoader.update(100, '❌ Document indisponible', 'Vérifiez que le fichier existe');
+    setTimeout(() => GlobalLoader.hide(), 1500);
+
     const dotsEl = document.getElementById('nav-dots');
-    if (dotsEl) dotsEl.innerHTML = '<span style="color:#f87171;font-size:10px;">PDF indisponible</span>';
+    if (dotsEl) dotsEl.innerHTML = '<span style="color:#f87171;font-size:10px;">Document indisponible</span>';
     document.getElementById('btn-next').disabled = true;
   }
 }
 
 // ════════════════════════════════════════
-// AFFICHER UNE PAGE (couverture ou PDF)
+// AFFICHER UNE PAGE
 // ════════════════════════════════════════
 async function afficherCarte(index) {
   const canvas = document.getElementById('page-canvas');
-
-  // Fade out
   canvas.classList.add('fade-out');
   await new Promise(r => setTimeout(r, 200));
 
   if (index === 0) {
-    // ✅ COUVERTURE
     renderCouverture();
   } else {
-    // ✅ PAGE DU PDF
-    const pdfPageNum = index;  // index 1 → page PDF 1
+    const pdfPageNum = index;
     if (!pdfDoc || pdfPageNum < 1 || pdfPageNum > totalPagesPdf) return;
 
     canvas.style.background = '#FDFBF7';
     canvas.querySelectorAll('canvas').forEach(c => c.remove());
-    canvas.innerHTML = '<div class="pdf-loading"><div class="spinner"></div></div>';
+    canvas.innerHTML = `
+      <div class="pdf-loading">
+        <div class="spinner"></div>
+        <div>Chargement de la page ${pdfPageNum}…</div>
+        <div class="pdf-progress"><div class="pdf-progress-bar" style="width:40%"></div></div>
+      </div>`;
 
     try {
       const page = await pdfDoc.getPage(pdfPageNum);
-
       const viewportBase = page.getViewport({ scale: 1 });
       const scaleX = 595 / viewportBase.width;
       const scaleY = 842 / viewportBase.height;
@@ -401,10 +619,8 @@ async function afficherCarte(index) {
     }
   }
 
-  // Fade in
   canvas.classList.remove('fade-out');
 
-  // UI
   const progress = totalCartes > 1 ? (index / (totalCartes - 1)) * 100 : 100;
   document.getElementById('progress-bar').style.width = progress + '%';
   document.getElementById('btn-prev').disabled = index === 0;
@@ -483,7 +699,7 @@ function toggleRotation() {
 }
 
 // ════════════════════════════════════════
-// PLEIN ÉCRAN — ✅ nav-bar reste visible
+// PLEIN ÉCRAN
 // ════════════════════════════════════════
 function togglePleinEcran() {
   const btn = document.getElementById('btn-fullscreen');

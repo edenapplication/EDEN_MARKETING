@@ -501,7 +501,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
       <span class="sm-item-ico">📜</span>Reglementation <span class="sm-nb">{{ nb_textes }}</span>
     </a>
     <a class="sm-item" onclick="afficherSection('article','📄 Articles',this);return false;" href="#">
-      <span class="sm-item-ico">📄</span>Articles <span class="sm-nb">{{ nb_articles }}</span>
+      <span class="sm-item-ico">📄</span>Articles/Brochures <span class="sm-nb">{{ nb_articles }}</span>
     </a>
     <a class="sm-item" onclick="afficherSection('revue','📕 Revues',this);return false;" href="#">
       <span class="sm-item-ico">📕</span>Revues <span class="sm-nb">{{ nb_revues }}</span>
@@ -646,7 +646,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
       {% if articles_journal %}
       <div class="row-articles">
         <div class="section-hd">
-          <div><div class="section-tag">ARTICLES</div><div class="section-tit">Analyses &amp; conseils fonciers</div></div>
+          <div><div class="section-tag">ARTICLES/BROCHURES</div><div class="section-tit">Analyses &amp; conseils fonciers</div></div>
           <a class="voir-tout" href="#" onclick="afficherSection('article','📄 Articles',null);return false;">Voir tout →</a>
         </div>
         <div class="carousel-wrap" id="carousel-articles">

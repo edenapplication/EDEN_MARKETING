@@ -40,6 +40,10 @@ def splash(request):
     """Page de chargement avec animation 3D — redirige vers home après 5s"""
     return render(request, 'eden/splash.html')
 
+def splash_libre(request):
+    """Page de chargement avec animation 3D — redirige vers site_libre après 5s"""
+    return render(request, 'eden/splash_libre.html')
+
 def home(request):
     from .models import (
         HeroConfig, HeroSlide, ServiceItem, EtapeAcquisition,
@@ -5086,4 +5090,18 @@ def site_libre_detail(request, slug):
         'site': site,
         'parcelles': parcelles,
         'similaires': similaires,
-    })    
+    }) 
+
+# views.py
+def journal_pdf(request, numero):
+    edition = get_object_or_404(Edition, numero=numero)
+    # Si tu as un fichier PDF uploadé
+    if edition.fichier_pdf:
+        response = FileResponse(edition.fichier_pdf.open('rb'),
+                                content_type='application/pdf')
+        response['Content-Disposition'] = f'inline; filename="Journal_EDEN_N{numero}.pdf"'
+        return response
+    # Sinon génère un PDF dynamique
+    return render(request, 'journal_pdf.html', {'edition': edition},
+                  content_type='application/pdf')
+                     
