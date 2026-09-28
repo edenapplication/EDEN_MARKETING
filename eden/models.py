@@ -1340,13 +1340,17 @@ class EngagementService(models.Model):
 # MODULE ACADÉMIE EDEN GROUP
 # ─────────────────────────────────────────────
 
+# eden/models.py
+
 class AcademieCategorie(models.TextChoices):
-    TEXTE_LOI = 'texte_loi', 'Textes de loi'
-    LEXIQUE = 'lexique', 'Lexique du foncier'
-    VIDEO = 'video', 'Vidéothèque'
-    GALERIE = 'galerie', 'Galerie'
-    FAQ = 'faq', 'Questions fréquentes'
-    RESSOURCE = 'ressource', 'Centre de ressources'
+    TEXTE_LOI     = 'texte_loi',   'Textes de loi'
+    BROCHURE      = 'brochure',    'Brochures'         # ✅ NOUVEAU
+    GUIDE_PRATIQUE= 'guide_pratique', 'Guides pratiques'  # ✅ NOUVEAU
+    LEXIQUE       = 'lexique',     'Lexique du foncier'
+    VIDEO         = 'video',       'Vidéothèque'
+    GALERIE       = 'galerie',     'Galerie'
+    FAQ           = 'faq',         'Questions fréquentes'
+    RESSOURCE     = 'ressource',   'Centre de ressources'
 
 
 class AcademieDocument(models.Model):

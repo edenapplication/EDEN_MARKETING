@@ -27,29 +27,16 @@ body{font-family:'Outfit',sans-serif;background:#fff;color:var(--g800);overflow-
 ::-webkit-scrollbar{width:5px;}
 ::-webkit-scrollbar-thumb{background:var(--grad-h);border-radius:100px;}
 
-/* ══ NAV ══ */
+/* NAV */
 nav{
-    position:fixed;
-    top:0;
-    left:0;
-    right:0;
-    z-index:1000;
-    height:70px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:0 2rem;
-    background:transparent;
-    border-bottom:1px solid transparent;
-    box-shadow:none;
-    transition:background .4s ease, backdrop-filter .4s ease, border-color .4s ease, box-shadow .4s ease;
+    position:fixed;top:0;left:0;right:0;z-index:1000;height:70px;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 2rem;background:transparent;border-bottom:1px solid transparent;
+    box-shadow:none;transition:background .4s ease, backdrop-filter .4s ease, border-color .4s ease, box-shadow .4s ease;
 }
 nav.scrolled{
-    background:rgba(255,255,255,.92);
-    backdrop-filter:blur(22px);
-    -webkit-backdrop-filter:blur(22px);
-    border-bottom:1px solid rgba(226,232,240,.9);
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    background:rgba(255,255,255,.92);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+    border-bottom:1px solid rgba(226,232,240,.9);box-shadow:0 10px 30px rgba(0,0,0,.08);
 }
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
 .logo-box{width:42px;height:42px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#fff;}
@@ -74,13 +61,8 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .mob-menu .nav-lnk.active{color:var(--blue);}
 .mob-menu .nav-lnk.active::after{display:none;}
 
-/* ══ HERO ══ */
-.hero-academie{
-  position:relative;
-  height:min(80vh, 600px);
-  min-height:320px;
-  overflow:hidden;
-}
+/* HERO */
+.hero-academie{position:relative;height:min(80vh, 600px);min-height:320px;overflow:hidden;}
 .hero-bg{position:absolute;inset:0;}
 .hero-bg img{width:100%;height:100%;object-fit:cover;display:block;opacity:1;}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,15,50,.98) 0%,rgba(8,25,70,.92) 15%,rgba(10,30,80,.80) 30%,rgba(10,35,85,.65) 45%,rgba(10,35,85,.45) 55%,rgba(10,35,85,.25) 70%,rgba(10,35,85,.10) 85%,rgba(0,0,0,0) 100%);z-index:1;}
@@ -92,7 +74,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .hb-ico{width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
 .hb-txt{font-size:11px;color:rgba(255,255,255,0.85);font-weight:600;line-height:1.3;}
 
-/* ══ SEARCH BAR ══ */
+/* SEARCH BAR */
 .search-bar-ac{background:#fff;padding:0.8rem 2rem;border-bottom:1px solid var(--g200);display:flex;align-items:center;gap:1rem;}
 .search-bar-ac .sb-wrap{flex:1;max-width:600px;display:flex;align-items:center;background:var(--g50);border:1.5px solid var(--g200);border-radius:100px;padding:8px 18px;transition:all 0.2s;}
 .search-bar-ac .sb-wrap:focus-within{border-color:var(--blue);background:#fff;}
@@ -104,10 +86,10 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .search-bar-ac .sb-gestion{background:var(--blue);color:#fff;padding:8px 16px;border-radius:100px;font-size:12px;font-weight:700;text-decoration:none;transition:all 0.2s;white-space:nowrap;}
 .search-bar-ac .sb-gestion:hover{background:var(--blue-d);}
 
-/* ══ LAYOUT PRINCIPAL ══ */
+/* LAYOUT */
 .academie-layout{display:grid;grid-template-columns:220px 1fr;gap:0;max-width:1280px;margin:0 auto;}
 
-/* ══ MENU GAUCHE ══ */
+/* SIDEBAR */
 .sidebar-menu{background:#fff;border-right:1.5px solid var(--g200);padding:1.2rem 0;position:sticky;top:70px;height:calc(100vh - 70px);overflow-y:auto;}
 .sidebar-menu::-webkit-scrollbar{width:3px;}
 .sidebar-menu::-webkit-scrollbar-thumb{background:var(--grad-h);border-radius:100px;}
@@ -126,26 +108,21 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .btn-conseiller{background:var(--red);color:#fff;border:none;padding:9px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;width:100%;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s;}
 .btn-conseiller:hover{background:var(--red-d);}
 
-/* ══ CONTENU ACADÉMIE ══ */
+/* CONTENU */
 .academie-content{padding:2rem 2rem;background:var(--g50);}
 
-/* ══ SECTION TAGS ══ */
+/* SECTIONS */
 .section-tag{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g400);margin-bottom:2px;}
 .section-tit{font-size:0.95rem;font-weight:800;color:var(--g800);}
 .voir-tout{font-size:11px;font-weight:700;color:var(--blue);text-decoration:none;display:flex;align-items:center;gap:4px;transition:gap 0.2s;}
 .voir-tout:hover{gap:7px;}
 .section-hd{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:0.8rem;}
 
-/* ══ LIGNE 4 : PARCOURS | GALERIE | REVUE ══ */
 .row-3-col{display:grid;grid-template-columns:1fr 1.5fr 1fr;gap:1rem;margin-bottom:1.5rem;align-items:start;}
-
-/* ══ LIGNE 5 : ARTICLES ══ */
 .row-articles{margin-bottom:1.5rem;}
-
-/* ══ LIGNE 6 : 4 COLONNES ══ */
 .row-4-col{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1rem;margin-bottom:1.5rem;}
 
-/* ══ PARCOURS (accueil) ══ */
+/* PARCOURS */
 .acceuil .parcours-card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);padding:0.8rem;height:100%;display:flex;flex-direction:column;}
 .acceuil .parcours-card .ps-list{flex:1;}
 .acceuil .btn-parcours{width:100%;background:var(--grad);color:#fff;border:none;padding:8px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;display:flex;align-items:center;justify-content:center;gap:4px;margin-top:auto;}
@@ -157,17 +134,15 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .ps-tit{font-size:11px;font-weight:600;color:var(--g800);}
 .ps-sub{font-size:9px;color:var(--g400);}
 
-/* ══ CARROUSEL HORIZONTAL ══ */
+/* CARROUSEL */
 .carousel-wrap{overflow:hidden;position:relative;}
 .carousel-track{display:flex;transition:transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);}
 .carousel-nav{display:flex;gap:5px;margin-top:0.4rem;justify-content:flex-end;}
 .car-btn{width:28px;height:28px;border-radius:50%;background:#fff;border:1.5px solid var(--g200);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
 .car-btn:hover{background:var(--blue);color:#fff;border-color:var(--blue);}
-
-/* ══ SLIDE UNIQUE ══ */
 .slide-item{min-width:100%;padding:0 2px;flex-shrink:0;}
 
-/* ══ GALERIE (accueil) ══ */
+/* GALERIE */
 .galerie-item{width:100%;height:200px;border-radius:var(--rl);overflow:hidden;position:relative;cursor:pointer;}
 .galerie-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s;}
 .galerie-item:hover img{transform:scale(1.04);}
@@ -176,7 +151,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .galerie-desc{font-size:11px;color:rgba(255,255,255,0.8);margin-top:4px;}
 .galerie-container{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);padding:0.6rem;height:100%;display:flex;flex-direction:column;}
 
-/* ══ REVUE CARD ══ */
+/* REVUE */
 .revue-card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);overflow:hidden;display:flex;flex-direction:column;height:100%;}
 .revue-img{height:180px;overflow:hidden;background:var(--blue-pale);flex-shrink:0;}
 .revue-img img{width:100%;height:100%;object-fit:cover;display:block;}
@@ -190,7 +165,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .btn-lire-outline{background:transparent;color:var(--blue);border:1.5px solid var(--blue);}
 .btn-lire-outline:hover{background:var(--blue);color:#fff;}
 
-/* ══ ED CARD (articles) ══ */
+/* ED CARD */
 .ed-card{min-width:180px;max-width:180px;background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);overflow:hidden;cursor:pointer;transition:all 0.3s;flex-shrink:0;text-decoration:none;display:block;}
 .ed-card:hover{transform:translateY(-3px);box-shadow:var(--sh-lg);border-color:rgba(27,79,219,0.2);}
 .ed-img{height:90px;position:relative;overflow:hidden;background:var(--blue-pale);}
@@ -202,7 +177,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .ed-meta{font-size:8px;color:var(--g400);}
 .ed-ouvrir{font-size:9px;font-weight:700;color:var(--blue);margin-top:3px;display:flex;align-items:center;gap:3px;}
 
-/* ══ TEXTE DE LOI MINI ══ */
+/* DOC MINI */
 .doc-mini{display:flex;gap:6px;padding:0.5rem 0;border-bottom:1px solid var(--g100);cursor:pointer;transition:all 0.15s;text-decoration:none;}
 .doc-mini:last-child{border-bottom:none;padding-bottom:0;}
 .doc-mini:hover .dm-tit{color:var(--blue);}
@@ -216,7 +191,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .mini-section .scroll-vertical:hover{animation-play-state:paused;}
 @keyframes scrollVertical{0%{transform:translateY(0);}100%{transform:translateY(-50%);}}
 
-/* ══ VIDEO ══ */
+/* VIDEO */
 .video-card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);overflow:hidden;height:100%;display:flex;flex-direction:column;}
 .video-player-wrap{position:relative;background:#000;height:180px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
 .video-player-wrap img{width:100%;height:100%;object-fit:cover;}
@@ -229,7 +204,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .video-tit{font-size:12px;font-weight:700;color:var(--g800);line-height:1.3;margin-bottom:2px;}
 .video-desc{font-size:10px;color:var(--g500);line-height:1.4;}
 
-/* ══ GUIDE PRATIQUE ══ */
+/* GUIDE */
 .guide-card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);overflow:hidden;display:flex;flex-direction:column;height:100%;text-decoration:none;cursor:pointer;transition:all 0.3s;}
 .guide-card:hover{transform:translateY(-2px);box-shadow:var(--sh-lg);}
 .guide-img{height:180px;overflow:hidden;background:var(--blue-pale);flex-shrink:0;}
@@ -239,7 +214,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .guide-desc{font-size:10px;color:var(--g500);line-height:1.4;margin-bottom:6px;}
 .guide-btns{display:flex;gap:5px;margin-top:8px;}
 
-/* ══ FAQ CARD ══ */
+/* FAQ */
 .faq-card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);padding:0.8rem;display:flex;flex-direction:column;height:100%;overflow:hidden;}
 .faq-card .scroll-vertical{flex:1;overflow-y:auto;animation:scrollVertical 18s linear infinite;}
 .faq-card .scroll-vertical:hover{animation-play-state:paused;}
@@ -251,7 +226,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .faq-item-wrap{padding:0.6rem 0;border-bottom:1px solid var(--g100);}
 .faq-item-wrap:last-child{border-bottom:none;}
 
-/* ══ SECTION COMPLÈTE ══ */
+/* SECTION COMPLÈTE */
 .full-section{display:none;padding:1.5rem;background:#f5f6fa;}
 .full-section.visible{display:block;}
 .full-section .fs-header{background:#fff;border-radius:var(--rl);padding:0.8rem 1rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--sh);}
@@ -271,7 +246,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .full-section .ecf-btn{display:flex;align-items:center;justify-content:center;gap:4px;background:var(--blue);color:#fff;padding:5px 10px;border-radius:5px;font-size:10px;font-weight:700;text-decoration:none;width:100%;transition:all 0.2s;}
 .full-section .ecf-btn:hover{background:var(--blue-d);}
 
-/* ══ GALERIE GRID FULL ══ */
+/* GALERIE GRID */
 .galerie-grid-full{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;}
 .gf-item{height:140px;border-radius:var(--rl);overflow:hidden;position:relative;cursor:pointer;}
 .gf-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s;}
@@ -280,7 +255,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .gf-tit{font-size:10px;font-weight:700;color:#fff;}
 .gf-desc{font-size:9px;color:rgba(255,255,255,0.75);margin-top:2px;}
 
-/* ══ LEXIQUE ══ */
+/* LEXIQUE */
 .lexique-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px;}
 .lex-item{background:#fff;border-radius:var(--r);padding:0.6rem 0.8rem;box-shadow:var(--sh);border-left:3px solid var(--blue);}
 .lex-terme{font-size:12px;font-weight:800;color:var(--blue);margin-bottom:3px;}
@@ -308,7 +283,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .vm-tit{font-size:12px;font-weight:700;color:#fff;margin-bottom:2px;}
 .vm-meta{font-size:10px;color:rgba(255,255,255,0.5);}
 
-/* ✅ LIGHTBOX avec navigation */
+/* LIGHTBOX */
 .lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:3000;display:none;align-items:center;justify-content:center;padding:1rem;}
 .lightbox.open{display:flex;}
 .lb-img{max-width:90vw;max-height:85vh;object-fit:contain;border-radius:var(--r);}
@@ -317,45 +292,12 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .lb-info{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);padding:1rem;text-align:center;pointer-events:none;}
 .lb-tit{font-size:13px;font-weight:700;color:#fff;}
 .lb-desc{font-size:11px;color:rgba(255,255,255,0.7);margin-top:3px;}
-
-/* ✅ Flèches navigation lightbox */
-.lb-nav{
-  position:absolute;
-  top:50%;
-  transform:translateY(-50%);
-  width:52px;
-  height:52px;
-  border-radius:50%;
-  background:rgba(255,255,255,0.12);
-  border:2px solid rgba(255,255,255,0.3);
-  color:#fff;
-  font-size:28px;
-  font-weight:700;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  transition:all 0.2s;
-  z-index:15;
-  font-family:'Outfit',sans-serif;
-  padding-bottom:4px;
-}
-.lb-nav:hover{
-  background:rgba(255,255,255,0.25);
-  border-color:#fff;
-  transform:translateY(-50%) scale(1.1);
-}
-.lb-nav:active{
-  transform:translateY(-50%) scale(0.95);
-}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.3);color:#fff;font-size:28px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;z-index:15;font-family:'Outfit',sans-serif;padding-bottom:4px;}
+.lb-nav:hover{background:rgba(255,255,255,0.25);border-color:#fff;transform:translateY(-50%) scale(1.1);}
+.lb-nav:active{transform:translateY(-50%) scale(0.95);}
 .lb-nav-prev{left:1.5rem;}
 .lb-nav-next{right:1.5rem;}
-
-@media(max-width:768px){
-  .lb-nav{width:42px;height:42px;font-size:22px;}
-  .lb-nav-prev{left:8px;}
-  .lb-nav-next{right:8px;}
-}
+@media(max-width:768px){.lb-nav{width:42px;height:42px;font-size:22px;}.lb-nav-prev{left:8px;}.lb-nav-next{right:8px;}}
 
 .toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1px solid var(--g200);border-radius:var(--r);padding:10px 16px;font-size:12px;color:var(--g800);z-index:5000;display:flex;align-items:center;gap:8px;transform:translateY(80px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);max-width:320px;box-shadow:0 8px 32px rgba(0,0,0,0.12);}
 .toast.show{transform:none;opacity:1;}
@@ -378,7 +320,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .m-submit{width:100%;background:var(--red);border:none;color:#fff;padding:13px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;margin-top:6px;transition:all 0.2s;}
 .m-submit:hover{background:var(--red-d);}
 
-/* ══ FOOTER ══ */
+/* FOOTER */
 .footer-bar{height:3px;background:var(--grad-h);}
 footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1px solid #334155;}
 .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1.5fr;gap:2rem;max-width:1280px;margin:0 auto 2rem;}
@@ -407,7 +349,6 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
 .footer-links-bot a{font-size:12px;color:#64748B;text-decoration:none;transition:color 0.2s;}
 .footer-links-bot a:hover{color:#fff;}
 
-/* RESPONSIVE */
 @media(max-width:1200px){.row-4-col{grid-template-columns:1fr 1fr;}.row-3-col{grid-template-columns:1fr 1fr;}}
 @media(max-width:1024px){.academie-layout{grid-template-columns:1fr;}.sidebar-menu{position:static;height:auto;display:flex;flex-direction:row;overflow-x:auto;border-right:none;border-bottom:1.5px solid var(--g200);padding:0;}.sm-title{display:none;}.sm-item{padding:10px 14px;border-left:none;border-bottom:3px solid transparent;white-space:nowrap;}.sm-item.active,.sm-item.active-cat{border-bottom-color:var(--blue);border-left:none;}.sm-conseil-box{display:none;}.footer-grid{grid-template-columns:1fr 1fr;}}
 @media(max-width:900px){.row-3-col{grid-template-columns:1fr;}.row-4-col{grid-template-columns:1fr 1fr;}}
@@ -441,7 +382,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
   </div>
 </div>
 
-<!-- ✅ LIGHTBOX GALERIE avec navigation -->
+<!-- LIGHTBOX GALERIE -->
 <div class="lightbox" id="lightbox">
   <button class="lb-close" onclick="fermerLightbox()">✕</button>
   <button class="lb-nav lb-nav-prev" onclick="lbPrecedent(event)" aria-label="Image précédente">‹</button>
@@ -450,15 +391,14 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
   <div class="lb-info"><div class="lb-tit" id="lb-tit"></div><div class="lb-desc" id="lb-desc"></div></div>
 </div>
 
-
-<!-- ══ HERO ══ -->
+<!-- HERO -->
 <div class="hero-academie">
   <div class="hero-bg">
     {% if section_academie.image %}
-          <img src="{{ section_academie.image.url }}" alt="Académie EDEN GROUP">
-        {% else %}
-          <img src="{% static 'images/terrain.jpeg' %}" alt="Académie EDEN GROUP">
-        {% endif %}
+      <img src="{{ section_academie.image.url }}" alt="Académie EDEN GROUP">
+    {% else %}
+      <img src="{% static 'images/terrain.jpeg' %}" alt="Académie EDEN GROUP">
+    {% endif %}
   </div>
   <div class="hero-overlay"></div>
   <div class="hero-inner">
@@ -475,7 +415,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
   </div>
 </div>
 
-<!-- ══ SEARCH BAR ══ -->
+<!-- SEARCH BAR -->
 <div class="search-bar-ac">
   <div class="sb-wrap">
     <span class="sb-icon">🔍</span>
@@ -487,7 +427,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
   {% endif %}
 </div>
 
-<!-- ══ LAYOUT PRINCIPAL ══ -->
+<!-- LAYOUT PRINCIPAL -->
 <div class="academie-layout">
 
   <!-- MENU GAUCHE -->
@@ -501,7 +441,10 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
       <span class="sm-item-ico">📜</span>Reglementation <span class="sm-nb">{{ nb_textes }}</span>
     </a>
     <a class="sm-item" onclick="afficherSection('article','📄 Articles',this);return false;" href="#">
-      <span class="sm-item-ico">📄</span>Articles/Brochures <span class="sm-nb">{{ nb_articles }}</span>
+      <span class="sm-item-ico">📄</span>Articles <span class="sm-nb">{{ nb_articles }}</span>
+    </a>
+    <a class="sm-item" onclick="afficherSection('brochure','📘 Brochures',this);return false;" href="#">
+      <span class="sm-item-ico">📘</span>Brochures <span class="sm-nb">{{ nb_brochures }}</span>
     </a>
     <a class="sm-item" onclick="afficherSection('revue','📕 Revues',this);return false;" href="#">
       <span class="sm-item-ico">📕</span>Revues <span class="sm-nb">{{ nb_revues }}</span>
@@ -542,26 +485,31 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
     <!-- VUE ACCUEIL -->
     <div id="vue-accueil" class="acceuil">
 
-      <!-- ═══ LIGNE 4 : PARCOURS | GALERIE | REVUE ═══ -->
+      <!-- ═══ LIGNE 4 : BROCHURES | GALERIE | REVUE ═══ -->
       <div class="row-3-col">
 
-        <!-- PARCOURS INVESTISSEUR -->
+        <!-- ✅ BROCHURES (AcademieDocument catégorie='brochure') -->
         <div>
           <div class="section-hd">
-            <div><div class="section-tag">PARCOURS DE L'INVESTISSEUR</div></div>
+            <div><div class="section-tag">BROCHURES</div></div>
+            <a class="voir-tout" href="#" onclick="afficherSection('brochure','📘 Brochures',null);return false;">Voir tout →</a>
           </div>
-          <div class="parcours-card">
-            <div class="ps-list">
-              {% for etape in etapes_parcours %}
-              <div class="ps-item">
-                <div class="ps-num">{{ etape.numero }}</div>
-                <span class="ps-ico">{{ etape.icone }}</span>
-                <div>
-                  <div class="ps-tit">{{ etape.titre }}</div>
-                  {% if etape.description %}<div class="ps-sub">{{ etape.description }}</div>{% endif %}
-                </div>
-              </div>
-              {% endfor %}
+          <div class="mini-section" style="padding:0.6rem;">
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              {% if brochures %}
+                {% for brochure in brochures %}
+                <a class="doc-mini" href="{% url 'academie_telecharger' brochure.pk %}" style="padding:0.6rem;background:var(--blue-pale);border-radius:8px;border:none;margin-bottom:0;">
+                  <span class="dm-ico" style="font-size:1.4rem;">📘</span>
+                  <div class="dm-body">
+                    <div class="dm-tit" style="font-size:11px;font-weight:700;">{{ brochure.titre|truncatechars:40 }}</div>
+                    {% if brochure.sous_titre %}<div class="dm-meta">{{ brochure.sous_titre|truncatechars:50 }}</div>{% endif %}
+                    {% if brochure.nb_pages %}<div class="dm-dl">📄 {{ brochure.nb_pages }} page{{ brochure.nb_pages|pluralize }} · 📥 PDF</div>{% endif %}
+                  </div>
+                </a>
+                {% endfor %}
+              {% else %}
+                <div style="text-align:center;padding:1rem;color:var(--g400);font-size:11px;">Aucune brochure disponible.</div>
+              {% endif %}
             </div>
           </div>
         </div>
@@ -603,73 +551,59 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
           </div>
         </div>
 
-        <!-- REVUE EDEN GROUP -->
+        <!-- REVUES — JournalEdition type='revue' -->
         <div>
           <div class="section-hd">
-            <div><div class="section-tag">REVUE EDEN GROUP</div><div class="section-tit">Dernière parution</div></div>
+            <div><div class="section-tag">REVUES</div><div class="section-tit">Toutes les parutions</div></div>
             <a class="voir-tout" href="#" onclick="afficherSection('revue','📕 Revues',null);return false;">Voir tout →</a>
           </div>
-          <div class="carousel-wrap" id="carousel-revue">
-            <div class="carousel-track" id="track-revue">
-              {% if revues %}
-                {% for revue in revues %}
-                <div class="slide-item">
-                  <div class="revue-card">
-                    <div class="revue-img">
-                      {% if revue.image_une %}
-                        <img src="{{ revue.image_une.url }}" alt="{{ revue.titre }}">
-                      {% else %}<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--grad);font-size:2.5rem;">📕</div>{% endif %}
-                    </div>
-                    <div class="revue-body">
-                      <div class="revue-num">N°{{ revue.numero }}{% if revue.date_parution %} · {{ revue.date_parution|date:"M Y"|upper }}{% endif %}</div>
-                      <div class="revue-tit">{{ revue.titre }}</div>
-                      <div class="revue-btns">
-                        <a href="/journal/{{ revue.numero }}/?from=academie" class="btn-lire btn-lire-ol">📖 Lire en ligne</a>
-                      </div>
-                    </div>
-                  </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;max-height:400px;overflow-y:auto;">
+            {% if revues %}
+              {% for revue in revues %}
+              <div class="revue-card" style="height:auto;">
+                <div class="revue-img" style="height:120px;">
+                  {% if revue.image_une %}
+                    <img src="{{ revue.image_une.url }}" alt="{{ revue.titre }}">
+                  {% else %}
+                    <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--grad);font-size:2rem;">📕</div>
+                  {% endif %}
                 </div>
-                {% endfor %}
-              {% else %}
-                <div class="slide-item"><div style="height:200px;display:flex;align-items:center;justify-content:center;color:var(--g400);font-size:14px;background:var(--blue-pale);border-radius:var(--r);">Aucune revue</div></div>
-              {% endif %}
-            </div>
-          </div>
-          <div class="carousel-nav">
-            <button class="car-btn" onclick="scrollCarousel('revue',-1)">‹</button>
-            <button class="car-btn" onclick="scrollCarousel('revue',1)">›</button>
+                <div class="revue-body" style="padding:0.5rem;">
+                  <div class="revue-num" style="font-size:8px;">N°{{ revue.numero }}</div>
+                  <div class="revue-tit" style="font-size:11px;margin-bottom:4px;">{{ revue.titre|truncatechars:35 }}</div>
+                  <a href="{% url 'journal_lire' revue.numero %}?from=academie" class="btn-lire btn-lire-ol" style="padding:4px 10px;font-size:9px;">📖 Lire</a>
+                </div>
+              </div>
+              {% endfor %}
+            {% else %}
+              <div style="padding:1rem;text-align:center;color:var(--g400);font-size:12px;">Aucune revue</div>
+            {% endif %}
           </div>
         </div>
       </div>
 
-      <!-- ═══ LIGNE 5 : ARTICLES ═══ -->
-      {% if articles_journal %}
+      <!-- ═══ LIGNE 5 : ARTICLES — GRILLE COMPLÈTE (JournalEdition type='article') ═══ -->
+      {% if articles %}
       <div class="row-articles">
         <div class="section-hd">
-          <div><div class="section-tag">ARTICLES/BROCHURES</div><div class="section-tit">Analyses &amp; conseils fonciers</div></div>
+          <div><div class="section-tag">ARTICLES</div><div class="section-tit">Analyses &amp; conseils fonciers</div></div>
           <a class="voir-tout" href="#" onclick="afficherSection('article','📄 Articles',null);return false;">Voir tout →</a>
         </div>
-        <div class="carousel-wrap" id="carousel-articles">
-          <div class="carousel-track" id="track-articles">
-            {% for ed in articles_journal %}
-            <a class="ed-card" href="{% url 'journal_lire' ed.numero %}?from=academie">
-              <div class="ed-img">
-                {% if ed.image_une %}<img src="{{ ed.image_une.url }}" alt="{{ ed.titre }}">
-                {% else %}<div class="ed-img-ph">📄</div>{% endif %}
-              </div>
-              <div class="ed-body">
-                <div class="ed-type">Article</div>
-                <div class="ed-tit">{{ ed.titre|truncatechars:35 }}</div>
-                {% if ed.date_parution %}<div class="ed-meta">📅 {{ ed.date_parution|date:"d M Y" }}</div>{% endif %}
-                <div class="ed-ouvrir">📖 Lire →</div>
-              </div>
-            </a>
-            {% endfor %}
-          </div>
-        </div>
-        <div class="carousel-nav">
-          <button class="car-btn" onclick="scrollCarousel('articles',-1)">‹</button>
-          <button class="car-btn" onclick="scrollCarousel('articles',1)">›</button>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;">
+          {% for ed in articles %}
+          <a class="ed-card" href="{% url 'journal_lire' ed.numero %}?from=academie" style="min-width:auto;max-width:100%;">
+            <div class="ed-img">
+              {% if ed.image_une %}<img src="{{ ed.image_une.url }}" alt="{{ ed.titre }}">
+              {% else %}<div class="ed-img-ph">📄</div>{% endif %}
+            </div>
+            <div class="ed-body">
+              <div class="ed-type">Article</div>
+              <div class="ed-tit">{{ ed.titre|truncatechars:45 }}</div>
+              {% if ed.date_parution %}<div class="ed-meta">📅 {{ ed.date_parution|date:"d M Y" }}</div>{% endif %}
+              <div class="ed-ouvrir">📖 Lire →</div>
+            </div>
+          </a>
+          {% endfor %}
         </div>
       </div>
       {% endif %}
@@ -677,7 +611,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
       <!-- ═══ LIGNE 6 : 4 COLONNES ═══ -->
       <div class="row-4-col">
 
-        <!-- TEXTES DE LOI -->
+        <!-- TEXTES DE LOI (AcademieDocument) -->
         <div>
           <div class="section-hd">
             <div><div class="section-tag">REGLEMENTATION</div></div>
@@ -686,16 +620,6 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
           <div class="mini-section">
             <div class="scroll-vertical">
               {% if textes_loi %}
-                {% for doc in textes_loi %}
-                <a class="doc-mini" href="{% url 'academie_telecharger' doc.pk %}">
-                  <span class="dm-ico">📜</span>
-                  <div class="dm-body">
-                    <div class="dm-tit">{% if doc.reference_officielle %}{{ doc.reference_officielle }}{% else %}{{ doc.titre|truncatechars:30 }}{% endif %}</div>
-                    {% if doc.date_publication %}<div class="dm-meta">{{ doc.date_publication|date:"d M Y" }}</div>{% endif %}
-                    <div class="dm-dl">📥 Télécharger PDF</div>
-                  </div>
-                </a>
-                {% endfor %}
                 {% for doc in textes_loi %}
                 <a class="doc-mini" href="{% url 'academie_telecharger' doc.pk %}">
                   <span class="dm-ico">📜</span>
@@ -752,10 +676,10 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
           </div>
         </div>
 
-        <!-- GUIDE PRATIQUE -->
+        <!-- ✅ GUIDE PRATIQUE — JournalEdition type='guide' -->
         <div>
           <div class="section-hd">
-            <div><div class="section-tag">GUIDE PRATIQUE</div></div>
+            <div><div class="section-tag">GUIDES PRATIQUES</div></div>
             <a class="voir-tout" href="#" onclick="afficherSection('guide','📚 Guides pratiques',null);return false;">Voir tout →</a>
           </div>
           <div class="carousel-wrap" id="carousel-guide">
@@ -763,7 +687,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
               {% if guides %}
                 {% for guide in guides %}
                 <div class="slide-item">
-                  <a class="guide-card" href="/journal/{{ guide.numero }}/?from=academie">
+                  <a class="guide-card" href="{% url 'journal_lire' guide.numero %}?from=academie">
                     <div class="guide-img">
                       {% if guide.image_une %}
                         <img src="{{ guide.image_une.url }}" alt="{{ guide.titre }}">
@@ -774,8 +698,9 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
                     <div class="guide-body">
                       <div class="guide-tit">{{ guide.titre }}</div>
                       {% if guide.sous_titre %}<div class="guide-desc">{{ guide.sous_titre|truncatechars:80 }}</div>{% endif %}
+                      {% if guide.date_parution %}<div style="font-size:9px;color:var(--g400);margin-top:3px;">📅 {{ guide.date_parution|date:"d M Y" }}</div>{% endif %}
                       <div class="guide-btns">
-                        <span class="btn-lire btn-lire-ol">📖 Lire en ligne</span>
+                        <span class="btn-lire btn-lire-ol">📖 Lire</span>
                       </div>
                     </div>
                   </a>
@@ -809,14 +734,6 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
                   <a class="faq-voir" href="#" onclick="afficherSection('faq','❓ FAQ',null);return false;">Réponse complète →</a>
                 </div>
                 {% endfor %}
-                {% for faq in faqs %}
-                <div class="faq-item-wrap">
-                  <div class="faq-q"><span class="faq-q-prefix">Q.</span>{{ faq.question|truncatechars:60 }}</div>
-                  <div class="faq-r">{{ faq.reponse|truncatechars:150 }}</div>
-                  {% if faq.temps_reponse %}<div class="faq-temps">⏱ {{ faq.temps_reponse }}</div>{% endif %}
-                  <a class="faq-voir" href="#" onclick="afficherSection('faq','❓ FAQ',null);return false;">Réponse complète →</a>
-                </div>
-                {% endfor %}
               {% else %}
                 <div style="text-align:center;padding:1.5rem;color:var(--g400);font-size:11px;">Aucune FAQ publiée.</div>
               {% endif %}
@@ -839,21 +756,33 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
   </div><!-- fin academie-content -->
 </div><!-- fin academie-layout -->
 
-
-<!-- ══ SCRIPTS ══ -->
+<!-- SCRIPTS -->
 <script>
+// ══════════════════════════════════════════════════════════════
+// DONNÉES JSON (Articles / Revues / Guides = JournalEdition)
+// ══════════════════════════════════════════════════════════════
 const EDITIONS_DATA = {
-  article: [{% for ed in articles %}{pk:{{ ed.pk }},titre:'{{ ed.titre|escapejs }}',sous_titre:'{{ ed.sous_titre|escapejs }}',num:'{{ ed.numero }}',date:'{% if ed.date_parution %}{{ ed.date_parution|date:"d M Y" }}{% endif %}',image:'{% if ed.image_une %}{{ ed.image_une.url }}{% endif %}',url:'/journal/{{ ed.numero }}/?from=academie',type:'article'},{% endfor %}],
-  revue: [{% for ed in revues %}{pk:{{ ed.pk }},titre:'{{ ed.titre|escapejs }}',sous_titre:'{{ ed.sous_titre|escapejs }}',num:'{{ ed.numero }}',date:'{% if ed.date_parution %}{{ ed.date_parution|date:"d M Y" }}{% endif %}',image:'{% if ed.image_une %}{{ ed.image_une.url }}{% endif %}',url:'/journal/{{ ed.numero }}/?from=academie',type:'revue'},{% endfor %}],
-  guide: [{% for ed in guides %}{pk:{{ ed.pk }},titre:'{{ ed.titre|escapejs }}',sous_titre:'{{ ed.sous_titre|escapejs }}',num:'{{ ed.numero }}',date:'{% if ed.date_parution %}{{ ed.date_parution|date:"d M Y" }}{% endif %}',image:'{% if ed.image_une %}{{ ed.image_une.url }}{% endif %}',url:'/journal/{{ ed.numero }}/?from=academie',type:'guide'},{% endfor %}],
+  article: [{% for ed in articles %}{pk:{{ ed.pk }},titre:'{{ ed.titre|escapejs }}',sous_titre:'{{ ed.sous_titre|escapejs }}',num:'{{ ed.numero }}',date:'{% if ed.date_parution %}{{ ed.date_parution|date:"d M Y" }}{% endif %}',image:'{% if ed.image_une %}{{ ed.image_une.url }}{% endif %}',url:'{% url "journal_lire" ed.numero %}?from=academie',type:'article'},{% endfor %}],
+  revue: [{% for ed in revues %}{pk:{{ ed.pk }},titre:'{{ ed.titre|escapejs }}',sous_titre:'{{ ed.sous_titre|escapejs }}',num:'{{ ed.numero }}',date:'{% if ed.date_parution %}{{ ed.date_parution|date:"d M Y" }}{% endif %}',image:'{% if ed.image_une %}{{ ed.image_une.url }}{% endif %}',url:'{% url "journal_lire" ed.numero %}?from=academie',type:'revue'},{% endfor %}],
+  guide: [{% for ed in guides %}{pk:{{ ed.pk }},titre:'{{ ed.titre|escapejs }}',sous_titre:'{{ ed.sous_titre|escapejs }}',num:'{{ ed.numero }}',date:'{% if ed.date_parution %}{{ ed.date_parution|date:"d M Y" }}{% endif %}',image:'{% if ed.image_une %}{{ ed.image_une.url }}{% endif %}',url:'{% url "journal_lire" ed.numero %}?from=academie',type:'guide'},{% endfor %}],
 };
+
 const TEXTES_LOI = [{% for doc in textes_loi %}{pk:{{ doc.pk }},titre:'{{ doc.titre|escapejs }}',ref:'{{ doc.reference_officielle|escapejs }}',date:'{% if doc.date_publication %}{{ doc.date_publication|date:"d M Y" }}{% endif %}',desc:'{{ doc.description|escapejs|truncatechars:120 }}',hasPdf:{{ doc.fichier_pdf|yesno:"true,false" }},urlDl:'{% url "academie_telecharger" doc.pk %}'},{% endfor %}];
+
 const LEXIQUE_DATA = [{% for doc in lexique %}{titre:'{{ doc.titre|escapejs }}',desc:'{{ doc.description|escapejs }}'},{% endfor %}];
+
 const GALERIE_DATA = [{% for img in galerie %}{titre:'{{ img.titre|escapejs }}',desc:'{{ img.description|escapejs }}',image:'{% if img.image_couverture %}{{ img.image_couverture.url }}{% endif %}'},{% endfor %}];
+
 const VIDEOS_DATA = [{% for v in videos %}{pk:{{ v.pk }},titre:'{{ v.titre|escapejs }}',desc:'{{ v.description|escapejs|truncatechars:100 }}',duree:'{{ v.duree|escapejs }}',auteur:'{{ v.auteur|escapejs }}',miniature:'{% if v.image_miniature %}{{ v.image_miniature.url }}{% endif %}',url:'{% url "academie_voir_video" v.pk %}'},{% endfor %}];
+
 const FAQS_DATA = [{% for f in faqs %}{question:'{{ f.question|escapejs }}',reponse:'{{ f.reponse|escapejs }}',tps:'{{ f.temps_reponse|escapejs }}'},{% endfor %}];
 
-// ══ CARROUSELS ══
+// Brochures (AcademieDocument catégorie='brochure')
+const BROCHURES_DATA = [{% for b in brochures %}{pk:{{ b.pk }},titre:'{{ b.titre|escapejs }}',sous_titre:'{{ b.sous_titre|escapejs }}',desc:'{{ b.description|escapejs|truncatechars:120 }}',image:'{% if b.image_couverture %}{{ b.image_couverture.url }}{% endif %}',urlDl:'{% url "academie_telecharger" b.pk %}',nbPages:{{ b.nb_pages|default:0 }}},{% endfor %}];
+
+// ══════════════════════════════════════════════════════════════
+// CARROUSELS
+// ══════════════════════════════════════════════════════════════
 const carPositions = {};
 const carTimers = {};
 
@@ -889,23 +818,14 @@ function startAutoScroll(id, interval) {
 document.addEventListener('DOMContentLoaded', function() {
   setTimeout(function() {
     startAutoScroll('galerie-haut', 4000);
-    startAutoScroll('revue', 4500);
     startAutoScroll('video', 4000);
     startAutoScroll('guide', 4500);
-    const articlesTrack = document.getElementById('track-articles');
-    if (articlesTrack && articlesTrack.children.length > 0) {
-      let pos = 0;
-      const max = Math.max(0, (articlesTrack.children.length - 4) * 190);
-      setInterval(function() {
-        pos += 190;
-        if (pos > max) pos = 0;
-        articlesTrack.style.transform = `translateX(-${pos}px)`;
-      }, 4000);
-    }
   }, 1000);
 });
 
-// ══ NAVIGATION SIDEBAR ══
+// ══════════════════════════════════════════════════════════════
+// NAVIGATION ENTRE VUES
+// ══════════════════════════════════════════════════════════════
 function afficherAccueil(el) {
   document.getElementById('vue-accueil').style.display = 'block';
   document.getElementById('vue-section').classList.remove('visible');
@@ -930,9 +850,31 @@ function afficherSection(cat, label, el) {
   else if (cat === 'galerie') content.innerHTML = rendreGalerie();
   else if (cat === 'texte_loi') content.innerHTML = rendreTextesLoi();
   else if (cat === 'ressource') content.innerHTML = rendreCentreRessources();
+  else if (cat === 'brochure') content.innerHTML = rendreBrochures();
   else if (['article','revue','guide'].includes(cat)) content.innerHTML = rendreEditions(cat);
   else content.innerHTML = `<div style="text-align:center;padding:3rem;color:var(--g400);">Section en cours de construction.</div>`;
   sec.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ══════════════════════════════════════════════════════════════
+// RENDU DES SECTIONS
+// ══════════════════════════════════════════════════════════════
+function rendreBrochures() {
+  const items = BROCHURES_DATA;
+  if (!items.length) return `<div style="text-align:center;padding:3rem;color:var(--g400);"><div style="font-size:3rem;margin-bottom:1rem;">📘</div>Aucune brochure disponible.</div>`;
+  return `<div class="fs-grid">${items.map(d => `
+    <a class="ed-card-full" href="${d.urlDl}" download>
+      <div class="ecf-img">
+        ${d.image ? `<img src="${d.image}" alt="${d.titre}">` : `<div class="ecf-img-ph">📘</div>`}
+        <span class="ecf-type">Brochure</span>
+      </div>
+      <div class="ecf-body">
+        <div class="ecf-tit">${d.titre}</div>
+        <div class="ecf-meta">${d.nbPages > 0 ? '📄 '+d.nbPages+' page(s)' : ''}</div>
+        ${d.desc ? `<div style="font-size:10px;color:var(--g500);line-height:1.5;margin-bottom:0.5rem;">${d.desc}...</div>` : ''}
+        <span class="ecf-btn">📥 Télécharger</span>
+      </div>
+    </a>`).join('')}</div>`;
 }
 
 function rendreEditions(cat) {
@@ -1053,6 +995,9 @@ function rendreCentreRessources() {
   if (EDITIONS_DATA.guide.length) {
     html += `<div><div style="font-size:11px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.8rem;">📚 Guides pratiques (${EDITIONS_DATA.guide.length})</div><div class="fs-grid">${EDITIONS_DATA.guide.map(d => `<a class="ed-card-full" href="${d.url}" style="display:block;"><div class="ecf-img">${d.image ? `<img src="${d.image}" alt="${d.titre}">` : '<div class="ecf-img-ph">📚</div>'}<span class="ecf-type">Guide</span></div><div class="ecf-body"><div class="ecf-tit">${d.titre}</div><div class="ecf-meta">${d.date||''}</div><span class="ecf-btn">📖 Lire</span></div></a>`).join('')}</div></div>`;
   }
+  if (BROCHURES_DATA.length) {
+    html += `<div><div style="font-size:11px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.8rem;">📘 Brochures (${BROCHURES_DATA.length})</div><div class="fs-grid">${BROCHURES_DATA.map(d => `<a class="ed-card-full" href="${d.urlDl}" download style="display:block;"><div class="ecf-img">${d.image ? `<img src="${d.image}" alt="${d.titre}">` : '<div class="ecf-img-ph">📘</div>'}<span class="ecf-type">Brochure</span></div><div class="ecf-body"><div class="ecf-tit">${d.titre}</div><span class="ecf-btn">📥 Télécharger</span></div></a>`).join('')}</div></div>`;
+  }
   if (TEXTES_LOI.length) {
     html += `<div><div style="font-size:11px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.8rem;">📜 Reglementation</div><div class="fs-grid">${TEXTES_LOI.map(d => `<div style="background:#fff;border-radius:var(--rl);box-shadow:var(--sh);padding:1rem;"><div style="font-size:1.2rem;margin-bottom:0.4rem;">📜</div><div style="font-size:12px;font-weight:700;color:var(--g800);margin-bottom:4px;">${d.ref||d.titre}</div><div style="font-size:10px;color:var(--g400);">${d.date||''}</div>${d.hasPdf ? `<a href="${d.urlDl}" style="display:inline-flex;align-items:center;gap:4px;margin-top:8px;font-size:11px;font-weight:700;color:var(--blue);text-decoration:none;" download>📥 Télécharger</a>` : ''}</div>`).join('')}</div></div>`;
   }
@@ -1077,6 +1022,9 @@ function rendrePoseQuestion() {
   </div>`;
 }
 
+// ══════════════════════════════════════════════════════════════
+// INTERACTIONS
+// ══════════════════════════════════════════════════════════════
 function toggleFAQ(idx) {
   const item = document.getElementById(`faq-${idx}`);
   if (!item) return;
@@ -1103,35 +1051,26 @@ document.getElementById('video-modal').addEventListener('click', function(e) {
   if (e.target === this) fermerVideo();
 });
 
-// ══════════════════════════════════════════════
-// ✅ LIGHTBOX GALERIE — avec navigation
-// ══════════════════════════════════════════════
+// LIGHTBOX
 let lbIndex = 0;
 let lbImages = [];
 
 function ouvrirLightbox(src, titre, desc, index) {
   if (!src) return;
-
-  // Construire la liste des images
   lbImages = GALERIE_DATA.filter(img => img.image);
-
   if (typeof index === 'number' && index >= 0) {
     lbIndex = index;
   } else {
     lbIndex = lbImages.findIndex(img => img.image === src);
     if (lbIndex < 0) lbIndex = 0;
   }
-
   afficherImageLightbox(lbIndex);
   document.getElementById('lightbox').classList.add('open');
 }
 
 function afficherImageLightbox(idx) {
   if (!lbImages.length) return;
-
-  // Boucle circulaire
   lbIndex = ((idx % lbImages.length) + lbImages.length) % lbImages.length;
-
   const img = lbImages[lbIndex];
   document.getElementById('lb-img').src = img.image;
   document.getElementById('lb-tit').textContent = img.titre || '';
@@ -1159,39 +1098,23 @@ document.getElementById('lightbox').addEventListener('click', function(e) {
   if (e.target === this) fermerLightbox();
 });
 
-// Navigation clavier
 document.addEventListener('keydown', e => {
   const lightboxOpen = document.getElementById('lightbox').classList.contains('open');
-
   if (lightboxOpen) {
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-      e.preventDefault();
-      lbSuivant();
-    }
-    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-      e.preventDefault();
-      lbPrecedent();
-    }
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); lbSuivant(); }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); lbPrecedent(); }
   }
-
-  if (e.key === 'Escape') {
-    fermerVideo();
-    fermerLightbox();
-  }
+  if (e.key === 'Escape') { fermerVideo(); fermerLightbox(); }
 });
 
-// Navigation tactile (swipe) sur mobile
 let lbTouchStartX = 0;
 let lbTouchEndX = 0;
-
 document.getElementById('lightbox').addEventListener('touchstart', function(e) {
   lbTouchStartX = e.changedTouches[0].screenX;
 }, { passive: true });
-
 document.getElementById('lightbox').addEventListener('touchend', function(e) {
   lbTouchEndX = e.changedTouches[0].screenX;
   const diff = lbTouchStartX - lbTouchEndX;
-
   if (Math.abs(diff) > 50) {
     if (diff > 0) lbSuivant();
     else lbPrecedent();
@@ -1208,39 +1131,27 @@ function showToast(ico, msg) {
 
 window.addEventListener('scroll', function() {
     const nav = document.getElementById('navbar');
-    if (window.scrollY > 40) {
-        nav.classList.add('scrolled');
-    } else {
-        nav.classList.remove('scrolled');
-    }
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    const nav = document.getElementById('navbar');
-    if (window.scrollY > 40) {
-        nav.classList.add('scrolled');
-    } else {
-        nav.classList.remove('scrolled');
-    }
+    if (!nav) return;
+    if (window.scrollY > 40) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
 });
 
 function toggleMob(){
-    document.getElementById('mob-menu').classList.toggle('open');
+    document.getElementById('mob-menu')?.classList.toggle('open');
 }
 
 document.querySelectorAll('.mob-menu .nav-lnk').forEach(link => {
     link.addEventListener('click', function() {
-        document.getElementById('mob-menu').classList.remove('open');
+        document.getElementById('mob-menu')?.classList.remove('open');
     });
 });
 
-// ═══════════════════════════════════════════════════════════════
-// OUVERTURE AUTOMATIQUE D'UNE SECTION VIA URL
-// ═══════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════
+// GESTION URL ?section=xxx
+// ══════════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const section = urlParams.get('section');
-    
     if (section) {
         setTimeout(function() {
             const labels = {
@@ -1252,16 +1163,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 'video': '🎬 Vidéothèque',
                 'galerie': '🖼 Galerie',
                 'faq': '❓ FAQ',
+                'brochure': '📘 Brochures',
             };
-            
             const label = labels[section] || '📂 Section';
             afficherSection(section, label, null);
-            
             history.replaceState(null, '', window.location.pathname);
         }, 300);
     }
 });
-
 </script>
 </body>
 </html>

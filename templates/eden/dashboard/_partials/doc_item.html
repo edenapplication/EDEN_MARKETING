@@ -1,0 +1,163 @@
+{# ✅ Partial — Bloc document — Textes de loi + Brochures #}
+
+<div class="doc-item" id="doc-item-{{ index }}">
+
+  {# ── En-tête du bloc ── #}
+  <div class="doc-item-header">
+    <div class="doc-item-title">
+      📄 Document <span class="item-counter" id="counter-{{ index }}">#{{ index|add:"1" }}</span>
+    </div>
+
+    {% if not doc %}
+    <button type="button"
+            class="btn-remove-item"
+            onclick="retirerDocument('{{ index }}')"
+            title="Supprimer ce document">
+      ✕
+    </button>
+    {% endif %}
+  </div>
+
+  {# ── Catégorie (2 choix uniquement) ── #}
+  <div class="form-grid">
+    <div class="fg">
+      <label>Catégorie *</label>
+      <select name="categorie_{{ index }}" required>
+        <option value="texte_loi"
+          {% if doc and doc.categorie == 'texte_loi' %}selected
+          {% elif not doc and categorie_pre == 'texte_loi' %}selected
+          {% endif %}>
+          📜 Texte de loi
+        </option>
+        <option value="brochure"
+          {% if doc and doc.categorie == 'brochure' %}selected
+          {% elif not doc and categorie_pre == 'brochure' %}selected
+          {% endif %}>
+          📘 Brochure
+        </option>
+      </select>
+    </div>
+    <div class="fg">
+      <label>Ordre d'affichage</label>
+      <input type="number"
+             name="ordre_{{ index }}"
+             value="{{ doc.ordre|default:'0' }}"
+             min="0">
+    </div>
+  </div>
+
+  {# ── Titre ── #}
+  <div class="fg">
+    <label>Titre *</label>
+    <input type="text"
+           name="titre_{{ index }}"
+           value="{{ doc.titre|default:'' }}"
+           placeholder="Ex: Loi n° 76/155 du 27 juillet 1976 portant Code de l'Urbanisme"
+           required>
+  </div>
+
+  {# ── Sous-titre ── #}
+  <div class="fg">
+    <label>Sous-titre / Accroche</label>
+    <input type="text"
+           name="sous_titre_{{ index }}"
+           value="{{ doc.sous_titre|default:'' }}"
+           placeholder="Résumé en une phrase...">
+  </div>
+
+  {# ── Description ── #}
+  <div class="fg">
+    <label>Description</label>
+    <textarea name="description_{{ index }}"
+              rows="3"
+              placeholder="Description complète du document...">{{ doc.description|default:'' }}</textarea>
+  </div>
+
+  {# ── Auteur + Date ── #}
+  <div class="form-grid">
+    <div class="fg">
+      <label>Auteur / Source</label>
+      <input type="text"
+             name="auteur_{{ index }}"
+             value="{{ doc.auteur|default:'' }}"
+             placeholder="Ex: Ministère du Cadastre">
+    </div>
+    <div class="fg">
+      <label>Date de publication</label>
+      <input type="date"
+             name="date_publication_{{ index }}"
+             value="{{ doc.date_publication|date:'Y-m-d'|default:'' }}">
+    </div>
+  </div>
+
+  {# ── Référence officielle + Numéro revue ── #}
+  <div class="form-grid">
+    <div class="fg">
+      <label>Référence officielle</label>
+      <input type="text"
+             name="reference_officielle_{{ index }}"
+             value="{{ doc.reference_officielle|default:'' }}"
+             placeholder="Ex: Décret n° 2005/481">
+    </div>
+    <div class="fg">
+      <label>Numéro de revue</label>
+      <input type="text"
+             name="numero_revue_{{ index }}"
+             value="{{ doc.numero_revue|default:'' }}"
+             placeholder="Ex: 04">
+    </div>
+  </div>
+
+  {# ── Pages + Temps lecture ── #}
+  <div class="form-grid">
+    <div class="fg">
+      <label>Nombre de pages</label>
+      <input type="number"
+             name="nb_pages_{{ index }}"
+             value="{{ doc.nb_pages|default:'' }}"
+             min="1">
+    </div>
+    <div class="fg">
+      <label>Temps de lecture</label>
+      <input type="text"
+             name="temps_lecture_{{ index }}"
+             value="{{ doc.temps_lecture|default:'' }}"
+             placeholder="Ex: 6 min de lecture">
+    </div>
+  </div>
+
+  {# ── Image de couverture ── #}
+  <div class="fg">
+    <label>Image de couverture</label>
+    {% if doc and doc.image_couverture %}
+      <img src="{{ doc.image_couverture.url }}"
+           class="preview-img"
+           id="preview-{{ index }}"
+           style="display:block;"
+           alt="">
+    {% else %}
+      <img class="preview-img" id="preview-{{ index }}" alt="">
+    {% endif %}
+    <input type="file"
+           name="image_couverture_{{ index }}"
+           accept="image/*"
+           onchange="previewImg(this, '{{ index }}')">
+    <div class="hint">JPG ou PNG. Recommandé : 600×850px (portrait A4).</div>
+  </div>
+
+  {# ── Fichier PDF ── #}
+  <div class="fg">
+    <label>Fichier PDF {% if not doc %}*{% endif %}</label>
+    {% if doc and doc.fichier_pdf %}
+      <div class="pdf-existing">
+        <span style="font-size:1.2rem;">📄</span>
+        <span>Fichier actuel : <strong>{{ doc.fichier_pdf.name|truncatechars:50 }}</strong></span>
+      </div>
+    {% endif %}
+    <input type="file"
+           name="fichier_pdf_{{ index }}"
+           accept=".pdf,application/pdf">
+    <div class="hint">Fichier PDF uniquement. Téléchargeable par les visiteurs.</div>
+  </div>
+
+</div>

@@ -1557,77 +1557,160 @@ def dashboard_journal(request):
 @login_required
 @user_passes_test(is_agent)
 def dashboard_journal_edition_form(request, pk=None):
+    """
+    Formulaire multiple — Création de N éditions du journal en 1 submit.
+    Supporte aussi la modification (1 seule édition).
+    """
     from .models import JournalEdition
+    from datetime import date
     import uuid as _uuid
+
     edition = get_object_or_404(JournalEdition, pk=pk) if pk else None
 
+    PREFIXES = {
+        'journal': 'JNL',
+        'article': 'ART',
+        'revue':   'REV',
+        'guide':   'GUI',
+    }
+
+    # ─────────────────────────────────────────────────────────
+    # MODE MODIFICATION (une seule édition)
+    # ─────────────────────────────────────────────────────────
+    if edition:
+        if request.method == 'POST':
+            titre = request.POST.get('titre_0', '').strip()
+            if not titre:
+                messages.error(request, 'Le titre est obligatoire.')
+                return render(request, 'eden/dashboard/journal_edition_form.html', {
+                    'edition': edition
+                })
+
+            edition.titre = titre
+            edition.sous_titre = request.POST.get('sous_titre_0', '').strip()
+            edition.type_academie = request.POST.get('type_academie_0', edition.type_academie)
+            edition.statut = request.POST.get('statut_0', edition.statut)
+
+            # Numéro
+            numero = request.POST.get('numero_0', '').strip()
+            if numero:
+                qs_check = JournalEdition.objects.filter(numero=numero).exclude(pk=edition.pk)
+                if qs_check.exists():
+                    messages.error(request, f'Le numéro "{numero}" existe déjà.')
+                    return render(request, 'eden/dashboard/journal_edition_form.html', {
+                        'edition': edition
+                    })
+                edition.numero = numero
+
+            # Date
+            date_str = request.POST.get('date_parution_0', '').strip()
+            if date_str:
+                try:
+                    edition.date_parution = date.fromisoformat(date_str)
+                except ValueError:
+                    pass
+
+            # Fichiers
+            if request.FILES.get('image_une_0'):
+                edition.image_une = request.FILES['image_une_0']
+            if request.FILES.get('fichier_pdf_0'):
+                edition.fichier_pdf = request.FILES['fichier_pdf_0']
+
+            edition.save()
+            messages.success(request, f'✅ "{edition.titre}" enregistrée.')
+            return redirect('dashboard_journal')
+
+        return render(request, 'eden/dashboard/journal_edition_form.html', {
+            'edition': edition
+        })
+
+    # ─────────────────────────────────────────────────────────
+    # MODE CRÉATION MULTIPLE
+    # ─────────────────────────────────────────────────────────
     if request.method == 'POST':
-        titre = request.POST.get('titre', '').strip()
-        if not titre:
-            messages.error(request, 'Le titre est obligatoire.')
-            return render(request, 'eden/dashboard/journal_edition_form.html', {
-                'edition': edition
-            })
+        # Détecter tous les index
+        index_list = []
+        for key in request.POST.keys():
+            if key.startswith('titre_'):
+                idx = key.replace('titre_', '')
+                if idx.isdigit():
+                    index_list.append(idx)
+        index_list = sorted(set(index_list), key=int)
 
-        if not edition:
-            edition = JournalEdition()
+        if not index_list:
+            messages.error(request, '⚠️ Aucune édition à créer.')
+            return redirect('dashboard_journal_edition_ajouter')
 
-        edition.titre = titre
-        edition.sous_titre = request.POST.get('sous_titre', '').strip()
-        edition.type_academie = request.POST.get('type_academie', 'journal')
-        edition.statut = request.POST.get('statut', 'brouillon')
+        created = []
+        errors = []
 
-        # ✅ Numéro : auto-généré si vide, garanti unique
-        numero = request.POST.get('numero', '').strip()
-        if not numero:
-            prefix = {
-                'journal': 'JNL',
-                'article': 'ART',
-                'revue': 'REV',
-                'guide': 'GUI',
-            }.get(edition.type_academie, 'PUB')
-            for _ in range(20):
-                candidat = f"{prefix}-{str(_uuid.uuid4())[:8].upper()}"
-                if not JournalEdition.objects.filter(numero=candidat).exclude(
-                    pk=edition.pk if edition.pk else 0
-                ).exists():
-                    numero = candidat
-                    break
+        for idx in index_list:
+            titre = request.POST.get(f'titre_{idx}', '').strip()
+            if not titre:
+                errors.append(f'Édition #{int(idx) + 1} : le titre est obligatoire.')
+                continue
 
-        # Vérifier unicité si numéro manuel
-        qs_check = JournalEdition.objects.filter(numero=numero)
-        if edition.pk:
-            qs_check = qs_check.exclude(pk=edition.pk)
-        if qs_check.exists():
-            messages.error(request, f'Le numéro "{numero}" existe déjà.')
-            return render(request, 'eden/dashboard/journal_edition_form.html', {
-                'edition': edition
-            })
+            type_academie = request.POST.get(f'type_academie_{idx}', 'journal')
+            prefix = PREFIXES.get(type_academie, 'PUB')
 
-        edition.numero = numero
+            nouvelle = JournalEdition()
+            nouvelle.titre = titre
+            nouvelle.sous_titre = request.POST.get(f'sous_titre_{idx}', '').strip()
+            nouvelle.type_academie = type_academie
+            nouvelle.statut = request.POST.get(f'statut_{idx}', 'brouillon')
 
-        date_str = request.POST.get('date_parution', '')
-        if date_str:
-            from datetime import date
+            # Numéro auto
+            numero = request.POST.get(f'numero_{idx}', '').strip()
+            if not numero:
+                for _ in range(20):
+                    candidat = f"{prefix}-{str(_uuid.uuid4())[:8].upper()}"
+                    if not JournalEdition.objects.filter(numero=candidat).exists():
+                        numero = candidat
+                        break
+                else:
+                    import time
+                    numero = f"{prefix}-{int(time.time())}"
+            else:
+                if JournalEdition.objects.filter(numero=numero).exists():
+                    errors.append(f'Édition "{titre}" : le numéro "{numero}" existe déjà.')
+                    continue
+
+            nouvelle.numero = numero
+
+            # Date
+            date_str = request.POST.get(f'date_parution_{idx}', '').strip()
+            if date_str:
+                try:
+                    nouvelle.date_parution = date.fromisoformat(date_str)
+                except ValueError:
+                    pass
+
+            # Fichiers
+            if request.FILES.get(f'image_une_{idx}'):
+                nouvelle.image_une = request.FILES[f'image_une_{idx}']
+            if request.FILES.get(f'fichier_pdf_{idx}'):
+                nouvelle.fichier_pdf = request.FILES[f'fichier_pdf_{idx}']
+
             try:
-                edition.date_parution = date.fromisoformat(date_str)
-            except Exception:
-                pass
+                nouvelle.save()
+                created.append(nouvelle)
+            except Exception as e:
+                errors.append(f'Erreur sur "{titre}" : {e}')
 
-        if request.FILES.get('image_une'):
-            edition.image_une = request.FILES['image_une']
+        if created:
+            if len(created) == 1:
+                messages.success(request, f'✅ "{created[0].titre}" créée.')
+            else:
+                messages.success(request, f'✅ {len(created)} éditions créées avec succès.')
 
-        # ✅ NOUVEAU : upload du PDF
-        if request.FILES.get('fichier_pdf'):
-            edition.fichier_pdf = request.FILES['fichier_pdf']
+        for err in errors:
+            messages.error(request, err)
 
-        edition.save()
-
-        messages.success(request, f'"{edition.titre}" enregistré.')
         return redirect('dashboard_journal')
 
+    # GET
     return render(request, 'eden/dashboard/journal_edition_form.html', {
-        'edition': edition,
+        'edition': edition
     })
 
 @login_required
@@ -3403,8 +3486,6 @@ from .models import (
     AcademieFAQ, AcademieStatistique, AcademieCategorie,
     JournalEdition
 )
-
-
 def academie_accueil(request):
     """Page principale de l'Académie."""
     docs_publie = AcademieDocument.objects.filter(statut='publie')
@@ -3412,43 +3493,82 @@ def academie_accueil(request):
     section_academie = SectionAcademie.objects.filter(is_active=True).first()
 
     contexte = {
-        # Articles = éditions de type 'article'
-        'articles': editions_publiees.filter(type_academie='article').order_by('-date_parution'),
-        # Revues = éditions de type 'revue'
-        'revues': editions_publiees.filter(type_academie='revue').order_by('-date_parution'),
-        # Guides = éditions de type 'guide'
-        'guides': editions_publiees.filter(type_academie='guide').order_by('-date_parution'),
+        # ═══════════════════════════════════════════════════════
+        # ARTICLES / REVUES / GUIDES = TOUS JournalEdition
+        # ═══════════════════════════════════════════════════════
+        'articles': editions_publiees.filter(
+            type_academie='article'
+        ).order_by('-date_parution'),
+        
+        'revues': editions_publiees.filter(
+            type_academie='revue'
+        ).order_by('-date_parution'),
+        
+        'guides': editions_publiees.filter(
+            type_academie='guide'
+        ).order_by('-date_parution'),
+
+        # ✅ Alias pour compatibilité avec le template
+        # (le template utilise 'guides_pratiques' mais avec champs JournalEdition)
+        'guides_pratiques': editions_publiees.filter(
+            type_academie='guide'
+        ).order_by('-date_parution'),
+
+        # ═══════════════════════════════════════════════════════
+        # BROCHURES = AcademieDocument catégorie='brochure'
+        # ═══════════════════════════════════════════════════════
+        'brochures': docs_publie.filter(
+            categorie='brochure'
+        ).order_by('ordre', '-date_publication'),
+
         # Textes de loi
         'textes_loi': docs_publie.filter(categorie='texte_loi').order_by('ordre'),
         # Lexique
         'lexique': docs_publie.filter(categorie='lexique').order_by('ordre'),
         # Galerie
         'galerie': docs_publie.filter(categorie='galerie').order_by('ordre'),
-        # Ressources (tout le contenu)
+        # Ressources
         'ressources': docs_publie.filter(categorie='ressource').order_by('ordre'),
+
         # Vidéos
-        'video_moment': AcademieVideo.objects.filter(statut='publie', est_video_moment=True).first(),
+        'video_moment': AcademieVideo.objects.filter(
+            statut='publie', est_video_moment=True
+        ).first(),
         'videos': AcademieVideo.objects.filter(statut='publie').order_by('ordre'),
+        
         # FAQ
-        'faq_featured': AcademieFAQ.objects.filter(statut='publie', est_featured=True).first(),
+        'faq_featured': AcademieFAQ.objects.filter(
+            statut='publie', est_featured=True
+        ).first(),
         'faqs': AcademieFAQ.objects.filter(statut='publie').order_by('ordre'),
+        
         # Parcours
-        'etapes_parcours': AcademieEtapeParcours.objects.filter(is_active=True).order_by('ordre'),
+        'etapes_parcours': AcademieEtapeParcours.objects.filter(
+            is_active=True
+        ).order_by('ordre'),
+        
         # Stats
         'stats': AcademieStatistique.objects.filter(is_active=True).order_by('ordre'),
-        # À la une = édition mise en avant OU doc mis en une
+
+        # À la une
         'a_la_une_edition': editions_publiees.filter(
-            type_academie__in=['article','revue','guide']
+            type_academie__in=['article', 'revue', 'guide']
         ).order_by('-date_parution').first(),
-        # Revue featured pour encart
-        'revue_featured': editions_publiees.filter(type_academie='revue').order_by('-date_parution').first(),
-        # Guide featured
-        'guide_featured': editions_publiees.filter(type_academie='guide').order_by('-date_parution').first(),
-        # Compteurs sidebar
+        'revue_featured': editions_publiees.filter(
+            type_academie='revue'
+        ).order_by('-date_parution').first(),
+        'guide_featured': editions_publiees.filter(
+            type_academie='guide'
+        ).order_by('-date_parution').first(),
+
+        # ═══════════════════════════════════════════════════════
+        # COMPTEURS SIDEBAR
+        # ═══════════════════════════════════════════════════════
         'nb_textes': docs_publie.filter(categorie='texte_loi').count(),
         'nb_articles': editions_publiees.filter(type_academie='article').count(),
         'nb_revues': editions_publiees.filter(type_academie='revue').count(),
-        'nb_guides': editions_publiees.filter(type_academie='guide').count(),
+        'nb_guides': editions_publiees.filter(type_academie='guide').count(),  # ✅ JournalEdition
+        'nb_brochures': docs_publie.filter(categorie='brochure').count(),
         'nb_videos': AcademieVideo.objects.filter(statut='publie').count(),
         'nb_galerie': docs_publie.filter(categorie='galerie').count(),
         'nb_faqs': AcademieFAQ.objects.filter(statut='publie').count(),
@@ -3456,7 +3576,6 @@ def academie_accueil(request):
         'section_academie': section_academie,
     }
     return render(request, 'eden/academie/accueil.html', contexte)
-
 
 def academie_recherche(request):
     """Recherche globale dans toute l'Académie."""
@@ -3509,6 +3628,8 @@ def academie_categorie(request, cat):
         'lexique': 'Lexique du foncier',
         'galerie': 'Galerie',
         'ressource': 'Centre de ressources',
+        'guide_pratique': 'Guides pratiques',
+        'brochure': 'Brochures',
         'video': 'Vidéothèque',
         'faq': 'Questions fréquentes',
     }
@@ -3606,53 +3727,208 @@ def dashboard_academie_liste(request):
 @login_required
 @user_passes_test(is_agent)
 def dashboard_academie_form(request, pk=None):
+    """
+    Formulaire multiple — Textes de loi + Brochures uniquement.
+    """
+    from .models import AcademieDocument, AcademieCategorie
+    from datetime import date
+
     doc = get_object_or_404(AcademieDocument, pk=pk) if pk else None
-    if request.method == 'POST':
-        titre = request.POST.get('titre', '').strip()
-        if not titre:
-            messages.error(request, 'Le titre est obligatoire.')
-            return render(request, 'eden/dashboard/academie_form.html', {
-                'doc': doc, 'categories': AcademieCategorie.choices
-            })
-        if not doc:
-            doc = AcademieDocument()
-        doc.titre = titre
-        doc.sous_titre = request.POST.get('sous_titre', '').strip()
-        doc.categorie = request.POST.get('categorie', 'article')
-        doc.description = request.POST.get('description', '').strip()
-        doc.auteur = request.POST.get('auteur', '').strip()
-        doc.reference_officielle = request.POST.get('reference_officielle', '').strip()
-        doc.numero_revue = request.POST.get('numero_revue', '').strip()
-        doc.temps_lecture = request.POST.get('temps_lecture', '').strip()
-        doc.statut = request.POST.get('statut', 'brouillon')
-        doc.est_a_la_une = request.POST.get('est_a_la_une') == 'on'
-        doc.est_featured = request.POST.get('est_featured') == 'on'
-        doc.ordre = int(request.POST.get('ordre', 0) or 0)
-        date_str = request.POST.get('date_publication', '')
-        if date_str:
-            from datetime import date
+    categorie_pre = request.GET.get('categorie', '')
+
+    # ✅ Catégories autorisées
+    CATEGORIES_AUTORISEES = ['texte_loi', 'brochure']
+
+    # ─────────────────────────────────────────────────────────
+    # MODE MODIFICATION
+    # ─────────────────────────────────────────────────────────
+    if doc:
+        if request.method == 'POST':
+            titre = request.POST.get('titre_0', '').strip()
+            if not titre:
+                messages.error(request, 'Le titre est obligatoire.')
+                return render(request, 'eden/dashboard/academie_form.html', {'doc': doc})
+
+            cat = request.POST.get('categorie_0', doc.categorie)
+            if cat not in CATEGORIES_AUTORISEES:
+                cat = 'brochure'
+
+            doc.titre = titre
+            doc.sous_titre = request.POST.get('sous_titre_0', '').strip()
+            doc.categorie = cat
+            doc.description = request.POST.get('description_0', '').strip()
+            doc.auteur = request.POST.get('auteur_0', '').strip()
+            doc.reference_officielle = request.POST.get('reference_officielle_0', '').strip()
+            doc.numero_revue = request.POST.get('numero_revue_0', '').strip()
+            doc.temps_lecture = request.POST.get('temps_lecture_0', '').strip()
+
             try:
-                doc.date_publication = date.fromisoformat(date_str)
-            except Exception:
-                pass
-        nb_p = request.POST.get('nb_pages', '')
-        if nb_p:
-            try:
+                doc.ordre = int(request.POST.get('ordre_0', 0) or 0)
+            except (ValueError, TypeError):
+                doc.ordre = 0
+
+            date_str = request.POST.get('date_publication_0', '').strip()
+            if date_str:
+                try:
+                    doc.date_publication = date.fromisoformat(date_str)
+                except ValueError:
+                    pass
+
+            nb_p = request.POST.get('nb_pages_0', '').strip()
+            if nb_p and nb_p.isdigit():
                 doc.nb_pages = int(nb_p)
-            except Exception:
-                pass
-        if request.FILES.get('image_couverture'):
-            doc.image_couverture = request.FILES['image_couverture']
-        if request.FILES.get('fichier_pdf'):
-            doc.fichier_pdf = request.FILES['fichier_pdf']
-        doc.save()
-        messages.success(request, f'"{doc.titre}" enregistré.')
+
+            if request.FILES.get('image_couverture_0'):
+                doc.image_couverture = request.FILES['image_couverture_0']
+            if request.FILES.get('fichier_pdf_0'):
+                doc.fichier_pdf = request.FILES['fichier_pdf_0']
+
+            doc.save()
+            messages.success(request, f'✅ "{doc.titre}" enregistré.')
+            return redirect('dashboard_academie_liste')
+
+        return render(request, 'eden/dashboard/academie_form.html', {
+            'doc': doc,
+            'categorie_pre': categorie_pre,
+        })
+
+    # ─────────────────────────────────────────────────────────
+    # MODE CRÉATION MULTIPLE
+    # ─────────────────────────────────────────────────────────
+    if request.method == 'POST':
+        statut_global = request.POST.get('statut_global', 'publie')
+        est_une_global = request.POST.get('est_a_la_une_global') == 'on'
+        est_feat_global = request.POST.get('est_featured_global') == 'on'
+
+        index_list = []
+        for key in request.POST.keys():
+            if key.startswith('titre_'):
+                idx = key.replace('titre_', '')
+                if idx.isdigit():
+                    index_list.append(idx)
+        index_list = sorted(set(index_list), key=int)
+
+        if not index_list:
+            messages.error(request, '⚠️ Aucun document à créer.')
+            return redirect('dashboard_academie_ajouter')
+
+        created = []
+        errors = []
+
+        for idx in index_list:
+            titre = request.POST.get(f'titre_{idx}', '').strip()
+            if not titre:
+                errors.append(f'Document #{int(idx) + 1} : le titre est obligatoire.')
+                continue
+
+            cat = request.POST.get(f'categorie_{idx}', 'brochure')
+            if cat not in CATEGORIES_AUTORISEES:
+                cat = 'brochure'
+
+            nouveau = AcademieDocument()
+            nouveau.categorie = cat
+            nouveau.titre = titre
+            nouveau.sous_titre = request.POST.get(f'sous_titre_{idx}', '').strip()
+            nouveau.description = request.POST.get(f'description_{idx}', '').strip()
+            nouveau.auteur = request.POST.get(f'auteur_{idx}', '').strip()
+            nouveau.reference_officielle = request.POST.get(f'reference_officielle_{idx}', '').strip()
+            nouveau.numero_revue = request.POST.get(f'numero_revue_{idx}', '').strip()
+            nouveau.temps_lecture = request.POST.get(f'temps_lecture_{idx}', '').strip()
+            nouveau.statut = request.POST.get(f'statut_{idx}', statut_global)
+            nouveau.est_a_la_une = est_une_global
+            nouveau.est_featured = est_feat_global
+
+            try:
+                nouveau.ordre = int(request.POST.get(f'ordre_{idx}', 0) or 0)
+            except (ValueError, TypeError):
+                nouveau.ordre = 0
+
+            date_str = request.POST.get(f'date_publication_{idx}', '').strip()
+            if date_str:
+                try:
+                    nouveau.date_publication = date.fromisoformat(date_str)
+                except ValueError:
+                    pass
+
+            nb_p = request.POST.get(f'nb_pages_{idx}', '').strip()
+            if nb_p and nb_p.isdigit():
+                nouveau.nb_pages = int(nb_p)
+
+            if request.FILES.get(f'image_couverture_{idx}'):
+                nouveau.image_couverture = request.FILES[f'image_couverture_{idx}']
+            if request.FILES.get(f'fichier_pdf_{idx}'):
+                nouveau.fichier_pdf = request.FILES[f'fichier_pdf_{idx}']
+
+            try:
+                nouveau.save()
+                created.append(nouveau)
+            except Exception as e:
+                errors.append(f'Erreur sur "{titre}" : {e}')
+
+        if created:
+            if len(created) == 1:
+                messages.success(request, f'✅ "{created[0].titre}" créé.')
+            else:
+                messages.success(request, f'✅ {len(created)} documents créés avec succès.')
+
+        for err in errors:
+            messages.error(request, err)
+
         return redirect('dashboard_academie_liste')
+
+    # GET
     return render(request, 'eden/dashboard/academie_form.html', {
-        'doc': doc, 'categories': AcademieCategorie.choices
+        'doc': doc,
+        'categorie_pre': categorie_pre,
     })
 
 
+# ─────────────────────────────────────────────
+# ✅ Helper — remplir un document depuis POST (mode modification)
+# ─────────────────────────────────────────────
+def _remplir_document(doc, request, index=0):
+    """Remplit un objet AcademieDocument depuis les données POST (mode modification)."""
+    doc.titre       = request.POST.get(f'titre_{index}', doc.titre)
+    doc.sous_titre  = request.POST.get(f'sous_titre_{index}', '').strip()
+    doc.categorie   = request.POST.get(f'categorie_{index}', doc.categorie)
+    doc.description = request.POST.get(f'description_{index}', '').strip()
+    doc.auteur      = request.POST.get(f'auteur_{index}', '').strip()
+    doc.reference_officielle = request.POST.get(f'reference_officielle_{index}', '').strip()
+    doc.numero_revue = request.POST.get(f'numero_revue_{index}', '').strip()
+    doc.temps_lecture = request.POST.get(f'temps_lecture_{index}', '').strip()
+    doc.statut      = request.POST.get(f'statut_{index}', doc.statut)
+
+    # Note : est_a_la_une et est_featured ne sont PAS dans le partial modification
+    # (on garde les valeurs existantes)
+
+    try:
+        doc.ordre = int(request.POST.get(f'ordre_{index}', doc.ordre) or 0)
+    except Exception:
+        pass
+
+    date_str = request.POST.get(f'date_publication_{index}', '').strip()
+    if date_str:
+        from datetime import date
+        try:
+            doc.date_publication = date.fromisoformat(date_str)
+        except Exception:
+            pass
+
+    nb_p = request.POST.get(f'nb_pages_{index}', '').strip()
+    if nb_p:
+        try:
+            doc.nb_pages = int(nb_p)
+        except Exception:
+            pass
+
+    if request.FILES.get(f'image_couverture_{index}'):
+        doc.image_couverture = request.FILES[f'image_couverture_{index}']
+
+    if request.FILES.get(f'fichier_pdf_{index}'):
+        doc.fichier_pdf = request.FILES[f'fichier_pdf_{index}']
+
+    return doc
+     
 @login_required
 @user_passes_test(is_agent)
 def dashboard_academie_supprimer(request, pk):
@@ -3678,72 +3954,118 @@ def dashboard_academie_videos(request):
 def dashboard_academie_video_form(request, pk=None):
     item = get_object_or_404(AcademieVideo, pk=pk) if pk else None
 
-    if request.method == 'POST':
-        titre = request.POST.get('titre', '').strip()
-        if not titre:
-            messages.error(request, 'Le titre est obligatoire.')
-            return render(request, 'eden/dashboard/academie_video_form.html', {'item': item})
+    # ─────────────────────────────────────────
+    # MODE MODIFICATION (un seul)
+    # ─────────────────────────────────────────
+    if item:
+        if request.method == 'POST':
+            titre = request.POST.get('titre_0', '').strip()
+            if not titre:
+                messages.error(request, 'Le titre est obligatoire.')
+                return render(request, 'eden/dashboard/academie_video_form.html', {'video': item})
 
-        description = request.POST.get('description', '').strip()
-        auteur = request.POST.get('auteur', '').strip()
-        duree = request.POST.get('duree', '').strip()
-        statut = request.POST.get('statut', 'publie')
-        ordre_base = int(request.POST.get('ordre', 0) or 0)
-
-        # ✅ Récupérer TOUS les fichiers vidéo
-        videos = request.FILES.getlist('fichier_video')
-        miniatures = request.FILES.getlist('image_miniature')
-
-        # ── MODE MODIFICATION ──
-        if item:
             item.titre = titre
-            item.description = description
-            item.auteur = auteur
-            item.duree = duree
-            item.statut = statut
-            item.ordre = ordre_base
+            item.description = request.POST.get('description_0', '').strip()
+            item.auteur = request.POST.get('auteur_0', '').strip()
+            item.duree = request.POST.get('duree_0', '').strip()
+            item.statut = request.POST.get('statut_0', item.statut)
+            item.ordre = int(request.POST.get('ordre_0', item.ordre) or 0)
+            item.est_video_moment = request.POST.get('est_video_moment_0') == 'on'
 
-            if videos:
-                item.fichier_video = videos[0]
-            if miniatures:
-                item.image_miniature = miniatures[0]
+            date_str = request.POST.get('date_publication_0', '').strip()
+            if date_str:
+                from datetime import date
+                try:
+                    item.date_publication = date.fromisoformat(date_str)
+                except ValueError:
+                    pass
+
+            if request.FILES.get('fichier_video_0'):
+                item.fichier_video = request.FILES['fichier_video_0']
+            if request.FILES.get('image_miniature_0'):
+                item.image_miniature = request.FILES['image_miniature_0']
 
             item.save()
             messages.success(request, f'Vidéo "{item.titre}" mise à jour.')
             return redirect('dashboard_academie_videos')
 
-        # ── MODE AJOUT ──
-        if not videos:
-            messages.error(request, 'Veuillez sélectionner au moins une vidéo.')
-            return render(request, 'eden/dashboard/academie_video_form.html', {'item': item})
+        return render(request, 'eden/dashboard/academie_video_form.html', {'video': item})
 
-        nb_ajoutes = 0
-        for idx, fichier in enumerate(videos):
-            new_item = AcademieVideo()
-            new_item.titre = titre
-            new_item.description = description
-            new_item.auteur = auteur
-            new_item.duree = duree
-            new_item.statut = statut
-            new_item.ordre = ordre_base + idx
-            new_item.fichier_video = fichier
+    # ─────────────────────────────────────────
+    # MODE CRÉATION MULTIPLE
+    # ─────────────────────────────────────────
+    if request.method == 'POST':
+        # Détecter tous les index
+        index_list = []
+        for key in request.POST.keys():
+            if key.startswith('titre_'):
+                idx = key.replace('titre_', '')
+                if idx.isdigit():
+                    index_list.append(idx)
+        index_list = sorted(set(index_list), key=int)
 
-            # Associer une miniature si disponible
-            if idx < len(miniatures):
-                new_item.image_miniature = miniatures[idx]
+        if not index_list:
+            messages.error(request, '⚠️ Aucune vidéo à créer.')
+            return redirect('dashboard_academie_video_form')
 
-            new_item.save()
-            nb_ajoutes += 1
+        created = []
+        errors = []
 
-        if nb_ajoutes == 1:
-            messages.success(request, f'Vidéo "{titre}" ajoutée.')
-        else:
-            messages.success(request, f'{nb_ajoutes} vidéos ajoutées avec le titre "{titre}".')
+        for idx in index_list:
+            titre = request.POST.get(f'titre_{idx}', '').strip()
+            if not titre:
+                errors.append(f'Vidéo #{int(idx) + 1} : le titre est obligatoire.')
+                continue
+
+            fichier = request.FILES.get(f'fichier_video_{idx}')
+            if not fichier:
+                errors.append(f'Vidéo "{titre}" : le fichier vidéo est obligatoire.')
+                continue
+
+            nouvelle = AcademieVideo()
+            nouvelle.titre = titre
+            nouvelle.description = request.POST.get(f'description_{idx}', '').strip()
+            nouvelle.auteur = request.POST.get(f'auteur_{idx}', '').strip()
+            nouvelle.duree = request.POST.get(f'duree_{idx}', '').strip()
+            nouvelle.statut = request.POST.get(f'statut_{idx}', 'publie')
+            nouvelle.est_video_moment = request.POST.get(f'est_video_moment_{idx}') == 'on'
+
+            try:
+                nouvelle.ordre = int(request.POST.get(f'ordre_{idx}', 0) or 0)
+            except (ValueError, TypeError):
+                nouvelle.ordre = 0
+
+            date_str = request.POST.get(f'date_publication_{idx}', '').strip()
+            if date_str:
+                from datetime import date
+                try:
+                    nouvelle.date_publication = date.fromisoformat(date_str)
+                except ValueError:
+                    pass
+
+            nouvelle.fichier_video = fichier
+
+            if request.FILES.get(f'image_miniature_{idx}'):
+                nouvelle.image_miniature = request.FILES[f'image_miniature_{idx}']
+
+            try:
+                nouvelle.save()
+                created.append(nouvelle)
+            except Exception as e:
+                errors.append(f'Erreur sur "{titre}" : {e}')
+
+        if created:
+            if len(created) == 1:
+                messages.success(request, f'✅ "{created[0].titre}" créée.')
+            else:
+                messages.success(request, f'✅ {len(created)} vidéos créées avec succès.')
+
+        for err in errors:
+            messages.error(request, err)
 
         return redirect('dashboard_academie_videos')
 
-    return render(request, 'eden/dashboard/academie_video_form.html', {'item': item})
-
+    return render(request, 'eden/dashboard/academie_video_form.html', {'video': None})
 
 @login_required
 @user_passes_test(is_agent)
@@ -4010,66 +4332,99 @@ def dashboard_academie_galerie(request):
         'nb': items.count(),
     })
 
-
 @login_required
 @user_passes_test(is_agent)
 def dashboard_academie_galerie_form(request, pk=None):
-    item = get_object_or_404(AcademieDocument, pk=pk, categorie='galerie') if pk else None
+    item = get_object_or_404(
+        AcademieDocument, pk=pk, categorie='galerie'
+    ) if pk else None
 
-    if request.method == 'POST':
-        titre = request.POST.get('titre', '').strip()
-        if not titre:
-            messages.error(request, 'Le titre est obligatoire.')
-            return render(request, 'eden/dashboard/academie_galerie_form.html', {'item': item})
+    # ─────────────────────────────────────────
+    # MODE MODIFICATION
+    # ─────────────────────────────────────────
+    if item:
+        if request.method == 'POST':
+            titre = request.POST.get('titre_0', '').strip()
+            if not titre:
+                messages.error(request, 'Le titre est obligatoire.')
+                return render(request, 'eden/dashboard/academie_galerie_form.html', {'item': item})
 
-        description = request.POST.get('description', '').strip()
-        statut = request.POST.get('statut', 'publie')
-        ordre_base = int(request.POST.get('ordre', 0) or 0)
-
-        # ✅ Récupérer TOUS les fichiers uploadés
-        fichiers = request.FILES.getlist('image_couverture')
-
-        # ── MODE MODIFICATION (une seule image) ──
-        if item:
             item.titre = titre
-            item.description = description
-            item.statut = statut
-            item.ordre = ordre_base
+            item.description = request.POST.get('description_0', '').strip()
+            item.statut = request.POST.get('statut_0', item.statut)
+            item.ordre = int(request.POST.get('ordre_0', item.ordre) or 0)
 
-            if fichiers:
-                # Remplacer l'image existante par la première
-                item.image_couverture = fichiers[0]
+            if request.FILES.get('image_couverture_0'):
+                item.image_couverture = request.FILES['image_couverture_0']
 
             item.save()
             messages.success(request, f'Image "{item.titre}" mise à jour.')
             return redirect('dashboard_academie_galerie')
 
-        # ── MODE AJOUT (plusieurs images) ──
-        if not fichiers:
-            messages.error(request, 'Veuillez sélectionner au moins une image.')
-            return render(request, 'eden/dashboard/academie_galerie_form.html', {'item': item})
+        return render(request, 'eden/dashboard/academie_galerie_form.html', {'item': item})
 
-        nb_ajoutes = 0
-        for idx, fichier in enumerate(fichiers):
-            new_item = AcademieDocument()
-            new_item.categorie = 'galerie'
-            new_item.titre = titre
-            new_item.description = description
-            new_item.statut = statut
-            new_item.ordre = ordre_base + idx  # Incrémenter l'ordre
-            new_item.image_couverture = fichier
-            new_item.save()
-            nb_ajoutes += 1
+    # ─────────────────────────────────────────
+    # MODE CRÉATION MULTIPLE
+    # ─────────────────────────────────────────
+    if request.method == 'POST':
+        index_list = []
+        for key in request.POST.keys():
+            if key.startswith('titre_'):
+                idx = key.replace('titre_', '')
+                if idx.isdigit():
+                    index_list.append(idx)
+        index_list = sorted(set(index_list), key=int)
 
-        if nb_ajoutes == 1:
-            messages.success(request, f'Image "{titre}" ajoutée à la galerie.')
-        else:
-            messages.success(request, f'{nb_ajoutes} images ajoutées à la galerie avec le titre "{titre}".')
+        if not index_list:
+            messages.error(request, '⚠️ Aucune image à ajouter.')
+            return redirect('dashboard_academie_galerie_form')
+
+        created = []
+        errors = []
+
+        for idx in index_list:
+            titre = request.POST.get(f'titre_{idx}', '').strip()
+            if not titre:
+                errors.append(f'Image #{int(idx) + 1} : le titre est obligatoire.')
+                continue
+
+            fichier = request.FILES.get(f'image_couverture_{idx}')
+            if not fichier:
+                errors.append(f'Image "{titre}" : le fichier est obligatoire.')
+                continue
+
+            nouvelle = AcademieDocument()
+            nouvelle.categorie = 'galerie'
+            nouvelle.titre = titre
+            nouvelle.description = request.POST.get(f'description_{idx}', '').strip()
+            nouvelle.statut = request.POST.get(f'statut_{idx}', 'publie')
+
+            try:
+                nouvelle.ordre = int(request.POST.get(f'ordre_{idx}', 0) or 0)
+            except (ValueError, TypeError):
+                nouvelle.ordre = 0
+
+            nouvelle.image_couverture = fichier
+
+            try:
+                nouvelle.save()
+                created.append(nouvelle)
+            except Exception as e:
+                errors.append(f'Erreur sur "{titre}" : {e}')
+
+        if created:
+            if len(created) == 1:
+                messages.success(request, f'✅ Image "{created[0].titre}" ajoutée.')
+            else:
+                messages.success(request, f'✅ {len(created)} images ajoutées avec succès.')
+
+        for err in errors:
+            messages.error(request, err)
 
         return redirect('dashboard_academie_galerie')
 
-    return render(request, 'eden/dashboard/academie_galerie_form.html', {'item': item})
-
+    return render(request, 'eden/dashboard/academie_galerie_form.html', {'item': None})
+    
 @login_required
 @user_passes_test(is_agent)
 def dashboard_academie_galerie_supprimer(request, pk):
@@ -4149,44 +4504,98 @@ def dashboard_lexique(request):
         'nb': items.count(),
     })
 
-
 @login_required
 @user_passes_test(is_agent)
 def dashboard_lexique_form(request, pk=None):
-    """Créer ou modifier une entrée du lexique."""
     item = get_object_or_404(
         AcademieDocument, pk=pk, categorie='lexique'
     ) if pk else None
 
+    # ─────────────────────────────────────────
+    # MODE MODIFICATION
+    # ─────────────────────────────────────────
+    if item:
+        if request.method == 'POST':
+            titre = request.POST.get('titre_0', '').strip()
+            if not titre:
+                messages.error(request, 'Le terme est obligatoire.')
+                return render(request, 'eden/dashboard/lexique_form.html', {'item': item})
+
+            item.titre = titre
+            item.description = request.POST.get('description_0', '').strip()
+            item.sous_titre = request.POST.get('sous_titre_0', '').strip()
+            item.auteur = request.POST.get('auteur_0', '').strip()
+            item.statut = request.POST.get('statut_0', item.statut)
+            item.ordre = int(request.POST.get('ordre_0', item.ordre) or 0)
+
+            if request.FILES.get('fichier_pdf_0'):
+                item.fichier_pdf = request.FILES['fichier_pdf_0']
+
+            item.save()
+            messages.success(request, f'"{item.titre}" enregistré.')
+            return redirect('dashboard_lexique')
+
+        return render(request, 'eden/dashboard/lexique_form.html', {'item': item})
+
+    # ─────────────────────────────────────────
+    # MODE CRÉATION MULTIPLE
+    # ─────────────────────────────────────────
     if request.method == 'POST':
-        titre = request.POST.get('titre', '').strip()
-        if not titre:
-            messages.error(request, 'Le terme est obligatoire.')
-            return render(request, 'eden/dashboard/lexique_form.html', {
-                'item': item
-            })
+        index_list = []
+        for key in request.POST.keys():
+            if key.startswith('titre_'):
+                idx = key.replace('titre_', '')
+                if idx.isdigit():
+                    index_list.append(idx)
+        index_list = sorted(set(index_list), key=int)
 
-        if not item:
-            item = AcademieDocument()
-            item.categorie = 'lexique'
+        if not index_list:
+            messages.error(request, '⚠️ Aucun terme à créer.')
+            return redirect('dashboard_lexique_form')
 
-        item.titre = titre
-        item.description = request.POST.get('description', '').strip()
-        item.sous_titre = request.POST.get('sous_titre', '').strip()
-        item.auteur = request.POST.get('auteur', '').strip()
-        item.statut = request.POST.get('statut', 'publie')
-        item.ordre = int(request.POST.get('ordre', 0) or 0)
+        created = []
+        errors = []
 
-        if request.FILES.get('fichier_pdf'):
-            item.fichier_pdf = request.FILES['fichier_pdf']
+        for idx in index_list:
+            titre = request.POST.get(f'titre_{idx}', '').strip()
+            if not titre:
+                errors.append(f'Terme #{int(idx) + 1} : le terme est obligatoire.')
+                continue
 
-        item.save()
-        messages.success(request, f'"{item.titre}" enregistré.')
+            nouveau = AcademieDocument()
+            nouveau.categorie = 'lexique'
+            nouveau.titre = titre
+            nouveau.description = request.POST.get(f'description_{idx}', '').strip()
+            nouveau.sous_titre = request.POST.get(f'sous_titre_{idx}', '').strip()
+            nouveau.auteur = request.POST.get(f'auteur_{idx}', '').strip()
+            nouveau.statut = request.POST.get(f'statut_{idx}', 'publie')
+
+            try:
+                nouveau.ordre = int(request.POST.get(f'ordre_{idx}', 0) or 0)
+            except (ValueError, TypeError):
+                nouveau.ordre = 0
+
+            if request.FILES.get(f'fichier_pdf_{idx}'):
+                nouveau.fichier_pdf = request.FILES[f'fichier_pdf_{idx}']
+
+            try:
+                nouveau.save()
+                created.append(nouveau)
+            except Exception as e:
+                errors.append(f'Erreur sur "{titre}" : {e}')
+
+        if created:
+            if len(created) == 1:
+                messages.success(request, f'✅ "{created[0].titre}" créé.')
+            else:
+                messages.success(request, f'✅ {len(created)} termes créés avec succès.')
+
+        for err in errors:
+            messages.error(request, err)
+
         return redirect('dashboard_lexique')
 
-    return render(request, 'eden/dashboard/lexique_form.html', {
-        'item': item
-    })
+    return render(request, 'eden/dashboard/lexique_form.html', {'item': None})
 
 
 @login_required

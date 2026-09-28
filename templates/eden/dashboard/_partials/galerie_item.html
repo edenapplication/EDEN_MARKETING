@@ -1,0 +1,78 @@
+{# ✅ Partial — Bloc image de la galerie #}
+
+<div class="doc-item" id="doc-item-{{ index }}">
+
+  <div class="doc-item-header">
+    <div class="doc-item-title">
+      🖼 Image <span class="item-counter" id="counter-{{ index }}">#{{ index|add:"1" }}</span>
+    </div>
+
+    {% if not item %}
+    <button type="button"
+            class="btn-remove-item"
+            onclick="retirerDocument('{{ index }}')"
+            title="Supprimer cette image">
+      ✕
+    </button>
+    {% endif %}
+  </div>
+
+  {# ── Image ── #}
+  <div class="fg">
+    <label>Image {% if not item %}*{% endif %}</label>
+    {% if item and item.image_couverture %}
+      <img src="{{ item.image_couverture.url }}"
+           class="preview-img"
+           id="preview-{{ index }}"
+           style="display:block;"
+           alt="">
+    {% else %}
+      <img class="preview-img" id="preview-{{ index }}" alt="">
+    {% endif %}
+    <input type="file"
+           name="image_couverture_{{ index }}"
+           accept="image/*"
+           onchange="previewImg(this, '{{ index }}')"
+           {% if not item %}required{% endif %}>
+    <div class="hint">Recommandé : 1920×1080px minimum (format paysage). JPG ou PNG.</div>
+  </div>
+
+  {# ── Titre ── #}
+  <div class="fg">
+    <label>Titre *</label>
+    <input type="text"
+           name="titre_{{ index }}"
+           value="{{ item.titre|default:'' }}"
+           placeholder="Ex: Lotissement MVÉ 1 — Vue aérienne"
+           required>
+    <div class="hint">Affiché en gras sur l'image dans la galerie.</div>
+  </div>
+
+  {# ── Description ── #}
+  <div class="fg">
+    <label>Description (optionnel)</label>
+    <textarea name="description_{{ index }}"
+              rows="3"
+              placeholder="Ex: Vue du site depuis un drone, montrant la viabilisation complète...">{{ item.description|default:'' }}</textarea>
+  </div>
+
+  {# ── Options ── #}
+  <div class="form-grid">
+    <div class="fg">
+      <label>Statut</label>
+      <select name="statut_{{ index }}">
+        <option value="publie" {% if not item or item.statut == 'publie' %}selected{% endif %}>✅ Publié</option>
+        <option value="brouillon" {% if item and item.statut == 'brouillon' %}selected{% endif %}>📝 Brouillon</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label>Ordre d'affichage</label>
+      <input type="number"
+             name="ordre_{{ index }}"
+             value="{{ item.ordre|default:'0' }}"
+             min="0">
+      <div class="hint">0 = en premier dans le carrousel</div>
+    </div>
+  </div>
+
+</div>

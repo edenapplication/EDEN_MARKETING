@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Journal EDEN GROUP — Dashboard</title>
+<title>Revue et Article — Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -87,10 +87,10 @@ body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
 <div class="wrap">
   <div class="page-hd">
     <div>
-      <h1 class="page-tit">📰 Journal EDEN GROUP</h1>
+      <h1 class="page-tit">📰 Revue et Articles</h1>
       <div class="page-sub">{{ editions.count }} édition{{ editions.count|pluralize }}</div>
     </div>
-    <a class="btn-add" href="{% url 'dashboard_journal_edition_ajouter' %}">+ Nouvelle édition</a>
+    <a class="btn-add" href="{% url 'dashboard_journal_edition_ajouter' %}">+ Nouveaux documents</a>
   </div>
 
   {% if messages %}{% for msg in messages %}<div class="alert">{{ msg }}</div>{% endfor %}{% endif %}
@@ -100,7 +100,7 @@ body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
   </div>
 
   {% if journaux %}
-  <div class="section-tit">📔 Journal EDEN GROUP ({{ journaux.count }})</div>
+  <div class="section-tit">📔 Nombres ({{ journaux.count }})</div>
   <div class="editions-grid">
     {% for ed in journaux %}
     <div class="ed-card" id="ed-{{ ed.pk }}">
@@ -201,7 +201,7 @@ body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
   <div class="empty">
     <div style="font-size:3rem;margin-bottom:1rem;">📰</div>
     <div style="font-size:15px;font-weight:600;color:var(--g800);margin-bottom:0.5rem;">Aucune édition</div>
-    <div style="font-size:13px;color:var(--g500);margin-bottom:1.5rem;">Créez votre premier numéro du Journal EDEN GROUP.</div>
+    <div style="font-size:13px;color:var(--g500);margin-bottom:1.5rem;">Créez votre premier numéro.</div>
     <a href="{% url 'dashboard_journal_edition_ajouter' %}" class="btn-add">+ Première édition</a>
   </div>
   {% endif %}

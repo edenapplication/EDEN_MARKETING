@@ -1,9 +1,10 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{% if item %}Modifier{% else %}Ajouter{% endif %} une image — Galerie Académie</title>
+<title>{% if item %}Modifier{% else %}Ajouter des{% endif %} images — Galerie Académie</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -14,10 +15,11 @@ body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
 .tn-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .tn-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1.5px solid var(--g200);background:#fff;color:var(--g500);font-family:'Outfit',sans-serif;transition:all 0.2s;}
 .tn-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--bpale);}
-.wrap{padding:84px 2rem 3rem;max-width:700px;margin:0 auto;}
+.wrap{padding:84px 2rem 3rem;max-width:900px;margin:0 auto;}
 .page-tit{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--g800);margin-bottom:1.5rem;}
 .card{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);padding:2rem;margin-bottom:1.5rem;}
 .card-tit{font-size:13px;font-weight:700;color:var(--g800);margin-bottom:1.2rem;padding-bottom:0.8rem;border-bottom:1px solid var(--g200);}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
 .fg{display:flex;flex-direction:column;gap:5px;margin-bottom:1rem;}
 .fg label{font-size:11px;font-weight:600;color:var(--g500);}
 .fg .hint{font-size:11px;color:var(--g400);margin-top:2px;}
@@ -25,96 +27,26 @@ input,select,textarea{width:100%;background:#fff;border:1.5px solid var(--g200);
 input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(27,79,219,0.08);}
 input::placeholder,textarea::placeholder{color:var(--g400);}
 select{appearance:none;}
-
-/* Zone preview image unique (mode modification) */
-.preview-zone{position:relative;width:100%;height:280px;border-radius:var(--rl);overflow:hidden;background:var(--g200);margin-bottom:1rem;display:none;}
-.preview-zone.visible{display:block;}
-.preview-zone img{width:100%;height:100%;object-fit:cover;display:block;}
-.preview-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,transparent 50%);display:flex;flex-direction:column;justify-content:flex-end;padding:1.2rem;}
-.prev-ov-tit{font-size:16px;font-weight:700;color:#fff;line-height:1.35;margin-bottom:4px;}
-.prev-ov-desc{font-size:12px;color:rgba(255,255,255,0.8);line-height:1.5;}
-.prev-label{position:absolute;top:8px;right:8px;background:rgba(27,79,219,0.8);color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;backdrop-filter:blur(4px);}
-
-/* ✅ Aperçu multiple (mode ajout) */
-.preview-multiple{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
-  gap:10px;
-  margin-bottom:1rem;
-  max-height:420px;
-  overflow-y:auto;
-  padding:4px;
-}
-.preview-multiple:empty{display:none;}
-.preview-multiple .pm-item{
-  position:relative;
-  aspect-ratio:1/1;
-  border-radius:10px;
-  overflow:hidden;
-  background:var(--g200);
-  border:2px solid var(--g200);
-  transition:transform 0.2s;
-}
-.preview-multiple .pm-item:hover{
-  transform:scale(1.03);
-  border-color:var(--blue);
-}
-.preview-multiple .pm-item img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-}
-.preview-multiple .pm-count{
-  position:absolute;
-  top:6px;
-  left:6px;
-  background:rgba(27,79,219,0.95);
-  color:#fff;
-  font-size:10px;
-  font-weight:700;
-  padding:2px 8px;
-  border-radius:100px;
-  z-index:2;
-}
-.preview-multiple .pm-name{
-  position:absolute;
-  bottom:0;
-  left:0;
-  right:0;
-  background:rgba(0,0,0,0.75);
-  color:#fff;
-  font-size:9px;
-  padding:4px 6px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  z-index:2;
-}
-
-/* Compteur d'images */
-.nb-fichiers{
-  display:none;
-  background:var(--bpale);
-  border:1.5px solid rgba(27,79,219,0.25);
-  border-radius:10px;
-  padding:10px 14px;
-  font-size:13px;
-  font-weight:600;
-  color:var(--blue);
-  margin-top:10px;
-  align-items:center;
-  gap:8px;
-}
-.nb-fichiers.visible{display:flex;}
-
-.info-box{background:var(--bpale);border:1.5px solid rgba(27,79,219,0.2);border-radius:var(--r);padding:1rem 1.2rem;margin-bottom:1.5rem;font-size:13px;color:var(--blue);}
+.preview-img{width:100%;height:180px;object-fit:cover;border-radius:var(--r);margin-top:8px;display:none;border:1.5px solid var(--g200);}
 .btn-save{background:var(--grad);color:#fff;padding:13px 28px;border-radius:var(--r);font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;}
-.btn-save:hover{opacity:0.9;}
+.btn-save:disabled{opacity:0.6;cursor:not-allowed;}
 .btn-cancel{background:#fff;color:var(--g500);padding:13px 24px;border-radius:var(--r);font-size:14px;font-weight:500;border:1.5px solid var(--g200);cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;}
-.btn-cancel:hover{border-color:var(--blue);color:var(--blue);}
 .err{background:#fee2e2;border:1.5px solid #fca5a5;border-radius:var(--r);padding:12px 16px;font-size:13px;color:#dc2626;margin-bottom:1.5rem;}
-@media(max-width:768px){.wrap{padding:80px 1rem 2rem;}.preview-multiple{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));}}
+.alert{background:#dcfce7;border:1.5px solid #86efac;border-radius:var(--r);padding:12px 16px;font-size:13px;color:#16a34a;margin-bottom:1.5rem;}
+.info-box{background:var(--bpale);border:1.5px solid rgba(27,79,219,0.2);border-radius:var(--r);padding:1rem 1.2rem;margin-bottom:1.5rem;font-size:13px;color:var(--blue);}
+
+/* Blocs multiples */
+.doc-item{background:#f8faff;border:1.5px dashed rgba(27,79,219,0.3);border-radius:var(--rl);padding:1.5rem;margin-bottom:1rem;position:relative;animation:slideIn 0.3s ease;}
+@keyframes slideIn{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
+.doc-item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;padding-bottom:0.8rem;border-bottom:1px dashed var(--g200);}
+.doc-item-title{font-size:12px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.5px;}
+.btn-remove-item{background:#fee2e2;color:#dc2626;border:none;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.btn-remove-item:hover{background:#fecaca;transform:scale(1.05);}
+.btn-add-item{width:100%;padding:16px;background:#fff;border:2px dashed var(--blue);border-radius:var(--rl);color:var(--blue);font-weight:700;font-size:14px;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-add-item:hover{background:var(--bpale);border-style:solid;}
+.item-counter{display:inline-block;background:var(--blue);color:#fff;padding:3px 10px;border-radius:50px;font-size:11px;font-weight:700;margin-left:8px;}
+
+@media(max-width:768px){.form-grid{grid-template-columns:1fr;}.wrap{padding:80px 1rem 2rem;}}
 </style>
 </head>
 <body>
@@ -128,204 +60,117 @@ select{appearance:none;}
 
 <div class="wrap">
   <div class="page-tit">
-    {% if item %}✏ Modifier l'image{% else %}🖼 Ajouter une ou plusieurs images à la galerie{% endif %}
+    {% if item %}✏ Modifier l'image{% else %}🖼 Ajouter des images à la galerie{% endif %}
   </div>
 
-  {% if messages %}{% for msg in messages %}<div class="err">{{ msg }}</div>{% endfor %}{% endif %}
+  {% if messages %}
+    {% for msg in messages %}
+      <div class="{% if 'error' in msg.tags %}err{% else %}alert{% endif %}">{{ msg }}</div>
+    {% endfor %}
+  {% endif %}
 
   <div class="info-box">
-    {% if item %}
-      🖼 Le <strong>titre et la description</strong> seront affichés en overlay directement sur l'image dans la galerie. L'aperçu ci-dessous vous montre le rendu exact avant de sauvegarder.
-    {% else %}
-      🖼 Vous pouvez sélectionner <strong>plusieurs images en une seule fois</strong>. Elles auront toutes le <strong>même titre</strong> et la <strong>même description</strong>, et seront affichées en overlay dans la galerie.
+    💡 Chaque image a son propre <strong>titre</strong> et sa propre <strong>description</strong>, affichés en overlay dans la galerie.
+    {% if not item %}
+      <br>Vous pouvez ajouter <strong>plusieurs images d'un coup</strong> avec le bouton "+ Ajouter une autre image".
     {% endif %}
   </div>
 
-  <form method="post" enctype="multipart/form-data">
+  <form method="post" enctype="multipart/form-data" id="main-form">
     {% csrf_token %}
 
-    <div class="card">
-      <div class="card-tit">🖼 Image{% if not item %}s{% endif %}</div>
-
+    <div id="documents-container">
       {% if item %}
-      {# ── MODE MODIFICATION : aperçu unique avec overlay ── #}
-      <div class="preview-zone {% if item.image_couverture %}visible{% endif %}" id="preview-zone">
-        <img id="preview-img" src="{% if item.image_couverture %}{{ item.image_couverture.url }}{% endif %}" alt="">
-        <div class="preview-overlay">
-          <div class="prev-ov-tit" id="prev-tit">{{ item.titre|default:"Titre de l'image" }}</div>
-          <div class="prev-ov-desc" id="prev-desc">{{ item.description|default:"Description visible sur l'image..." }}</div>
-        </div>
-        <div class="prev-label">Aperçu</div>
-      </div>
+        {% include "eden/dashboard/_partials/galerie_item.html" with item=item index=0 %}
       {% else %}
-      {# ── MODE AJOUT : aperçu multiple ── #}
-      <div class="preview-multiple" id="preview-multiple"></div>
-      {% endif %}
-
-      <div class="fg">
-        <label>{% if item %}Remplacer l'image{% else %}Choisir les images *{% endif %}</label>
-        <input type="file"
-               name="image_couverture"
-               accept="image/*"
-               {% if not item %}multiple{% endif %}
-               onchange="previewImg(this)"
-               {% if not item %}required{% endif %}>
-        
-        <div class="hint">
-          {% if item %}
-            Laissez vide pour garder l'image actuelle.
-            <br>Recommandé : <strong>1920×1080px minimum</strong> (format paysage). JPG ou PNG.
-          {% else %}
-            ✅ Sélectionnez <strong>plusieurs images en une seule fois</strong>.<br>
-            Recommandé : <strong>1920×1080px minimum</strong> (format paysage). JPG ou PNG.
-          {% endif %}
-        </div>
-      </div>
-
-      {% if not item %}
-      <!-- Compteur d'images sélectionnées -->
-      <div class="nb-fichiers" id="nb-fichiers">
-        <span>✅</span>
-        <span id="nb-fichiers-txt">0 image sélectionnée</span>
-      </div>
+        {% include "eden/dashboard/_partials/galerie_item.html" with index=0 %}
       {% endif %}
     </div>
 
-    <div class="card">
-      <div class="card-tit">📝 Texte affiché sur l'image{% if not item %}s{% endif %}</div>
+    {% if not item %}
+    <button type="button" class="btn-add-item" onclick="ajouterDocument()">
+      <span style="font-size:20px;">+</span>
+      Ajouter une autre image
+    </button>
+    {% endif %}
 
-      <div class="fg">
-        <label>Titre *</label>
-        <input type="text" name="titre"
-          id="inp-titre"
-          value="{{ item.titre|default:'' }}"
-          placeholder="Ex: Lotissement MVÉ 1 — Vue aérienne"
-          oninput="updatePreviewText()"
-          required>
-        <div class="hint">
-          Affiché en gras sur l'image. Court et percutant.
-          {% if not item %}<br><strong>Toutes les images auront ce même titre.</strong>{% endif %}
-        </div>
-      </div>
-
-      <div class="fg">
-        <label>Description (optionnel)</label>
-        <textarea name="description" id="inp-desc" rows="3"
-          placeholder="Ex: Vue du site depuis un drone, montrant la viabilisation complète du lotissement..."
-          oninput="updatePreviewText()">{{ item.description|default:'' }}</textarea>
-        <div class="hint">
-          Affiché en plus petit sous le titre. Décrivez ce qu'on voit sur la photo.
-          {% if not item %}<br><strong>Toutes les images auront cette même description.</strong>{% endif %}
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-tit">⚙ Options</div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-        <div class="fg">
-          <label>Statut</label>
-          <select name="statut">
-            <option value="publie" {% if not item or item.statut == 'publie' %}selected{% endif %}>✅ Publié</option>
-            <option value="brouillon" {% if item and item.statut == 'brouillon' %}selected{% endif %}>📝 Brouillon</option>
-          </select>
-        </div>
-        <div class="fg">
-          <label>Ordre d'affichage</label>
-          <input type="number" name="ordre"
-            value="{{ item.ordre|default:'0' }}" min="0">
-          <div class="hint">
-            0 = en premier dans le carrousel
-            {% if not item %}<br>Les images suivantes seront incrémentées automatiquement.{% endif %}
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:1.5rem;">
       <button type="submit" class="btn-save">
         💾 {% if item %}Enregistrer{% else %}Ajouter à la galerie{% endif %}
       </button>
       <a href="{% url 'dashboard_academie_galerie' %}" class="btn-cancel">Annuler</a>
+      <span id="submit-counter" style="margin-left:auto;align-self:center;font-size:13px;color:var(--g500);"></span>
     </div>
   </form>
 </div>
 
+<template id="doc-item-template">
+  {% include "eden/dashboard/_partials/galerie_item.html" with index="__INDEX__" %}
+</template>
+
 <script>
-// ══════════════════════════════════════════════
-// APERÇU IMAGE(S)
-// ══════════════════════════════════════════════
-function previewImg(input) {
-  if (!input.files || !input.files.length) return;
+let docCounter = 1;
 
-  const zone = document.getElementById('preview-zone');
-  const multi = document.getElementById('preview-multiple');
-  const nbWrap = document.getElementById('nb-fichiers');
-  const nbTxt  = document.getElementById('nb-fichiers-txt');
+function ajouterDocument() {
+  const template = document.getElementById('doc-item-template');
+  const html = template.innerHTML.replace(/__INDEX__/g, docCounter);
+  const wrapper = document.createElement('div');
+  wrapper.innerHTML = html.trim();
+  const node = wrapper.firstElementChild;
 
-  // ── MODE MODIFICATION : une seule image ──
-  if (zone) {
-    const img = document.getElementById('preview-img');
-    img.src = URL.createObjectURL(input.files[0]);
-    zone.classList.add('visible');
+  document.getElementById('documents-container').appendChild(node);
+  docCounter++;
+  mettreAJourCompteur();
+
+  node.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  setTimeout(() => {
+    const firstInput = node.querySelector('input[name^="titre_"]');
+    if (firstInput) firstInput.focus();
+  }, 300);
+}
+
+function retirerDocument(index) {
+  const bloc = document.getElementById('doc-item-' + index);
+  if (!bloc) return;
+  const tous = document.querySelectorAll('.doc-item');
+  if (tous.length <= 1) {
+    alert('⚠️ Vous devez conserver au moins une image.');
     return;
   }
+  if (!confirm('Supprimer cette image du formulaire ?')) return;
+  bloc.remove();
+  mettreAJourCompteur();
+}
 
-  // ── MODE AJOUT : plusieurs images ──
-  if (multi) {
-    multi.innerHTML = '';
-
-    const files = Array.from(input.files);
-
-    files.forEach((file, idx) => {
-      const div = document.createElement('div');
-      div.className = 'pm-item';
-      div.innerHTML = `
-        <img src="${URL.createObjectURL(file)}" alt="">
-        <span class="pm-count">${idx + 1}</span>
-        <span class="pm-name" title="${file.name}">${file.name}</span>
-      `;
-      multi.appendChild(div);
-    });
-
-    // Afficher le compteur
-    if (nbWrap && nbTxt) {
-      nbWrap.classList.add('visible');
-      nbTxt.textContent = files.length + ' image' + (files.length > 1 ? 's' : '') + ' sélectionnée' + (files.length > 1 ? 's' : '');
-    }
+function mettreAJourCompteur() {
+  const total = document.querySelectorAll('.doc-item').length;
+  const el = document.getElementById('submit-counter');
+  if (el) {
+    el.textContent = total > 1
+      ? `${total} images seront ajoutées`
+      : `1 image sera ajoutée`;
   }
 }
 
-// ══════════════════════════════════════════════
-// MISE À JOUR APERÇU TEXTE (mode modification)
-// ══════════════════════════════════════════════
-function updatePreviewText() {
-  const tit  = document.getElementById('inp-titre');
-  const desc = document.getElementById('inp-desc');
-  const prevTit  = document.getElementById('prev-tit');
-  const prevDesc = document.getElementById('prev-desc');
-
-  if (tit && prevTit) {
-    prevTit.textContent = tit.value || "Titre de l'image";
-  }
-  if (desc && prevDesc) {
-    prevDesc.textContent = desc.value || "Description visible sur l'image...";
+function previewImg(input, index) {
+  const img = document.getElementById('preview-' + index);
+  if (input.files && input.files[0]) {
+    img.src = URL.createObjectURL(input.files[0]);
+    img.style.display = 'block';
   }
 }
 
-// ══════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', function() {
-  // Initialiser l'aperçu texte (mode modification)
-  const tit  = document.getElementById('inp-titre');
-  const desc = document.getElementById('inp-desc');
-  const prevTit  = document.getElementById('prev-tit');
-  const prevDesc = document.getElementById('prev-desc');
+document.getElementById('main-form').addEventListener('submit', function() {
+  const btn = this.querySelector('.btn-save');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = '⏳ Enregistrement...';
+  }
+});
 
-  if (tit && tit.value && prevTit) prevTit.textContent = tit.value;
-  if (desc && desc.value && prevDesc) prevDesc.textContent = desc.value;
+document.addEventListener('DOMContentLoaded', () => {
+  mettreAJourCompteur();
 });
 </script>
 </body>

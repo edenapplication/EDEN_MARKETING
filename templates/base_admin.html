@@ -188,6 +188,9 @@
         <a class="sb-lnk {% if 'dashboard_academie_liste' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_academie_liste' %}">
             <span class="sb-ico">📚</span>Documents
         </a>
+        <a class="sb-lnk {% if 'dashboard_journal' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_journal' %}">
+            <span class="sb-ico">📰</span>Revue et Article
+        </a>
         <a class="sb-lnk {% if 'dashboard_academie_videos' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_academie_videos' %}">
             <span class="sb-ico">🎬</span>Vidéos
         </a>
@@ -208,9 +211,7 @@
         <a class="sb-lnk {% if 'dashboard_une' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_une_liste' %}">
             <span class="sb-ico">📰</span>Une & Événements
         </a>
-        <a class="sb-lnk {% if 'dashboard_journal' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_journal' %}">
-            <span class="sb-ico">📰</span>Journal EDEN
-        </a>
+        
         <a class="sb-lnk {% if 'dashboard_temoignage' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'dashboard_temoignages' %}">
             <span class="sb-ico">💬</span>Témoignages
         </a>

@@ -1,0 +1,90 @@
+{# ✅ Partial — Bloc terme du lexique #}
+
+<div class="doc-item" id="doc-item-{{ index }}">
+
+  <div class="doc-item-header">
+    <div class="doc-item-title">
+      🔤 Terme <span class="item-counter" id="counter-{{ index }}">#{{ index|add:"1" }}</span>
+    </div>
+
+    {% if not item %}
+    <button type="button"
+            class="btn-remove-item"
+            onclick="retirerDocument('{{ index }}')"
+            title="Supprimer ce terme">
+      ✕
+    </button>
+    {% endif %}
+  </div>
+
+  {# ── Terme ── #}
+  <div class="fg">
+    <label>Terme / Expression *</label>
+    <input type="text"
+           name="titre_{{ index }}"
+           value="{{ item.titre|default:'' }}"
+           placeholder="Ex: Titre Foncier, Bornage, Acte de vente, Cadastre..."
+           required>
+    <div class="hint">Écrivez le terme tel qu'il apparaîtra dans le dictionnaire.</div>
+  </div>
+
+  {# ── Domaine ── #}
+  <div class="fg">
+    <label>Domaine / Catégorie (optionnel)</label>
+    <input type="text"
+           name="sous_titre_{{ index }}"
+           value="{{ item.sous_titre|default:'' }}"
+           placeholder="Ex: Juridique · Administratif · Technique · Fiscal">
+  </div>
+
+  {# ── Définition ── #}
+  <div class="fg">
+    <label>Définition complète *</label>
+    <textarea name="description_{{ index }}"
+              rows="5"
+              placeholder="Rédigez une définition claire et accessible..."
+              required>{{ item.description|default:'' }}</textarea>
+  </div>
+
+  {# ── Auteur ── #}
+  <div class="fg">
+    <label>Source / Auteur (optionnel)</label>
+    <input type="text"
+           name="auteur_{{ index }}"
+           value="{{ item.auteur|default:'' }}"
+           placeholder="Ex: Code Foncier du Cameroun, MINDCAF...">
+  </div>
+
+  {# ── Options ── #}
+  <div class="form-grid">
+    <div class="fg">
+      <label>Statut *</label>
+      <select name="statut_{{ index }}">
+        <option value="publie" {% if not item or item.statut == 'publie' %}selected{% endif %}>✅ Publié</option>
+        <option value="brouillon" {% if item and item.statut == 'brouillon' %}selected{% endif %}>📝 Brouillon</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label>Ordre d'affichage</label>
+      <input type="number"
+             name="ordre_{{ index }}"
+             value="{{ item.ordre|default:'0' }}"
+             min="0">
+    </div>
+  </div>
+
+  {# ── PDF ── #}
+  <div class="fg">
+    <label>Fiche PDF (optionnel)</label>
+    {% if item and item.fichier_pdf %}
+      <div class="pdf-existing">
+        <span style="font-size:1.2rem;">📄</span>
+        <span>PDF actuel : <strong>{{ item.fichier_pdf.name|truncatechars:50 }}</strong></span>
+        <a href="{% url 'academie_telecharger' item.pk %}" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none;margin-left:auto;">📥 Voir</a>
+      </div>
+    {% endif %}
+    <input type="file" name="fichier_pdf_{{ index }}" accept=".pdf">
+    <div class="hint">Fiche détaillée optionnelle.</div>
+  </div>
+
+</div>

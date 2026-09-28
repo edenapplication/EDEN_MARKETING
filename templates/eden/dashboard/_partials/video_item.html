@@ -1,0 +1,129 @@
+{# ✅ Partial — Bloc vidéo pour ajout multiple #}
+
+<div class="doc-item" id="doc-item-{{ index }}">
+
+  <div class="doc-item-header">
+    <div class="doc-item-title">
+      🎬 Vidéo <span class="item-counter" id="counter-{{ index }}">#{{ index|add:"1" }}</span>
+    </div>
+
+    {% if not video %}
+    <button type="button"
+            class="btn-remove-item"
+            onclick="retirerDocument('{{ index }}')"
+            title="Supprimer cette vidéo">
+      ✕
+    </button>
+    {% endif %}
+  </div>
+
+  {# ── Titre ── #}
+  <div class="fg">
+    <label>Titre *</label>
+    <input type="text"
+           name="titre_{{ index }}"
+           value="{{ video.titre|default:'' }}"
+           placeholder="Ex: L'implantation d'une parcelle : étapes et importance"
+           required>
+  </div>
+
+  {# ── Description ── #}
+  <div class="fg">
+    <label>Description</label>
+    <textarea name="description_{{ index }}"
+              rows="3"
+              placeholder="Apprenez pourquoi l'implantation est une étape clé pour sécuriser votre terrain...">{{ video.description|default:'' }}</textarea>
+  </div>
+
+  {# ── Auteur + Durée ── #}
+  <div class="form-grid">
+    <div class="fg">
+      <label>Auteur / Expert</label>
+      <input type="text"
+             name="auteur_{{ index }}"
+             value="{{ video.auteur|default:'' }}"
+             placeholder="Ex: Expert EDEN GROUP">
+    </div>
+    <div class="fg">
+      <label>Durée (ex: 08:34)</label>
+      <input type="text"
+             name="duree_{{ index }}"
+             value="{{ video.duree|default:'' }}"
+             placeholder="08:34">
+      <div class="hint">Format mm:ss ou hh:mm:ss</div>
+    </div>
+  </div>
+
+  {# ── Date + Statut ── #}
+  <div class="form-grid">
+    <div class="fg">
+      <label>Date de publication</label>
+      <input type="date"
+             name="date_publication_{{ index }}"
+             value="{{ video.date_publication|date:'Y-m-d'|default:'' }}">
+    </div>
+    <div class="fg">
+      <label>Statut</label>
+      <select name="statut_{{ index }}">
+        <option value="brouillon" {% if not video or video.statut == 'brouillon' %}selected{% endif %}>📝 Brouillon</option>
+        <option value="publie" {% if video and video.statut == 'publie' %}selected{% endif %}>✅ Publié</option>
+      </select>
+    </div>
+  </div>
+
+  {# ── Ordre ── #}
+  <div class="fg">
+    <label>Ordre d'affichage</label>
+    <input type="number"
+           name="ordre_{{ index }}"
+           value="{{ video.ordre|default:'0' }}"
+           min="0">
+    {% if not video %}<div class="hint">Les vidéos suivantes seront incrémentées automatiquement.</div>{% endif %}
+  </div>
+
+  {# ── Vidéo du moment ── #}
+  <div class="chk-row">
+    <input type="checkbox"
+           name="est_video_moment_{{ index }}"
+           id="est_moment_{{ index }}"
+           {% if video and video.est_video_moment %}checked{% endif %}>
+    <label for="est_moment_{{ index }}">⭐ Vidéo du moment (affichée en priorité sur la page Académie)</label>
+  </div>
+
+  {# ── Fichier vidéo ── #}
+  <div class="fg" style="margin-top:1rem;">
+    <label>Fichier vidéo {% if not video %}*{% endif %}</label>
+    {% if video and video.fichier_video %}
+      <div class="pdf-existing">
+        <span style="font-size:1.2rem;">🎬</span>
+        <span>Fichier actuel : <strong>{{ video.fichier_video.name|truncatechars:50 }}</strong></span>
+        <a href="{% url 'academie_voir_video' video.pk %}" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none;margin-left:auto;">▶ Visionner</a>
+      </div>
+    {% endif %}
+    <input type="file"
+           name="fichier_video_{{ index }}"
+           accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov"
+           {% if not video %}required{% endif %}>
+    <div class="hint">Formats : MP4, WebM, MOV.</div>
+  </div>
+
+  {# ── Miniature ── #}
+  <div class="fg">
+    <label>Image miniature (optionnel)</label>
+    {% if video and video.image_miniature %}
+      <img src="{{ video.image_miniature.url }}"
+           class="preview-img"
+           id="preview-{{ index }}"
+           style="display:block;"
+           alt="">
+    {% else %}
+      <img class="preview-img" id="preview-{{ index }}" alt="">
+    {% endif %}
+    <input type="file"
+           name="image_miniature_{{ index }}"
+           accept="image/*"
+           onchange="previewImg(this, '{{ index }}')">
+    <div class="hint">Recommandé : 1280×720px (format 16:9).</div>
+  </div>
+
+</div>

@@ -1,9 +1,10 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{% if video %}Modifier{% else %}Nouvelle{% endif %} vidéo — Académie</title>
+<title>{% if video %}Modifier{% else %}Nouvelles{% endif %} vidéos — Académie</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -14,7 +15,7 @@ body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
 .tn-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .tn-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1.5px solid var(--g200);background:#fff;color:var(--g500);font-family:'Outfit',sans-serif;transition:all 0.2s;}
 .tn-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--bpale);}
-.wrap{padding:84px 2rem 3rem;max-width:760px;margin:0 auto;}
+.wrap{padding:84px 2rem 3rem;max-width:900px;margin:0 auto;}
 .page-tit{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--g800);margin-bottom:1.5rem;}
 .card{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);padding:2rem;margin-bottom:1.5rem;}
 .card-tit{font-size:13px;font-weight:700;color:var(--g800);margin-bottom:1.2rem;padding-bottom:0.8rem;border-bottom:1px solid var(--g200);}
@@ -23,144 +24,33 @@ body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
 .fg label{font-size:11px;font-weight:600;color:var(--g500);}
 .fg .hint{font-size:11px;color:var(--g400);margin-top:2px;}
 input,select,textarea{width:100%;background:#fff;border:1.5px solid var(--g200);border-radius:10px;padding:11px 14px;color:var(--g800);font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s;}
-input:focus,select:focus,textarea:focus{border-color:var(--blue);}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(27,79,219,0.08);}
 input::placeholder,textarea::placeholder{color:var(--g400);}
 select{appearance:none;}
 .chk-row{display:flex;align-items:center;gap:10px;padding:6px 0;}
 .chk-row input[type="checkbox"]{width:18px;height:18px;cursor:pointer;}
 .chk-row label{font-size:13px;color:var(--g700);margin:0;cursor:pointer;}
-
-/* ✅ Aperçu multiple vidéos */
-.preview-multiple-videos{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
-  gap:10px;
-  margin-top:1rem;
-  margin-bottom:1rem;
-}
-.preview-multiple-videos:empty{display:none;}
-.pmv-item{
-  position:relative;
-  aspect-ratio:16/9;
-  border-radius:10px;
-  overflow:hidden;
-  background:#000;
-  border:2px solid var(--g200);
-  transition:transform 0.2s, border-color 0.2s;
-}
-.pmv-item:hover{
-  transform:scale(1.03);
-  border-color:var(--blue);
-}
-.pmv-item video{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-}
-.pmv-count{
-  position:absolute;
-  top:6px;
-  left:6px;
-  background:rgba(27,79,219,0.95);
-  color:#fff;
-  font-size:10px;
-  font-weight:700;
-  padding:2px 8px;
-  border-radius:100px;
-  z-index:2;
-}
-.pmv-name{
-  position:absolute;
-  bottom:0;
-  left:0;
-  right:0;
-  background:rgba(0,0,0,0.75);
-  color:#fff;
-  font-size:9px;
-  padding:4px 6px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  z-index:2;
-}
-
-/* ✅ Compteur de fichiers */
-.nb-fichiers{
-  display:none;
-  background:var(--bpale);
-  border:1.5px solid rgba(27,79,219,0.25);
-  border-radius:10px;
-  padding:10px 14px;
-  font-size:13px;
-  font-weight:600;
-  color:var(--blue);
-  margin-top:10px;
-  align-items:center;
-  gap:8px;
-}
-.nb-fichiers.visible{display:flex;}
-
-/* ✅ Aperçu multiple miniatures */
-.preview-multiple-miniatures{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
-  gap:10px;
-  margin-top:1rem;
-  margin-bottom:1rem;
-}
-.preview-multiple-miniatures:empty{display:none;}
-.pmm-item{
-  position:relative;
-  aspect-ratio:16/9;
-  border-radius:10px;
-  overflow:hidden;
-  background:var(--g200);
-  border:2px solid var(--g200);
-}
-.pmm-item img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-}
-.pmm-count{
-  position:absolute;
-  top:6px;
-  left:6px;
-  background:rgba(200,16,46,0.95);
-  color:#fff;
-  font-size:10px;
-  font-weight:700;
-  padding:2px 8px;
-  border-radius:100px;
-  z-index:2;
-}
-.pmm-name{
-  position:absolute;
-  bottom:0;
-  left:0;
-  right:0;
-  background:rgba(0,0,0,0.75);
-  color:#fff;
-  font-size:9px;
-  padding:4px 6px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  z-index:2;
-}
-
 .preview-img{width:100%;height:140px;object-fit:cover;border-radius:var(--r);margin-top:8px;display:none;border:1.5px solid var(--g200);}
-.existing-video{background:var(--g50);border:1.5px solid var(--g200);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--g700);display:flex;align-items:center;gap:8px;margin-bottom:8px;}
-.progress-bar{display:none;margin-top:8px;height:6px;background:var(--g200);border-radius:100px;overflow:hidden;}
-.progress-fill{height:100%;background:var(--grad-h);border-radius:100px;width:0%;transition:width 0.3s;}
+.pdf-existing{background:var(--g50);border:1.5px solid var(--g200);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--g700);display:flex;align-items:center;gap:8px;margin-bottom:8px;}
 .btn-save{background:var(--grad);color:#fff;padding:13px 28px;border-radius:var(--r);font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;}
 .btn-save:disabled{opacity:0.6;cursor:not-allowed;}
 .btn-cancel{background:#fff;color:var(--g500);padding:13px 24px;border-radius:var(--r);font-size:14px;font-weight:500;border:1.5px solid var(--g200);cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;}
 .err{background:#fee2e2;border:1.5px solid #fca5a5;border-radius:var(--r);padding:12px 16px;font-size:13px;color:#dc2626;margin-bottom:1.5rem;}
+.alert{background:#dcfce7;border:1.5px solid #86efac;border-radius:var(--r);padding:12px 16px;font-size:13px;color:#16a34a;margin-bottom:1.5rem;}
 .info-box{background:var(--bpale);border:1.5px solid rgba(27,79,219,0.2);border-radius:var(--r);padding:1rem 1.2rem;margin-bottom:1.5rem;font-size:13px;color:var(--blue);}
-@media(max-width:768px){.form-grid{grid-template-columns:1fr;}.wrap{padding:80px 1rem 2rem;}.preview-multiple-videos{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}.preview-multiple-miniatures{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));}}
+
+/* Blocs d'ajout multiple */
+.doc-item{background:#f8faff;border:1.5px dashed rgba(27,79,219,0.3);border-radius:var(--rl);padding:1.5rem;margin-bottom:1rem;position:relative;animation:slideIn 0.3s ease;}
+@keyframes slideIn{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
+.doc-item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;padding-bottom:0.8rem;border-bottom:1px dashed var(--g200);}
+.doc-item-title{font-size:12px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.5px;}
+.btn-remove-item{background:#fee2e2;color:#dc2626;border:none;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.btn-remove-item:hover{background:#fecaca;transform:scale(1.05);}
+.btn-add-item{width:100%;padding:16px;background:#fff;border:2px dashed var(--blue);border-radius:var(--rl);color:var(--blue);font-weight:700;font-size:14px;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-add-item:hover{background:var(--bpale);border-style:solid;}
+.item-counter{display:inline-block;background:var(--blue);color:#fff;padding:3px 10px;border-radius:50px;font-size:11px;font-weight:700;margin-left:8px;}
+
+@media(max-width:768px){.form-grid{grid-template-columns:1fr;}.wrap{padding:80px 1rem 2rem;}}
 </style>
 </head>
 <body>
@@ -172,297 +62,124 @@ select{appearance:none;}
 </nav>
 
 <div class="wrap">
-  <div class="page-tit">{% if video %}✏ Modifier "{{ video.titre }}"{% else %}🎬 Nouvelles vidéos Académie{% endif %}</div>
+  <div class="page-tit">
+    {% if video %}✏ Modifier "{{ video.titre }}"{% else %}🎬 Nouvelles vidéos Académie{% endif %}
+  </div>
 
-  {% if messages %}{% for msg in messages %}<div class="err">{{ msg }}</div>{% endfor %}{% endif %}
+  {% if messages %}
+    {% for msg in messages %}
+      <div class="{% if 'error' in msg.tags %}err{% else %}alert{% endif %}">{{ msg }}</div>
+    {% endfor %}
+  {% endif %}
 
   <div class="info-box">
     {% if video %}
       🎬 Modifiez les informations de la vidéo. Laissez les fichiers vides pour les conserver.
     {% else %}
-      🎬 Vous pouvez uploader <strong>plusieurs vidéos en une seule fois</strong>. Elles auront toutes le même titre, description, auteur et durée. Formats supportés : <strong>MP4, WebM, MOV</strong>.
+      💡 Vous pouvez ajouter <strong>plusieurs vidéos d'un coup</strong> avec le bouton "+ Ajouter une autre vidéo".
+      <br>Formats supportés : <strong>MP4, WebM, MOV</strong>.
     {% endif %}
   </div>
 
-  <form method="post" enctype="multipart/form-data" id="video-form">
+  <form method="post" enctype="multipart/form-data" id="main-form">
     {% csrf_token %}
 
-    <div class="card">
-      <div class="card-tit">📋 Informations{% if not video %} (communes à toutes les vidéos){% endif %}</div>
-      <div class="fg">
-        <label>Titre *</label>
-        <input type="text" name="titre" value="{{ video.titre|default:'' }}" placeholder="Ex: L'implantation d'une parcelle : étapes et importance" required>
-      </div>
-      <div class="fg">
-        <label>Description</label>
-        <textarea name="description" rows="3" placeholder="Apprenez pourquoi l'implantation est une étape clé pour sécuriser votre terrain...">{{ video.description|default:'' }}</textarea>
-      </div>
-      <div class="form-grid">
-        <div class="fg">
-          <label>Auteur / Expert</label>
-          <input type="text" name="auteur" value="{{ video.auteur|default:'' }}" placeholder="Ex: Expert EDEN GROUP">
-        </div>
-        <div class="fg">
-          <label>Durée (ex: 08:34)</label>
-          <input type="text" name="duree" value="{{ video.duree|default:'' }}" placeholder="08:34">
-          <div class="hint">Format mm:ss ou hh:mm:ss</div>
-        </div>
-      </div>
-      <div class="form-grid">
-        <div class="fg">
-          <label>Date de publication</label>
-          <input type="date" name="date_publication" value="{{ video.date_publication|date:'Y-m-d'|default:'' }}">
-        </div>
-        <div class="fg">
-          <label>Statut</label>
-          <select name="statut">
-            <option value="brouillon" {% if not video or video.statut == 'brouillon' %}selected{% endif %}>📝 Brouillon</option>
-            <option value="publie" {% if video and video.statut == 'publie' %}selected{% endif %}>✅ Publié</option>
-          </select>
-        </div>
-      </div>
-      <div class="fg">
-        <label>Ordre d'affichage</label>
-        <input type="number" name="ordre" value="{{ video.ordre|default:'0' }}" min="0">
-        {% if not video %}<div class="hint">Les vidéos suivantes seront incrémentées automatiquement.</div>{% endif %}
-      </div>
-      <div class="chk-row">
-        <input type="checkbox" name="est_video_moment" id="est_moment" {% if video and video.est_video_moment %}checked{% endif %}>
-        <label for="est_moment">⭐ Vidéo du moment (affichée en priorité sur la page Académie)</label>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-tit">🎬 Fichier{% if not video %}s{% endif %} vidéo</div>
-
-      {% if video and video.fichier_video %}
-      <div class="existing-video">
-        <span style="font-size:1.2rem;">🎬</span>
-        <span>Fichier actuel : <strong>{{ video.fichier_video.name|truncatechars:50 }}</strong></span>
-        <a href="{% url 'academie_voir_video' video.pk %}" target="_blank" style="font-size:11px;color:var(--blue);text-decoration:none;margin-left:auto;">▶ Visionner</a>
-      </div>
-      <div style="font-size:12px;color:var(--g500);margin-bottom:8px;">Choisissez un nouveau fichier pour le remplacer :</div>
-      {% endif %}
-
-      <div class="fg">
-        <label>Fichier{% if not video %}s{% endif %} vidéo {% if not video %}*{% endif %}</label>
-        <input type="file"
-               name="fichier_video"
-               accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov"
-               {% if not video %}multiple{% endif %}
-               onchange="afficherApercuVideos(this)"
-               {% if not video %}required{% endif %}>
-        <div class="hint">
-          {% if video %}
-            Formats : MP4, WebM, MOV. Taille max : dépend de la configuration serveur.
-          {% else %}
-            ✅ Sélectionnez <strong>plusieurs vidéos en une seule fois</strong>.<br>
-            Formats : MP4, WebM, MOV.
-          {% endif %}
-        </div>
-        <div class="progress-bar" id="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-        <div id="file-info" style="font-size:11px;color:var(--g500);margin-top:4px;"></div>
-      </div>
-
-      <!-- ✅ Aperçu multiple -->
-      <div class="preview-multiple-videos" id="preview-multiple-videos"></div>
-
-      <!-- ✅ Compteur -->
-      {% if not video %}
-      <div class="nb-fichiers" id="nb-fichiers">
-        <span>✅</span>
-        <span id="nb-fichiers-txt">0 vidéo sélectionnée</span>
-      </div>
-      {% endif %}
-    </div>
-
-    <div class="card">
-      <div class="card-tit">🖼 Miniature{% if not video %}s{% endif %} (vignette)</div>
-
-      {% if video and video.image_miniature %}
-        <img src="{{ video.image_miniature.url }}" class="preview-img" id="preview" style="display:block;" alt="">
-        <div style="margin-top:0.8rem;"></div>
+    <div id="documents-container">
+      {% if video %}
+        {% include "eden/dashboard/_partials/video_item.html" with video=video index=0 %}
       {% else %}
-        <img class="preview-img" id="preview" alt="">
+        {% include "eden/dashboard/_partials/video_item.html" with index=0 %}
       {% endif %}
-
-      <div class="fg">
-        <label>Image{% if not video %}s{% endif %} miniature (optionnel)</label>
-        <input type="file"
-               name="image_miniature"
-               accept="image/*"
-               {% if not video %}multiple{% endif %}
-               onchange="afficherApercuMiniatures(this)">
-        <div class="hint">
-          {% if video %}
-            Recommandé : 1280×720px (format 16:9).
-          {% else %}
-            Vous pouvez sélectionner plusieurs miniatures. Elles seront associées aux vidéos dans l'ordre.<br>
-            Recommandé : 1280×720px (format 16:9).
-          {% endif %}
-        </div>
-      </div>
-
-      <!-- ✅ Aperçu multiple miniatures -->
-      <div class="preview-multiple-miniatures" id="preview-multiple-miniatures"></div>
     </div>
 
-    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+    {% if not video %}
+    <button type="button" class="btn-add-item" onclick="ajouterDocument()">
+      <span style="font-size:20px;">+</span>
+      Ajouter une autre vidéo
+    </button>
+    {% endif %}
+
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:1.5rem;">
       <button type="submit" class="btn-save" id="btn-submit">
-        💾 {% if video %}Enregistrer{% else %}Uploader les vidéos{% endif %}
+        💾 {% if video %}Enregistrer{% else %}Créer la/les vidéo(s){% endif %}
       </button>
       <a href="{% url 'dashboard_academie_videos' %}" class="btn-cancel">Annuler</a>
+      <span id="submit-counter" style="margin-left:auto;align-self:center;font-size:13px;color:var(--g500);"></span>
     </div>
+
     <div style="font-size:12px;color:var(--g400);margin-top:0.8rem;">
       ⚠ Ne fermez pas cette page pendant l'upload. Les grandes vidéos peuvent prendre plusieurs minutes.
     </div>
   </form>
 </div>
 
+<template id="doc-item-template">
+  {% include "eden/dashboard/_partials/video_item.html" with index="__INDEX__" %}
+</template>
+
 <script>
-// ══════════════════════════════════════════════
-// ✅ APERÇU DES VIDÉOS SÉLECTIONNÉES
-// ══════════════════════════════════════════════
-function afficherApercuVideos(input) {
-  if (!input.files || !input.files.length) return;
+let docCounter = 1;
 
-  const preview = document.getElementById('preview-multiple-videos');
-  const nbWrap = document.getElementById('nb-fichiers');
-  const nbTxt = document.getElementById('nb-fichiers-txt');
-  const fileInfo = document.getElementById('file-info');
-  const progressBar = document.getElementById('progress-bar');
+function ajouterDocument() {
+  const template = document.getElementById('doc-item-template');
+  const html = template.innerHTML.replace(/__INDEX__/g, docCounter);
+  const wrapper = document.createElement('div');
+  wrapper.innerHTML = html.trim();
+  const node = wrapper.firstElementChild;
 
-  const files = Array.from(input.files);
+  document.getElementById('documents-container').appendChild(node);
+  docCounter++;
+  mettreAJourCompteur();
 
-  // Mode modification (1 seule vidéo)
-  if (!input.multiple) {
-    const file = files[0];
-    const mb = (file.size / 1024 / 1024).toFixed(1);
-    fileInfo.textContent = `Fichier sélectionné : ${file.name} (${mb} MB)`;
-    progressBar.style.display = 'block';
+  node.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-    if (preview) {
-      preview.innerHTML = '';
-      const div = document.createElement('div');
-      div.className = 'pmv-item';
-      div.innerHTML = `
-        <video src="${URL.createObjectURL(file)}" preload="metadata" muted playsinline></video>
-        <span class="pmv-count">1</span>
-        <span class="pmv-name" title="${file.name}">${file.name}</span>
-      `;
-      preview.appendChild(div);
-    }
+  setTimeout(() => {
+    const firstInput = node.querySelector('input[name^="titre_"]');
+    if (firstInput) firstInput.focus();
+  }, 300);
+}
+
+function retirerDocument(index) {
+  const bloc = document.getElementById('doc-item-' + index);
+  if (!bloc) return;
+  const tous = document.querySelectorAll('.doc-item');
+  if (tous.length <= 1) {
+    alert('⚠️ Vous devez conserver au moins une vidéo.');
     return;
   }
+  if (!confirm('Supprimer cette vidéo du formulaire ?')) return;
+  bloc.remove();
+  mettreAJourCompteur();
+}
 
-  // Mode ajout (plusieurs vidéos)
-  if (preview) preview.innerHTML = '';
-
-  let totalSize = 0;
-
-  files.forEach((file, idx) => {
-    totalSize += file.size;
-    const div = document.createElement('div');
-    div.className = 'pmv-item';
-
-    const video = document.createElement('video');
-    video.src = URL.createObjectURL(file);
-    video.preload = 'metadata';
-    video.muted = true;
-    video.playsInline = true;
-
-    const count = document.createElement('span');
-    count.className = 'pmv-count';
-    count.textContent = idx + 1;
-
-    const name = document.createElement('span');
-    name.className = 'pmv-name';
-    name.title = file.name;
-    name.textContent = file.name;
-
-    div.appendChild(video);
-    div.appendChild(count);
-    div.appendChild(name);
-    preview.appendChild(div);
-  });
-
-  // Afficher le compteur
-  if (nbWrap && nbTxt) {
-    nbWrap.classList.add('visible');
-    const sizeMB = (totalSize / 1024 / 1024).toFixed(1);
-    nbTxt.textContent = files.length + ' vidéo' + (files.length > 1 ? 's' : '') + ' sélectionnée' + (files.length > 1 ? 's' : '') + ' (' + sizeMB + ' MB)';
-  }
-
-  if (fileInfo) {
-    fileInfo.textContent = '';
+function mettreAJourCompteur() {
+  const total = document.querySelectorAll('.doc-item').length;
+  const el = document.getElementById('submit-counter');
+  if (el) {
+    el.textContent = total > 1
+      ? `${total} vidéos seront créées`
+      : `1 vidéo sera créée`;
   }
 }
 
-// ══════════════════════════════════════════════
-// ✅ APERÇU DES MINIATURES SÉLECTIONNÉES
-// ══════════════════════════════════════════════
-function afficherApercuMiniatures(input) {
-  if (!input.files || !input.files.length) return;
-
-  const preview = document.getElementById('preview-multiple-miniatures');
-  const img = document.getElementById('preview');
-
-  // Mode modification (1 seule image)
-  if (!input.multiple) {
-    if (img && input.files[0]) {
-      img.src = URL.createObjectURL(input.files[0]);
-      img.style.display = 'block';
-    }
-    if (preview) preview.innerHTML = '';
-    return;
-  }
-
-  // Mode ajout (plusieurs images)
-  if (preview) preview.innerHTML = '';
-
-  Array.from(input.files).forEach((file, idx) => {
-    const div = document.createElement('div');
-    div.className = 'pmm-item';
-    div.innerHTML = `
-      <img src="${URL.createObjectURL(file)}" alt="">
-      <span class="pmm-count">${idx + 1}</span>
-      <span class="pmm-name" title="${file.name}">${file.name}</span>
-    `;
-    preview.appendChild(div);
-  });
-}
-
-// ══════════════════════════════════════════════
-// ANCIENNE FONCTION (compatibilité)
-// ══════════════════════════════════════════════
-function previewImg(input) {
-  const img = document.getElementById('preview');
+function previewImg(input, index) {
+  const img = document.getElementById('preview-' + index);
   if (input.files && input.files[0]) {
     img.src = URL.createObjectURL(input.files[0]);
     img.style.display = 'block';
   }
 }
 
-// ══════════════════════════════════════════════
-// SOUMISSION DU FORMULAIRE
-// ══════════════════════════════════════════════
-document.getElementById('video-form').addEventListener('submit', function(e) {
-  const btn = document.getElementById('btn-submit');
-  btn.textContent = '⏳ Upload en cours...';
-  btn.disabled = true;
+document.getElementById('main-form').addEventListener('submit', function() {
+  const btn = this.querySelector('.btn-save');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = '⏳ Upload en cours...';
+  }
+});
 
-  // Simuler progression visuelle
-  let pct = 0;
-  const fill = document.getElementById('progress-fill');
-  const progressBar = document.getElementById('progress-bar');
-
-  if (progressBar) progressBar.style.display = 'block';
-
-  const interval = setInterval(() => {
-    pct = Math.min(pct + Math.random() * 8, 90);
-    if (fill) fill.style.width = pct + '%';
-    if (pct >= 90) clearInterval(interval);
-  }, 500);
+document.addEventListener('DOMContentLoaded', () => {
+  mettreAJourCompteur();
 });
 </script>
 </body>
