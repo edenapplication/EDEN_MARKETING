@@ -12,6 +12,7 @@ from django.core.paginator import Paginator
 from django.db import models
 from .models import HeroConfig
 from django.contrib.admin.views.decorators import staff_member_required
+from django.urls import reverse
 
 
 from .models import (
@@ -3486,88 +3487,46 @@ from .models import (
     AcademieFAQ, AcademieStatistique, AcademieCategorie,
     JournalEdition
 )
+
 def academie_accueil(request):
-    """Page principale de l'Académie."""
     docs_publie = AcademieDocument.objects.filter(statut='publie')
     editions_publiees = JournalEdition.objects.filter(statut='publie')
     section_academie = SectionAcademie.objects.filter(is_active=True).first()
 
+    # ✅ Récupérer les brochures et leur attribuer un slug pour le lecteur
+    brochures_qs = docs_publie.filter(categorie='brochure').order_by('ordre', '-date_publication')
+    brochures = []
+    for b in brochures_qs:
+        # On utilise le PK pour former une URL de lecture unique
+        b.lecture_url = reverse('academie_lire_brochure', kwargs={'pk': b.pk})
+        brochures.append(b)
+
     contexte = {
-        # ═══════════════════════════════════════════════════════
-        # ARTICLES / REVUES / GUIDES = TOUS JournalEdition
-        # ═══════════════════════════════════════════════════════
-        'articles': editions_publiees.filter(
-            type_academie='article'
-        ).order_by('-date_parution'),
-        
-        'revues': editions_publiees.filter(
-            type_academie='revue'
-        ).order_by('-date_parution'),
-        
-        'guides': editions_publiees.filter(
-            type_academie='guide'
-        ).order_by('-date_parution'),
-
-        # ✅ Alias pour compatibilité avec le template
-        # (le template utilise 'guides_pratiques' mais avec champs JournalEdition)
-        'guides_pratiques': editions_publiees.filter(
-            type_academie='guide'
-        ).order_by('-date_parution'),
-
-        # ═══════════════════════════════════════════════════════
-        # BROCHURES = AcademieDocument catégorie='brochure'
-        # ═══════════════════════════════════════════════════════
-        'brochures': docs_publie.filter(
-            categorie='brochure'
-        ).order_by('ordre', '-date_publication'),
-
-        # Textes de loi
+        'articles': editions_publiees.filter(type_academie='article').order_by('-date_parution'),
+        'revues': editions_publiees.filter(type_academie='revue').order_by('-date_parution'),
+        'guides': editions_publiees.filter(type_academie='guide').order_by('-date_parution'),
+        'guides_pratiques': editions_publiees.filter(type_academie='guide').order_by('-date_parution'),
+        'brochures': brochures,   # ✅ Liste enrichie avec lecture_url
+        # ... reste inchangé
         'textes_loi': docs_publie.filter(categorie='texte_loi').order_by('ordre'),
-        # Lexique
         'lexique': docs_publie.filter(categorie='lexique').order_by('ordre'),
-        # Galerie
         'galerie': docs_publie.filter(categorie='galerie').order_by('ordre'),
-        # Ressources
         'ressources': docs_publie.filter(categorie='ressource').order_by('ordre'),
-
-        # Vidéos
-        'video_moment': AcademieVideo.objects.filter(
-            statut='publie', est_video_moment=True
-        ).first(),
+        'video_moment': AcademieVideo.objects.filter(statut='publie', est_video_moment=True).first(),
         'videos': AcademieVideo.objects.filter(statut='publie').order_by('ordre'),
-        
-        # FAQ
-        'faq_featured': AcademieFAQ.objects.filter(
-            statut='publie', est_featured=True
-        ).first(),
+        'faq_featured': AcademieFAQ.objects.filter(statut='publie', est_featured=True).first(),
         'faqs': AcademieFAQ.objects.filter(statut='publie').order_by('ordre'),
-        
-        # Parcours
-        'etapes_parcours': AcademieEtapeParcours.objects.filter(
-            is_active=True
-        ).order_by('ordre'),
-        
-        # Stats
+        'etapes_parcours': AcademieEtapeParcours.objects.filter(is_active=True).order_by('ordre'),
         'stats': AcademieStatistique.objects.filter(is_active=True).order_by('ordre'),
-
-        # À la une
         'a_la_une_edition': editions_publiees.filter(
             type_academie__in=['article', 'revue', 'guide']
         ).order_by('-date_parution').first(),
-        'revue_featured': editions_publiees.filter(
-            type_academie='revue'
-        ).order_by('-date_parution').first(),
-        'guide_featured': editions_publiees.filter(
-            type_academie='guide'
-        ).order_by('-date_parution').first(),
-
-        # ═══════════════════════════════════════════════════════
-        # COMPTEURS SIDEBAR
-        # ═══════════════════════════════════════════════════════
+        'revue_featured': editions_publiees.filter(type_academie='revue').order_by('-date_parution').first(),
+        'guide_featured': editions_publiees.filter(type_academie='guide').order_by('-date_parution').first(),
         'nb_textes': docs_publie.filter(categorie='texte_loi').count(),
         'nb_articles': editions_publiees.filter(type_academie='article').count(),
         'nb_revues': editions_publiees.filter(type_academie='revue').count(),
-        'nb_guides': editions_publiees.filter(type_academie='guide').count(),  # ✅ JournalEdition
+        'nb_guides': editions_publiees.filter(type_academie='guide').count(),
         'nb_brochures': docs_publie.filter(categorie='brochure').count(),
         'nb_videos': AcademieVideo.objects.filter(statut='publie').count(),
         'nb_galerie': docs_publie.filter(categorie='galerie').count(),
@@ -3576,6 +3535,7 @@ def academie_accueil(request):
         'section_academie': section_academie,
     }
     return render(request, 'eden/academie/accueil.html', contexte)
+
 
 def academie_recherche(request):
     """Recherche globale dans toute l'Académie."""
@@ -3709,20 +3669,47 @@ def academie_voir_video(request, pk):
 @login_required
 @user_passes_test(is_agent)
 def dashboard_academie_liste(request):
-    docs = AcademieDocument.objects.all().order_by('-created_at')
-    cat = request.GET.get('cat', '')
-    if cat:
-        docs = docs.filter(categorie=cat)
-    return render(request, 'eden/dashboard/academie_liste.html', {
-        'docs': docs,
-        'cat': cat,
-        'categories': AcademieCategorie.choices,
-        'nb_total': AcademieDocument.objects.count(),
-        'nb_publie': AcademieDocument.objects.filter(statut='publie').count(),
-        # ✅ Ajouté
-        'nb_lexique': AcademieDocument.objects.filter(categorie='lexique').count(),
-    })
+    from .models import AcademieDocument, AcademieVideo, AcademieFAQ, JournalEdition
 
+    docs_all = AcademieDocument.objects.all()
+
+    # ✅ Publications (JournalEdition)
+    articles = JournalEdition.objects.filter(type_academie='article').order_by('-created_at')
+    revues   = JournalEdition.objects.filter(type_academie='revue').order_by('-created_at')
+    guides   = JournalEdition.objects.filter(type_academie='guide').order_by('-created_at')
+
+    # ✅ AcadémieDocument par catégorie
+    brochures  = docs_all.filter(categorie='brochure').order_by('ordre', '-created_at')
+    textes_loi = docs_all.filter(categorie='texte_loi').order_by('ordre', '-created_at')
+    lexique    = docs_all.filter(categorie='lexique').order_by('titre')
+    galerie    = docs_all.filter(categorie='galerie').order_by('ordre', '-created_at')
+
+    # ✅ Vidéos (a bien created_at)
+    videos = AcademieVideo.objects.all().order_by('ordre', '-created_at')
+
+    # ⚠️ FAQ : pas de created_at → trier par ordre + id
+    faqs = AcademieFAQ.objects.all().order_by('ordre', 'id')
+
+    return render(request, 'eden/dashboard/academie_liste.html', {
+        'articles': articles,
+        'revues': revues,
+        'guides': guides,
+        'brochures': brochures,
+        'textes_loi': textes_loi,
+        'lexique': lexique,
+        'galerie': galerie,
+        'videos': videos,
+        'faqs': faqs,
+
+        # Compteurs
+        'nb_total': docs_all.count() + articles.count() + revues.count() + guides.count(),
+        'nb_publie': docs_all.filter(statut='publie').count(),
+        'nb_lexique': lexique.count(),
+        'nb_brochures': brochures.count(),
+        'nb_videos': videos.count(),
+        'nb_galerie': galerie.count(),
+        'nb_faqs': faqs.count(),
+    }) 
 
 @login_required
 @user_passes_test(is_agent)
@@ -4424,7 +4411,7 @@ def dashboard_academie_galerie_form(request, pk=None):
         return redirect('dashboard_academie_galerie')
 
     return render(request, 'eden/dashboard/academie_galerie_form.html', {'item': None})
-    
+
 @login_required
 @user_passes_test(is_agent)
 def dashboard_academie_galerie_supprimer(request, pk):
@@ -5344,41 +5331,83 @@ def supprimer_page_journal(request, edition_pk):
 
 @staff_member_required
 def admin_section_academie(request):
-    """Éditer la section Académie de la page d'accueil"""
-    
+    """Éditer la section Académie : textes + 2 images distinctes."""
+
     section, created = SectionAcademie.objects.get_or_create(pk=1)
-    
+
     if request.method == 'POST':
+
+        # ═══════════════════════════════════════════
+        # ✅ SUPPRESSION D'IMAGE (hero OU section)
+        # ═══════════════════════════════════════════
+        action = request.POST.get('action')
+        if action == 'delete_image_hero':
+            if section.image_hero:
+                try:
+                    section.image_hero.delete(save=True)
+                    messages.success(request, '🗑 Image du hero supprimée.')
+                except Exception as e:
+                    messages.error(request, f'Erreur : {e}')
+            return redirect('admin_section_academie')
+
+        if action == 'delete_image_section':
+            if section.image:
+                try:
+                    section.image.delete(save=True)
+                    messages.success(request, '🗑 Image de la section supprimée.')
+                except Exception as e:
+                    messages.error(request, f'Erreur : {e}')
+            return redirect('admin_section_academie')
+
+        # ═══════════════════════════════════════════
+        # ENREGISTREMENT NORMAL
+        # ═══════════════════════════════════════════
+
         # ═══ BLOC GAUCHE ═══
-        section.eyebrow = request.POST.get('eyebrow', section.eyebrow)
-        section.titre_ligne1 = request.POST.get('titre_ligne1', section.titre_ligne1)
-        section.titre_ligne2 = request.POST.get('titre_ligne2', section.titre_ligne2)
-        section.description = request.POST.get('description', section.description)
-        section.btn_texte = request.POST.get('btn_texte', section.btn_texte)
-        
-        # ═══ FEATURES ═══
+        section.eyebrow      = request.POST.get('eyebrow', section.eyebrow).strip()
+        section.titre_ligne1 = request.POST.get('titre_ligne1', section.titre_ligne1).strip()
+        section.titre_ligne2 = request.POST.get('titre_ligne2', section.titre_ligne2).strip()
+        section.description  = request.POST.get('description', section.description).strip()
+        section.btn_texte    = request.POST.get('btn_texte', section.btn_texte).strip()
+
+        # ═══ 4 FEATURES ═══
         for i in range(1, 5):
-            setattr(section, f'feature{i}_icone', request.POST.get(f'feature{i}_icone', ''))
-            setattr(section, f'feature{i}_titre', request.POST.get(f'feature{i}_titre', ''))
-            setattr(section, f'feature{i}_desc', request.POST.get(f'feature{i}_desc', ''))
-        
-        # ═══ IMAGE ═══
+            setattr(section, f'feature{i}_icone', request.POST.get(f'feature{i}_icone', '').strip())
+            setattr(section, f'feature{i}_titre', request.POST.get(f'feature{i}_titre', '').strip())
+            setattr(section, f'feature{i}_desc',  request.POST.get(f'feature{i}_desc', '').strip())
+
+        # ═══ ✅ IMAGE SECTION (page d'accueil) ═══
         if request.FILES.get('image'):
+            if section.image:
+                try:
+                    section.image.delete(save=False)
+                except Exception:
+                    pass
             section.image = request.FILES['image']
-        
+
+        # ═══ ✅ IMAGE HERO (page Académie) ═══
+        if request.FILES.get('image_hero'):
+            if section.image_hero:
+                try:
+                    section.image_hero.delete(save=False)
+                except Exception:
+                    pass
+            section.image_hero = request.FILES['image_hero']
+
         # ═══ MODULES ═══
-        section.modules_titre = request.POST.get('modules_titre', section.modules_titre)
-        section.modules_lien_texte = request.POST.get('modules_lien_texte', section.modules_lien_texte)
-        
+        section.modules_titre      = request.POST.get('modules_titre', section.modules_titre).strip()
+        section.modules_lien_texte = request.POST.get('modules_lien_texte', section.modules_lien_texte).strip()
+
         # ═══ STATUT ═══
         section.is_active = request.POST.get('is_active') == 'on'
-        
+
         section.save()
         messages.success(request, '✅ Section Académie mise à jour avec succès !')
         return redirect('admin_section_academie')
-    
+
     return render(request, 'eden/dashboard/section_academie.html', {'section': section})
 
+    
 from django.http import FileResponse, Http404
 import os
 from django.conf import settings
@@ -5513,4 +5542,42 @@ def journal_pdf(request, numero):
     # Sinon génère un PDF dynamique
     return render(request, 'journal_pdf.html', {'edition': edition},
                   content_type='application/pdf')
+
+
+def academie_lire_brochure(request, pk):
+    """
+    Lecteur PDF pour les brochures de l'Académie.
+    Réutilise le template journal/lire.html avec un objet édition virtuel.
+    """
+    from types import SimpleNamespace
+    
+    brochure = get_object_or_404(
+        AcademieDocument, pk=pk, categorie='brochure', statut='publie'
+    )
+
+    if not brochure.fichier_pdf:
+        messages.error(request, "Cette brochure n'a pas encore de PDF.")
+        return redirect('academie_accueil')
+
+    # ═══ Créer un objet "faux JournalEdition" pour réutiliser le template ═══
+    edition_virtuelle = SimpleNamespace(
+        pk=brochure.pk,
+        numero=f"BR-{brochure.pk}",
+        titre=brochure.titre,
+        sous_titre=brochure.sous_titre or '',
+        date_parution=brochure.date_publication,
+        image_une=brochure.image_couverture,
+        fichier_pdf=brochure.fichier_pdf,
+        type_academie='brochure',
+        statut='publie',
+        pages=[],  # Pas de pages dynamiques
+    )
+
+    return render(request, 'eden/journal/lire.html', {
+        'edition': edition_virtuelle,
+        'from_academie': True,
+        'is_brochure': True,           # ✅ Flag pour adapter le template
+        'pdf_url': brochure.fichier_pdf.url,
+        'brochure': brochure,
+    })
                      

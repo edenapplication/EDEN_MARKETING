@@ -27,17 +27,16 @@ body{font-family:'Outfit',sans-serif;background:#fff;color:var(--g800);overflow-
 ::-webkit-scrollbar{width:5px;}
 ::-webkit-scrollbar-thumb{background:var(--grad-h);border-radius:100px;}
 
+/* ═══════════════════════════════════════════════════════
+   ✅ ANTI-DÉBORDEMENT GLOBAL
+   ═══════════════════════════════════════════════════════ */
+html,body{max-width:100%;overflow-x:hidden;}
+*,*::before,*::after{max-width:100%;}
+img,video,iframe{max-width:100%;}
+
 /* NAV */
-nav{
-    position:fixed;top:0;left:0;right:0;z-index:1000;height:70px;
-    display:flex;align-items:center;justify-content:space-between;
-    padding:0 2rem;background:transparent;border-bottom:1px solid transparent;
-    box-shadow:none;transition:background .4s ease, backdrop-filter .4s ease, border-color .4s ease, box-shadow .4s ease;
-}
-nav.scrolled{
-    background:rgba(255,255,255,.92);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
-    border-bottom:1px solid rgba(226,232,240,.9);box-shadow:0 10px 30px rgba(0,0,0,.08);
-}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;background:transparent;border-bottom:1px solid transparent;box-shadow:none;transition:background .4s ease, backdrop-filter .4s ease, border-color .4s ease, box-shadow .4s ease;}
+nav.scrolled{background:rgba(255,255,255,.92);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-bottom:1px solid rgba(226,232,240,.9);box-shadow:0 10px 30px rgba(0,0,0,.08);}
 .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
 .logo-box{width:42px;height:42px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#fff;}
 .logo-name{font-size:18px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
@@ -79,7 +78,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .search-bar-ac .sb-wrap{flex:1;max-width:600px;display:flex;align-items:center;background:var(--g50);border:1.5px solid var(--g200);border-radius:100px;padding:8px 18px;transition:all 0.2s;}
 .search-bar-ac .sb-wrap:focus-within{border-color:var(--blue);background:#fff;}
 .search-bar-ac .sb-wrap .sb-icon{color:var(--g400);font-size:16px;margin-right:10px;}
-.search-bar-ac .sb-wrap input{flex:1;border:none;outline:none;background:transparent;font-size:13px;font-family:'Outfit',sans-serif;color:var(--g800);}
+.search-bar-ac .sb-wrap input{flex:1;border:none;outline:none;background:transparent;font-size:13px;font-family:'Outfit',sans-serif;color:var(--g800);min-width:0;}
 .search-bar-ac .sb-wrap input::placeholder{color:var(--g400);}
 .search-bar-ac .sb-btn{background:var(--blue);color:#fff;border:none;padding:8px 20px;border-radius:100px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;transition:all 0.2s;}
 .search-bar-ac .sb-btn:hover{background:var(--blue-d);}
@@ -87,7 +86,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .search-bar-ac .sb-gestion:hover{background:var(--blue-d);}
 
 /* LAYOUT */
-.academie-layout{display:grid;grid-template-columns:220px 1fr;gap:0;max-width:1280px;margin:0 auto;}
+.academie-layout{display:grid;grid-template-columns:220px 1fr;gap:0;max-width:1280px;margin:0 auto;overflow-x:hidden;}
 
 /* SIDEBAR */
 .sidebar-menu{background:#fff;border-right:1.5px solid var(--g200);padding:1.2rem 0;position:sticky;top:70px;height:calc(100vh - 70px);overflow-y:auto;}
@@ -109,14 +108,14 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .btn-conseiller:hover{background:var(--red-d);}
 
 /* CONTENU */
-.academie-content{padding:2rem 2rem;background:var(--g50);}
+.academie-content{padding:2rem 2rem;background:var(--g50);min-width:0;max-width:100%;}
 
 /* SECTIONS */
 .section-tag{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g400);margin-bottom:2px;}
 .section-tit{font-size:0.95rem;font-weight:800;color:var(--g800);}
 .voir-tout{font-size:11px;font-weight:700;color:var(--blue);text-decoration:none;display:flex;align-items:center;gap:4px;transition:gap 0.2s;}
 .voir-tout:hover{gap:7px;}
-.section-hd{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:0.8rem;}
+.section-hd{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:0.8rem;gap:6px;flex-wrap:wrap;}
 
 .row-3-col{display:grid;grid-template-columns:1fr 1.5fr 1fr;gap:1rem;margin-bottom:1.5rem;align-items:start;}
 .row-articles{margin-bottom:1.5rem;}
@@ -134,11 +133,14 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .ps-tit{font-size:11px;font-weight:600;color:var(--g800);}
 .ps-sub{font-size:9px;color:var(--g400);}
 
-/* CARROUSEL */
-.carousel-wrap{overflow:hidden;position:relative;}
-.carousel-track{display:flex;transition:transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);}
-.carousel-nav{display:flex;gap:5px;margin-top:0.4rem;justify-content:flex-end;}
-.car-btn{width:28px;height:28px;border-radius:50%;background:#fff;border:1.5px solid var(--g200);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+/* ═══════════════════════════════════════════════════════
+   CARROUSEL UNIFIÉ
+   ═══════════════════════════════════════════════════════ */
+.carousel-wrap{overflow:hidden;position:relative;width:100%;max-width:100%;}
+.carousel-track{display:flex;transition:transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94);gap:12px;will-change:transform;}
+.carousel-track > *{flex-shrink:0;}
+.carousel-nav{display:flex;gap:5px;margin-top:0.5rem;justify-content:flex-end;}
+.car-btn{width:30px;height:30px;border-radius:50%;background:#fff;border:1.5px solid var(--g200);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;font-family:'Outfit',sans-serif;}
 .car-btn:hover{background:var(--blue);color:#fff;border-color:var(--blue);}
 .slide-item{min-width:100%;padding:0 2px;flex-shrink:0;}
 
@@ -191,20 +193,20 @@ nav.scrolled .hamburger span{background:var(--g800);}
 .mini-section .scroll-vertical:hover{animation-play-state:paused;}
 @keyframes scrollVertical{0%{transform:translateY(0);}100%{transform:translateY(-50%);}}
 
-/* VIDEO */
+/* VIDEO — Cadrage parfait */
 .video-card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);overflow:hidden;height:100%;display:flex;flex-direction:column;}
-.video-player-wrap{position:relative;background:#000;height:180px;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
-.video-player-wrap img{width:100%;height:100%;object-fit:cover;}
+.video-player-wrap{position:relative;background:#000;width:100%;aspect-ratio:16/9;overflow:hidden;flex-shrink:0;}
+.video-player-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;}
 .video-play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);cursor:pointer;transition:all 0.2s;}
 .video-play-overlay:hover{background:rgba(0,0,0,0.15);}
 .play-btn{width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;font-size:20px;transition:transform 0.2s;}
 .video-play-overlay:hover .play-btn{transform:scale(1.1);}
-.video-duree{position:absolute;bottom:4px;right:6px;background:rgba(0,0,0,0.7);color:#fff;font-size:9px;font-weight:700;padding:2px 5px;border-radius:4px;}
+.video-duree{position:absolute;bottom:6px;right:8px;background:rgba(0,0,0,0.75);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:0.5px;}
 .video-body{padding:0.6rem;flex:1;}
 .video-tit{font-size:12px;font-weight:700;color:var(--g800);line-height:1.3;margin-bottom:2px;}
 .video-desc{font-size:10px;color:var(--g500);line-height:1.4;}
 
-/* GUIDE */
+/* ✅ GUIDE CARD — Utilisé aussi pour les BROCHURES */
 .guide-card{background:#fff;border-radius:var(--rl);box-shadow:var(--sh);overflow:hidden;display:flex;flex-direction:column;height:100%;text-decoration:none;cursor:pointer;transition:all 0.3s;}
 .guide-card:hover{transform:translateY(-2px);box-shadow:var(--sh-lg);}
 .guide-img{height:180px;overflow:hidden;background:var(--blue-pale);flex-shrink:0;}
@@ -229,7 +231,7 @@ nav.scrolled .hamburger span{background:var(--g800);}
 /* SECTION COMPLÈTE */
 .full-section{display:none;padding:1.5rem;background:#f5f6fa;}
 .full-section.visible{display:block;}
-.full-section .fs-header{background:#fff;border-radius:var(--rl);padding:0.8rem 1rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--sh);}
+.full-section .fs-header{background:#fff;border-radius:var(--rl);padding:0.8rem 1rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--sh);gap:8px;flex-wrap:wrap;}
 .full-section .fs-tit{font-size:0.95rem;font-weight:800;color:var(--g800);display:flex;align-items:center;gap:6px;}
 .full-section .fs-back{background:var(--blue-pale);border:1.5px solid rgba(27,79,219,0.2);color:var(--blue);padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;display:flex;align-items:center;gap:4px;}
 .full-section .fs-back:hover{background:var(--blue);color:#fff;}
@@ -349,23 +351,95 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
 .footer-links-bot a{font-size:12px;color:#64748B;text-decoration:none;transition:color 0.2s;}
 .footer-links-bot a:hover{color:#fff;}
 
-@media(max-width:1200px){.row-4-col{grid-template-columns:1fr 1fr;}.row-3-col{grid-template-columns:1fr 1fr;}}
-@media(max-width:1024px){.academie-layout{grid-template-columns:1fr;}.sidebar-menu{position:static;height:auto;display:flex;flex-direction:row;overflow-x:auto;border-right:none;border-bottom:1.5px solid var(--g200);padding:0;}.sm-title{display:none;}.sm-item{padding:10px 14px;border-left:none;border-bottom:3px solid transparent;white-space:nowrap;}.sm-item.active,.sm-item.active-cat{border-bottom-color:var(--blue);border-left:none;}.sm-conseil-box{display:none;}.footer-grid{grid-template-columns:1fr 1fr;}}
-@media(max-width:900px){.row-3-col{grid-template-columns:1fr;}.row-4-col{grid-template-columns:1fr 1fr;}}
+/* ══════════════════════════════════════════════════════════════
+   ✅ RESPONSIVE — Chaque élément sur sa propre ligne en mobile
+   ══════════════════════════════════════════════════════════════ */
+@media(max-width:1200px){
+  .row-4-col{grid-template-columns:1fr 1fr;}
+  .row-3-col{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:1024px){
+  .academie-layout{
+    display:flex;
+    flex-direction:column;
+    width:100%;
+    max-width:100%;
+  }
+  .sidebar-menu{
+    position:static;height:auto;display:flex;flex-direction:row;overflow-x:auto;overflow-y:hidden;
+    border-right:none;border-bottom:1.5px solid var(--g200);
+    padding:0 0.5rem;
+    max-width:100vw;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .sidebar-menu::-webkit-scrollbar{display:none;}
+  .sm-title{display:none;}
+  .sm-item{padding:10px 12px;border-left:none;border-bottom:3px solid transparent;white-space:nowrap;font-size:12px;}
+  .sm-item.active,.sm-item.active-cat{border-bottom-color:var(--blue);border-left:none;}
+  .sm-conseil-box{display:none;}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:900px){
+  .row-3-col{grid-template-columns:1fr;}
+  .row-4-col{grid-template-columns:1fr 1fr;}
+}
 @media(max-width:768px){
   nav{padding:0 1rem;}
   .nav-links{display:none;}
   .hamburger{display:flex;}
-  .hero-inner{grid-template-columns:1fr;padding:5rem 1.5rem 2rem;}
-  .search-bar-ac{padding:0.8rem 1rem;flex-wrap:wrap;}
-  .search-bar-ac .sb-wrap{max-width:100%;}
-  .academie-content{padding:1.5rem 1rem;}
-  .row-4-col{grid-template-columns:1fr;}
-  .footer-grid{grid-template-columns:1fr 1fr;gap:1.5rem;}
-  .footer-grid>div:first-child{grid-column:1/-1;}
+  .hero-inner{grid-template-columns:1fr;padding:5rem 1.2rem 2rem;}
+  .hero-tit{font-size:1.8rem;line-height:1.15;}
+  .hero-desc{font-size:13px;}
+  .hero-badges{gap:0.8rem;}
+  .hb-txt{font-size:10px;}
+
+  /* Search bar mobile */
+  .search-bar-ac{padding:0.7rem 1rem;flex-wrap:wrap;gap:8px;}
+  .search-bar-ac .sb-wrap{max-width:100%;flex:1 1 100%;}
+  .search-bar-ac .sb-btn{flex:0 0 auto;padding:8px 16px;}
+  .search-bar-ac .sb-gestion{flex:0 0 auto;}
+
+  /* Contenu académie : padding réduit */
+  .academie-content{padding:1rem 0.8rem;}
+
+  /* Empiler toutes les grilles */
+  .row-3-col,
+  .row-4-col,
+  .row-articles{
+    grid-template-columns:1fr;
+    gap:1rem;
+  }
+
+  /* Carrousels propres */
+  .carousel-wrap{width:100%;max-width:100%;overflow:hidden;}
+  .carousel-track{gap:10px;}
+
+  /* Cartes plus étroites pour mobile */
+  .ed-card{min-width:150px;max-width:150px;}
+
+  /* Section header compact */
+  .section-hd{flex-wrap:wrap;gap:4px;align-items:center;}
+  .section-tag{font-size:8px;}
+  .section-tit{font-size:0.85rem;}
+  .voir-tout{font-size:10px;}
+
+  /* Galerie */
+  .galerie-container{padding:0.5rem;}
+  .galerie-item{height:170px;}
+
+  /* Footer */
+  .footer-grid{grid-template-columns:1fr;gap:1.2rem;}
   .footer-bot{flex-direction:column;text-align:center;}
 }
-@media(max-width:480px){.hero-tit{font-size:1.8rem;}}
+@media(max-width:480px){
+  .hero-tit{font-size:1.55rem;}
+  .hero-desc{font-size:12px;}
+  .academie-content{padding:0.8rem 0.6rem;}
+  .ed-card{min-width:140px;max-width:140px;}
+  .galerie-item{height:150px;}
+  .guide-img{height:150px;}
+}
 </style>
 </head>
 <body>
@@ -394,11 +468,13 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
 <!-- HERO -->
 <div class="hero-academie">
   <div class="hero-bg">
-    {% if section_academie.image %}
-      <img src="{{ section_academie.image.url }}" alt="Académie EDEN GROUP">
-    {% else %}
-      <img src="{% static 'images/terrain.jpeg' %}" alt="Académie EDEN GROUP">
-    {% endif %}
+    {% if section_academie.image_hero %}
+  <img src="{{ section_academie.image_hero.url }}" alt="Académie EDEN GROUP">
+{% elif section_academie.image %}
+  <img src="{{ section_academie.image.url }}" alt="Académie EDEN GROUP">
+{% else %}
+  <img src="{% static 'images/terrain.jpeg' %}" alt="Académie EDEN GROUP">
+{% endif %}
   </div>
   <div class="hero-overlay"></div>
   <div class="hero-inner">
@@ -488,29 +564,44 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
       <!-- ═══ LIGNE 4 : BROCHURES | GALERIE | REVUE ═══ -->
       <div class="row-3-col">
 
-        <!-- ✅ BROCHURES (AcademieDocument catégorie='brochure') -->
+        <!-- ✅ BROCHURES — Cartes avec image + titre + description (comme les guides) -->
         <div>
           <div class="section-hd">
             <div><div class="section-tag">BROCHURES</div></div>
             <a class="voir-tout" href="#" onclick="afficherSection('brochure','📘 Brochures',null);return false;">Voir tout →</a>
           </div>
-          <div class="mini-section" style="padding:0.6rem;">
-            <div style="display:flex;flex-direction:column;gap:8px;">
+          <div class="carousel-wrap" id="carousel-brochure">
+            <div class="carousel-track" id="track-brochure">
               {% if brochures %}
                 {% for brochure in brochures %}
-                <a class="doc-mini" href="{% url 'academie_telecharger' brochure.pk %}" style="padding:0.6rem;background:var(--blue-pale);border-radius:8px;border:none;margin-bottom:0;">
-                  <span class="dm-ico" style="font-size:1.4rem;">📘</span>
-                  <div class="dm-body">
-                    <div class="dm-tit" style="font-size:11px;font-weight:700;">{{ brochure.titre|truncatechars:40 }}</div>
-                    {% if brochure.sous_titre %}<div class="dm-meta">{{ brochure.sous_titre|truncatechars:50 }}</div>{% endif %}
-                    {% if brochure.nb_pages %}<div class="dm-dl">📄 {{ brochure.nb_pages }} page{{ brochure.nb_pages|pluralize }} · 📥 PDF</div>{% endif %}
-                  </div>
-                </a>
+                <div class="slide-item" style="min-width:100%;">
+                  <a class="guide-card" href="{% url 'academie_lire_brochure' brochure.pk %}">
+                    <div class="guide-img">
+                      {% if brochure.image_couverture %}
+                        <img src="{{ brochure.image_couverture.url }}" alt="{{ brochure.titre }}">
+                      {% else %}
+                        <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--grad);font-size:2.5rem;">📘</div>
+                      {% endif %}
+                    </div>
+                    <div class="guide-body">
+                      <div class="guide-tit">{{ brochure.titre }}</div>
+                      {% if brochure.sous_titre %}<div class="guide-desc">{{ brochure.sous_titre|truncatechars:80 }}</div>{% endif %}
+                      {% if brochure.nb_pages %}<div style="font-size:9px;color:var(--g400);margin-top:3px;">📄 {{ brochure.nb_pages }} page{{ brochure.nb_pages|pluralize }}</div>{% endif %}
+                      <div class="guide-btns">
+                        <span class="btn-lire btn-lire-ol">📖 Lire</span>
+                      </div>
+                    </div>
+                  </a>
+                </div>
                 {% endfor %}
               {% else %}
-                <div style="text-align:center;padding:1rem;color:var(--g400);font-size:11px;">Aucune brochure disponible.</div>
+                <div class="slide-item"><div style="height:200px;display:flex;align-items:center;justify-content:center;color:var(--g400);font-size:14px;background:var(--blue-pale);border-radius:var(--r);">Aucune brochure</div></div>
               {% endif %}
             </div>
+          </div>
+          <div class="carousel-nav">
+            <button class="car-btn" onclick="scrollCarousel('brochure',-1)">‹</button>
+            <button class="car-btn" onclick="scrollCarousel('brochure',1)">›</button>
           </div>
         </div>
 
@@ -551,7 +642,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
           </div>
         </div>
 
-        <!-- REVUES — JournalEdition type='revue' -->
+        <!-- REVUES -->
         <div>
           <div class="section-hd">
             <div><div class="section-tag">REVUES</div><div class="section-tit">Toutes les parutions</div></div>
@@ -582,28 +673,34 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
         </div>
       </div>
 
-      <!-- ═══ LIGNE 5 : ARTICLES — GRILLE COMPLÈTE (JournalEdition type='article') ═══ -->
+      <!-- ═══ LIGNE 5 : ARTICLES — Carrousel horizontal défilant ═══ -->
       {% if articles %}
       <div class="row-articles">
         <div class="section-hd">
           <div><div class="section-tag">ARTICLES</div><div class="section-tit">Analyses &amp; conseils fonciers</div></div>
           <a class="voir-tout" href="#" onclick="afficherSection('article','📄 Articles',null);return false;">Voir tout →</a>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;">
-          {% for ed in articles %}
-          <a class="ed-card" href="{% url 'journal_lire' ed.numero %}?from=academie" style="min-width:auto;max-width:100%;">
-            <div class="ed-img">
-              {% if ed.image_une %}<img src="{{ ed.image_une.url }}" alt="{{ ed.titre }}">
-              {% else %}<div class="ed-img-ph">📄</div>{% endif %}
-            </div>
-            <div class="ed-body">
-              <div class="ed-type">Article</div>
-              <div class="ed-tit">{{ ed.titre|truncatechars:45 }}</div>
-              {% if ed.date_parution %}<div class="ed-meta">📅 {{ ed.date_parution|date:"d M Y" }}</div>{% endif %}
-              <div class="ed-ouvrir">📖 Lire →</div>
-            </div>
-          </a>
-          {% endfor %}
+        <div class="carousel-wrap" id="carousel-articles">
+          <div class="carousel-track" id="track-articles">
+            {% for ed in articles %}
+            <a class="ed-card" href="{% url 'journal_lire' ed.numero %}?from=academie">
+              <div class="ed-img">
+                {% if ed.image_une %}<img src="{{ ed.image_une.url }}" alt="{{ ed.titre }}">
+                {% else %}<div class="ed-img-ph">📄</div>{% endif %}
+              </div>
+              <div class="ed-body">
+                <div class="ed-type">Article</div>
+                <div class="ed-tit">{{ ed.titre|truncatechars:45 }}</div>
+                {% if ed.date_parution %}<div class="ed-meta">📅 {{ ed.date_parution|date:"d M Y" }}</div>{% endif %}
+                <div class="ed-ouvrir">📖 Lire →</div>
+              </div>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="carousel-nav">
+          <button class="car-btn" onclick="scrollCarousel('articles',-1)">‹</button>
+          <button class="car-btn" onclick="scrollCarousel('articles',1)">›</button>
         </div>
       </div>
       {% endif %}
@@ -611,7 +708,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
       <!-- ═══ LIGNE 6 : 4 COLONNES ═══ -->
       <div class="row-4-col">
 
-        <!-- TEXTES DE LOI (AcademieDocument) -->
+        <!-- TEXTES DE LOI -->
         <div>
           <div class="section-hd">
             <div><div class="section-tag">REGLEMENTATION</div></div>
@@ -652,7 +749,9 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
                     <div class="video-player-wrap">
                       {% if video.image_miniature %}
                         <img src="{{ video.image_miniature.url }}" alt="{{ video.titre }}">
-                      {% else %}<div style="width:100%;height:100%;background:#111;display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:#fff;">🎬</div>{% endif %}
+                      {% else %}
+                        <div style="position:absolute;inset:0;background:#111;display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:#fff;">🎬</div>
+                      {% endif %}
                       <div class="video-play-overlay" onclick="ouvrirVideo('{% url 'academie_voir_video' video.pk %}','{{ video.titre|escapejs }}','{% if video.duree %}{{ video.duree }}{% endif %}')">
                         <div class="play-btn">▶</div>
                       </div>
@@ -676,7 +775,7 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
           </div>
         </div>
 
-        <!-- ✅ GUIDE PRATIQUE — JournalEdition type='guide' -->
+        <!-- GUIDES PRATIQUES -->
         <div>
           <div class="section-hd">
             <div><div class="section-tag">GUIDES PRATIQUES</div></div>
@@ -758,9 +857,6 @@ footer{background:var(--g800);color:#fff;padding:2.5rem 2rem 1.5rem;border-top:1
 
 <!-- SCRIPTS -->
 <script>
-// ══════════════════════════════════════════════════════════════
-// DONNÉES JSON (Articles / Revues / Guides = JournalEdition)
-// ══════════════════════════════════════════════════════════════
 const EDITIONS_DATA = {
   article: [{% for ed in articles %}{pk:{{ ed.pk }},titre:'{{ ed.titre|escapejs }}',sous_titre:'{{ ed.sous_titre|escapejs }}',num:'{{ ed.numero }}',date:'{% if ed.date_parution %}{{ ed.date_parution|date:"d M Y" }}{% endif %}',image:'{% if ed.image_une %}{{ ed.image_une.url }}{% endif %}',url:'{% url "journal_lire" ed.numero %}?from=academie',type:'article'},{% endfor %}],
   revue: [{% for ed in revues %}{pk:{{ ed.pk }},titre:'{{ ed.titre|escapejs }}',sous_titre:'{{ ed.sous_titre|escapejs }}',num:'{{ ed.numero }}',date:'{% if ed.date_parution %}{{ ed.date_parution|date:"d M Y" }}{% endif %}',image:'{% if ed.image_une %}{{ ed.image_une.url }}{% endif %}',url:'{% url "journal_lire" ed.numero %}?from=academie',type:'revue'},{% endfor %}],
@@ -777,23 +873,54 @@ const VIDEOS_DATA = [{% for v in videos %}{pk:{{ v.pk }},titre:'{{ v.titre|escap
 
 const FAQS_DATA = [{% for f in faqs %}{question:'{{ f.question|escapejs }}',reponse:'{{ f.reponse|escapejs }}',tps:'{{ f.temps_reponse|escapejs }}'},{% endfor %}];
 
-// Brochures (AcademieDocument catégorie='brochure')
-const BROCHURES_DATA = [{% for b in brochures %}{pk:{{ b.pk }},titre:'{{ b.titre|escapejs }}',sous_titre:'{{ b.sous_titre|escapejs }}',desc:'{{ b.description|escapejs|truncatechars:120 }}',image:'{% if b.image_couverture %}{{ b.image_couverture.url }}{% endif %}',urlDl:'{% url "academie_telecharger" b.pk %}',nbPages:{{ b.nb_pages|default:0 }}},{% endfor %}];
+const BROCHURES_DATA = [
+  {% for b in brochures %}{
+    pk: {{ b.pk }},
+    titre: '{{ b.titre|escapejs }}',
+    sous_titre: '{{ b.sous_titre|escapejs }}',
+    desc: '{{ b.description|escapejs|truncatechars:120 }}',
+    image: '{% if b.image_couverture %}{{ b.image_couverture.url }}{% endif %}',
+    lectureUrl: '{% url "academie_lire_brochure" b.pk %}',
+    telechargerUrl: '{% url "academie_telecharger" b.pk %}',
+    nbPages: {{ b.nb_pages|default:0 }}
+  },
+  {% endfor %}
+];
 
 // ══════════════════════════════════════════════════════════════
-// CARROUSELS
+// CARROUSEL UNIFIÉ
 // ══════════════════════════════════════════════════════════════
 const carPositions = {};
 const carTimers = {};
 
+function getStep(id) {
+  const track = document.getElementById(`track-${id}`);
+  if (!track || !track.children.length) return 200;
+  const first = track.children[0];
+  const gap = 12;
+  return first.getBoundingClientRect().width + gap;
+}
+
 function scrollCarousel(id, dir) {
   const track = document.getElementById(`track-${id}`);
   if (!track) return;
-  const children = track.children.length;
-  const cardW = 100;
-  const max = Math.max(0, (children - 1) * cardW);
-  carPositions[id] = Math.max(0, Math.min((carPositions[id] || 0) + dir * cardW, max));
-  track.style.transform = `translateX(-${carPositions[id]}%)`;
+  const wrap = track.parentElement;
+  const wrapWidth = wrap.clientWidth;
+  const step = getStep(id);
+
+  let totalWidth = 0;
+  for (const child of track.children) {
+    totalWidth += child.getBoundingClientRect().width;
+  }
+  totalWidth += Math.max(0, track.children.length - 1) * 12;
+
+  const maxScroll = Math.max(0, totalWidth - wrapWidth);
+  let current = carPositions[id] || 0;
+  current = current + (dir * step);
+  current = Math.max(0, Math.min(current, maxScroll));
+  carPositions[id] = current;
+  track.style.transform = `translateX(-${current}px)`;
+
   if (carTimers[id]) {
     clearInterval(carTimers[id]);
     startAutoScroll(id, 5000);
@@ -805,22 +932,33 @@ function startAutoScroll(id, interval) {
   const track = document.getElementById(`track-${id}`);
   if (!track || track.children.length <= 1) return;
   carTimers[id] = setInterval(function() {
-    const children = track.children.length;
-    const max = (children - 1) * 100;
+    const wrap = track.parentElement;
+    const wrapWidth = wrap.clientWidth;
+    const step = getStep(id);
+
+    let totalWidth = 0;
+    for (const child of track.children) {
+      totalWidth += child.getBoundingClientRect().width;
+    }
+    totalWidth += Math.max(0, track.children.length - 1) * 12;
+
+    const maxScroll = Math.max(0, totalWidth - wrapWidth);
     let current = carPositions[id] || 0;
-    current += 100;
-    if (current > max) current = 0;
+    current += step;
+    if (current > maxScroll) current = 0;
     carPositions[id] = current;
-    track.style.transform = `translateX(-${current}%)`;
+    track.style.transform = `translateX(-${current}px)`;
   }, interval || 5000);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
   setTimeout(function() {
+    startAutoScroll('brochure', 4000);
     startAutoScroll('galerie-haut', 4000);
-    startAutoScroll('video', 4000);
+    startAutoScroll('articles', 4500);
+    startAutoScroll('video', 4500);
     startAutoScroll('guide', 4500);
-  }, 1000);
+  }, 800);
 });
 
 // ══════════════════════════════════════════════════════════════
@@ -857,13 +995,13 @@ function afficherSection(cat, label, el) {
 }
 
 // ══════════════════════════════════════════════════════════════
-// RENDU DES SECTIONS
+// RENDU DES SECTIONS COMPLÈTES
 // ══════════════════════════════════════════════════════════════
 function rendreBrochures() {
   const items = BROCHURES_DATA;
   if (!items.length) return `<div style="text-align:center;padding:3rem;color:var(--g400);"><div style="font-size:3rem;margin-bottom:1rem;">📘</div>Aucune brochure disponible.</div>`;
   return `<div class="fs-grid">${items.map(d => `
-    <a class="ed-card-full" href="${d.urlDl}" download>
+    <div class="ed-card-full" style="display:block;">
       <div class="ecf-img">
         ${d.image ? `<img src="${d.image}" alt="${d.titre}">` : `<div class="ecf-img-ph">📘</div>`}
         <span class="ecf-type">Brochure</span>
@@ -872,9 +1010,12 @@ function rendreBrochures() {
         <div class="ecf-tit">${d.titre}</div>
         <div class="ecf-meta">${d.nbPages > 0 ? '📄 '+d.nbPages+' page(s)' : ''}</div>
         ${d.desc ? `<div style="font-size:10px;color:var(--g500);line-height:1.5;margin-bottom:0.5rem;">${d.desc}...</div>` : ''}
-        <span class="ecf-btn">📥 Télécharger</span>
+        <div style="display:flex;gap:6px;margin-top:6px;">
+          <a href="${d.lectureUrl}" class="ecf-btn" style="flex:1;text-decoration:none;">📖 Lire</a>
+          <a href="${d.telechargerUrl}" class="ecf-btn" download style="flex:0 0 auto;background:var(--blue-pale);color:var(--blue);text-decoration:none;">📥</a>
+        </div>
       </div>
-    </a>`).join('')}</div>`;
+    </div>`).join('')}</div>`;
 }
 
 function rendreEditions(cat) {
@@ -996,7 +1137,7 @@ function rendreCentreRessources() {
     html += `<div><div style="font-size:11px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.8rem;">📚 Guides pratiques (${EDITIONS_DATA.guide.length})</div><div class="fs-grid">${EDITIONS_DATA.guide.map(d => `<a class="ed-card-full" href="${d.url}" style="display:block;"><div class="ecf-img">${d.image ? `<img src="${d.image}" alt="${d.titre}">` : '<div class="ecf-img-ph">📚</div>'}<span class="ecf-type">Guide</span></div><div class="ecf-body"><div class="ecf-tit">${d.titre}</div><div class="ecf-meta">${d.date||''}</div><span class="ecf-btn">📖 Lire</span></div></a>`).join('')}</div></div>`;
   }
   if (BROCHURES_DATA.length) {
-    html += `<div><div style="font-size:11px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.8rem;">📘 Brochures (${BROCHURES_DATA.length})</div><div class="fs-grid">${BROCHURES_DATA.map(d => `<a class="ed-card-full" href="${d.urlDl}" download style="display:block;"><div class="ecf-img">${d.image ? `<img src="${d.image}" alt="${d.titre}">` : '<div class="ecf-img-ph">📘</div>'}<span class="ecf-type">Brochure</span></div><div class="ecf-body"><div class="ecf-tit">${d.titre}</div><span class="ecf-btn">📥 Télécharger</span></div></a>`).join('')}</div></div>`;
+    html += `<div><div style="font-size:11px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.8rem;">📘 Brochures (${BROCHURES_DATA.length})</div><div class="fs-grid">${BROCHURES_DATA.map(d => `<div class="ed-card-full" style="display:block;"><div class="ecf-img">${d.image ? `<img src="${d.image}" alt="${d.titre}">` : '<div class="ecf-img-ph">📘</div>'}<span class="ecf-type">Brochure</span></div><div class="ecf-body"><div class="ecf-tit">${d.titre}</div><div style="display:flex;gap:6px;margin-top:6px;"><a href="${d.lectureUrl}" class="ecf-btn" style="flex:1;">📖 Lire</a><a href="${d.telechargerUrl}" class="ecf-btn" download style="flex:0 0 auto;background:var(--blue-pale);color:var(--blue);">📥</a></div></div></div>`).join('')}</div></div>`;
   }
   if (TEXTES_LOI.length) {
     html += `<div><div style="font-size:11px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.8rem;">📜 Reglementation</div><div class="fs-grid">${TEXTES_LOI.map(d => `<div style="background:#fff;border-radius:var(--rl);box-shadow:var(--sh);padding:1rem;"><div style="font-size:1.2rem;margin-bottom:0.4rem;">📜</div><div style="font-size:12px;font-weight:700;color:var(--g800);margin-bottom:4px;">${d.ref||d.titre}</div><div style="font-size:10px;color:var(--g400);">${d.date||''}</div>${d.hasPdf ? `<a href="${d.urlDl}" style="display:inline-flex;align-items:center;gap:4px;margin-top:8px;font-size:11px;font-weight:700;color:var(--blue);text-decoration:none;" download>📥 Télécharger</a>` : ''}</div>`).join('')}</div></div>`;

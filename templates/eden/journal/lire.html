@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>{{ edition.titre }} — ACADÉMIE EDEN GROUP</title>
+<title>{% if is_brochure %}{{ brochure.titre }}{% else %}{{ edition.titre }}{% endif %} — ACADÉMIE EDEN GROUP</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=IM+Fell+English:ital@0;1&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <!-- ✅ PDF.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -272,7 +272,6 @@ html,body{height:100%;overflow:hidden;font-family:'Outfit',sans-serif;background
   text-align:center;padding:2px 0;
   font-weight:600;
 }
-/* ✅ Bouton télécharger dans la barre d'outils */
 .tl-btn.download{
   background:linear-gradient(135deg,rgba(27,79,219,0.4),rgba(200,16,46,0.4));
   border-color:rgba(27,79,219,0.6);
@@ -348,23 +347,35 @@ body.fs-mode #global-loader{
 <!-- TOP BAR -->
 <div class="top-bar">
   <div class="tb-title">
-    <span style="color:rgba(255,255,255,0.4);font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-right:8px;">ACADÉMIE EDEN GROUP</span>
-    {{ edition.titre }}
+    <span style="color:rgba(255,255,255,0.4);font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-right:8px;">
+      {% if is_brochure %}📘 BROCHURE ACADÉMIE{% else %}ACADÉMIE EDEN GROUP{% endif %}
+    </span>
+    {% if is_brochure %}{{ brochure.titre }}{% else %}{{ edition.titre }}{% endif %}
   </div>
-  <div class="tb-num">N°{{ edition.numero }}</div>
+  <div class="tb-num">
+    {% if is_brochure %}
+      {% if brochure.reference_officielle %}{{ brochure.reference_officielle }}{% endif %}
+    {% else %}
+      N°{{ edition.numero }}
+    {% endif %}
+  </div>
   <div class="tb-actions">
     <span class="page-info-top" id="page-info">Couverture</span>
 
     <!-- ✅ BOUTON TÉLÉCHARGER -->
     <a class="tb-btn download"
-       href="{% url 'journal_pdf' edition.numero %}"
-       download="Academie_EDEN_N{{ edition.numero }}.pdf"
+       href="{% if is_brochure %}{{ pdf_url }}{% else %}{% url 'journal_pdf' edition.numero %}{% endif %}"
+       download="{% if is_brochure %}Brochure_EDEN_{{ brochure.pk }}.pdf{% else %}Academie_EDEN_N{{ edition.numero }}.pdf{% endif %}"
        title="Télécharger le PDF">
       ⬇ Télécharger
     </a>
 
     {% if user.is_staff %}
-    <a class="tb-btn" href="{% url 'dashboard_journal_edition_modifier' edition.pk %}">✏ Modifier</a>
+      {% if is_brochure %}
+<a class="tb-btn" href="{% url 'dashboard_academie_modifier' brochure.pk %}">✏ Modifier</a>
+{% else %}
+      <a class="tb-btn" href="{% url 'dashboard_journal_edition_modifier' edition.pk %}">✏ Modifier</a>
+      {% endif %}
     {% endif %}
   </div>
 </div>
@@ -393,8 +404,8 @@ body.fs-mode #global-loader{
 
   <!-- ✅ BOUTON TÉLÉCHARGER dans la barre d'outils -->
   <a class="tl-btn download"
-     href="{% url 'journal_pdf' edition.numero %}"
-     download="Academie_EDEN_N{{ edition.numero }}.pdf"
+     href="{% if is_brochure %}{{ pdf_url }}{% else %}{% url 'journal_pdf' edition.numero %}{% endif %}"
+     download="{% if is_brochure %}Brochure_EDEN_{{ brochure.pk }}.pdf{% else %}Academie_EDEN_N{{ edition.numero }}.pdf{% endif %}"
      title="Télécharger le PDF">
     ⬇
   </a>
@@ -410,15 +421,19 @@ body.fs-mode #global-loader{
 
 <script>
 // ════════════════════════════════════════
-// DONNÉES
+// DONNÉES (adaptées selon brochure ou édition)
 // ════════════════════════════════════════
+const IS_BROCHURE = {% if is_brochure %}true{% else %}false{% endif %};
+
 const EDITION = {
-  numero: "{{ edition.numero|escapejs }}",
-  titre: "{{ edition.titre|escapejs }}",
-  sous_titre: "{{ edition.sous_titre|escapejs }}",
-  date: "{% if edition.date_parution %}{{ edition.date_parution|date:'d F Y' }}{% endif %}",
-  image_une: "{% if edition.image_une %}{{ edition.image_une.url }}{% endif %}",
-  pdf_url: '{% url "journal_pdf" edition.numero %}?v={{ edition.updated_at|date:"U" }}',
+  numero: "{% if is_brochure %}BR-{{ brochure.pk }}{% else %}{{ edition.numero|escapejs }}{% endif %}",
+  titre: "{% if is_brochure %}{{ brochure.titre|escapejs }}{% else %}{{ edition.titre|escapejs }}{% endif %}",
+  sous_titre: "{% if is_brochure %}{{ brochure.sous_titre|escapejs }}{% else %}{{ edition.sous_titre|escapejs }}{% endif %}",
+  date: "{% if is_brochure %}{% if brochure.date_publication %}{{ brochure.date_publication|date:'d F Y' }}{% endif %}{% else %}{% if edition.date_parution %}{{ edition.date_parution|date:'d F Y' }}{% endif %}{% endif %}",
+  image_une: "{% if is_brochure %}{% if brochure.image_couverture %}{{ brochure.image_couverture.url }}{% endif %}{% else %}{% if edition.image_une %}{{ edition.image_une.url }}{% endif %}{% endif %}",
+  pdf_url: "{% if is_brochure %}{{ pdf_url }}{% else %}{% url 'journal_pdf' edition.numero %}?v={% if edition.updated_at %}{{ edition.updated_at|date:'U' }}{% endif %}{% endif %}",
+  auteur: "{% if is_brochure %}{{ brochure.auteur|escapejs }}{% endif %}",
+  reference: "{% if is_brochure %}{{ brochure.reference_officielle|escapejs }}{% endif %}",
 };
 
 let pdfDoc = null;
@@ -472,28 +487,38 @@ const GlobalLoader = {
 };
 
 // ════════════════════════════════════════
-// RENDU COUVERTURE
+// RENDU COUVERTURE (adaptée brochure/journal)
 // ════════════════════════════════════════
 function renderCouverture() {
   const canvas = document.getElementById('page-canvas');
   canvas.style.background = 'linear-gradient(160deg,#1a1a2e 0%,#0d1b4b 60%,#1a0a0a 100%)';
+
+  const badgeType = IS_BROCHURE
+    ? '📘 BROCHURE · Académie EDEN Group'
+    : 'ACADÉMIE EDEN GROUP · Formation & Excellence';
+
+  const numAffichage = IS_BROCHURE
+    ? (EDITION.reference || 'Brochure')
+    : 'N°' + EDITION.numero;
+
   canvas.innerHTML = `
     <div style="width:100%;height:100%;display:flex;flex-direction:column;padding:24px 28px 30px;">
       <div style="background:linear-gradient(90deg,#1B4FDB,#7B20B4,#C8102E);padding:12px 24px;display:flex;justify-content:space-between;align-items:center;border-radius:8px;flex-shrink:0;">
         <span style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:900;color:#fff;letter-spacing:1px;line-height:1.1;">ACADÉMIE<br><span style="font-size:0.85rem;letter-spacing:3px;">EDEN GROUP</span></span>
-        <span style="font-size:1rem;font-weight:700;color:rgba(255,255,255,0.85);">N°${EDITION.numero}</span>
+        <span style="font-size:1rem;font-weight:700;color:rgba(255,255,255,0.85);">${numAffichage}</span>
       </div>
       <div style="flex:1;overflow:hidden;min-height:0;margin:16px 0;border-radius:8px;">
         ${EDITION.image_une
           ? `<img src="${EDITION.image_une}" alt="Une" style="width:100%;height:100%;object-fit:cover;display:block;">`
-          : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:5rem;background:linear-gradient(135deg,rgba(27,79,219,0.3),rgba(200,16,46,0.2));border-radius:8px;">🎓</div>`}
+          : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:5rem;background:linear-gradient(135deg,rgba(27,79,219,0.3),rgba(200,16,46,0.2));border-radius:8px;">${IS_BROCHURE ? '📘' : '🎓'}</div>`}
       </div>
       <div style="padding:12px 0 6px;flex-shrink:0;">
-        <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:4px;">ACADÉMIE EDEN GROUP · Formation & Excellence</div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:4px;">${badgeType}</div>
         <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:#fff;line-height:1.2;">${esc(EDITION.titre)}</div>
         ${EDITION.sous_titre ? `<div style="font-size:1rem;color:rgba(255,255,255,0.7);margin-top:4px;font-style:italic;">${esc(EDITION.sous_titre)}</div>` : ''}
+        ${IS_BROCHURE && EDITION.auteur ? `<div style="font-size:0.85rem;color:rgba(255,255,255,0.55);margin-top:8px;">✍ ${esc(EDITION.auteur)}</div>` : ''}
       </div>
-      <div style="padding:8px 0 0;font-size:0.8rem;color:rgba(255,255,255,0.4);border-top:1px solid rgba(255,255,255,0.08);flex-shrink:0;margin-top:8px;">${EDITION.date}${EDITION.date ? ' · ' : ''}Édition N°${EDITION.numero}</div>
+      <div style="padding:8px 0 0;font-size:0.8rem;color:rgba(255,255,255,0.4);border-top:1px solid rgba(255,255,255,0.08);flex-shrink:0;margin-top:8px;">${EDITION.date}${EDITION.date ? ' · ' : ''}${IS_BROCHURE ? 'Brochure Académie' : 'Édition N°' + EDITION.numero}</div>
     </div>`;
 }
 

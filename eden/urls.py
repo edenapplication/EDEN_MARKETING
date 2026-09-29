@@ -5,10 +5,12 @@ from django.conf import settings
 import os
 
 urlpatterns = [
+    # ══════════════════════════════════════════════
     # ── PAGES PUBLIQUES ──
-     path('', views.splash, name='splash'),
-     path('sites_eden/',  views.splash_libre, name='sites_eden'),
-     path('accueil/', views.home, name='home'),
+    # ══════════════════════════════════════════════
+    path('', views.splash, name='splash'),
+    path('sites_eden/', views.splash_libre, name='sites_eden'),
+    path('accueil/', views.home, name='home'),
     path('sites/', views.sites_list, name='sites_list'),
     path('sites/<slug:slug>/', views.site_detail, name='site_detail'),
     path('carte/', views.carte, name='carte'),
@@ -19,26 +21,45 @@ urlpatterns = [
     path('reserver/<uuid:parcelle_id>/', views.reserver, name='reserver'),
     path('visite/', views.demande_visite, name='demande_visite'),
 
+    # ── Sites libres (envoyés individuellement aux clients) ──
+    path('terrains/', views.site_libre, name='site_libre'),
+    path('terrains/<slug:slug>/', views.site_libre_detail, name='site_libre_detail'),
+
+    # ══════════════════════════════════════════════
     # ── API ──
+    # ══════════════════════════════════════════════
     path('api/stats/', views.api_stats, name='api_stats'),
     path('api/sites-geo/', views.api_sites_geo, name='api_sites_geo'),
     path('api/parcelles-geo/', views.api_parcelles_geo, name='api_parcelles_geo'),
     path('api/recherche/', views.api_recherche, name='api_recherche'),
     path('api/geo-import/', views.api_geo_import, name='api_geo_import'),
     path('api/groupy/', views.api_groupy, name='api_groupy'),
+    path('api/calcul-parcelles/', views.api_calcul_parcelles, name='api_calcul_parcelles'),
+    path('api/journal/sauvegarder-page/', views.api_journal_sauvegarder_page, name='api_journal_sauvegarder_page'),
+    path('api/une-evenements/sauvegarder/', views.api_une_sauvegarder, name='api_une_sauvegarder'),
 
+    # ══════════════════════════════════════════════
+    # ── AUTH ──
+    # ══════════════════════════════════════════════
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+
+    # ══════════════════════════════════════════════
     # ── DASHBOARD ──
+    # ══════════════════════════════════════════════
     path('dashboard/', views.dashboard_home, name='dashboard_home'),
+    path('dashboard/parametres/', views.dashboard_parametres, name='dashboard_parametres'),
 
-    # Sites
+    # ── Sites ──
     path('dashboard/sites/', views.dashboard_sites, name='dashboard_sites'),
     path('dashboard/sites/ajouter/', views.dashboard_site_form, name='dashboard_site_ajouter'),
     path('dashboard/sites/<uuid:pk>/modifier/', views.dashboard_site_form, name='dashboard_site_modifier'),
     path('dashboard/sites/<uuid:pk>/supprimer/', views.dashboard_site_supprimer, name='dashboard_site_supprimer'),
     path('dashboard/sites/<uuid:pk>/toggle-active/', views.dashboard_site_toggle, name='dashboard_site_toggle'),
     path('dashboard/sites/image/<int:pk>/supprimer/', views.dashboard_image_site_supprimer, name='dashboard_image_site_supprimer'),
+    path('dashboard/sites/<uuid:pk>/stats-manuelles/', views.dashboard_site_stats_manuelles, name='dashboard_site_stats_manuelles'),
 
-    # Parcelles
+    # ── Parcelles ──
     path('dashboard/parcelles/', views.dashboard_parcelles, name='dashboard_parcelles'),
     path('dashboard/parcelles/ajouter/', views.dashboard_parcelle_form, name='dashboard_parcelle_ajouter'),
     path('dashboard/parcelles/<uuid:pk>/modifier/', views.dashboard_parcelle_form, name='dashboard_parcelle_modifier'),
@@ -46,45 +67,40 @@ urlpatterns = [
     path('dashboard/parcelles/<uuid:pk>/statut/', views.dashboard_parcelle_statut, name='dashboard_parcelle_statut'),
     path('dashboard/parcelles/image/<int:pk>/supprimer/', views.dashboard_image_parcelle_supprimer, name='dashboard_image_parcelle_supprimer'),
 
-    # Réservations
+    # ── Réservations ──
     path('dashboard/reservations/', views.dashboard_reservations, name='dashboard_reservations'),
     path('dashboard/reservations/<uuid:pk>/', views.dashboard_reservation_detail, name='dashboard_reservation_detail'),
     path('dashboard/reservations/<uuid:pk>/supprimer/', views.dashboard_reservation_supprimer, name='dashboard_reservation_supprimer'),
 
-    # Contacts
+    # ── Contacts ──
     path('dashboard/contacts/', views.dashboard_contacts, name='dashboard_contacts'),
     path('dashboard/contacts/<uuid:pk>/', views.dashboard_contact_detail, name='dashboard_contact_detail'),
     path('dashboard/contacts/<uuid:pk>/supprimer/', views.dashboard_contact_supprimer, name='dashboard_contact_supprimer'),
 
-    # Visites
+    # ── Visites ──
     path('dashboard/visites/', views.dashboard_visites, name='dashboard_visites'),
     path('dashboard/visites/ajouter/', views.dashboard_visite_form, name='dashboard_visite_ajouter'),
     path('dashboard/visites/<uuid:pk>/modifier/', views.dashboard_visite_form, name='dashboard_visite_modifier'),
     path('dashboard/visites/<uuid:pk>/supprimer/', views.dashboard_visite_supprimer, name='dashboard_visite_supprimer'),
 
-    # Promotions
+    # ── Promotions ──
     path('dashboard/promotions/', views.dashboard_promotions, name='dashboard_promotions'),
 
-    # Témoignages
+    # ── Témoignages ──
     path('dashboard/temoignages/', views.dashboard_temoignages, name='dashboard_temoignages'),
     path('dashboard/temoignages/ajouter/', views.dashboard_temoignage_form, name='dashboard_temoignage_ajouter'),
     path('dashboard/temoignages/<int:pk>/modifier/', views.dashboard_temoignage_form, name='dashboard_temoignage_modifier'),
     path('dashboard/temoignages/<int:pk>/supprimer/', views.dashboard_temoignage_supprimer, name='dashboard_temoignage_supprimer'),
 
-    # Utilisateurs
+    # ── Utilisateurs ──
     path('dashboard/utilisateurs/', views.dashboard_utilisateurs, name='dashboard_utilisateurs'),
     path('dashboard/utilisateurs/ajouter/', views.dashboard_utilisateur_form, name='dashboard_utilisateur_ajouter'),
     path('dashboard/utilisateurs/<int:pk>/modifier/', views.dashboard_utilisateur_form, name='dashboard_utilisateur_modifier'),
     path('dashboard/utilisateurs/<int:pk>/supprimer/', views.dashboard_utilisateur_supprimer, name='dashboard_utilisateur_supprimer'),
 
-    # Paramètres
-    path('dashboard/parametres/', views.dashboard_parametres, name='dashboard_parametres'),
-
-    # Auth
-    path('login/', views.login_view, name='login'),
-    path('logout/', views.logout_view, name='logout'),
-
-    # GROUPY Dashboard
+    # ══════════════════════════════════════════════
+    # ── GROUPY (Chatbot) ──
+    # ══════════════════════════════════════════════
     path('dashboard/groupy/', views.dashboard_groupy, name='dashboard_groupy'),
     path('dashboard/groupy/categories/', views.dashboard_groupy_categories, name='dashboard_groupy_categories'),
     path('dashboard/groupy/qr/ajouter/', views.dashboard_groupy_qr_form, name='dashboard_groupy_qr_ajouter'),
@@ -95,31 +111,34 @@ urlpatterns = [
 
     # ══════════════════════════════════════════════
     # ── JOURNAL PUBLIC ──
-    # ✅ ROUTES SPÉCIFIQUES EN PREMIER (ordre important !)
+    # ⚠️ ROUTES SPÉCIFIQUES EN PREMIER (ordre important !)
     # ══════════════════════════════════════════════
     path('journal/', views.journal_kiosque, name='journal_kiosque'),
     path('journal/<str:numero>/pdf/', views.servir_pdf_journal, name='journal_pdf'),
     path('journal/<str:numero>/', views.journal_lire, name='journal_lire'),
 
-    # ── Dashboard Journal ──
+    # ══════════════════════════════════════════════
+    # ── DASHBOARD JOURNAL ──
+    # ══════════════════════════════════════════════
     path('dashboard/journal/', views.dashboard_journal, name='dashboard_journal'),
     path('dashboard/journal/ajouter/', views.dashboard_journal_edition_form, name='dashboard_journal_edition_ajouter'),
     path('dashboard/journal/<int:pk>/modifier/', views.dashboard_journal_edition_form, name='dashboard_journal_edition_modifier'),
     path('dashboard/journal/<int:pk>/supprimer/', views.dashboard_journal_edition_supprimer, name='dashboard_journal_edition_supprimer'),
     path('dashboard/journal/<int:pk>/publier/', views.dashboard_journal_publier, name='dashboard_journal_publier'),
 
-    # ✅ Routes de l'ancien éditeur — à supprimer si plus utilisées
+    # Éditeur de pages
     path('dashboard/journal/<int:edition_pk>/page/<int:page_num>/editer/', views.dashboard_journal_page_editer, name='dashboard_journal_page_editer'),
     path('dashboard/journal/<int:edition_pk>/page/ajouter/', views.dashboard_journal_page_ajouter, name='dashboard_journal_page_ajouter'),
     path('dashboard/journal/<int:edition_pk>/page/<int:page_num>/supprimer/', views.dashboard_journal_page_supprimer, name='dashboard_journal_page_supprimer'),
+
+    # Médias journal
     path('dashboard/journal/media/upload/', views.dashboard_journal_media_upload, name='dashboard_journal_media_upload'),
     path('dashboard/journal/media/liste/', views.dashboard_journal_media_liste, name='dashboard_journal_media_liste'),
     path('dashboard/journal/media/<int:pk>/supprimer/', views.dashboard_journal_media_supprimer, name='dashboard_journal_media_supprimer'),
-    path('api/journal/sauvegarder-page/', views.api_journal_sauvegarder_page, name='api_journal_sauvegarder_page'),
 
-    path('dashboard/sites/<uuid:pk>/stats-manuelles/', views.dashboard_site_stats_manuelles, name='dashboard_site_stats_manuelles'),
-
-    # Dashboard home config
+    # ══════════════════════════════════════════════
+    # ── DASHBOARD HOME CONFIG ──
+    # ══════════════════════════════════════════════
     path('dashboard/home-config/', views.dashboard_home_config, name='dashboard_home_config'),
     path('dashboard/home-config/hero/', views.dashboard_hero_form, name='dashboard_hero_form'),
     path('dashboard/home-config/services/', views.dashboard_services, name='dashboard_services'),
@@ -139,30 +158,31 @@ urlpatterns = [
     path('dashboard/home-config/hero-slides/<int:pk>/toggle/', views.dashboard_hero_slide_toggle, name='dashboard_hero_slide_toggle'),
 
     # ══════════════════════════════════════════════
-    # Module Une & Événements — public
+    # ── MODULE UNE & ÉVÉNEMENTS ──
     # ══════════════════════════════════════════════
+    # Public
     path('une-evenements/', views.une_evenements_accueil, name='une_evenements_accueil'),
     path('une-evenements/categorie/<str:cat>/', views.une_evenements_liste, name='une_evenements_liste'),
-    # ✅ PDF AVANT <int:pk>
     path('une-evenements/<int:pk>/pdf/', views.servir_pdf, name='une_evenement_pdf'),
     path('une-evenements/<int:pk>/', views.une_evenement_detail, name='une_evenement_detail'),
 
-    # Dashboard Une & Événements
+    # Dashboard
     path('dashboard/une-evenements/', views.dashboard_une_liste, name='dashboard_une_liste'),
     path('dashboard/une-evenements/ajouter/', views.dashboard_une_form, name='dashboard_une_ajouter'),
     path('dashboard/une-evenements/<int:pk>/modifier/', views.dashboard_une_form, name='dashboard_une_modifier'),
     path('dashboard/une-evenements/<int:pk>/supprimer/', views.dashboard_une_supprimer, name='dashboard_une_supprimer'),
     path('dashboard/une-evenements/<int:pk>/publier/', views.dashboard_une_publier, name='dashboard_une_publier'),
     path('dashboard/une-evenements/<int:pk>/editeur/', views.dashboard_une_editeur, name='dashboard_une_editeur'),
-    path('api/une-evenements/sauvegarder/', views.api_une_sauvegarder, name='api_une_sauvegarder'),
     path('dashboard/une-evenements/media/upload/', views.dashboard_une_media_upload, name='dashboard_une_media_upload'),
 
-    # Module Nos Projets — public
+    # ══════════════════════════════════════════════
+    # ── MODULE NOS PROJETS ──
+    # ══════════════════════════════════════════════
     path('projets/', views.nos_projets, name='nos_projets'),
     path('projets/<slug:slug>/', views.projet_detail, name='projet_detail'),
     path('api/projet/<slug:slug>/etapes/', views.api_projet_etapes, name='api_projet_etapes'),
 
-    # Dashboard Nos Projets
+    # Dashboard
     path('dashboard/projets/', views.dashboard_projets_liste, name='dashboard_projets_liste'),
     path('dashboard/projets/ajouter/', views.dashboard_projet_form, name='dashboard_projet_ajouter'),
     path('dashboard/projets/<uuid:pk>/modifier/', views.dashboard_projet_form, name='dashboard_projet_modifier'),
@@ -172,21 +192,23 @@ urlpatterns = [
     path('dashboard/projets/<uuid:pk>/galerie/supprimer/<int:img_pk>/', views.dashboard_projet_image_supprimer, name='dashboard_projet_image_supprimer'),
     path('dashboard/projets/<uuid:pk>/infrastructures/', views.dashboard_projet_infrastructures, name='dashboard_projet_infrastructures'),
 
-    # Module Nos Agences — public
+    # ══════════════════════════════════════════════
+    # ── MODULE NOS AGENCES ──
+    # ══════════════════════════════════════════════
     path('agences/', views.nos_agences, name='nos_agences'),
 
-    # Dashboard Agences
     path('dashboard/agences/', views.dashboard_agences_liste, name='dashboard_agences_liste'),
     path('dashboard/agences/ajouter/', views.dashboard_agence_form, name='dashboard_agence_ajouter'),
     path('dashboard/agences/<int:pk>/modifier/', views.dashboard_agence_form, name='dashboard_agence_modifier'),
     path('dashboard/agences/<int:pk>/supprimer/', views.dashboard_agence_supprimer, name='dashboard_agence_supprimer'),
     path('dashboard/agences/stats/', views.dashboard_agences_stats, name='dashboard_agences_stats'),
 
-    # Module Nos Services — public
+    # ══════════════════════════════════════════════
+    # ── MODULE NOS SERVICES ──
+    # ══════════════════════════════════════════════
     path('services/', views.nos_services, name='nos_services'),
     path('services/<slug:slug>/', views.service_detail, name='service_detail'),
 
-    # Dashboard Services
     path('dashboard/services-module/', views.dashboard_services_liste, name='dashboard_services_liste'),
     path('dashboard/services-module/ajouter/', views.dashboard_service_form, name='dashboard_service_ajouter'),
     path('dashboard/services-module/<int:pk>/modifier/', views.dashboard_service_form, name='dashboard_service_modifier'),
@@ -195,10 +217,8 @@ urlpatterns = [
     path('dashboard/services-module/processus/', views.dashboard_services_processus, name='dashboard_services_processus'),
     path('dashboard/services-module/engagements/', views.dashboard_services_engagements, name='dashboard_services_engagements'),
 
-    path('api/calcul-parcelles/', views.api_calcul_parcelles, name='api_calcul_parcelles'),
-
     # ══════════════════════════════════════════════
-    # Académie — public
+    # ── ACADÉMIE — PUBLIC ──
     # ══════════════════════════════════════════════
     path('academie/', views.academie_accueil, name='academie_accueil'),
     path('academie/recherche/', views.academie_recherche, name='academie_recherche'),
@@ -206,49 +226,55 @@ urlpatterns = [
     path('academie/document/<int:pk>/telecharger/', views.academie_telecharger, name='academie_telecharger'),
     path('academie/video/<int:pk>/voir/', views.academie_voir_video, name='academie_voir_video'),
     path('academie/lexique/', views.academie_lexique, name='academie_lexique'),
+    # ✅ Brochures — lecture dans le lecteur PDF
+    path('academie/brochure/<int:pk>/lire/', views.academie_lire_brochure, name='academie_lire_brochure'),
 
-    # Dashboard Académie
+    # ══════════════════════════════════════════════
+    # ── DASHBOARD ACADÉMIE ──
+    # ══════════════════════════════════════════════
     path('dashboard/academie/', views.dashboard_academie_liste, name='dashboard_academie_liste'),
     path('dashboard/academie/ajouter/', views.dashboard_academie_form, name='dashboard_academie_ajouter'),
     path('dashboard/academie/<int:pk>/modifier/', views.dashboard_academie_form, name='dashboard_academie_modifier'),
     path('dashboard/academie/<int:pk>/supprimer/', views.dashboard_academie_supprimer, name='dashboard_academie_supprimer'),
+
+    # Vidéos
     path('dashboard/academie/videos/', views.dashboard_academie_videos, name='dashboard_academie_videos'),
     path('dashboard/academie/videos/ajouter/', views.dashboard_academie_video_form, name='dashboard_academie_video_ajouter'),
     path('dashboard/academie/videos/<int:pk>/modifier/', views.dashboard_academie_video_form, name='dashboard_academie_video_modifier'),
     path('dashboard/academie/videos/<int:pk>/supprimer/', views.dashboard_academie_video_supprimer, name='dashboard_academie_video_supprimer'),
+
+    # FAQ / Parcours / Stats
     path('dashboard/academie/faq/', views.dashboard_academie_faq, name='dashboard_academie_faq'),
     path('dashboard/academie/parcours/', views.dashboard_academie_parcours, name='dashboard_academie_parcours'),
     path('dashboard/academie/stats/', views.dashboard_academie_stats, name='dashboard_academie_stats'),
 
-    # Dashboard Journal — types académie
+    # Articles / Revues / Guides (via Journal)
     path('dashboard/journal/article/ajouter/', views.dashboard_journal_article_form, name='dashboard_journal_article_ajouter'),
     path('dashboard/journal/article/<int:pk>/modifier/', views.dashboard_journal_article_form, name='dashboard_journal_article_modifier'),
     path('dashboard/journal/revue/ajouter/', views.dashboard_journal_article_form, name='dashboard_journal_revue_ajouter'),
     path('dashboard/journal/guide/ajouter/', views.dashboard_journal_article_form, name='dashboard_journal_guide_ajouter'),
+    path('dashboard/academie/publications/', views.dashboard_academie_publications, name='dashboard_academie_publications'),
 
-    # Dashboard Académie — Galerie
+    # Galerie
     path('dashboard/academie/galerie/', views.dashboard_academie_galerie, name='dashboard_academie_galerie'),
     path('dashboard/academie/galerie/ajouter/', views.dashboard_academie_galerie_form, name='dashboard_academie_galerie_ajouter'),
     path('dashboard/academie/galerie/<int:pk>/modifier/', views.dashboard_academie_galerie_form, name='dashboard_academie_galerie_modifier'),
     path('dashboard/academie/galerie/<int:pk>/supprimer/', views.dashboard_academie_galerie_supprimer, name='dashboard_academie_galerie_supprimer'),
 
-    path('dashboard/academie/publications/', views.dashboard_academie_publications, name='dashboard_academie_publications'),
-
-    # Dashboard — Lexique
+    # Lexique
     path('dashboard/academie/lexique/', views.dashboard_lexique, name='dashboard_lexique'),
     path('dashboard/academie/lexique/ajouter/', views.dashboard_lexique_form, name='dashboard_lexique_ajouter'),
     path('dashboard/academie/lexique/<int:pk>/modifier/', views.dashboard_lexique_form, name='dashboard_lexique_modifier'),
     path('dashboard/academie/lexique/<int:pk>/supprimer/', views.dashboard_lexique_supprimer, name='dashboard_lexique_supprimer'),
+
+    # Vidéo globale
     path('dashboard/video-globale/', views.dashboard_video_globale, name='dashboard_video_globale'),
 
-    # ── Service Worker ──
-    path('sw.js', serve, {
-        'document_root': os.path.join(settings.BASE_DIR, 'static'),
-        'path': 'sw.js'
-    }),
+    # Section académie config
+    path('dashboard/section-academie/', views.admin_section_academie, name='admin_section_academie'),
 
     # ══════════════════════════════════════════════
-    # MODULE À PROPOS — DASHBOARD
+    # ── MODULE À PROPOS — DASHBOARD ──
     # ══════════════════════════════════════════════
     path('dashboard/apropos/', views.dashboard_apropos, name='dashboard_apropos'),
 
@@ -257,32 +283,32 @@ urlpatterns = [
     path('dashboard/apropos/section/<int:pk>/', views.dashboard_apropos_section_form, name='dashboard_apropos_section_form'),
     path('dashboard/apropos/section/<int:pk>/supprimer/', views.dashboard_apropos_section_supprimer, name='dashboard_apropos_section_supprimer'),
 
-    # Éléments (cartes, valeurs, membres, activités)
+    # Éléments
     path('dashboard/apropos/section/<int:section_pk>/elements/', views.dashboard_apropos_elements, name='dashboard_apropos_elements'),
     path('dashboard/apropos/element/creer/<int:section_pk>/', views.dashboard_apropos_element_form, name='dashboard_apropos_element_create'),
     path('dashboard/apropos/element/<int:pk>/', views.dashboard_apropos_element_form, name='dashboard_apropos_element_form'),
     path('dashboard/apropos/element/<int:pk>/supprimer/', views.dashboard_apropos_element_supprimer, name='dashboard_apropos_element_supprimer'),
 
-    # Indicateurs (chiffres clés)
+    # Indicateurs
     path('dashboard/apropos/section/<int:section_pk>/indicateurs/', views.dashboard_apropos_indicateurs, name='dashboard_apropos_indicateurs'),
     path('dashboard/apropos/indicateur/creer/<int:section_pk>/', views.dashboard_apropos_indicateur_form, name='dashboard_apropos_indicateur_create'),
     path('dashboard/apropos/indicateur/<int:pk>/', views.dashboard_apropos_indicateur_form, name='dashboard_apropos_indicateur_form'),
     path('dashboard/apropos/indicateur/<int:pk>/supprimer/', views.dashboard_apropos_indicateur_supprimer, name='dashboard_apropos_indicateur_supprimer'),
 
-    # Étapes timeline (histoire)
+    # Étapes timeline
     path('dashboard/apropos/section/<int:section_pk>/etapes/', views.dashboard_apropos_etapes, name='dashboard_apropos_etapes'),
     path('dashboard/apropos/etape/creer/<int:section_pk>/', views.dashboard_apropos_etape_form, name='dashboard_apropos_etape_create'),
     path('dashboard/apropos/etape/<int:pk>/', views.dashboard_apropos_etape_form, name='dashboard_apropos_etape_form'),
     path('dashboard/apropos/etape/<int:pk>/supprimer/', views.dashboard_apropos_etape_supprimer, name='dashboard_apropos_etape_supprimer'),
 
-    # Tableaux (chiffres clés)
+    # Tableaux
     path('dashboard/apropos/section/<int:section_pk>/tableaux/', views.dashboard_apropos_tableaux, name='dashboard_apropos_tableaux'),
     path('dashboard/apropos/tableau/creer/<int:section_pk>/', views.dashboard_apropos_tableau_form, name='dashboard_apropos_tableau_create'),
     path('dashboard/apropos/tableau/<int:pk>/', views.dashboard_apropos_tableau_form, name='dashboard_apropos_tableau_form'),
     path('dashboard/apropos/tableau/<int:pk>/supprimer/', views.dashboard_apropos_tableau_supprimer, name='dashboard_apropos_tableau_supprimer'),
     path('dashboard/apropos/tableau/<int:pk>/editer/', views.dashboard_apropos_tableau_editer, name='dashboard_apropos_tableau_editer'),
 
-    # API AJAX pour l'éditeur de tableau
+    # API AJAX — Éditeur de tableau
     path('dashboard/apropos/api/colonne/ajouter/', views.api_apropos_colonne_ajouter, name='api_apropos_colonne_ajouter'),
     path('dashboard/apropos/api/colonne/<int:pk>/supprimer/', views.api_apropos_colonne_supprimer, name='api_apropos_colonne_supprimer'),
     path('dashboard/apropos/api/colonne/<int:pk>/renommer/', views.api_apropos_colonne_renommer, name='api_apropos_colonne_renommer'),
@@ -291,10 +317,11 @@ urlpatterns = [
     path('dashboard/apropos/api/ligne/<int:pk>/renommer/', views.api_apropos_ligne_renommer, name='api_apropos_ligne_renommer'),
     path('dashboard/apropos/api/cellule/sauvegarder/', views.api_apropos_cellule_sauvegarder, name='api_apropos_cellule_sauvegarder'),
 
-    path('dashboard/section-academie/', views.admin_section_academie, name='admin_section_academie'),
-
-    path('terrains/', views.site_libre, name='site_libre'),
-path('terrains/<slug:slug>/', views.site_libre_detail, name='site_libre_detail'),
-# urls.py
-path('journal/pdf/<int:numero>/', views.journal_pdf, name='journal_pdf'),
+    # ══════════════════════════════════════════════
+    # ── SERVICE WORKER ──
+    # ══════════════════════════════════════════════
+    path('sw.js', serve, {
+        'document_root': os.path.join(settings.BASE_DIR, 'static'),
+        'path': 'sw.js'
+    }),
 ]

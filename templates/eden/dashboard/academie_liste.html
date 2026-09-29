@@ -9,61 +9,100 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g800:#1F2937;--r:12px;--rl:20px;}
+:root{--blue:#1B4FDB;--red:#C8102E;--grad:linear-gradient(135deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--grad-h:linear-gradient(90deg,#1B4FDB 0%,#7B20B4 50%,#C8102E 100%);--bpale:#EEF3FF;--g50:#F9FAFB;--g100:#F3F4F6;--g200:#E5E7EB;--g400:#9CA3AF;--g500:#6B7280;--g600:#4B5563;--g700:#374151;--g800:#1F2937;--r:12px;--rl:20px;}
 body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
 .topnav{position:fixed;top:0;left:0;right:0;height:64px;background:#fff;border-bottom:1.5px solid var(--g200);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
 .tn-em{width:36px;height:36px;border-radius:8px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:15px;color:#fff;}
 .tn-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .tn-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;border:1.5px solid var(--g200);background:#fff;color:var(--g500);font-family:'Outfit',sans-serif;display:inline-flex;align-items:center;gap:5px;transition:all 0.2s;}
 .tn-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--bpale);}
-.wrap{display:flex;padding-top:64px;min-height:100vh;}
-.sidebar{width:240px;background:#fff;border-right:1.5px solid var(--g200);position:fixed;top:64px;left:0;bottom:0;overflow-y:auto;z-index:900;}
-.sb-sec{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--g400);padding:1.2rem 1.5rem 0.4rem;}
-.sb-lnk{display:flex;align-items:center;gap:10px;padding:10px 1.5rem;font-size:13px;font-weight:500;color:var(--g600);border-left:2px solid transparent;text-decoration:none;transition:all 0.15s;}
-.sb-lnk:hover,.sb-lnk.active{color:var(--blue);background:var(--bpale);border-left-color:var(--blue);}
-.sb-ico{font-size:15px;width:20px;text-align:center;flex-shrink:0;}
-.sb-user{padding:1.2rem 1.5rem;border-top:1px solid var(--g200);margin-top:1rem;}
-.main{flex:1;padding:2rem;margin-left:240px;}
-.page-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;flex-wrap:wrap;gap:1rem;}
-.page-tit{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--g800);}
+.wrap{padding-top:64px;min-height:100vh;}
+.main{padding:2rem;max-width:1440px;margin:0 auto;}
+
+/* HEADER DE PAGE */
+.page-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;}
+.page-tit{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--g800);}
 .page-sub{font-size:13px;color:var(--g500);margin-top:2px;}
-.btn-add{background:var(--grad);color:#fff;padding:10px 18px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
-/* Quick actions */
-.quick-actions{display:flex;gap:10px;margin-bottom:1.5rem;flex-wrap:wrap;}
-.qa-btn{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:var(--r);border:1.5px solid var(--g200);background:#fff;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;color:var(--g700);transition:all 0.2s;font-family:'Outfit',sans-serif;}
-.qa-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--bpale);}
-/* Filtres */
-.filtres{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1.5rem;}
-.f-select{padding:9px 14px;border-radius:var(--r);border:1.5px solid var(--g200);font-size:13px;color:var(--g600);background:#fff;outline:none;font-family:'Outfit',sans-serif;appearance:none;cursor:pointer;}
-.f-select:focus{border-color:var(--blue);}
-/* Table */
-.doc-table{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);overflow:hidden;}
-.dt-header{display:grid;grid-template-columns:50px 1fr 150px 100px 80px 80px;gap:0;background:var(--g50);border-bottom:1.5px solid var(--g200);}
-.th{padding:10px 14px;font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:1px;}
-.dt-row{display:grid;grid-template-columns:50px 1fr 150px 100px 80px 80px;gap:0;border-bottom:1px solid var(--g100);align-items:center;transition:all 0.15s;}
-.dt-row:hover{background:var(--g50);}
-.dt-row:last-child{border-bottom:none;}
-.td{padding:10px 14px;font-size:13px;color:var(--g700);}
-.td-ico{font-size:1.3rem;}
-.td-nom{font-weight:700;color:var(--g800);line-height:1.35;}
-.td-sub{font-size:11px;color:var(--g500);margin-top:1px;}
-.td-cat{font-size:11px;}
-.badge{padding:3px 9px;border-radius:100px;font-size:10px;font-weight:700;}
+.page-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.btn-add{background:var(--grad);color:#fff;padding:10px 18px;border-radius:9px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:opacity 0.2s;}
+.btn-add:hover{opacity:0.9;}
+.btn-secondary{background:#fff;color:var(--g700);padding:10px 18px;border-radius:9px;font-size:13px;font-weight:600;border:1.5px solid var(--g200);cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s;}
+.btn-secondary:hover{border-color:var(--blue);color:var(--blue);background:var(--bpale);}
+
+/* STATS BAR */
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:1.5rem;}
+.stat-card{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);padding:1rem 1.2rem;display:flex;align-items:center;gap:12px;transition:all 0.2s;}
+.stat-card:hover{border-color:var(--blue);box-shadow:0 4px 16px rgba(27,79,219,0.08);}
+.stat-ico{width:44px;height:44px;border-radius:10px;background:var(--bpale);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+.stat-val{font-size:1.5rem;font-weight:800;color:var(--g800);line-height:1.1;}
+.stat-lbl{font-size:11px;color:var(--g500);font-weight:600;margin-top:2px;text-transform:uppercase;letter-spacing:0.5px;}
+
+/* ALERT */
+.alert{background:#dcfce7;border:1.5px solid #86efac;border-radius:var(--r);padding:12px 16px;font-size:13px;color:#16a34a;margin-bottom:1.5rem;}
+.alert.error{background:#fee2e2;border-color:#fca5a5;color:#dc2626;}
+
+/* ═══════════════════════════════════════════════════════
+   GROUPES / SECTIONS
+   ═══════════════════════════════════════════════════════ */
+.group{background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);margin-bottom:1.5rem;overflow:hidden;}
+.group-header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.4rem;border-bottom:1.5px solid var(--g200);background:linear-gradient(to right,rgba(238,243,255,0.4),transparent);flex-wrap:wrap;gap:10px;}
+.group-title{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;color:var(--g800);}
+.group-ico{font-size:1.3rem;}
+.group-count{background:var(--bpale);color:var(--blue);font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;}
+.group-desc{font-size:12px;color:var(--g500);margin-top:2px;font-weight:400;}
+.group-action{background:var(--bpale);color:var(--blue);padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:all 0.2s;border:1.5px solid transparent;}
+.group-action:hover{background:var(--blue);color:#fff;}
+.group-body{padding:0;}
+
+/* ITEM (ligne dans un groupe) */
+.item-row{display:grid;grid-template-columns:50px 1fr 130px 110px 80px auto;gap:0;align-items:center;border-bottom:1px solid var(--g100);transition:background 0.15s;}
+.item-row:last-child{border-bottom:none;}
+.item-row:hover{background:var(--g50);}
+.item-ico{padding:12px;font-size:1.3rem;text-align:center;}
+.item-info{padding:12px 8px;min-width:0;}
+.item-titre{font-weight:700;color:var(--g800);line-height:1.35;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.item-sub{font-size:11px;color:var(--g500);margin-top:2px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.item-cat{padding:12px 8px;font-size:11px;color:var(--g600);}
+.item-status{padding:12px 8px;}
+.item-dl{padding:12px 8px;font-size:12px;font-weight:600;color:var(--blue);text-align:center;}
+.item-actions{padding:12px 14px;display:flex;gap:5px;justify-content:flex-end;}
+.badge{padding:3px 9px;border-radius:100px;font-size:10px;font-weight:700;display:inline-block;}
 .badge-pub{background:#dcfce7;color:#16a34a;}
 .badge-brou{background:#fef9c3;color:#b45309;}
 .badge-arch{background:var(--g100);color:var(--g500);}
 .badge-une{background:rgba(200,16,46,0.1);color:var(--red);}
-.td-actions{display:flex;gap:5px;}
-.btn-sm-ed{padding:5px 9px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Outfit',sans-serif;background:var(--bpale);color:var(--blue);text-decoration:none;}
-.btn-sm-del{padding:5px 9px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Outfit',sans-serif;background:#fee2e2;color:#dc2626;}
-.alert{background:#dcfce7;border:1.5px solid #86efac;border-radius:var(--r);padding:12px 16px;font-size:13px;color:#16a34a;margin-bottom:1.5rem;}
+.badge-feat{background:rgba(27,79,219,0.1);color:var(--blue);}
+.btn-sm{padding:6px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Outfit',sans-serif;background:var(--bpale);color:var(--blue);text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:all 0.2s;}
+.btn-sm:hover{background:var(--blue);color:#fff;}
+.btn-sm-del{background:#fee2e2;color:#dc2626;}
+.btn-sm-del:hover{background:#dc2626;color:#fff;}
+
+/* EMPTY DANS UN GROUPE */
+.group-empty{padding:2rem;text-align:center;color:var(--g400);font-size:13px;}
+.group-empty a{color:var(--blue);text-decoration:none;font-weight:600;}
+
+/* TOAST */
 .toast{position:fixed;bottom:2rem;right:2rem;background:#fff;border:1.5px solid var(--g200);border-radius:var(--r);padding:14px 20px;font-size:13px;color:var(--g800);z-index:5000;display:flex;align-items:center;gap:10px;transform:translateY(100px);opacity:0;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.1);}
 .toast.show{transform:none;opacity:1;}
-.empty{text-align:center;padding:4rem;background:#fff;border:1.5px solid var(--g200);border-radius:var(--rl);}
-@media(max-width:1024px){.sidebar{display:none;}.main{margin-left:0;}.dt-header{display:none;}.dt-row{grid-template-columns:auto 1fr auto;gap:8px;padding:8px;}}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  .item-row{grid-template-columns:40px 1fr auto;padding:0;gap:8px;}
+  .item-cat, .item-status, .item-dl{display:none;}
+  .item-info{padding:10px 4px;}
+  .item-actions{padding:10px 8px;}
+  .main{padding:1.2rem;}
+}
+@media(max-width:640px){
+  .page-hd{flex-direction:column;align-items:flex-start;}
+  .stats-bar{grid-template-columns:repeat(2,1fr);}
+  .group-header{padding:0.9rem 1rem;}
+  .item-titre{white-space:normal;font-size:12px;}
+}
 </style>
 </head>
 <body>
+
 <div class="toast" id="toast"><span id="t-ico">✅</span>&nbsp;<span id="t-msg"></span></div>
 
 <nav class="topnav">
@@ -71,7 +110,7 @@ body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
     <div class="tn-em">E</div><div class="tn-name">EDEN GROUP</div>
     <span style="font-size:11px;color:var(--g400);margin-left:6px;letter-spacing:1px;text-transform:uppercase;">Académie</span>
   </div>
-  <div style="display:flex;gap:8px;">
+  <div style="display:flex;gap:8px;flex-wrap:wrap;">
     <a class="tn-btn" href="{% url 'academie_accueil' %}" target="_blank">🎓 Voir</a>
     <a class="tn-btn" href="{% url 'dashboard_home' %}">← Dashboard</a>
     <a class="tn-btn" href="{% url 'logout' %}" style="background:#fee2e2;border-color:#fca5a5;color:#dc2626;">Déconnexion</a>
@@ -80,120 +119,608 @@ body{font-family:'Outfit',sans-serif;background:var(--g50);color:var(--g800);}
 
 <div class="wrap">
   <div class="main">
+
+    <!-- ═══════════════════════════════════════════════════════
+         HEADER
+         ═══════════════════════════════════════════════════════ -->
     <div class="page-hd">
       <div>
-        <h1 class="page-tit">🎓 Documents Académie</h1>
-        <div class="page-sub">{{ nb_total }} document{{ nb_total|pluralize }} · {{ nb_publie }} publié{{ nb_publie|pluralize }}</div>
+        <h1 class="page-tit">🎓 Académie EDEN GROUP</h1>
+        <div class="page-sub">Gérez tous les contenus pédagogiques : publications, brochures, vidéos, lexique, galerie et FAQ.</div>
       </div>
-      <a class="btn-add" href="{% url 'dashboard_academie_ajouter' %}">+ Nouveau document</a>
+      <div class="page-actions">
+        <a class="btn-secondary" href="{% url 'academie_accueil' %}" target="_blank">👁 Voir la page</a>
+        <a class="btn-add" href="{% url 'dashboard_academie_ajouter' %}">+ Nouveau document</a>
+      </div>
     </div>
 
-    {% if messages %}{% for msg in messages %}<div class="alert">{{ msg }}</div>{% endfor %}{% endif %}
+    {% if messages %}
+      {% for msg in messages %}
+        <div class="alert {% if 'error' in msg.tags %}error{% endif %}">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
 
-    <!-- Actions rapides -->
-    <div class="quick-actions">
-      <a class="qa-btn" href="{% url 'dashboard_academie_videos' %}"><span style="font-size:1.1rem;">🎬</span> Gérer les vidéos</a>
-      <a class="qa-btn" href="{% url 'dashboard_academie_faq' %}"><span style="font-size:1.1rem;">❓</span> Gérer la FAQ</a>
-      <a class="qa-btn" href="{% url 'dashboard_academie_parcours' %}"><span style="font-size:1.1rem;">🗺</span> Parcours investisseur</a>
-      <a class="qa-btn" href="{% url 'dashboard_academie_stats' %}"><span style="font-size:1.1rem;">📊</span> Statistiques affichées</a>
-      <a class="qa-btn" href="{% url 'academie_accueil' %}" target="_blank"><span style="font-size:1.1rem;">👁</span> Voir la page publique</a>
-      <a href="{% url 'dashboard_academie_ajouter' %}?categorie=brochure" class="btn-add">
-  📘 Nouvelle brochure
-</a>
-
-      
-<a class="qa-btn" href="{% url 'dashboard_academie_galerie' %}">
-  <span style="font-size:1.1rem;">🖼</span> Galerie
-</a>
-
-<!-- Dans la section .quick-actions, ajoutez ce bouton -->
-<a class="qa-btn" href="{% url 'dashboard_lexique' %}">
-  <span style="font-size:1.1rem;">🔤</span> Lexique Foncier
-  <span style="background:#EEF3FF;color:#1B4FDB;font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;margin-left:4px;">
-    {{ nb_lexique|default:0 }}
-  </span>
-</a>
-    </div>
-
-    <!-- Filtre catégorie -->
-    <form method="get" class="filtres">
-      <select class="f-select" name="cat" onchange="this.form.submit()">
-        <option value="">Toutes les catégories</option>
-        {% for val, label in categories %}
-        <option value="{{ val }}" {% if cat == val %}selected{% endif %}>{{ label }}</option>
-        {% endfor %}
-      </select>
-      {% if cat %}<a href="{% url 'dashboard_academie_liste' %}" style="font-size:13px;color:var(--blue);text-decoration:none;padding:9px;">✕ Tout voir</a>{% endif %}
-    </form>
-
-    {% if docs %}
-    <div class="doc-table">
-      <div class="dt-header">
-        <div class="th">Type</div>
-        <div class="th">Titre</div>
-        <div class="th">Catégorie</div>
-        <div class="th">Statut</div>
-        <div class="th">DL</div>
-        <div class="th">Actions</div>
-      </div>
-      {% for doc in docs %}
-      <div class="dt-row" id="doc-{{ doc.pk }}">
-        <div class="td td-ico">
-          {% if doc.categorie == 'texte_loi' %}📜
-          {% elif doc.categorie == 'article' %}📄
-          {% elif doc.categorie == 'revue' %}📕
-          {% elif doc.categorie == 'guide' %}📚
-          {% elif doc.categorie == 'lexique' %}🔤
-          {% elif doc.categorie == 'infographie' %}📊
-          {% elif doc.categorie == 'ressource' %}📦
-          {% else %}📄{% endif %}
+    <!-- ═══════════════════════════════════════════════════════
+         STATS RAPIDES
+         ═══════════════════════════════════════════════════════ -->
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-ico">📚</div>
+        <div>
+          <div class="stat-val">{{ nb_total }}</div>
+          <div class="stat-lbl">Documents</div>
         </div>
-        <div class="td">
-          <div class="td-nom">{{ doc.titre|truncatechars:60 }}</div>
-          <div class="td-sub">
-            {% if doc.auteur %}{{ doc.auteur }} ·{% endif %}
-            {% if doc.date_publication %}{{ doc.date_publication|date:"d/m/Y" }}{% endif %}
-            {% if doc.est_a_la_une %}<span class="badge badge-une" style="margin-left:4px;">À la Une</span>{% endif %}
-            {% if doc.est_featured %}<span class="badge badge-pub" style="margin-left:4px;">Featured</span>{% endif %}
+      </div>
+      <div class="stat-card">
+        <div class="stat-ico">✅</div>
+        <div>
+          <div class="stat-val">{{ nb_publie }}</div>
+          <div class="stat-lbl">Publiés</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-ico">🔤</div>
+        <div>
+          <div class="stat-val">{{ nb_lexique|default:0 }}</div>
+          <div class="stat-lbl">Lexique</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-ico">📘</div>
+        <div>
+          <div class="stat-val">{{ nb_brochures|default:0 }}</div>
+          <div class="stat-lbl">Brochures</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         GROUPE 1 : PUBLICATIONS (Articles, Revues, Guides)
+         ═══════════════════════════════════════════════════════ -->
+    <div class="group">
+      <div class="group-header">
+        <div>
+          <div class="group-title">
+            <span class="group-ico">📰</span>
+            Publications éditoriales
+            <span class="group-count">{{ articles|length|add:revues|length|add:guides|length }}</span>
+          </div>
+          <div class="group-desc">Articles d'analyse, revues et guides pratiques au format magazine</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <a class="group-action" href="{% url 'dashboard_journal_article_ajouter' %}">+ Article</a>
+          <a class="group-action" href="{% url 'dashboard_journal_revue_ajouter' %}">+ Revue</a>
+          <a class="group-action" href="{% url 'dashboard_journal_guide_ajouter' %}">+ Guide</a>
+          <a class="group-action" href="{% url 'dashboard_academie_publications' %}">Voir tout →</a>
+        </div>
+      </div>
+      <div class="group-body">
+        {% if articles or revues or guides %}
+          {# ARTICLES #}
+          {% for ed in articles %}
+          <div class="item-row" id="doc-{{ ed.pk }}">
+            <div class="item-ico">📄</div>
+            <div class="item-info">
+              <div class="item-titre">{{ ed.titre|truncatechars:70 }}</div>
+              <div class="item-sub">
+                <span style="color:var(--blue);font-weight:600;">N°{{ ed.numero }}</span>
+                {% if ed.date_parution %}<span>·</span><span>{{ ed.date_parution|date:"d/m/Y" }}</span>{% endif %}
+              </div>
+            </div>
+            <div class="item-cat">📄 Article</div>
+            <div class="item-status">
+              <span class="badge {% if ed.statut == 'publie' %}badge-pub{% else %}badge-brou{% endif %}">
+                {{ ed.get_statut_display }}
+              </span>
+            </div>
+            <div class="item-dl">—</div>
+            <div class="item-actions">
+              <a class="btn-sm" href="{% url 'dashboard_journal_edition_modifier' ed.pk %}">✏</a>
+              <button class="btn-sm btn-sm-del" onclick="supprimerElement({{ ed.pk }},'{{ ed.titre|escapejs }}','journal')">🗑</button>
+            </div>
+          </div>
+          {% endfor %}
+
+          {# REVUES #}
+          {% for ed in revues %}
+          <div class="item-row" id="doc-{{ ed.pk }}">
+            <div class="item-ico">📕</div>
+            <div class="item-info">
+              <div class="item-titre">{{ ed.titre|truncatechars:70 }}</div>
+              <div class="item-sub">
+                <span style="color:var(--blue);font-weight:600;">N°{{ ed.numero }}</span>
+                {% if ed.date_parution %}<span>·</span><span>{{ ed.date_parution|date:"d/m/Y" }}</span>{% endif %}
+              </div>
+            </div>
+            <div class="item-cat">📕 Revue</div>
+            <div class="item-status">
+              <span class="badge {% if ed.statut == 'publie' %}badge-pub{% else %}badge-brou{% endif %}">
+                {{ ed.get_statut_display }}
+              </span>
+            </div>
+            <div class="item-dl">—</div>
+            <div class="item-actions">
+              <a class="btn-sm" href="{% url 'dashboard_journal_edition_modifier' ed.pk %}">✏</a>
+              <button class="btn-sm btn-sm-del" onclick="supprimerElement({{ ed.pk }},'{{ ed.titre|escapejs }}','journal')">🗑</button>
+            </div>
+          </div>
+          {% endfor %}
+
+          {# GUIDES #}
+          {% for ed in guides %}
+          <div class="item-row" id="doc-{{ ed.pk }}">
+            <div class="item-ico">📚</div>
+            <div class="item-info">
+              <div class="item-titre">{{ ed.titre|truncatechars:70 }}</div>
+              <div class="item-sub">
+                <span style="color:var(--blue);font-weight:600;">N°{{ ed.numero }}</span>
+                {% if ed.date_parution %}<span>·</span><span>{{ ed.date_parution|date:"d/m/Y" }}</span>{% endif %}
+              </div>
+            </div>
+            <div class="item-cat">📚 Guide</div>
+            <div class="item-status">
+              <span class="badge {% if ed.statut == 'publie' %}badge-pub{% else %}badge-brou{% endif %}">
+                {{ ed.get_statut_display }}
+              </span>
+            </div>
+            <div class="item-dl">—</div>
+            <div class="item-actions">
+              <a class="btn-sm" href="{% url 'dashboard_journal_edition_modifier' ed.pk %}">✏</a>
+              <button class="btn-sm btn-sm-del" onclick="supprimerElement({{ ed.pk }},'{{ ed.titre|escapejs }}','journal')">🗑</button>
+            </div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="group-empty">
+            Aucune publication. <a href="{% url 'dashboard_journal_article_ajouter' %}">Créer un article →</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         GROUPE 2 : BROCHURES (AcademieDocument cat='brochure')
+         ═══════════════════════════════════════════════════════ -->
+    <div class="group">
+      <div class="group-header">
+        <div>
+          <div class="group-title">
+            <span class="group-ico">📘</span>
+            Brochures
+            <span class="group-count">{{ brochures|length }}</span>
+          </div>
+          <div class="group-desc">Brochures PDF à consulter et télécharger</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <a class="group-action" href="{% url 'dashboard_academie_ajouter' %}?categorie=brochure">+ Nouvelle brochure</a>
+        </div>
+      </div>
+      <div class="group-body">
+        {% if brochures %}
+          {% for doc in brochures %}
+          <div class="item-row" id="doc-{{ doc.pk }}">
+            <div class="item-ico">📘</div>
+            <div class="item-info">
+              <div class="item-titre">{{ doc.titre|truncatechars:70 }}</div>
+              <div class="item-sub">
+                {% if doc.auteur %}<span>{{ doc.auteur }}</span><span>·</span>{% endif %}
+                {% if doc.date_publication %}<span>{{ doc.date_publication|date:"d/m/Y" }}</span>{% endif %}
+                {% if doc.est_a_la_une %}<span class="badge badge-une">À la Une</span>{% endif %}
+                {% if doc.est_featured %}<span class="badge badge-feat">Featured</span>{% endif %}
+              </div>
+            </div>
+            <div class="item-cat">{{ doc.get_categorie_display }}</div>
+            <div class="item-status">
+              <span class="badge {% if doc.statut == 'publie' %}badge-pub{% elif doc.statut == 'brouillon' %}badge-brou{% else %}badge-arch{% endif %}">
+                {{ doc.get_statut_display }}
+              </span>
+            </div>
+            <div class="item-dl">{% if doc.fichier_pdf %}{{ doc.nb_telechargements }}{% else %}—{% endif %}</div>
+            <div class="item-actions">
+              <a class="btn-sm" href="{% url 'dashboard_academie_modifier' doc.pk %}">✏</a>
+              {% if doc.fichier_pdf %}
+              <a class="btn-sm" href="{% url 'academie_lire_brochure' doc.pk %}" target="_blank" title="Lire">📖</a>
+              {% endif %}
+              <button class="btn-sm btn-sm-del" onclick="supprimerElement({{ doc.pk }},'{{ doc.titre|escapejs }}','academie')">🗑</button>
+            </div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="group-empty">
+            Aucune brochure. <a href="{% url 'dashboard_academie_ajouter' %}?categorie=brochure">Créer la première →</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         GROUPE 3 : TEXTES DE LOI (AcademieDocument cat='texte_loi')
+         ═══════════════════════════════════════════════════════ -->
+    <div class="group">
+      <div class="group-header">
+        <div>
+          <div class="group-title">
+            <span class="group-ico">📜</span>
+            Textes de loi & Réglementation
+            <span class="group-count">{{ textes_loi|length }}</span>
+          </div>
+          <div class="group-desc">Lois, décrets, arrêtés et documents officiels</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <a class="group-action" href="{% url 'dashboard_academie_ajouter' %}?categorie=texte_loi">+ Nouveau texte</a>
+        </div>
+      </div>
+      <div class="group-body">
+        {% if textes_loi %}
+          {% for doc in textes_loi %}
+          <div class="item-row" id="doc-{{ doc.pk }}">
+            <div class="item-ico">📜</div>
+            <div class="item-info">
+              <div class="item-titre">{% if doc.reference_officielle %}{{ doc.reference_officielle }}{% else %}{{ doc.titre|truncatechars:70 }}{% endif %}</div>
+              <div class="item-sub">
+                {% if doc.auteur %}<span>{{ doc.auteur }}</span><span>·</span>{% endif %}
+                {% if doc.date_publication %}<span>{{ doc.date_publication|date:"d/m/Y" }}</span>{% endif %}
+              </div>
+            </div>
+            <div class="item-cat">{{ doc.get_categorie_display }}</div>
+            <div class="item-status">
+              <span class="badge {% if doc.statut == 'publie' %}badge-pub{% elif doc.statut == 'brouillon' %}badge-brou{% else %}badge-arch{% endif %}">
+                {{ doc.get_statut_display }}
+              </span>
+            </div>
+            <div class="item-dl">{% if doc.fichier_pdf %}{{ doc.nb_telechargements }}{% else %}—{% endif %}</div>
+            <div class="item-actions">
+              <a class="btn-sm" href="{% url 'dashboard_academie_modifier' doc.pk %}">✏</a>
+              {% if doc.fichier_pdf %}
+              <a class="btn-sm" href="{% url 'academie_telecharger' doc.pk %}" target="_blank" title="Télécharger">📥</a>
+              {% endif %}
+              <button class="btn-sm btn-sm-del" onclick="supprimerElement({{ doc.pk }},'{{ doc.titre|escapejs }}','academie')">🗑</button>
+            </div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="group-empty">
+            Aucun texte de loi. <a href="{% url 'dashboard_academie_ajouter' %}?categorie=texte_loi">Créer le premier →</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         GROUPE 4 : LEXIQUE FONCIER
+         ═══════════════════════════════════════════════════════ -->
+    <div class="group">
+      <div class="group-header">
+        <div>
+          <div class="group-title">
+            <span class="group-ico">🔤</span>
+            Lexique du foncier
+            <span class="group-count">{{ nb_lexique|default:0 }}</span>
+          </div>
+          <div class="group-desc">Dictionnaire A-Z des termes fonciers</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <a class="group-action" href="{% url 'dashboard_lexique_ajouter' %}">+ Nouveau terme</a>
+          <a class="group-action" href="{% url 'dashboard_lexique' %}">Voir tout →</a>
+        </div>
+      </div>
+      <div class="group-body">
+        {% if lexique %}
+          {% for doc in lexique|slice:":5" %}
+          <div class="item-row" id="doc-{{ doc.pk }}">
+            <div class="item-ico">🔤</div>
+            <div class="item-info">
+              <div class="item-titre">{{ doc.titre }}</div>
+              <div class="item-sub">{{ doc.description|truncatechars:80 }}</div>
+            </div>
+            <div class="item-cat">{{ doc.get_categorie_display }}</div>
+            <div class="item-status">
+              <span class="badge {% if doc.statut == 'publie' %}badge-pub{% else %}badge-brou{% endif %}">
+                {{ doc.get_statut_display }}
+              </span>
+            </div>
+            <div class="item-dl">—</div>
+            <div class="item-actions">
+              <a class="btn-sm" href="{% url 'dashboard_lexique_modifier' doc.pk %}">✏</a>
+              <button class="btn-sm btn-sm-del" onclick="supprimerElement({{ doc.pk }},'{{ doc.titre|escapejs }}','lexique')">🗑</button>
+            </div>
+          </div>
+          {% endfor %}
+          {% if nb_lexique > 5 %}
+          <div style="padding:1rem;text-align:center;border-top:1px solid var(--g100);">
+            <a href="{% url 'dashboard_lexique' %}" style="font-size:12px;color:var(--blue);text-decoration:none;font-weight:600;">Voir les {{ nb_lexique }} termes →</a>
+          </div>
+          {% endif %}
+        {% else %}
+          <div class="group-empty">
+            Aucun terme. <a href="{% url 'dashboard_lexique_ajouter' %}">Ajouter le premier →</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         GROUPE 5 : VIDÉOTHÈQUE
+         ═══════════════════════════════════════════════════════ -->
+    <div class="group">
+      <div class="group-header">
+        <div>
+          <div class="group-title">
+            <span class="group-ico">🎬</span>
+            Vidéothèque
+            <span class="group-count">{{ nb_videos|default:0 }}</span>
+          </div>
+          <div class="group-desc">Vidéos pédagogiques publiées sur l'Académie</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <a class="group-action" href="{% url 'dashboard_academie_video_ajouter' %}">+ Nouvelles vidéos</a>
+          <a class="group-action" href="{% url 'dashboard_academie_videos' %}">Voir tout →</a>
+        </div>
+      </div>
+      <div class="group-body">
+        {% if videos %}
+          {% for v in videos|slice:":5" %}
+          <div class="item-row" id="doc-{{ v.pk }}">
+            <div class="item-ico">🎬</div>
+            <div class="item-info">
+              <div class="item-titre">{{ v.titre|truncatechars:70 }}</div>
+              <div class="item-sub">
+                {% if v.auteur %}<span>{{ v.auteur }}</span><span>·</span>{% endif %}
+                {% if v.duree %}<span>⏱ {{ v.duree }}</span>{% endif %}
+                {% if v.est_video_moment %}<span class="badge badge-feat">⭐ Vidéo du moment</span>{% endif %}
+              </div>
+            </div>
+            <div class="item-cat">Vidéo</div>
+            <div class="item-status">
+              <span class="badge {% if v.statut == 'publie' %}badge-pub{% else %}badge-brou{% endif %}">
+                {{ v.get_statut_display }}
+              </span>
+            </div>
+            <div class="item-dl">{{ v.nb_vues|default:0 }}</div>
+            <div class="item-actions">
+              <a class="btn-sm" href="{% url 'dashboard_academie_video_modifier' v.pk %}">✏</a>
+              <button class="btn-sm btn-sm-del" onclick="supprimerElement({{ v.pk }},'{{ v.titre|escapejs }}','video')">🗑</button>
+            </div>
+          </div>
+          {% endfor %}
+          {% if nb_videos > 5 %}
+          <div style="padding:1rem;text-align:center;border-top:1px solid var(--g100);">
+            <a href="{% url 'dashboard_academie_videos' %}" style="font-size:12px;color:var(--blue);text-decoration:none;font-weight:600;">Voir les {{ nb_videos }} vidéos →</a>
+          </div>
+          {% endif %}
+        {% else %}
+          <div class="group-empty">
+            Aucune vidéo. <a href="{% url 'dashboard_academie_video_ajouter' %}">Ajouter la première →</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         GROUPE 6 : GALERIE PHOTOS
+         ═══════════════════════════════════════════════════════ -->
+    <div class="group">
+      <div class="group-header">
+        <div>
+          <div class="group-title">
+            <span class="group-ico">🖼</span>
+            Galerie Photos
+            <span class="group-count">{{ nb_galerie|default:0 }}</span>
+          </div>
+          <div class="group-desc">Images et souvenirs affichés dans la galerie publique</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <a class="group-action" href="{% url 'dashboard_academie_galerie_ajouter' %}">+ Nouvelles images</a>
+          <a class="group-action" href="{% url 'dashboard_academie_galerie' %}">Voir tout →</a>
+        </div>
+      </div>
+      <div class="group-body">
+        {% if galerie %}
+          {% for img in galerie|slice:":5" %}
+          <div class="item-row" id="doc-{{ img.pk }}">
+            <div class="item-ico">🖼</div>
+            <div class="item-info">
+              <div class="item-titre">{{ img.titre|truncatechars:70 }}</div>
+              <div class="item-sub">{{ img.description|truncatechars:60 }}</div>
+            </div>
+            <div class="item-cat">Image</div>
+            <div class="item-status">
+              <span class="badge {% if img.statut == 'publie' %}badge-pub{% else %}badge-brou{% endif %}">
+                {{ img.get_statut_display }}
+              </span>
+            </div>
+            <div class="item-dl">—</div>
+            <div class="item-actions">
+              <a class="btn-sm" href="{% url 'dashboard_academie_galerie_modifier' img.pk %}">✏</a>
+              <button class="btn-sm btn-sm-del" onclick="supprimerElement({{ img.pk }},'{{ img.titre|escapejs }}','galerie')">🗑</button>
+            </div>
+          </div>
+          {% endfor %}
+          {% if nb_galerie > 5 %}
+          <div style="padding:1rem;text-align:center;border-top:1px solid var(--g100);">
+            <a href="{% url 'dashboard_academie_galerie' %}" style="font-size:12px;color:var(--blue);text-decoration:none;font-weight:600;">Voir les {{ nb_galerie }} images →</a>
+          </div>
+          {% endif %}
+        {% else %}
+          <div class="group-empty">
+            Aucune image. <a href="{% url 'dashboard_academie_galerie_ajouter' %}">Ajouter la première →</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         GROUPE 7 : FAQ
+         ═══════════════════════════════════════════════════════ -->
+    <div class="group">
+      <div class="group-header">
+        <div>
+          <div class="group-title">
+            <span class="group-ico">❓</span>
+            Questions fréquentes
+            <span class="group-count">{{ nb_faqs|default:0 }}</span>
+          </div>
+          <div class="group-desc">FAQ affichée sur la page publique de l'Académie</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <a class="group-action" href="{% url 'dashboard_academie_faq' %}">Gérer la FAQ →</a>
+        </div>
+      </div>
+      <div class="group-body">
+        {% if faqs %}
+          {% for faq in faqs|slice:":4" %}
+          <div class="item-row">
+            <div class="item-ico">❓</div>
+            <div class="item-info">
+              <div class="item-titre">{{ faq.question|truncatechars:80 }}</div>
+              <div class="item-sub">{{ faq.reponse|truncatechars:80 }}</div>
+            </div>
+            <div class="item-cat">
+              {% if faq.est_featured %}<span class="badge badge-feat">Featured</span>{% endif %}
+            </div>
+            <div class="item-status">
+              <span class="badge {% if faq.statut == 'publie' %}badge-pub{% else %}badge-brou{% endif %}">
+                {{ faq.get_statut_display }}
+              </span>
+            </div>
+            <div class="item-dl">—</div>
+            <div class="item-actions">
+              <a class="btn-sm" href="{% url 'dashboard_academie_faq' %}">✏</a>
+            </div>
+          </div>
+          {% endfor %}
+          {% if nb_faqs > 4 %}
+          <div style="padding:1rem;text-align:center;border-top:1px solid var(--g100);">
+            <a href="{% url 'dashboard_academie_faq' %}" style="font-size:12px;color:var(--blue);text-decoration:none;font-weight:600;">Voir les {{ nb_faqs }} questions →</a>
+          </div>
+          {% endif %}
+        {% else %}
+          <div class="group-empty">
+            Aucune question. <a href="{% url 'dashboard_academie_faq' %}">Ajouter la première →</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         GROUPE 8 : PARCOURS & STATISTIQUES (configuration)
+         ═══════════════════════════════════════════════════════ -->
+    <div class="group">
+      <div class="group-header">
+        <div>
+          <div class="group-title">
+            <span class="group-ico">⚙</span>
+            Configuration de la page
+          </div>
+          <div class="group-desc">Éléments structurels affichés sur la page publique</div>
+        </div>
+      </div>
+      <div class="group-body">
+        <div class="item-row">
+          <div class="item-ico">🗺</div>
+          <div class="item-info">
+            <div class="item-titre">Parcours investisseur</div>
+            <div class="item-sub">Étapes guidées affichées dans la sidebar publique</div>
+          </div>
+          <div class="item-cat">Configuration</div>
+          <div class="item-status">—</div>
+          <div class="item-dl">—</div>
+          <div class="item-actions">
+            <a class="btn-sm" href="{% url 'dashboard_academie_parcours' %}">✏ Gérer</a>
           </div>
         </div>
-        <div class="td td-cat">{{ doc.get_categorie_display }}</div>
-        <div class="td">
-          <span class="badge {% if doc.statut == 'publie' %}badge-pub{% elif doc.statut == 'brouillon' %}badge-brou{% else %}badge-arch{% endif %}">
-            {{ doc.get_statut_display }}
-          </span>
+        <div class="item-row">
+          <div class="item-ico">📊</div>
+          <div class="item-info">
+            <div class="item-titre">Statistiques affichées</div>
+            <div class="item-sub">Chiffres clés affichés en haut de la page</div>
+          </div>
+          <div class="item-cat">Configuration</div>
+          <div class="item-status">—</div>
+          <div class="item-dl">—</div>
+          <div class="item-actions">
+            <a class="btn-sm" href="{% url 'dashboard_academie_stats' %}">✏ Gérer</a>
+          </div>
         </div>
-        <div class="td" style="font-size:12px;font-weight:600;color:var(--blue);">
-          {% if doc.fichier_pdf %}{{ doc.nb_telechargements }}{% else %}<span style="color:var(--g400);">—</span>{% endif %}
+        <div class="item-row">
+          <div class="item-ico">🎨</div>
+          <div class="item-info">
+            <div class="item-titre">Section Académie (accueil)</div>
+            <div class="item-sub">Titre, image de fond et badges de la section Académie sur la page d'accueil</div>
+          </div>
+          <div class="item-cat">Configuration</div>
+          <div class="item-status">—</div>
+          <div class="item-dl">—</div>
+          <div class="item-actions">
+            <a class="btn-sm" href="{% url 'admin_section_academie' %}">✏ Gérer</a>
+          </div>
         </div>
-        <div class="td td-actions">
-          <a class="btn-sm-ed" href="{% url 'dashboard_academie_modifier' doc.pk %}">✏</a>
-          {% if doc.fichier_pdf %}
-          <a class="btn-sm-ed" href="{% url 'academie_telecharger' doc.pk %}" target="_blank" style="background:#f0fdf4;color:#16a34a;">📥</a>
-          {% endif %}
-          <button class="btn-sm-del" onclick="supprimerDoc({{ doc.pk }},'{{ doc.titre|escapejs }}')">🗑</button>
+        <div class="item-row">
+          <div class="item-ico">📹</div>
+          <div class="item-info">
+            <div class="item-titre">Vidéo globale (popup flottant)</div>
+            <div class="item-sub">Vidéo affichée en bas à droite de la page d'accueil</div>
+          </div>
+          <div class="item-cat">Configuration</div>
+          <div class="item-status">—</div>
+          <div class="item-dl">—</div>
+          <div class="item-actions">
+            <a class="btn-sm" href="{% url 'dashboard_video_globale' %}">✏ Gérer</a>
+          </div>
         </div>
       </div>
-      {% endfor %}
     </div>
-    {% else %}
-    <div class="empty">
-      <div style="font-size:3rem;margin-bottom:1rem;">🎓</div>
-      <div style="font-size:15px;font-weight:600;color:var(--g800);margin-bottom:0.5rem;">Aucun document</div>
-      <div style="font-size:13px;color:var(--g500);margin-bottom:1.5rem;">{% if cat %}Aucun document dans cette catégorie.{% else %}Créez votre premier document Académie.{% endif %}</div>
-      <a href="{% url 'dashboard_academie_ajouter' %}" class="btn-add">+ Premier document</a>
-    </div>
-    {% endif %}
-  </div>
-</div>
+
+  </div><!-- fin main -->
+</div><!-- fin wrap -->
 
 <script>
-function showToast(ico,msg){const t=document.getElementById('toast');document.getElementById('t-ico').textContent=ico;document.getElementById('t-msg').textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),4000);}
-function supprimerDoc(pk,titre){
-  if(!confirm(`Supprimer "${titre}" ?`))return;
-  const data=new FormData();data.append('csrfmiddlewaretoken','{{ csrf_token }}');
-  fetch(`/dashboard/academie/${pk}/supprimer/`,{method:'POST',headers:{'X-Requested-With':'XMLHttpRequest'},body:data})
-    .then(r=>r.json()).then(d=>{if(d.success){document.getElementById(`doc-${pk}`)?.remove();showToast('🗑',`"${titre}" supprimé.`);}});
+function showToast(ico, msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('t-ico').textContent = ico;
+  document.getElementById('t-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+function supprimerElement(pk, titre, type) {
+  if (!confirm(`Supprimer "${titre}" ?\n\nCette action est irréversible.`)) return;
+
+  // URLs selon le type
+  const urls = {
+    'journal':  `/dashboard/journal/${pk}/supprimer/`,
+    'academie': `/dashboard/academie/${pk}/supprimer/`,
+    'lexique':  `/dashboard/academie/lexique/${pk}/supprimer/`,
+    'video':    `/dashboard/academie/videos/${pk}/supprimer/`,
+    'galerie':  `/dashboard/academie/galerie/${pk}/supprimer/`,
+  };
+
+  const url = urls[type];
+  if (!url) return;
+
+  const data = new FormData();
+  data.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+  fetch(url, {
+    method: 'POST',
+    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+    body: data
+  })
+  .then(r => r.json())
+  .then(d => {
+    if (d.success) {
+      document.getElementById(`doc-${pk}`)?.remove();
+      showToast('🗑', `"${titre}" supprimé.`);
+      // Recharger après 800ms pour rafraîchir les compteurs
+      setTimeout(() => window.location.reload(), 800);
+    } else {
+      showToast('❌', d.error || 'Erreur lors de la suppression.');
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    showToast('❌', 'Erreur réseau.');
+  });
 }
 </script>
 </body>
